@@ -13,6 +13,7 @@
 #include <vector>
 #include <set>
 #include "gesturesound_phrase.h"
+#include "gesture_phrase.h"
 #include "notifiable.h"
 
 using namespace std;
@@ -654,6 +655,57 @@ public:
     }
 };
 
+#pragma mark GesturePhrase specialization
+template <bool ownData, typename labelType>
+class TrainingSet< GesturePhrase<ownData>, labelType>
+: public _TrainingSetBase< GesturePhrase<ownData>, labelType>
+{
+public:
+    typedef typename  map<int, GesturePhrase<ownData>* >::iterator phrase_iterator;
+    
+    TrainingSet(Notifiable* _parent=NULL)
+    : _TrainingSetBase<GesturePhrase<ownData>, labelType>(_parent) {}
+    
+    ~TrainingSet() {}
+    
+    /*!
+     Connect a phrase to a shared data container (gesture-sound)
+     @param phraseIndex phrase index
+     @param _data pointer to shared gesture data array
+     @param _length length of the phrase
+     */
+    void connect(int phraseIndex, float *_data, int _length)
+    {
+        if (this->phrases.find(phraseIndex) == this->phrases.end()) {
+            this->phrases[phraseIndex] = new GesturePhrase<ownData>(this->referencePhrase);
+            this->setPhraseLabelToDefault(phraseIndex);
+        }
+        this->phrases[phraseIndex]->connect(_data, _length);
+        this->changed = true;
+    }
+    
+    /*!
+     get dimension of the gesture modality
+     */
+    int get_dimension() const
+    {
+        return this->referencePhrase.get_dimension();
+    }
+    
+    /*!
+     set dimension of the gesture modality
+     */
+    void set_dimension(int _dimension)
+    {
+        this->referencePhrase.set_dimension(_dimension);
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+            it->second->set_dimension(_dimension);
+        if (this->parent)
+            this->parent->notify("dimension");
+        this->changed = true;
+    }
+};
+
 #pragma mark -
 #pragma mark Python Specializations
 /*
@@ -757,6 +809,34 @@ public:
             it->second->set_dimension_sound(_dimension_sound);
         if (this->parent)
             this->parent->notify("dimension_sound");
+        this->changed = true;
+    }
+};
+
+template <typename labelType>
+class TrainingSet< GesturePhrase<true>, labelType>
+: public _TrainingSetBase< GesturePhrase<true>, labelType>
+{
+public:
+    typedef map<int, GesturePhrase<true>* >::iterator phrase_iterator;
+    
+    TrainingSet(Notifiable* _parent=NULL)
+    : _TrainingSetBase<GesturePhrase<true>, labelType>(_parent) {}
+    
+    ~TrainingSet() {}
+    
+    int get_dimension() const
+    {
+        return this->referencePhrase.get_dimension();
+    }
+    
+    void set_dimension(int _dimension)
+    {
+        this->referencePhrase.set_dimension(_dimension);
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+            it->second->set_dimension(_dimension);
+        if (this->parent)
+            this->parent->notify("dimension");
         this->changed = true;
     }
 };

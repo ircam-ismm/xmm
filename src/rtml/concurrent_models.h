@@ -11,8 +11,8 @@
 
 #include <set>
 #include "training_set.h"
-//#include "/Users/francoise/Documents/Code/XCode/__SDKs__/threadpool/boost/threadpool.hpp"
-//using namespace boost::threadpool;
+
+//#include <boost/thread.hpp>
 
 using namespace std;
 

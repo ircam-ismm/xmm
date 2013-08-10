@@ -1,6 +1,7 @@
 all: compile install clean
 
 INSTALL_DIR=./build/mhmm/
+#INSTALL_DIR=/Users/francoise/Documents/Code/Python/__lib__/mhmm/
 
 LIB_DIR=../src/
 DOC_DIR=../doc/xml/

@@ -1,70 +1,59 @@
 //
-//  mhmm_lib.h
+//  hmm.h
 //  mhmm
 //
-//  Created by Jules Francoise on 16/10/12.
+//  Created by Jules Francoise on 08/08/13.
 //
 //
 
-/*!
- * @mainpage
- *
- * author  : Jules Francoise\n
- * Contact : jules.francoise@ircam.fr
- *
- * @section description
- * TODO
- *
- @endcode
- *
- */
+#ifndef mhmm_hmm_h
+#define mhmm_hmm_h
 
+#include "gmm.h"
 
-#ifndef __mhmm__mhmm_lib__
-#define __mhmm__mhmm_lib__
-
-#include "multimodal_gmm.h"
-#include "hmm.h"
-
-#define MHMM_DEFAULT_NB_STATES 10
-#define MHMM_DEFAULT_ESTIMATEMEANS false
+#define HMM_DEFAULT_NB_STATES 10
+#define HMM_DEFAULT_ESTIMATEMEANS false
 
 #define PLAY_EM_MAX_LOG_LIK_PERCENT_CHG 0.001
 #define PLAY_EM_STEPS 5
 
+
+/*!
+ @enum TRANSITION_MODE
+ Mode of transition of the model
+ */
+enum TRANSITION_MODE {ERGODIC, LEFT_RIGHT};
+
 using namespace std;
 
 /*!
- @struct MHMMResults
- Structure containing the results of the prediction using the multimodal HMM
+ @struct HMMResults
+ Structure containing the results of the recognition using the HMM
  */
-struct MHMMResults {
-    vector<float> observation_sound;    //<! estimated sound observation
-    vector<float> covariance_sound;     //<! covariance estimated on the sound
-    double covarianceDeterminant_sound; //<! determinant of the sound covariance
+struct HMMResults {
     double likelihood;                  //<! likelihood
     double cumulativeLogLikelihood;     //<! cumulative log-likelihood computed over a finite sliding window
 };
 
-template<bool ownData> class ConcurrentMHMM;
+template<bool ownData> class ConcurrentHMM;
 
 /*!
- @class MultimodalHMM
- @brief Multimodal Hidden Markov Model
+ @class HMM
+ @brief Hidden Markov Model
  @todo detailed description
  @tparam ownData defines if phrases has own data or shared memory
  */
 template<bool ownData>
-class MultimodalHMM : public EMBasedLearningModel<GestureSoundPhrase<ownData>, int>
+class HMM : public EMBasedLearningModel<Phrase<ownData, 1>, int>
 {
     
-    friend class ConcurrentMHMM<ownData>;
+    friend class ConcurrentHMM<ownData>;
     
 public:
-    typedef typename map<int, GestureSoundPhrase<ownData>* >::iterator phrase_iterator;
+    typedef typename map<int, Phrase<ownData, 1>* >::iterator phrase_iterator;
     
     vector<double> alpha;
-    MHMMResults results;
+    HMMResults results;
     
 #pragma mark -
 #pragma mark Constructors
@@ -76,11 +65,11 @@ public:
      @param nbMixtureComponents_ number of gaussian mixture components for each state
      @param covarianceOffset_ offset added to the diagonal of covariances matrices to ensure convergence
      */
-    MultimodalHMM(TrainingSet<GestureSoundPhrase<ownData>, int> *_trainingSet=NULL,
-                  int nbStates_ = MHMM_DEFAULT_NB_STATES,
-                  int nbMixtureComponents_ = MGMM_DEFAULT_NB_MIXTURE_COMPONENTS,
-                  float covarianceOffset_ = MGMM_DEFAULT_COVARIANCE_OFFSET)
-    : EMBasedLearningModel<GestureSoundPhrase<ownData>, int>(_trainingSet)
+    HMM(TrainingSet<Phrase<ownData, 1>, int> *_trainingSet=NULL,
+        int nbStates_ = HMM_DEFAULT_NB_STATES,
+        int nbMixtureComponents_ = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
+        float covarianceOffset_ = GMM_DEFAULT_COVARIANCE_OFFSET)
+    : EMBasedLearningModel<Phrase<ownData, 1>, int>(_trainingSet)
     {
         nbStates = nbStates_;
         
@@ -93,18 +82,15 @@ public:
         previousBeta.resize(nbStates);
         
         if (this->trainingSet) {
-            dimension_gesture = this->trainingSet->get_dimension_gesture();
-            dimension_sound = this->trainingSet->get_dimension_sound();
+            dimension = this->trainingSet->get_dimension();
         } else {
-            dimension_gesture = 0;
-            dimension_sound = 0;
+            dimension = 1;
         }
-        dimension_total = dimension_gesture + dimension_sound;
         
         nbMixtureComponents = nbMixtureComponents_;
         covarianceOffset = covarianceOffset_;
         
-        states.resize(nbStates, MultimodalGMM<ownData>(NULL, nbMixtureComponents, covarianceOffset));
+        states.resize(nbStates, GMM<ownData>(NULL, nbMixtureComponents, covarianceOffset));
         
         for (int i=0; i<nbStates; i++) {
             states[i].set_trainingSet(_trainingSet);
@@ -116,7 +102,7 @@ public:
         
         transitionMode = LEFT_RIGHT;
         
-        estimateMeans = MHMM_DEFAULT_ESTIMATEMEANS;
+        estimateMeans = HMM_DEFAULT_ESTIMATEMEANS;
         
         initTraining();
     }
@@ -124,7 +110,7 @@ public:
     /*!
      Copy constructor
      */
-    MultimodalHMM(MultimodalHMM const& src) : EMBasedLearningModel< GestureSoundPhrase<ownData>, int>(src)
+    HMM(HMM const& src) : EMBasedLearningModel< Phrase<ownData, 1>, int>(src)
     {
         copy(this, src);
     }
@@ -132,7 +118,7 @@ public:
     /*!
      Assignment
      */
-    MultimodalHMM& operator=(MultimodalHMM const& src)
+    HMM& operator=(HMM const& src)
     {
         if(this != &src)
         {
@@ -144,9 +130,9 @@ public:
     /*!
      Copy between 2 MHMM models (called by copy constructor and assignment methods)
      */
-    virtual void copy(MultimodalHMM *dst, MultimodalHMM const& src)
+    virtual void copy(HMM *dst, HMM const& src)
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::copy(dst, src);
+        EMBasedLearningModel<Phrase<ownData, 1>, int>::copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->nbStates = src.nbStates;
@@ -157,9 +143,7 @@ public:
         dst->beta.resize(dst->nbStates);
         dst->previousBeta.resize(dst->nbStates);
         
-        dst->dimension_gesture = src.dimension_gesture;
-        dst->dimension_sound = src.dimension_sound;
-        dst->dimension_total = dst->dimension_gesture + dst->dimension_sound;
+        dst->dimension = src.dimension;
         
         dst->transition = src.transition;
         dst->prior = src.prior;
@@ -172,7 +156,7 @@ public:
     /*!
      Destructor
      */
-    ~MultimodalHMM()
+    ~HMM()
     {
         prior.clear();
         transition.clear();
@@ -199,16 +183,8 @@ public:
             states[i].notify(attribute);
         }
         
-        if (attribute == "dimension_gesture") {
-            dimension_gesture = this->trainingSet->get_dimension_gesture();
-            dimension_total = dimension_gesture + dimension_sound;
-            // reallocParameters();
-            return;
-        }
-        if (attribute == "dimension_sound") {
-            dimension_sound = this->trainingSet->get_dimension_sound();
-            dimension_total = dimension_gesture + dimension_sound;
-            // reallocParameters();
+        if (attribute == "dimension") {
+            dimension = this->trainingSet->get_dimension();
             return;
         }
     }
@@ -216,23 +192,16 @@ public:
     /*!
      Set training set associated with the model
      */
-    void set_trainingSet(TrainingSet<GestureSoundPhrase<ownData>, int> *_trainingSet)
+    void set_trainingSet(TrainingSet<Phrase<ownData, 1>, int> *_trainingSet)
     {
         this->trainingSet = _trainingSet;
         if (this->trainingSet) {
-            dimension_gesture = this->trainingSet->get_dimension_gesture();
-            dimension_sound = this->trainingSet->get_dimension_sound();
-        } /*else {
-           dimension_gesture = 0;
-           dimension_sound = 0;
-           }*/
-        dimension_total = dimension_gesture + dimension_sound;
+            dimension = this->trainingSet->get_dimension();
+        }
         
         for (int i=0; i<nbStates; i++) {
             states[i].set_trainingSet(_trainingSet);
         }
-        
-        // reallocParameters();
     }
     
 #pragma mark -
@@ -271,7 +240,7 @@ public:
         if (nbPhrases == 0) return;
         
         for (int n=0; n<nbStates; n++)
-            for (int d=0; d<dimension_total; d++)
+            for (int d=0; d<dimension; d++)
                 states[n].mean[d] = 0.0;
         
         vector<int> factor(nbStates, 0);
@@ -280,7 +249,7 @@ public:
             int offset(0);
             for (int n=0; n<nbStates; n++) {
                 for (int t=0; t<step; t++) {
-                    for (int d=0; d<dimension_total; d++) {
+                    for (int d=0; d<dimension; d++) {
                         states[n].mean[d] += (*((*this->trainingSet)(i)->second))(offset+t, d);
                     }
                 }
@@ -290,7 +259,7 @@ public:
         }
         
         for (int n=0; n<nbStates; n++)
-            for (int d=0; d<dimension_total; d++)
+            for (int d=0; d<dimension; d++)
                 states[n].mean[d] /= factor[n];
     }
     
@@ -304,9 +273,9 @@ public:
         if (nbPhrases == 0) return;
         
         for (int n=0; n<nbStates; n++)
-            for (int d1=0; d1<dimension_total; d1++)
-                for (int d2=0; d2<dimension_total; d2++)
-                    states[n].covariance[d1*dimension_total+d2] = -states[n].mean[d1]*states[n].mean[d2];
+            for (int d1=0; d1<dimension; d1++)
+                for (int d2=0; d2<dimension; d2++)
+                    states[n].covariance[d1*dimension+d2] = -states[n].mean[d1]*states[n].mean[d2];
         
         vector<int> factor(nbStates, 0);
         for (int i=0; i<nbPhrases; i++) {
@@ -314,9 +283,9 @@ public:
             int offset(0);
             for (int n=0; n<nbStates; n++) {
                 for (int t=0; t<step; t++) {
-                    for (int d1=0; d1<dimension_total; d1++) {
-                        for (int d2=0; d2<dimension_total; d2++) {
-                            states[n].covariance[d1*dimension_total+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                    for (int d1=0; d1<dimension; d1++) {
+                        for (int d2=0; d2<dimension; d2++) {
+                            states[n].covariance[d1*dimension+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
                         }
                     }
                 }
@@ -326,9 +295,9 @@ public:
         }
         
         for (int n=0; n<nbStates; n++)
-            for (int d1=0; d1<dimension_total; d1++)
-                for (int d2=0; d2<dimension_total; d2++)
-                    states[n].covariance[d1*dimension_total+d2] /= factor[n];
+            for (int d1=0; d1<dimension; d1++)
+                for (int d2=0; d2<dimension; d2++)
+                    states[n].covariance[d1*dimension+d2] /= factor[n];
     }
     
     /*!
@@ -344,11 +313,11 @@ public:
             int step = ((*this->trainingSet)(i))->second->getlength() / nbStates;
             int offset(0);
             for (int n=0; n<nbStates; n++) {
-                for (int d=0; d<dimension_total; d++) {
+                for (int d=0; d<dimension; d++) {
                     states[n].meanOfComponent(i)[d] = 0.0;
                 }
                 for (int t=0; t<step; t++) {
-                    for (int d=0; d<dimension_total; d++) {
+                    for (int d=0; d<dimension; d++) {
                         states[n].meanOfComponent(i)[d] += (*((*this->trainingSet)(i)->second))(offset+t, d) / float(step);
                     }
                 }
@@ -370,15 +339,15 @@ public:
             int step = ((*this->trainingSet)(i))->second->getlength() / nbStates;
             int offset(0);
             for (int n=0; n<nbStates; n++) {
-                for (int d1=0; d1<dimension_total; d1++) {
-                    for (int d2=0; d2<dimension_total; d2++) {
-                        states[n].covarianceOfComponent(i)[d1*dimension_total+d2] = -states[n].meanOfComponent(i)[d1]*states[n].meanOfComponent(i)[d2];
+                for (int d1=0; d1<dimension; d1++) {
+                    for (int d2=0; d2<dimension; d2++) {
+                        states[n].covarianceOfComponent(i)[d1*dimension+d2] = -states[n].meanOfComponent(i)[d1]*states[n].meanOfComponent(i)[d2];
                     }
                 }
                 for (int t=0; t<step; t++) {
-                    for (int d1=0; d1<dimension_total; d1++) {
-                        for (int d2=0; d2<dimension_total; d2++) {
-                            states[n].covarianceOfComponent(i)[d1*dimension_total+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2) / float(step);
+                    for (int d1=0; d1<dimension; d1++) {
+                        for (int d2=0; d2<dimension; d2++) {
+                            states[n].covarianceOfComponent(i)[d1*dimension+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2) / float(step);
                         }
                     }
                 }
@@ -436,14 +405,9 @@ public:
 #pragma mark -
 #pragma mark Accessors
     /*! @name Accessors */
-    int get_dimension_gesture() const
+    int get_dimension() const
     {
-        return dimension_gesture;
-    }
-    
-    int get_dimension_sound() const
-    {
-        return dimension_sound;
+        return dimension;
     }
     
     virtual int get_nbStates() const
@@ -458,7 +422,7 @@ public:
         
         prior.resize(nbStates_);
         transition.resize(nbStates_*nbStates_);
-        states.resize(nbStates_, MultimodalGMM<ownData>(this->trainingSet, nbMixtureComponents, covarianceOffset));
+        states.resize(nbStates_, GMM<ownData>(this->trainingSet, nbMixtureComponents, covarianceOffset));
         alpha.resize(nbStates_);
         previousAlpha.resize(nbStates_);
         beta.resize(nbStates_);
@@ -528,88 +492,17 @@ public:
     }
     
 #pragma mark -
-#pragma mark DEPRECATED: EM for playing
-    /*! @name DEPRECATED: EM for playing */
-    string get_play_EM_stopCriterion() const
-    {
-        if (play_EM_stopCriterion.type == STEPS)
-            return "steps";
-        if (play_EM_stopCriterion.type == PERCENT_CHG)
-            return "loglikelihood";
-        return "both";
-    }
-    
-    int    get_play_EM_maxSteps() const
-    {
-        return play_EM_stopCriterion.steps;
-    }
-    
-    double get_play_EM_maxLogLikPercentChg() const
-    {
-        return play_EM_stopCriterion.percentChg;
-    }
-    
-    void set_play_EM_stopCriterion(string criterion)
-    {
-        if (!criterion.compare("steps")) {
-            play_EM_stopCriterion.type = STEPS;
-        } else if (!criterion.compare("loglikelihood")) {
-            play_EM_stopCriterion.type = PERCENT_CHG;
-        } else if (!criterion.compare("both")) {
-            play_EM_stopCriterion.type = BOTH;
-        } else {
-            throw RTMLException("Unknown EM Stop criterion", __FILE__, __FUNCTION__, __LINE__);
-        }
-    }
-    
-    void set_play_EM_maxSteps(int maxsteps)
-    {
-        if (maxsteps < 1) throw RTMLException("Max number of EM steps must be > 0", __FILE__, __FUNCTION__, __LINE__);
-        play_EM_stopCriterion.steps = maxsteps;
-    }
-    
-    void set_play_EM_maxLogLikPercentChg(double logLikPercentChg_)
-    {
-        if (logLikPercentChg_ > 0) {
-            play_EM_stopCriterion.percentChg = logLikPercentChg_;
-        } else {
-            throw RTMLException("Max loglikelihood difference for EM stop criterion must be > 0", __FILE__, __FUNCTION__, __LINE__);
-        }
-    }
-    
-#pragma mark -
 #pragma mark Observation probabilities
     /*! @name Observation probabilities */
     /*!
-     Multimodal gaussian observation probability
-     @param obs_gesture gesture observation vector
-     @param obs_sound sound observation vector
+     Gaussian observation probability
+     @param obs observation vector
      @param stateNumber index of the state
      @param mixtureComponent index of the gaussian mixture component (full mixture observation probability if unspecified)
      */
-    double obsProb_gestureSound(const float *obs_gesture, const float *obs_sound, int stateNumber, int mixtureComponent=-1)
+    double obsProb(const float *obs, int stateNumber, int mixtureComponent=-1)
     {
-        return states[stateNumber].obsProb_gestureSound(obs_gesture, obs_sound, mixtureComponent);
-    }
-    
-    /*!
-     Unimodal gaussian observation probability (gesture only)
-     @param obs_gesture gesture observation vector
-     @param stateNumber index of the state
-     */
-    double obsprob_gesture(const float *obs_gesture, int stateNumber)
-    {
-        return states[stateNumber].obsProb_gesture(obs_gesture);
-    }
-    
-    /*!
-     Unimodal gaussian observation probability (sound only)
-     @param obs_sound sound observation vector
-     @param stateNumber index of the state
-     */
-    double obsProb_sound(const float *obs_sound, int stateNumber)
-    {
-        return states[stateNumber].obsProb_sound(obs_sound);
+        return states[stateNumber].obsProb(obs, mixtureComponent);
     }
     
 #pragma mark -
@@ -617,16 +510,14 @@ public:
     /*! @name Forward-Backward Algorithm */
     /*!
      initialization of the forward algorithm
-     if gestureAndSound is true, the forward algorithm is computed with multimodal data
-     @param obs_gesture gesture observation vector
-     @param obs_sound sound observation vector (optional)
+     @param obs observation vector
      @return likelihood
      */
-    double forward_init(const float *obs_gesture, const float *obs_sound=NULL)
+    double forward_init(const float *obs)
     {
         double norm_const(0.);
         for (int i=0 ; i<nbStates ; i++) {
-            alpha[i] = prior[i] * ((gestureAndSound && obs_sound) ? obsProb_gestureSound(obs_gesture, obs_sound, i) : obsprob_gesture(obs_gesture, i));
+            alpha[i] = prior[i] * obsProb(obs, i);
             norm_const += alpha[i];
         }
         if (norm_const > 0) {
@@ -644,26 +535,19 @@ public:
     
     /*!
      update of the forward algorithm
-     if gestureAndSound is true, the forward algorithm is computed with multimodal data
-     @param obs_gesture gesture observation vector
-     @param obs_sound sound observation vector (optional)
+     @param obs observation vector
      @return likelihood
      */
-    double forward_update(const float *obs_gesture, const float *obs_sound=NULL)
+    double forward_update(const float *obs)
     {
         double norm_const(0.);
-        if (!keepPreviousAlpha)
-            previousAlpha = alpha;
+        previousAlpha = alpha;
         for (int j=0; j<nbStates; j++) {
             alpha[j] = 0.;
             for (int i=0; i<nbStates; i++) {
                 alpha[j] += previousAlpha[i] * transition[i*nbStates+j];
             }
-            if (gestureAndSound && obs_sound) {
-                alpha[j] *= obsProb_gestureSound(obs_gesture, obs_sound, j);
-            } else {
-                alpha[j] *= obsprob_gesture(obs_gesture, j);
-            }
+            alpha[j] *= obsProb(obs, j);
             norm_const += alpha[j];
         }
         if (norm_const > 0) {
@@ -680,20 +564,6 @@ public:
     }
     
     /*!
-     foward update with estimated sound observation 
-     @warning generally unused in current version of max/python implementations
-     */
-    double forward_update_withNewObservation(const float *obs_gesture, const float *obs_sound)
-    {
-        keepPreviousAlpha = true;
-        gestureAndSound = true;
-        if (forwardInitialized)
-            return forward_update(obs_gesture, obs_sound);
-        else
-            return forward_init(obs_gesture, obs_sound);
-    }
-    
-    /*!
      backward initialization
      @param ct inverse of the likelihood at time step t computed with the forward algorithm (see Rabiner 1989)
      */
@@ -704,12 +574,11 @@ public:
     }
     
     /*!
-     backward update on multimodal data
-     @param obs_gesture gesture observation vector at time t
-     @param obs_sound sound observation vector at time t
+     backward update
+     @param obs observation vector at time t
      @param ct inverse of the likelihood at time step t computed with the forward algorithm (see Rabiner 1989)
      */
-    void backward_update(const float *obs_gesture, const float *obs_sound, double ct)
+    void backward_update(const float *obs, double ct)
     {
         previousBeta = beta;
         for (int i=0 ; i<nbStates; i++) {
@@ -717,12 +586,11 @@ public:
             for (int j=0; j<nbStates; j++) {
                 beta[i] += transition[i*nbStates+j]
                 * previousBeta[j]
-                * ((gestureAndSound && obs_sound) ? obsProb_gestureSound(obs_gesture, obs_sound, j) : obsprob_gesture(obs_gesture, j));
+                * obsProb(obs, j);
             }
             beta[i] *= ct;
             if (isnan(beta[i]) || isinf(abs(beta[i]))) {
                 beta[i] = 1e100;
-                // cout << "beta["<<i<<"] = " << beta[i] << endl;
             }
         }
     }
@@ -839,7 +707,7 @@ public:
         return log_prob;
     }
     
-    double baumWelch_forwardBackward(GestureSoundPhrase<ownData>* currentPhrase, int phraseIndex)
+    double baumWelch_forwardBackward(Phrase<ownData, 1>* currentPhrase, int phraseIndex)
     {
         int T = currentPhrase->getlength();
         
@@ -849,19 +717,14 @@ public:
         
         double log_prob;
         
-        gestureAndSound = true;
-        keepPreviousAlpha = false;
-        
         // Forward algorithm
-        ct[0] = forward_init(currentPhrase->get_dataPointer_gesture(0),
-                             currentPhrase->get_dataPointer_sound(0));
+        ct[0] = forward_init(currentPhrase->get_dataPointer(0));
         log_prob = -log(ct[0]);
         vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
         alpha_seq_it += nbStates;
         
         for (int t=1; t<T; t++) {
-            ct[t] = forward_update(currentPhrase->get_dataPointer_gesture(t),
-                                   currentPhrase->get_dataPointer_sound(t));
+            ct[t] = forward_update(currentPhrase->get_dataPointer(t));
             log_prob -= log(ct[t]);
             vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
             alpha_seq_it += nbStates;
@@ -874,8 +737,7 @@ public:
         beta_seq_it -= nbStates;
         
         for (int t=T-2; t>=0; t--) {
-            backward_update(currentPhrase->get_dataPointer_gesture(t+1),
-                            currentPhrase->get_dataPointer_sound(t+1),
+            backward_update(currentPhrase->get_dataPointer(t+1),
                             ct[t]);
             vectorCopy(beta_seq_it, beta.begin(), nbStates);
             beta_seq_it -= nbStates;
@@ -896,10 +758,9 @@ public:
             for (int i=0; i<nbStates; i++) {
                 norm_const = 0.;
                 for (int c=0; c<nbMixtureComponents; c++) {
-                    oo = obsProb_gestureSound(currentPhrase->get_dataPointer_gesture(t),
-                                              currentPhrase->get_dataPointer_sound(t),
-                                              i,
-                                              c);
+                    oo = obsProb(currentPhrase->get_dataPointer(t),
+                                 i,
+                                 c);
                     gammaSequencePerMixture[phraseIndex][c][t*nbStates+i] = gammaSequence[phraseIndex][t*nbStates+i] * oo;
                     norm_const += oo;
                 }
@@ -915,9 +776,8 @@ public:
                 for (int j=0; j<nbStates; j++) {
                     epsilonSequence[phraseIndex][t*nbStates*nbStates+i*nbStates+j] = alpha_seq[t*nbStates+i]
                     * transition[i*nbStates+j]
-                    * obsProb_gestureSound(currentPhrase->get_dataPointer_gesture(t+1),
-                                           currentPhrase->get_dataPointer_sound(t+1),
-                                           j)
+                    * obsProb(currentPhrase->get_dataPointer(t+1),
+                              j)
                     * beta_seq[(t+1)*nbStates+j];
                 }
             }
@@ -984,13 +844,13 @@ public:
             phraseLength = it->second->getlength();
             for (int i=0; i<nbStates; i++) {
                 for (int c=0; c<nbMixtureComponents; c++) {
-                    for (int d=0; d<dimension_total; d++) {
+                    for (int d=0; d<dimension; d++) {
                         states[i].meanOfComponent(c)[d] = 0.0;
                     }
                 }
                 for (int t=0; t<phraseLength; t++) {
                     for (int c=0; c<nbMixtureComponents; c++) {
-                        for (int d=0; d<dimension_total; d++) {
+                        for (int d=0; d<dimension; d++) {
                             states[i].meanOfComponent(c)[d] += gammaSequencePerMixture[phraseIndex][c][t*nbStates+i] * (*it->second)(t, d);
                         }
                     }
@@ -1003,7 +863,7 @@ public:
         for (int i=0; i<nbStates; i++) {
             for (int c=0; c<nbMixtureComponents; c++) {
                 if (gammaSumPerMixture[i*nbMixtureComponents+c] > 0) {
-                    for (int d=0; d<dimension_total; d++) {
+                    for (int d=0; d<dimension; d++) {
                         states[i].meanOfComponent(c)[d] /= gammaSumPerMixture[i*nbMixtureComponents+c];
                     }
                 }
@@ -1014,7 +874,6 @@ public:
     void baumWelch_estimateCovariances()
     {
         int phraseLength;
-        int dimension_total = dimension_gesture + dimension_sound;
         
         int phraseIndex(0);
         for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++)
@@ -1023,9 +882,9 @@ public:
             for (int i=0; i<nbStates; i++) {
                 for (int t=0; t<phraseLength; t++) {
                     for (int c=0; c<nbMixtureComponents; c++) {
-                        for (int d1=0; d1<dimension_total; d1++) {
-                            for (int d2=0; d2<dimension_total; d2++) {
-                                states[i].covarianceOfComponent(c)[d1*dimension_total+d2] += gammaSequencePerMixture[phraseIndex][c][t*nbStates+i]
+                        for (int d1=0; d1<dimension; d1++) {
+                            for (int d2=0; d2<dimension; d2++) {
+                                states[i].covarianceOfComponent(c)[d1*dimension+d2] += gammaSequencePerMixture[phraseIndex][c][t*nbStates+i]
                                 * ((*it->second)(t, d1) - states[i].meanOfComponent(c)[d1])
                                 * ((*it->second)(t, d2) - states[i].meanOfComponent(c)[d2]);
                             }
@@ -1040,7 +899,7 @@ public:
         for (int i=0; i<nbStates; i++) {
             for (int c=0; c<nbMixtureComponents; c++) {
                 if (gammaSumPerMixture[i*nbMixtureComponents+c] > 0) {
-                    for (int d=0; d<dimension_total*dimension_total; d++) {
+                    for (int d=0; d<dimension*dimension; d++) {
                         states[i].covarianceOfComponent(c)[d] /= gammaSumPerMixture[i*nbMixtureComponents+c];
                     }
                 }
@@ -1114,14 +973,8 @@ public:
     /*! @name Playing */
     void initPlaying()
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::initPlaying();
+        EMBasedLearningModel<Phrase<ownData, 1>, int>::initPlaying();
         forwardInitialized = false;
-        for (int i=0; i<nbStates; i++) {
-            states[i].estimateConditionalSoundCovariance();
-        }
-        
-        results.covariance_sound.resize(dimension_sound*dimension_sound);
-        results.observation_sound.resize(dimension_sound);
     }
     
     void addCyclicTransition(double proba)
@@ -1131,47 +984,21 @@ public:
     
     /*!
      @brief play function: estimate sound observation given current gesture frame
-     @param obs pointer to current observation vector \n!!! Must be of size dimension_total (gesture + sound features)
+     @param obs pointer to current observation vector \n!!! Must be of size dimension (gesture + sound features)
      @return likelihood computed on the gesture modality by a forwad algorithm
      */
     double play(float *obs)
     {
         double ct;
-        double obs_prob(-log(0.)), old_obs_prob;
-        keepPreviousAlpha = false;
-        gestureAndSound = false;
-        int n(0);
         
-        do
-        {
-            old_obs_prob = obs_prob;
-            if (forwardInitialized) {
-                ct = forward_update(obs, obs+dimension_gesture);
-            } else {
-                this->likelihoodBuffer.clear();
-                ct = forward_init(obs, obs+dimension_gesture);
-            }
-            obs_prob = log(ct);
-            
-            //cout << "step "<< n << ": precent-change = " << 100.*fabs((obs_prob-old_obs_prob)/old_obs_prob) << "logProb = " << obs_prob << endl;
-            
-            estimateObservation(obs);
-            //estimateObservationByLikeliestState(obs);
-            
-            n++;
-            keepPreviousAlpha = true;
-            gestureAndSound = true;
-        } while (false);//(!play_EM_stop(n, obs_prob, old_obs_prob));
-        // TODO: test iterative estimation on live gestures
-        
-        forwardInitialized = true;
-        
-        for (int i=0; i<dimension_sound; i++) {
-            results.observation_sound[i] = obs[dimension_gesture+i];
+        if (forwardInitialized) {
+            ct = forward_update(obs);
+        } else {
+            this->likelihoodBuffer.clear();
+            ct = forward_init(obs);
         }
         
-        estimateCovariance();
-        // TODO: put estimateCovariance as an attribute of the object
+        forwardInitialized = true;
         
         results.likelihood = this->updateLikelihoodBuffer(1./ct);
         results.cumulativeLogLikelihood = this->cumulativeloglikelihood;
@@ -1179,88 +1006,12 @@ public:
         return results.likelihood;
     }
     
-    /*!
-     estimate sound observation bvector as a weighted sum of gaussian mixture regressions for each state
-     @param obs pointer to current observation vector \n!!! Must be of size dimension_total (gesture + sound features)
-     */
-    virtual void estimateObservation(float *obs)
-    {
-        float *obs2 = new float[dimension_total];
-        memcpy(obs2, obs, dimension_total*sizeof(float));
-        for (int d=0; d<dimension_sound; d++) {
-            obs[dimension_gesture+d] = 0.0;
-        }
-        for (int i=0; i<nbStates; i++) {
-            states[i].regression(obs2);
-            for (int d=0; d<dimension_sound; d++) {
-                obs[dimension_gesture+d] += alpha[i] * obs2[dimension_gesture+d];
-            }
-        }
-    }
     
-    MHMMResults getResults()
+    HMMResults getResults()
     {
         return results;
     }
-    
-#pragma mark -
-#pragma mark Experimental
-    /*! @name Experimental */
-    void estimateCovariance()
-    {
-        for (int d1=0; d1<dimension_sound; d1++) {
-            for (int d2=0; d2<dimension_sound; d2++) {
-                results.covariance_sound[d1*dimension_sound+d2] = 0.0;
-                for (int i=0; i<nbStates; i++) {
-                    results.covariance_sound[d1*dimension_sound+d2] += alpha[i] * alpha[i] * states[i].covariance_sound[d1*dimension_sound + d2];
-                }
-            }
-        }
         
-        // Compute determinant
-        Matrix<float> cov_matrix(dimension_sound, dimension_sound, false);
-        Matrix<float> *inverseMat;
-        double det;
-        cov_matrix.data = results.covariance_sound.begin();
-        inverseMat = cov_matrix.pinv(&det);
-        results.covarianceDeterminant_sound = det;
-        delete inverseMat;
-    }
-    
-    void estimateObservationByLikeliestState(float *obs)
-    {
-        states[likeliestState()].regression(obs);
-    }
-    
-    int likeliestState()
-    {
-        int state(0);
-        double stateLikelihood(alpha[0]);
-        for (int i=0; i<nbStates; i++) {
-            if (alpha[i] > stateLikelihood) {
-                state = i;
-                stateLikelihood = alpha[i];
-            }
-        }
-        return state;
-    }
-    
-    bool play_EM_stop(int step, double obs_prob, double old_obs_prob)
-    {
-        if (play_EM_stopCriterion.type == STEPS)
-        {
-            return (step >= play_EM_stopCriterion.steps);
-        }
-        else if (play_EM_stopCriterion.type == PERCENT_CHG)
-        {
-            return (fabs((obs_prob - old_obs_prob) / obs_prob) < play_EM_stopCriterion.percentChg);
-        }
-        else // play_EM_stopCriterion == BOTH
-        {
-            return (step >= play_EM_stopCriterion.steps) || (fabs((obs_prob - old_obs_prob) / obs_prob) < play_EM_stopCriterion.percentChg);
-        }
-    }
-    
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
@@ -1273,11 +1024,11 @@ public:
     void write(ostream& outStream, bool writeTrainingSet=false)
     {
         // TODO: check if all attributes are written
-        outStream << "# Multimodal HMM \n";
+        outStream << "# HMM \n";
         outStream << "# =========================================\n";
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::write(outStream, writeTrainingSet);
-        outStream << "# Dimensions\n";
-        outStream << dimension_gesture << " " << dimension_sound << endl;
+        EMBasedLearningModel<Phrase<ownData, 1>, int>::write(outStream, writeTrainingSet);
+        outStream << "# Dimension\n";
+        outStream << dimension << endl;
         outStream << "# Number of states\n";
         outStream << nbStates << endl;
         outStream << "# Transition Mode\n";
@@ -1314,18 +1065,13 @@ public:
      */
     void read(istream& inStream, bool readTrainingSet=false)
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::read(inStream, readTrainingSet);
+        EMBasedLearningModel<Phrase<ownData, 1>, int>::read(inStream, readTrainingSet);
         
         // Get Dimensions
         skipComments(&inStream);
-        inStream >> dimension_gesture;
+        inStream >> dimension;
         if (!inStream.good())
             throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        inStream >> dimension_sound;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        
-        dimension_total = dimension_gesture + dimension_sound;
         
         // Get Number of states
         skipComments(&inStream);
@@ -1396,31 +1142,20 @@ public:
 #pragma mark Python
     /*! @name Python methods */
 #ifdef SWIGPYTHON
-    double play(int dimension_gesture_, double *observation_gesture,
-                int dimension_sound_, double *observation_sound_out,
-                int nbStates_, double *alpha_,
-                int dimension_sound_square, double *outCovariance)
+    double play(int dimension_, double *observation,
+                int nbStates_, double *alpha_)
     {
-        float *observation_total = new float[dimension_total];
-        for (int d=0; d<dimension_gesture; d++) {
-            observation_total[d] = float(observation_gesture[d]);
+        float *obs = new float[dimension];
+        for (int d=0; d<dimension; d++) {
+            obs[d] = float(observation[d]);
         }
-        for (int d=0; d<dimension_sound; d++)
-            observation_total[d+dimension_gesture] = 0.;
         
-        double likelihood = play(observation_total);
+        double likelihood = play(obs);
         
-        for (int d=0; d<dimension_sound_; d++) {
-            observation_sound_out[d] = double(observation_total[dimension_gesture+d]);
-        }
-        delete[] observation_total;
+        delete[] obs;
         
         for (int i=0; i<nbStates_; i++) {
             alpha_[i] = alpha[i];
-        }
-        
-        for (int d=0; d<dimension_sound_square; d++) {
-            outCovariance[d] = results.covariance_sound[d];
         }
         
         return likelihood;
@@ -1444,7 +1179,7 @@ public:
         }
         
         cout << "number of states = " << nbStates << endl;
-        cout << "Dimensions = " << dimension_gesture << " " << dimension_sound << endl;
+        cout << "Dimension = " << dimension << endl;
         cout << "number of mixture components = " << nbMixtureComponents << endl;
         cout << "covariance offset = " << covarianceOffset << endl;
         cout << "prior probabilities : ";
@@ -1470,7 +1205,7 @@ public:
         for (int i=0; i<nbStates; i++) {
             mean_it = states[i].mean.begin();
             for (int c=0; c<nbMixtureComponents; c++) {
-                for (int d=0; d<dimension_total; d++) {
+                for (int d=0; d<dimension; d++) {
                     cout << *(mean_it++) << " ";
                 }
                 cout << "\n";
@@ -1483,8 +1218,8 @@ public:
         for (int i=0; i<nbStates; i++) {
             cov_it = states[i].covariance.begin();
             for (int c=0; c<nbMixtureComponents; c++) {
-                for (int d1=0; d1<dimension_total; d1++) {
-                    for (int d2=0; d2<dimension_total; d2++) {
+                for (int d1=0; d1<dimension; d1++) {
+                    for (int d2=0; d2<dimension; d2++) {
                         cout << *(cov_it++) << " ";
                     }
                     cout << "\n";
@@ -1503,24 +1238,19 @@ protected:
     // Model parameters
     // ================================
     int nbStates;
-    int dimension_gesture;
-    int dimension_sound;
-    int dimension_total;
+    int dimension;
     
     vector<float> transition;
     vector<float> prior;
     TRANSITION_MODE transitionMode;
     
-    vector<MultimodalGMM<ownData> > states;
+    vector<GMM<ownData> > states;
     int    nbMixtureComponents;
-    bool   gestureAndSound;        //<! defines if obsprob must be computed with sound (else: only gesture)
     float  covarianceOffset;       //<! offset on covariance [= prior] (added to obs prob re-estimation)
     
     vector<double> previousAlpha;
     vector<double> beta;
     vector<double> previousBeta;
-    
-    bool keepPreviousAlpha; // If true, the alpha variable in memory is not copied in previousAlpha (useful for EM during PLaying)
     
     EMStopCriterion play_EM_stopCriterion;
     
@@ -1536,5 +1266,6 @@ protected:
     vector<double> gammaSum;
     vector<double> gammaSumPerMixture;
 };
+
 
 #endif
