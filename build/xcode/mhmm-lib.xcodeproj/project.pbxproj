@@ -1,0 +1,401 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		0BD1C5FC17D9E8410061535A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0BD1C5C017D9E3BA0061535A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0BD1C5F817D9E82A0061535A;
+			remoteInfo = doc;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0BD1C5C717D9E3C60061535A /* concurrent_gmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_gmm.h; sourceTree = "<group>"; };
+		0BD1C5C817D9E3C60061535A /* concurrent_hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_hmm.h; sourceTree = "<group>"; };
+		0BD1C5C917D9E3C60061535A /* concurrent_mgmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_mgmm.h; sourceTree = "<group>"; };
+		0BD1C5CA17D9E3C60061535A /* concurrent_mhmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_mhmm.h; sourceTree = "<group>"; };
+		0BD1C5CB17D9E3C60061535A /* gmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gmm.h; sourceTree = "<group>"; };
+		0BD1C5CC17D9E3C60061535A /* hierarchical_hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm.h; sourceTree = "<group>"; };
+		0BD1C5CD17D9E3C60061535A /* hierarchical_hmm_submodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm_submodel.h; sourceTree = "<group>"; };
+		0BD1C5CE17D9E3C60061535A /* hierarchical_mhmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_mhmm.h; sourceTree = "<group>"; };
+		0BD1C5CF17D9E3C60061535A /* hierarchical_mhmm_submodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_mhmm_submodel.h; sourceTree = "<group>"; };
+		0BD1C5D017D9E3C60061535A /* hierarchical_phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_phrase.h; sourceTree = "<group>"; };
+		0BD1C5D117D9E3C60061535A /* hierarchical_template_hmm_submodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_template_hmm_submodel.h; sourceTree = "<group>"; };
+		0BD1C5D217D9E3C60061535A /* hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
+		0BD1C5D317D9E3C60061535A /* multimodal_gmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = multimodal_gmm.h; sourceTree = "<group>"; };
+		0BD1C5D417D9E3C60061535A /* multimodal_hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = multimodal_hmm.h; sourceTree = "<group>"; };
+		0BD1C5D617D9E3C60061535A /* concurrent_models.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_models.h; sourceTree = "<group>"; };
+		0BD1C5D717D9E3C60061535A /* em_based_learning_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = em_based_learning_model.h; sourceTree = "<group>"; };
+		0BD1C5D817D9E3C60061535A /* gesture_phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gesture_phrase.h; sourceTree = "<group>"; };
+		0BD1C5D917D9E3C60061535A /* gesturesound_phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gesturesound_phrase.h; sourceTree = "<group>"; };
+		0BD1C5DA17D9E3C60061535A /* hierarchical_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_model.h; sourceTree = "<group>"; };
+		0BD1C5DB17D9E3C60061535A /* learning_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = learning_model.h; sourceTree = "<group>"; };
+		0BD1C5DC17D9E3C60061535A /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		0BD1C5DD17D9E3C60061535A /* mubu_training_set.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mubu_training_set.h; sourceTree = "<group>"; };
+		0BD1C5DE17D9E3C60061535A /* notifiable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = notifiable.h; sourceTree = "<group>"; };
+		0BD1C5DF17D9E3C60061535A /* phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = phrase.h; sourceTree = "<group>"; };
+		0BD1C5E017D9E3C60061535A /* rtmlexception.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rtmlexception.h; sourceTree = "<group>"; };
+		0BD1C5E117D9E3C60061535A /* training_set.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = training_set.h; sourceTree = "<group>"; };
+		0BD1C5E217D9E3C60061535A /* utility.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utility.cpp; sourceTree = "<group>"; };
+		0BD1C5E317D9E3C60061535A /* utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
+		0BD1C5E517D9E3D30061535A /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
+		0BD1C5E717D9E3D30061535A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		0BD1C5E817D9E3D30061535A /* doxy2swig.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = doxy2swig.py; sourceTree = "<group>"; };
+		0BD1C5E917D9E3D30061535A /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		0BD1C5EA17D9E3D30061535A /* mhmm.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = mhmm.i; sourceTree = "<group>"; };
+		0BD1C5EB17D9E3D30061535A /* numpy.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = numpy.i; sourceTree = "<group>"; };
+		0BD1C5EC17D9E3D30061535A /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		0BD1C5ED17D9E3D30061535A /* setup.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
+		0BD1C5EF17D9E3D30061535A /* test_mgmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_mgmm.py; sourceTree = "<group>"; };
+		0BD1C5F017D9E3D30061535A /* test_mhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_mhmm.py; sourceTree = "<group>"; };
+		0BD1C5F117D9E3D30061535A /* test_polymgmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymgmm.py; sourceTree = "<group>"; };
+		0BD1C5F217D9E3D30061535A /* test_polymhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymhmm.py; sourceTree = "<group>"; };
+		0BD1C5F317D9E3D30061535A /* utility.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = utility.py; sourceTree = "<group>"; };
+		0BD1C5FE17D9EB860061535A /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0BD1C5BF17D9E3BA0061535A = {
+			isa = PBXGroup;
+			children = (
+				0BD1C5FE17D9EB860061535A /* config.xcconfig */,
+				0BD1C5E417D9E3D20061535A /* doc */,
+				0BD1C5E617D9E3D30061535A /* python */,
+				0BD1C5C617D9E3C60061535A /* src */,
+			);
+			sourceTree = "<group>";
+		};
+		0BD1C5C617D9E3C60061535A /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0BD1C5C717D9E3C60061535A /* concurrent_gmm.h */,
+				0BD1C5C817D9E3C60061535A /* concurrent_hmm.h */,
+				0BD1C5C917D9E3C60061535A /* concurrent_mgmm.h */,
+				0BD1C5CA17D9E3C60061535A /* concurrent_mhmm.h */,
+				0BD1C5CB17D9E3C60061535A /* gmm.h */,
+				0BD1C5CC17D9E3C60061535A /* hierarchical_hmm.h */,
+				0BD1C5CD17D9E3C60061535A /* hierarchical_hmm_submodel.h */,
+				0BD1C5CE17D9E3C60061535A /* hierarchical_mhmm.h */,
+				0BD1C5CF17D9E3C60061535A /* hierarchical_mhmm_submodel.h */,
+				0BD1C5D017D9E3C60061535A /* hierarchical_phrase.h */,
+				0BD1C5D117D9E3C60061535A /* hierarchical_template_hmm_submodel.h */,
+				0BD1C5D217D9E3C60061535A /* hmm.h */,
+				0BD1C5D317D9E3C60061535A /* multimodal_gmm.h */,
+				0BD1C5D417D9E3C60061535A /* multimodal_hmm.h */,
+				0BD1C5D517D9E3C60061535A /* rtml */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+		0BD1C5D517D9E3C60061535A /* rtml */ = {
+			isa = PBXGroup;
+			children = (
+				0BD1C5D617D9E3C60061535A /* concurrent_models.h */,
+				0BD1C5D717D9E3C60061535A /* em_based_learning_model.h */,
+				0BD1C5D817D9E3C60061535A /* gesture_phrase.h */,
+				0BD1C5D917D9E3C60061535A /* gesturesound_phrase.h */,
+				0BD1C5DA17D9E3C60061535A /* hierarchical_model.h */,
+				0BD1C5DB17D9E3C60061535A /* learning_model.h */,
+				0BD1C5DC17D9E3C60061535A /* matrix.h */,
+				0BD1C5DD17D9E3C60061535A /* mubu_training_set.h */,
+				0BD1C5DE17D9E3C60061535A /* notifiable.h */,
+				0BD1C5DF17D9E3C60061535A /* phrase.h */,
+				0BD1C5E017D9E3C60061535A /* rtmlexception.h */,
+				0BD1C5E117D9E3C60061535A /* training_set.h */,
+				0BD1C5E217D9E3C60061535A /* utility.cpp */,
+				0BD1C5E317D9E3C60061535A /* utility.h */,
+			);
+			path = rtml;
+			sourceTree = "<group>";
+		};
+		0BD1C5E417D9E3D20061535A /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				0BD1C5E517D9E3D30061535A /* Doxyfile */,
+			);
+			name = doc;
+			path = ../../doc;
+			sourceTree = "<group>";
+		};
+		0BD1C5E617D9E3D30061535A /* python */ = {
+			isa = PBXGroup;
+			children = (
+				0BD1C5E717D9E3D30061535A /* __init__.py */,
+				0BD1C5E817D9E3D30061535A /* doxy2swig.py */,
+				0BD1C5E917D9E3D30061535A /* Makefile */,
+				0BD1C5EA17D9E3D30061535A /* mhmm.i */,
+				0BD1C5EB17D9E3D30061535A /* numpy.i */,
+				0BD1C5EC17D9E3D30061535A /* README.txt */,
+				0BD1C5ED17D9E3D30061535A /* setup.py */,
+				0BD1C5EE17D9E3D30061535A /* test */,
+				0BD1C5F317D9E3D30061535A /* utility.py */,
+			);
+			name = python;
+			path = ../../python;
+			sourceTree = "<group>";
+		};
+		0BD1C5EE17D9E3D30061535A /* test */ = {
+			isa = PBXGroup;
+			children = (
+				0BD1C5EF17D9E3D30061535A /* test_mgmm.py */,
+				0BD1C5F017D9E3D30061535A /* test_mhmm.py */,
+				0BD1C5F117D9E3D30061535A /* test_polymgmm.py */,
+				0BD1C5F217D9E3D30061535A /* test_polymhmm.py */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		0BD1C5F417D9E4410061535A /* mhmm_python */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION) SWIG=$(SWIG) INSTALL_DIR=$(INSTALL_DIR)";
+			buildConfigurationList = 0BD1C5F517D9E4410061535A /* Build configuration list for PBXLegacyTarget "mhmm_python" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/francoise/Documents/Code/XCode/__SVN__/imtr-libs/mhmm/python";
+			dependencies = (
+				0BD1C5FD17D9E8410061535A /* PBXTargetDependency */,
+			);
+			name = mhmm_python;
+			passBuildSettingsInEnvironment = 0;
+			productName = mhmm_python;
+		};
+		0BD1C5F817D9E82A0061535A /* doc */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 0BD1C5F917D9E82A0061535A /* Build configuration list for PBXLegacyTarget "doc" */;
+			buildPhases = (
+			);
+			buildToolPath = /Applications/Doxygen.app/Contents/Resources/doxygen;
+			buildWorkingDirectory = "/Users/francoise/Documents/Code/XCode/__SVN__/imtr-libs/mhmm/doc";
+			dependencies = (
+			);
+			name = doc;
+			passBuildSettingsInEnvironment = 1;
+			productName = doc;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		0BD1C5C017D9E3BA0061535A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
+			buildConfigurationList = 0BD1C5C317D9E3BA0061535A /* Build configuration list for PBXProject "mhmm-lib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0BD1C5BF17D9E3BA0061535A;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0BD1C5F417D9E4410061535A /* mhmm_python */,
+				0BD1C5F817D9E82A0061535A /* doc */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXTargetDependency section */
+		0BD1C5FD17D9E8410061535A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0BD1C5F817D9E82A0061535A /* doc */;
+			targetProxy = 0BD1C5FC17D9E8410061535A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0BD1C5C417D9E3BA0061535A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0BD1C5FE17D9EB860061535A /* config.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		0BD1C5C517D9E3BA0061535A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0BD1C5FE17D9EB860061535A /* config.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		0BD1C5F617D9E4410061535A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0BD1C5FE17D9EB860061535A /* config.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0BD1C5F717D9E4410061535A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0BD1C5FE17D9EB860061535A /* config.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0BD1C5FA17D9E82A0061535A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0BD1C5FB17D9E82A0061535A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0BD1C5C317D9E3BA0061535A /* Build configuration list for PBXProject "mhmm-lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0BD1C5C417D9E3BA0061535A /* Debug */,
+				0BD1C5C517D9E3BA0061535A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0BD1C5F517D9E4410061535A /* Build configuration list for PBXLegacyTarget "mhmm_python" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0BD1C5F617D9E4410061535A /* Debug */,
+				0BD1C5F717D9E4410061535A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0BD1C5F917D9E82A0061535A /* Build configuration list for PBXLegacyTarget "doc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0BD1C5FA17D9E82A0061535A /* Debug */,
+				0BD1C5FB17D9E82A0061535A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0BD1C5C017D9E3BA0061535A /* Project object */;
+}
