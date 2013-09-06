@@ -1,0 +1,10 @@
+//
+//  config.xcconfig
+//  mhmm-lib
+//
+//  Created by Jules Francoise on 06/09/13.
+//
+//
+
+SWIG=/usr/local/bin/swig
+INSTALL_DIR=/Users/francoise/Documents/Code/Python/__lib__/mhmm/
