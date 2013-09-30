@@ -49,7 +49,7 @@ public:
         incrementalLearning = HMHMM_DEFAULT_INCREMENTALLEARNING;
     }
     
-    ~HierarchicalModel()
+    virtual ~HierarchicalModel()
     {
         prior.clear();
         transition.clear();

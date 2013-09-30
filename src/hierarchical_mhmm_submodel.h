@@ -41,6 +41,13 @@ public:
         updateExitProbabilities(NULL);
     }
     
+    virtual ~HierarchicalMHMMSubmodel()
+    {
+        for (int i=0 ; i<3 ; i++)
+            this->alpha_h[i].clear();
+        this->exitProbabilities.clear();
+    }
+    
 #pragma mark -
 #pragma mark Exit Probabilities
     void updateExitProbabilities(float *_exitProbabilities = NULL)
@@ -78,7 +85,7 @@ public:
     virtual void estimateObservation(float *obs)
     {
         float *obs2 = new float[this->dimension_total];
-        memcpy(obs2, obs, this->dimension_total*sizeof(float));
+        copy(obs, obs+this->dimension_total, obs2);
         for (int d=0; d<this->dimension_sound; d++) {
             obs[this->dimension_gesture+d] = 0.0;
         }

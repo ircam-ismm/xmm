@@ -31,7 +31,7 @@ public:
         forwardInitialized = false;
     }
     
-    ~HierarchicalHMM()
+    virtual ~HierarchicalHMM()
     {
         V1.clear();
         V2.clear();
@@ -175,7 +175,7 @@ public:
         double norm_const(0.0) ;
         
         // TODO: is it useful to do it here? ==> better in play()
-        int dimension = this->get_dimension();
+        // int dimension = this->get_dimension();
         
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++)
         {
@@ -232,7 +232,7 @@ public:
         double norm_const(0.0) ;
         
         // TODO: is it useful to do it here? ==> better in play()
-        int dimension = this->get_dimension();
+        // int dimension = this->get_dimension();
         
         // Frontier Algorithm: variables
         double tmp(0);

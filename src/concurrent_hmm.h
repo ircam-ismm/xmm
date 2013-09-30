@@ -28,9 +28,6 @@ public:
     {
     }
     
-    ~ConcurrentHMM()
-    {}
-    
 #pragma mark -
 #pragma mark Get & Set
     int get_dimension()

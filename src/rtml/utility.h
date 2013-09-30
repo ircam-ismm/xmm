@@ -27,9 +27,9 @@ T* reallocate(T *src, int dim_src, int dim_dst) {
     if (!src) return dst;
     
     if (dim_dst > dim_src) {
-        memcpy(dst, src, dim_src*sizeof(T));
+        copy(src, src+dim_src, dst);
     } else {
-        memcpy(dst, src, dim_dst*sizeof(T));
+        copy(src, src+dim_dst, dst);
     }
     delete[] src;
     return dst;

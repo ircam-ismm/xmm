@@ -61,7 +61,7 @@ public:
             dimension[modality] = PHRASE_DEFAULT_DIMENSION;
             data[modality] = NULL;
         }
-        copy(this, src);
+        _copy(this, src);
     }
     
     /*!
@@ -71,7 +71,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
             
         }
         return *this;
@@ -80,7 +80,7 @@ public:
     /*!
      Copy from a Phrase (called by copy constructor and assignment)
      */
-    virtual void copy(Phrase<ownData, nbModalities> *dst, Phrase<ownData, nbModalities> const& src)
+    virtual void _copy(Phrase<ownData, nbModalities> *dst, Phrase<ownData, nbModalities> const& src)
     {
         dst->max_length = src.max_length;
         dst->length = src.length;
@@ -97,7 +97,7 @@ public:
                 }
                 if (dst->max_length > 0) {
                     dst->data[modality] = new float[dst->max_length*dst->dimension[modality]];
-                    memcpy(dst->data[modality], src.data[modality], dst->length*dst->dimension[modality]*sizeof(float));
+                    copy(src.data[modality], src.data[modality]+dst->length*dst->dimension[modality], dst->data[modality]);
                 }
             }
             else

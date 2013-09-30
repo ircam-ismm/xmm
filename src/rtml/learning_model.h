@@ -11,7 +11,6 @@
 
 #include "training_set.h"
 #include "notifiable.h"
-#include <set>
 
 template <typename phraseType, typename labelType=int> class TrainingSet;
 
@@ -48,7 +47,7 @@ public:
      */
     LearningModel(LearningModel<phraseType, labelType> const& src)
     {
-        this->copy(this, src);
+        this->_copy(this, src);
     }
     
     /*!
@@ -58,7 +57,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     }
@@ -66,8 +65,8 @@ public:
     /*!
      Copy between to models (called by copy constructor and assignment methods)
      */
-    void copy(LearningModel<phraseType, labelType> *dst,
-              LearningModel<phraseType, labelType> const& src)
+    virtual void _copy(LearningModel<phraseType, labelType> *dst,
+                       LearningModel<phraseType, labelType> const& src)
     
     {
         dst->trained = src.trained;
@@ -77,7 +76,7 @@ public:
     /*!
      destructor
      */
-    ~LearningModel()
+    virtual ~LearningModel()
     {}
     
 #pragma mark -

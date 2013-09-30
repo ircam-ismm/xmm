@@ -20,25 +20,28 @@ public:
     RTMLException(std::string message="", std::string file="", std::string func="", int line=-1)
     {
         std::ostringstream oss;
-        oss << "Exception: file '" << file << "', function '" << func << "', line " << line << ":\n\t" << message;
+#ifdef DEBUG
+        oss << "Exception: file '" << file << "', function '" << func << "', line " << line << ":\n\t";
+#endif
+        oss << message;
         this->msg = oss.str();
     }
     
     RTMLException(RTMLException const& src)
     {
-        this->copy(this, src);
+        this->_copy(this, src);
     }
     
     RTMLException& operator=(RTMLException const& src)
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     }
     
-    void copy(RTMLException *dst,
+    virtual void _copy(RTMLException *dst,
               RTMLException const& src)
     
     {

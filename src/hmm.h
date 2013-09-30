@@ -112,7 +112,7 @@ public:
      */
     HMM(HMM const& src) : EMBasedLearningModel< Phrase<ownData, 1>, int>(src)
     {
-        copy(this, src);
+        _copy(this, src);
     }
     
     /*!
@@ -122,7 +122,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     }
@@ -130,9 +130,9 @@ public:
     /*!
      Copy between 2 MHMM models (called by copy constructor and assignment methods)
      */
-    virtual void copy(HMM *dst, HMM const& src)
+    virtual void _copy(HMM *dst, HMM const& src)
     {
-        EMBasedLearningModel<Phrase<ownData, 1>, int>::copy(dst, src);
+        EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->nbStates = src.nbStates;
@@ -156,7 +156,7 @@ public:
     /*!
      Destructor
      */
-    ~HMM()
+    virtual ~HMM()
     {
         prior.clear();
         transition.clear();

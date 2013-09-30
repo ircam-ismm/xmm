@@ -131,7 +131,7 @@ public:
         int dimension_total = dimension_gesture + dimension_sound;
         
         float* obs_ref = new float[dimension_total];
-        memcpy(obs_ref, obs, dimension_total*sizeof(float));
+        copy(obs, obs+dimension_total, obs_ref);
         
         for (int d=0; d<dimension_sound; d++) {
             obs[dimension_gesture+d] = 0.0;
@@ -146,14 +146,15 @@ public:
             double maxLikelihood = it->second.play(obs_ref);
             modelLikelihoods[i++] = maxLikelihood;
             norm_const = maxLikelihood;
-            memcpy(obs+dimension_gesture, obs_ref+dimension_gesture, dimension_sound*sizeof(float));
+            copy(obs_ref+dimension_gesture, obs_ref+dimension_gesture+dimension_sound, obs+dimension_gesture);
+            
             it++;
             while (it != this->models.end()) {
                 double alphaLikelihood = it->second.play(obs_ref);
                 modelLikelihoods[i++] = alphaLikelihood;
                 norm_const += alphaLikelihood;
                 if (alphaLikelihood > maxLikelihood) {
-                    memcpy(obs+dimension_gesture, obs_ref+dimension_gesture, dimension_sound*sizeof(float));
+                    copy(obs_ref+dimension_gesture, obs_ref+dimension_gesture+dimension_sound, obs+dimension_gesture);
                     maxLikelihood = alphaLikelihood;
                 }
                 it++;

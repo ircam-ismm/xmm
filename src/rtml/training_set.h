@@ -94,7 +94,7 @@ public:
      @warning phrases are only deleted if the training set is unlocked
      @see lock()
      */
-    ~_TrainingSetBase()
+    virtual ~_TrainingSetBase()
     {
         if (!locked) {
             for (phrase_iterator it=phrases.begin(); it != phrases.end(); it++)
@@ -525,7 +525,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL) : _TrainingSetBase<phraseType, labelType>(_parent)
     {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
 };
 
 #pragma mark Phrase specialization
@@ -539,7 +539,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<Phrase<ownData, nbModalities>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     /*!
      Connect a phrase to a shared data container
@@ -593,7 +593,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<GestureSoundPhrase<ownData>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     /*!
      Connect a phrase to a shared data container (gesture-sound)
@@ -666,7 +666,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<GesturePhrase<ownData>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     /*!
      Connect a phrase to a shared data container (gesture-sound)
@@ -724,7 +724,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<Phrase<true, 1>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     int get_dimension(int modality=0) const
     {
@@ -752,7 +752,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<Phrase<true, 2>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     int get_dimension(int modality=0) const
     {
@@ -780,7 +780,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<GestureSoundPhrase<true>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     int get_dimension_gesture() const
     {
@@ -823,7 +823,7 @@ public:
     TrainingSet(Notifiable* _parent=NULL)
     : _TrainingSetBase<GesturePhrase<true>, labelType>(_parent) {}
     
-    ~TrainingSet() {}
+    virtual ~TrainingSet() {}
     
     int get_dimension() const
     {

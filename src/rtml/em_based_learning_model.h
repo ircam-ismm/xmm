@@ -11,7 +11,6 @@
 
 #include "learning_model.h"
 #include <cmath>
-#include <deque>
 
 #define EM_MODEL_DEFAULT_EMSTOP_TYPE PERCENT_CHG
 #define EM_MODEL_DEFAULT_EMSTOP_STEPS 10
@@ -75,7 +74,7 @@ public:
      */
     EMBasedLearningModel(EMBasedLearningModel<phraseType, labelType> const& src) : LearningModel<phraseType, labelType>(src)
     {
-        this->copy(this, src);
+        this->_copy(this, src);
     }
     
     /*!
@@ -85,7 +84,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     };
@@ -93,10 +92,10 @@ public:
     /*!
      Copy between two models
      */
-    void copy(EMBasedLearningModel<phraseType, labelType> *dst,
-              EMBasedLearningModel<phraseType, labelType> const& src)
+    virtual void _copy(EMBasedLearningModel<phraseType, labelType> *dst,
+                       EMBasedLearningModel<phraseType, labelType> const& src)
     {
-        LearningModel<phraseType, labelType>::copy(dst, src);
+        LearningModel<phraseType, labelType>::_copy(dst, src);
         dst->stopcriterion.type = src.stopcriterion.type;
         dst->stopcriterion.steps = src.stopcriterion.steps;
         dst->stopcriterion.percentChg = src.stopcriterion.percentChg;
@@ -104,7 +103,7 @@ public:
         dst->likelihoodBuffer.clear();
     }
     
-    ~EMBasedLearningModel()
+    virtual ~EMBasedLearningModel()
     {}
     
 #pragma mark -

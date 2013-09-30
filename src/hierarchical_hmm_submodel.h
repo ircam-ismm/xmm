@@ -41,6 +41,13 @@ public:
         updateExitProbabilities(NULL);
     }
     
+    virtual ~HierarchicalHMMSubmodel()
+    {
+        for (int i=0 ; i<3 ; i++)
+            this->alpha_h[i].clear();
+        this->exitProbabilities.clear();
+    }
+    
 #pragma mark -
 #pragma mark Exit Probabilities
     void updateExitProbabilities(float *_exitProbabilities = NULL)

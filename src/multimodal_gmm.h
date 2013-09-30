@@ -71,7 +71,7 @@ public:
      */
     MultimodalGMM(MultimodalGMM const& src) : EMBasedLearningModel< GestureSoundPhrase<ownData>, int>(src)
     {
-        copy(this, src);
+        _copy(this, src);
     }
     
     /*!
@@ -81,7 +81,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     };
@@ -89,9 +89,9 @@ public:
     /*!
      Copy between 2 MultimodalGMM models
      */
-    void copy(MultimodalGMM *dst, MultimodalGMM const& src)
+    virtual void _copy(MultimodalGMM *dst, MultimodalGMM const& src)
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::copy(dst, src);
+        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->covarianceDeterminant   = src.covarianceDeterminant;
@@ -114,7 +114,7 @@ public:
     /*!
      Destructor
      */
-    ~MultimodalGMM()
+    virtual ~MultimodalGMM()
     {
         mean.clear();
         covariance.clear();

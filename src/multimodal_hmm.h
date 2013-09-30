@@ -126,7 +126,7 @@ public:
      */
     MultimodalHMM(MultimodalHMM const& src) : EMBasedLearningModel< GestureSoundPhrase<ownData>, int>(src)
     {
-        copy(this, src);
+        _copy(this, src);
     }
     
     /*!
@@ -136,7 +136,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     }
@@ -144,9 +144,9 @@ public:
     /*!
      Copy between 2 MHMM models (called by copy constructor and assignment methods)
      */
-    virtual void copy(MultimodalHMM *dst, MultimodalHMM const& src)
+    virtual void _copy(MultimodalHMM *dst, MultimodalHMM const& src)
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::copy(dst, src);
+        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->nbStates = src.nbStates;
@@ -172,7 +172,7 @@ public:
     /*!
      Destructor
      */
-    ~MultimodalHMM()
+    virtual ~MultimodalHMM()
     {
         prior.clear();
         transition.clear();
@@ -1186,7 +1186,7 @@ public:
     virtual void estimateObservation(float *obs)
     {
         float *obs2 = new float[dimension_total];
-        memcpy(obs2, obs, dimension_total*sizeof(float));
+        copy(obs, obs+dimension_total, obs2);
         for (int d=0; d<dimension_sound; d++) {
             obs[dimension_gesture+d] = 0.0;
         }

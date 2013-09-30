@@ -31,7 +31,7 @@ public:
         forwardInitialized = false;
     }
     
-    ~HierarchicalMHMM()
+    virtual ~HierarchicalMHMM()
     {
         V1.clear();
         V2.clear();
@@ -186,7 +186,7 @@ public:
         int dimension_total = dimension_gesture + dimension_sound;
         
         float* obs_ref = new float[dimension_total];
-        memcpy(obs_ref, observation, dimension_gesture*sizeof(float));
+        copy(observation, observation+dimension_gesture, obs_ref);
         
         for (int d=0; d<dimension_sound; d++) {
             obs_ref[dimension_gesture+d] = 0.0;
@@ -253,7 +253,7 @@ public:
         
         // Copy observation to make separate predictions for each submodel
         float* obs_ref = new float[dimension_total];
-        memcpy(obs_ref, observation, dimension_gesture*sizeof(float));
+        copy(observation, observation+dimension_gesture, obs_ref);
         
         for (int d=0; d<dimension_sound; d++) {
             obs_ref[dimension_gesture+d] = 0.0;

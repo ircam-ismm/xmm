@@ -9,10 +9,7 @@
 #ifndef rtml_concurrent_models_h
 #define rtml_concurrent_models_h
 
-#include <set>
 #include "training_set.h"
-
-//#include <boost/thread.hpp>
 
 using namespace std;
 
@@ -65,7 +62,7 @@ public:
     /*!
      Destructor
      */
-    ~ConcurrentModels()
+    virtual ~ConcurrentModels()
     {
         for (model_iterator it=models.begin(); it != models.end(); it++) {
             delete it->second.trainingSet;

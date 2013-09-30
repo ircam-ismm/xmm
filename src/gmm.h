@@ -64,7 +64,7 @@ public:
      */
     GMM(GMM const& src) : EMBasedLearningModel< Phrase<ownData, 1>, int>(src)
     {
-        copy(this, src);
+        _copy(this, src);
     }
     
     /*!
@@ -74,7 +74,7 @@ public:
     {
         if(this != &src)
         {
-            copy(this, src);
+            _copy(this, src);
         }
         return *this;
     };
@@ -82,9 +82,9 @@ public:
     /*!
      Copy between 2 MultimodalGMM models
      */
-    void copy(GMM *dst, GMM const& src)
+    virtual void _copy(GMM *dst, GMM const& src)
     {
-        EMBasedLearningModel<Phrase<ownData, 1>, int>::copy(dst, src);
+        EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->covarianceDeterminant   = src.covarianceDeterminant;
@@ -103,7 +103,7 @@ public:
     /*!
      Destructor
      */
-    ~GMM()
+    virtual ~GMM()
     {
         mean.clear();
         covariance.clear();
