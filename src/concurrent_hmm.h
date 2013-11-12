@@ -87,42 +87,42 @@ public:
         }
     }
     
-    string get_EM_stopCriterion()
+    int get_EM_minSteps()
     {
-        return this->referenceModel.get_EM_stopCriterion();
+        return this->referenceModel.get_EM_minSteps();
     }
     
-    int get_EM_steps()
+    int get_EM_maxSteps()
     {
-        return this->referenceModel.get_EM_steps();
+        return this->referenceModel.get_EM_maxSteps();
     }
     
-    double get_EM_maxLogLikPercentChg()
+    double get_EM_percentChange()
     {
-        return this->referenceModel.get_EM_maxLogLikPercentChg();
+        return this->referenceModel.get_EM_percentChange();
     }
     
-    void set_EM_stopCriterion(string criterion)
+    void set_EM_minSteps(int steps)
     {
-        this->referenceModel.set_EM_stopCriterion(criterion);
+        this->referenceModel.set_EM_minSteps(steps);
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_EM_stopCriterion(criterion);
+            it->second.set_EM_minSteps(steps);
         }
     }
     
-    void set_EM_steps(int steps)
+    void set_EM_maxSteps(int steps)
     {
-        this->referenceModel.set_EM_steps(steps);
+        this->referenceModel.set_EM_maxSteps(steps);
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_EM_steps(steps);
+            it->second.set_EM_maxSteps(steps);
         }
     }
     
-    void set_EM_maxLogLikelihoodPercentChg(double logLikPercentChg_)
+    void set_EM_percentChange(double logLikPercentChg_)
     {
-        this->referenceModel.set_EM_maxLogLikelihoodPercentChg(logLikPercentChg_);
+        this->referenceModel.set_EM_percentChange(logLikPercentChg_);
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_EM_maxLogLikelihoodPercentChg(logLikPercentChg_);
+            it->second.set_EM_percentChange(logLikPercentChg_);
         }
     }
     

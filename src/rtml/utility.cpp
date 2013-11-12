@@ -64,7 +64,7 @@ double gaussianProbabilityFullCovariance_GestureSound(const float *obs_gesture,
         euclidianDistance += ( ((l<dimension_gesture) ? obs_gesture[l] : obs_sound[l-dimension_gesture]) - mean[l]) * tmp;
     }
     
-    double p = exp(-0.5 * euclidianDistance)* EPSILON_GAUSSIAN / sqrt(covarianceDeterminant * pow(2*M_PI, (double)dimension_total));
+    double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant * pow(2*M_PI, (double)dimension_total));
     
     // if(p < 1e-80 || isnan(p) || isinf(abs(p))) p = 1e-80;
     
@@ -74,26 +74,26 @@ double gaussianProbabilityFullCovariance_GestureSound(const float *obs_gesture,
 
 #pragma mark -
 #pragma mark Vector utilities
-void vectorCopy(vector<float>::iterator dst_it, vector<float>::iterator src_it, int size)
-{
-    for (int i=0; i<size; i++) {
-        dst_it[i] = src_it[i];
-    }
-}
-
-void vectorCopy(vector<double>::iterator dst_it, vector<double>::iterator src_it, int size)
-{
-    for (int i=0; i<size; i++) {
-        dst_it[i] = src_it[i];
-    }
-}
-
-void vectorMultiply(std::vector<float>::iterator dst_it, std::vector<float>::iterator src_it, int size)
-{
-    for (int i=0; i<size; i++) {
-        dst_it[i] *= src_it[i];
-    }
-}
+//void vectorCopy(vector<float>::iterator dst_it, vector<float>::iterator src_it, int size)
+//{
+//    for (int i=0; i<size; i++) {
+//        dst_it[i] = src_it[i];
+//    }
+//}
+//
+//void vectorCopy(vector<double>::iterator dst_it, vector<double>::iterator src_it, int size)
+//{
+//    for (int i=0; i<size; i++) {
+//        dst_it[i] = src_it[i];
+//    }
+//}
+//
+//void vectorMultiply(std::vector<float>::iterator dst_it, std::vector<float>::iterator src_it, int size)
+//{
+//    for (int i=0; i<size; i++) {
+//        dst_it[i] *= src_it[i];
+//    }
+//}
 
 void vectorMultiply(std::vector<double>::iterator dst_it, std::vector<double>::iterator src_it, int size)
 {

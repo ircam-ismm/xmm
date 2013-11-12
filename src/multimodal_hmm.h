@@ -110,8 +110,8 @@ public:
             states[i].set_trainingSet(_trainingSet);
         }
         
-        play_EM_stopCriterion.type = PERCENT_CHG;
-        play_EM_stopCriterion.steps = PLAY_EM_STEPS;
+        play_EM_stopCriterion.minSteps = PLAY_EM_STEPS;
+        play_EM_stopCriterion.maxSteps = 0;
         play_EM_stopCriterion.percentChg = PLAY_EM_MAX_LOG_LIK_PERCENT_CHG;
         
         transitionMode = LEFT_RIGHT;
@@ -144,6 +144,7 @@ public:
     /*!
      Copy between 2 MHMM models (called by copy constructor and assignment methods)
      */
+    using EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy;
     virtual void _copy(MultimodalHMM *dst, MultimodalHMM const& src)
     {
         EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy(dst, src);
@@ -222,17 +223,14 @@ public:
         if (this->trainingSet) {
             dimension_gesture = this->trainingSet->get_dimension_gesture();
             dimension_sound = this->trainingSet->get_dimension_sound();
-        } /*else {
-           dimension_gesture = 0;
-           dimension_sound = 0;
-           }*/
+        }
         dimension_total = dimension_gesture + dimension_sound;
         
         for (int i=0; i<nbStates; i++) {
             states[i].set_trainingSet(_trainingSet);
         }
-        
-        // reallocParameters();
+        // TODO: Maybe the training set is not handle properly for each state.
+        // Need to segment phrases...
     }
     
 #pragma mark -
@@ -530,42 +528,31 @@ public:
 #pragma mark -
 #pragma mark DEPRECATED: EM for playing
     /*! @name DEPRECATED: EM for playing */
-    string get_play_EM_stopCriterion() const
+    int get_play_EM_minSteps() const
     {
-        if (play_EM_stopCriterion.type == STEPS)
-            return "steps";
-        if (play_EM_stopCriterion.type == PERCENT_CHG)
-            return "loglikelihood";
-        return "both";
+        return play_EM_stopCriterion.minSteps;
     }
     
-    int    get_play_EM_maxSteps() const
+    int get_play_EM_maxSteps() const
     {
-        return play_EM_stopCriterion.steps;
+        return play_EM_stopCriterion.maxSteps;
     }
     
-    double get_play_EM_maxLogLikPercentChg() const
+    double get_play_EM_percentChange() const
     {
         return play_EM_stopCriterion.percentChg;
     }
     
-    void set_play_EM_stopCriterion(string criterion)
+    void set_play_EM_minSteps(int minsteps)
     {
-        if (!criterion.compare("steps")) {
-            play_EM_stopCriterion.type = STEPS;
-        } else if (!criterion.compare("loglikelihood")) {
-            play_EM_stopCriterion.type = PERCENT_CHG;
-        } else if (!criterion.compare("both")) {
-            play_EM_stopCriterion.type = BOTH;
-        } else {
-            throw RTMLException("Unknown EM Stop criterion", __FILE__, __FUNCTION__, __LINE__);
-        }
+        if (minsteps < 1) throw RTMLException("Minimum number of EM steps must be > 0", __FILE__, __FUNCTION__, __LINE__);
+        play_EM_stopCriterion.minSteps = minsteps;
     }
     
     void set_play_EM_maxSteps(int maxsteps)
     {
-        if (maxsteps < 1) throw RTMLException("Max number of EM steps must be > 0", __FILE__, __FUNCTION__, __LINE__);
-        play_EM_stopCriterion.steps = maxsteps;
+        if (maxsteps < 1) throw RTMLException("Maximum number of EM steps must be > 0", __FILE__, __FUNCTION__, __LINE__);
+        play_EM_stopCriterion.maxSteps = maxsteps;
     }
     
     void set_play_EM_maxLogLikPercentChg(double logLikPercentChg_)
@@ -856,28 +843,32 @@ public:
         ct[0] = forward_init(currentPhrase->get_dataPointer_gesture(0),
                              currentPhrase->get_dataPointer_sound(0));
         log_prob = -log(ct[0]);
-        vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
+        copy(alpha.begin(), alpha.end(), alpha_seq_it);
+        // vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
         alpha_seq_it += nbStates;
         
         for (int t=1; t<T; t++) {
             ct[t] = forward_update(currentPhrase->get_dataPointer_gesture(t),
                                    currentPhrase->get_dataPointer_sound(t));
             log_prob -= log(ct[t]);
-            vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
+            copy(alpha.begin(), alpha.end(), alpha_seq_it);
+            // vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
             alpha_seq_it += nbStates;
         }
         
         // Backward algorithm
         backward_init(ct[T-1]);
         vector<double>::iterator beta_seq_it = beta_seq.begin()+(T-1)*nbStates;
-        vectorCopy(beta_seq_it, beta.begin(), nbStates);
+        copy(beta.begin(), beta.end(), beta_seq_it);
+        // vectorCopy(beta_seq_it, beta.begin(), nbStates);
         beta_seq_it -= nbStates;
         
         for (int t=T-2; t>=0; t--) {
             backward_update(currentPhrase->get_dataPointer_gesture(t+1),
                             currentPhrase->get_dataPointer_sound(t+1),
                             ct[t]);
-            vectorCopy(beta_seq_it, beta.begin(), nbStates);
+            copy(beta.begin(), beta.end(), beta_seq_it);
+            // vectorCopy(beta_seq_it, beta.begin(), nbStates);
             beta_seq_it -= nbStates;
         }
         
@@ -1173,7 +1164,8 @@ public:
         estimateCovariance();
         // TODO: put estimateCovariance as an attribute of the object
         
-        results.likelihood = this->updateLikelihoodBuffer(1./ct);
+        results.likelihood = 1./ct;
+        this->updateLikelihoodBuffer(results.likelihood);
         results.cumulativeLogLikelihood = this->cumulativeloglikelihood;
         
         return results.likelihood;
@@ -1247,17 +1239,13 @@ public:
     
     bool play_EM_stop(int step, double obs_prob, double old_obs_prob)
     {
-        if (play_EM_stopCriterion.type == STEPS)
+        if (play_EM_stopCriterion.maxSteps < play_EM_stopCriterion.minSteps)
         {
-            return (step >= play_EM_stopCriterion.steps);
+            return (step >= play_EM_stopCriterion.maxSteps);
         }
-        else if (play_EM_stopCriterion.type == PERCENT_CHG)
+        else
         {
-            return (fabs((obs_prob - old_obs_prob) / obs_prob) < play_EM_stopCriterion.percentChg);
-        }
-        else // play_EM_stopCriterion == BOTH
-        {
-            return (step >= play_EM_stopCriterion.steps) || (fabs((obs_prob - old_obs_prob) / obs_prob) < play_EM_stopCriterion.percentChg);
+            return (step >= play_EM_stopCriterion.minSteps) || (fabs((obs_prob - old_obs_prob) / obs_prob) < play_EM_stopCriterion.percentChg);
         }
     }
     

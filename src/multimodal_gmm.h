@@ -89,6 +89,7 @@ public:
     /*!
      Copy between 2 MultimodalGMM models
      */
+    using EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy;
     virtual void _copy(MultimodalGMM *dst, MultimodalGMM const& src)
     {
         EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy(dst, src);
@@ -521,14 +522,18 @@ public:
             cov_matrix.data = covarianceOfComponent(c);
             inverseMat = cov_matrix.pinv(&det);
             covarianceDeterminant[c] = det;
-            vectorCopy(inverseCovarianceOfComponent(c), inverseMat->data, dimension_total*dimension_total);
+            copy(inverseMat->data, inverseMat->data + dimension_total*dimension_total, inverseCovarianceOfComponent(c));
+            // vectorCopy(inverseCovarianceOfComponent(c), inverseMat->data, dimension_total*dimension_total);
             delete inverseMat;
             
             // Update inverse covariance for gesture only
             cov_matrix_gesture._data = createCovariance_gesture_OfComponent(c);
             inverseMat = cov_matrix_gesture.pinv(&det);
             covarianceDeterminant_gesture[c] = det;
-            vectorCopy(inverseCovariance_gesture_OfComponent(c), inverseMat->data, dimension_gesture*dimension_gesture);
+            copy(inverseMat->data,
+                 inverseMat->data + dimension_gesture*dimension_gesture,
+                 inverseCovariance_gesture_OfComponent(c));
+            // vectorCopy(inverseCovariance_gesture_OfComponent(c), inverseMat->data, dimension_gesture*dimension_gesture);
             delete inverseMat;
         }
     }
@@ -675,7 +680,8 @@ public:
     double play(float *obs)
     {
         double prob = regression(obs);
-        return this->updateLikelihoodBuffer(prob);
+        this->updateLikelihoodBuffer(prob);
+        return prob;
     }
     
 #pragma mark -
@@ -775,6 +781,8 @@ public:
         }
         
         updateInverseCovariances();
+        estimateConditionalSoundCovariance();
+        this->trained = true;
     }
     
 #pragma mark -

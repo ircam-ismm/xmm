@@ -22,7 +22,10 @@
  @enum TRANSITION_MODE
  Mode of transition of the model
  */
-enum TRANSITION_MODE {ERGODIC, LEFT_RIGHT};
+enum TRANSITION_MODE {
+    ERGODIC,
+    LEFT_RIGHT
+};
 
 using namespace std;
 
@@ -33,6 +36,7 @@ using namespace std;
 struct HMMResults {
     double likelihood;                  //<! likelihood
     double cumulativeLogLikelihood;     //<! cumulative log-likelihood computed over a finite sliding window
+    double progress;                    //<! Normalized time progression
 };
 
 template<bool ownData> class ConcurrentHMM;
@@ -96,8 +100,8 @@ public:
             states[i].set_trainingSet(_trainingSet);
         }
         
-        play_EM_stopCriterion.type = PERCENT_CHG;
-        play_EM_stopCriterion.steps = PLAY_EM_STEPS;
+        play_EM_stopCriterion.minSteps = PLAY_EM_STEPS;
+        play_EM_stopCriterion.maxSteps = 0;
         play_EM_stopCriterion.percentChg = PLAY_EM_MAX_LOG_LIK_PERCENT_CHG;
         
         transitionMode = LEFT_RIGHT;
@@ -130,6 +134,7 @@ public:
     /*!
      Copy between 2 MHMM models (called by copy constructor and assignment methods)
      */
+    using EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy;
     virtual void _copy(HMM *dst, HMM const& src)
     {
         EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy(dst, src);
@@ -720,26 +725,30 @@ public:
         // Forward algorithm
         ct[0] = forward_init(currentPhrase->get_dataPointer(0));
         log_prob = -log(ct[0]);
-        vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
+        copy(alpha.begin(), alpha.end(), alpha_seq_it);
+        // vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
         alpha_seq_it += nbStates;
         
         for (int t=1; t<T; t++) {
             ct[t] = forward_update(currentPhrase->get_dataPointer(t));
             log_prob -= log(ct[t]);
-            vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
+            copy(alpha.begin(), alpha.end(), alpha_seq_it);
+            // vectorCopy(alpha_seq_it, alpha.begin(), nbStates);
             alpha_seq_it += nbStates;
         }
         
         // Backward algorithm
         backward_init(ct[T-1]);
         vector<double>::iterator beta_seq_it = beta_seq.begin()+(T-1)*nbStates;
-        vectorCopy(beta_seq_it, beta.begin(), nbStates);
+        copy(beta.begin(), beta.end(), beta_seq_it);
+        // vectorCopy(beta_seq_it, beta.begin(), nbStates);
         beta_seq_it -= nbStates;
         
         for (int t=T-2; t>=0; t--) {
             backward_update(currentPhrase->get_dataPointer(t+1),
                             ct[t]);
-            vectorCopy(beta_seq_it, beta.begin(), nbStates);
+            copy(beta.begin(), beta.end(), beta_seq_it);
+            // vectorCopy(beta_seq_it, beta.begin(), nbStates);
             beta_seq_it -= nbStates;
         }
         
@@ -1000,8 +1009,10 @@ public:
         
         forwardInitialized = true;
         
-        results.likelihood = this->updateLikelihoodBuffer(1./ct);
+        results.likelihood = 1./ct;
+        this->updateLikelihoodBuffer(results.likelihood);
         results.cumulativeLogLikelihood = this->cumulativeloglikelihood;
+        results.progress = centroid(alpha);
         
         return results.likelihood;
     }

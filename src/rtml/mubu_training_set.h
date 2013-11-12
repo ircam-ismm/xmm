@@ -1,9 +1,11 @@
 //
-//  mubu_training_set.h
-//  rtml
+// mubu_training_set.h
 //
-//  Created by Jules Francoise on 21/01/13.
+// Deprecated
 //
+// Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
+// author: Jules Françoise
+// contact: jules.francoise@ircam.fr
 //
 
 #ifndef rtml_mubu_training_set_h

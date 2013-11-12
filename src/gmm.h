@@ -12,8 +12,10 @@
 #include "em_based_learning_model.h"
 #include "matrix.h"
 
-#define GMM_DEFAULT_NB_MIXTURE_COMPONENTS 1
-#define GMM_DEFAULT_COVARIANCE_OFFSET 0.01
+using namespace momos;
+
+const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
+const double GMM_DEFAULT_COVARIANCE_OFFSET = 0.01;
 
 /*!
  * @class GMM
@@ -82,6 +84,7 @@ public:
     /*!
      Copy between 2 MultimodalGMM models
      */
+    using EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy;
     virtual void _copy(GMM *dst, GMM const& src)
     {
         EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy(dst, src);
@@ -383,7 +386,8 @@ public:
             cov_matrix.data = covarianceOfComponent(c);
             inverseMat = cov_matrix.pinv(&det);
             covarianceDeterminant[c] = det;
-            vectorCopy(inverseCovarianceOfComponent(c), inverseMat->data, dimension*dimension);
+            copy(inverseMat->data, inverseMat->data + dimension*dimension, inverseCovarianceOfComponent(c));
+            // vectorCopy(inverseCovarianceOfComponent(c), inverseMat->data, dimension*dimension);
             delete inverseMat;
         }
     }
@@ -434,7 +438,8 @@ public:
     double play(float *obs)
     {
         double prob = recognition(obs);
-        return this->updateLikelihoodBuffer(prob);
+        this->updateLikelihoodBuffer(prob);
+        return prob;
     }
     
 #pragma mark -
