@@ -1,7 +1,7 @@
-from numpy import *
+import numpy as np
 from matplotlib.patches import Ellipse
 from scipy.linalg import eig
-from matplotlib.pyplot import *
+import matplotlib.pyplot as mpl
 
 colorIndex = 0
 
@@ -334,7 +334,7 @@ def read_PolyMultimodalHMM(file):
     return polyMHMM
 
 def plot_GMM(ellipses, nbGMM=1, ax_lim=[-1.5, 1.5, -1.2, 1.2]):
-    fig = figure()
+    fig = mpl.figure()
     rcParams['axes.color_cycle'] = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
     if nbGMM == 1:
         ax = fig.add_subplot(111, aspect='equal')

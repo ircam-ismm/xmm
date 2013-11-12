@@ -1,4 +1,5 @@
-all: compile install clean
+all: compile
+full: compile install clean
 
 ifndef INSTALL_DIR
 INSTALL_DIR=./built-lib/mhmm/
@@ -8,15 +9,21 @@ ifndef SWIG
 SWIG=swig
 endif
 
+ifndef DOXYGEN
+DOXYGEN=doxygen
+endif
+
 LIB_DIR=../src/
-DOC_DIR=../doc/xml/
+DOC_DIR=../doc/
 RTML_DIR = ../src/rtml/
 
 SWIGOPT=#-debug-template
 
 compile: mhmm.i setup.py $(LIB_DIR)*.h $(RTML_DIR)*.h $(RTML_DIR)*.cpp #$(LIB_DIR)*.cpp
+	@echo "\ngenerating doc\n"
+	@(cd ../doc/ && $(DOXYGEN))
 	@echo "\nCompiling Library\n"
-	python doxy2swig.py $(DOC_DIR)index.xml mhmm_doc.i
+	python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
 	$(SWIG) -c++ $(SWIGOPT) -I$(LIB_DIR) -I$(RTML_DIR) -python mhmm.i
 	python setup.py build_ext --inplace
 

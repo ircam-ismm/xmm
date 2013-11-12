@@ -158,7 +158,7 @@
 /* Begin PBXLegacyTarget section */
 		0BD1C5F417D9E4410061535A /* mhmm_python */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(ACTION) SWIG=$(SWIG) INSTALL_DIR=$(INSTALL_DIR)";
+			buildArgumentsString = "$(ACTION) SWIG=$(SWIG) INSTALL_DIR=$(INSTALL_DIR) DOXYGEN=$(DOXYGEN)";
 			buildConfigurationList = 0BD1C5F517D9E4410061535A /* Build configuration list for PBXLegacyTarget "mhmm_python" */;
 			buildPhases = (
 			);
