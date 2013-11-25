@@ -27,7 +27,6 @@ using namespace std;
  @todo class description
  @tparam modelType type of the models
  @tparam phraseType type of the phrase in the training set (@see Phrase, MultimodalPhrase, GestureSoundPhrase)
- @tparam labelType type of the labels for each class.
  */
 template<typename ModelType, typename phraseType>
 class ConcurrentModels : public Notifiable

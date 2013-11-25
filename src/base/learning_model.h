@@ -23,7 +23,6 @@ template <typename phraseType> class TrainingSet;
  @brief Base class for Machine Learning models
  @todo class description
  @tparam phraseType Data type of the phrases composing the training set
- @tparam labelType type of the label for each phrase of the training set
  */
 template <typename phraseType>
 class LearningModel : public Notifiable {

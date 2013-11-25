@@ -36,7 +36,6 @@ struct EMStopCriterion {
  @class EMBasedLearningModel
  @brief Generic Template for Machine Learning Probabilistic models based on the EM algorithm
  @tparam phraseType type of the phrase in the training set (@see Phrase, MultimodalPhrase, GestureSoundPhrase)
- @tparam labelType type of the labels for each class.
  */
 template <typename phraseType>
 class EMBasedLearningModel : public LearningModel<phraseType>

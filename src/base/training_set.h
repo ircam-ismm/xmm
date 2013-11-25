@@ -26,7 +26,6 @@ using namespace std;
  @brief Base class for the definition of training sets
  @todo class description
  @tparam phraseType Data type of the phrases composing the training set
- @tparam labelType type of the label for each phrase of the training set
  */
 template <typename phraseType>
 class _TrainingSetBase
@@ -560,7 +559,6 @@ protected:
  Adds partial specializations of _TrainingSetBase for specificic types of phrases
  @todo class description
  @tparam phraseType Data type of the phrases composing the training set
- @tparam labelType type of the label for each phrase of the training set
  */
 template <typename phraseType>
 class TrainingSet : public _TrainingSetBase<phraseType>
@@ -758,6 +756,7 @@ public:
  3 templates are specialized here for 3 types of phrases: unimodal, bimodal and gesture-sound.
  */
 #ifdef SWIGPYTHON
+template<>
 class TrainingSet< Phrase<true, 1> >
 : public _TrainingSetBase< Phrase<true, 1> >
 {
@@ -785,6 +784,7 @@ public:
     }
 };
 
+template<>
 class TrainingSet< Phrase<true, 2> >
 : public _TrainingSetBase< Phrase<true, 2> >
 {
@@ -812,6 +812,7 @@ public:
     }
 };
 
+template<>
 class TrainingSet< GestureSoundPhrase<true> >
 : public _TrainingSetBase< GestureSoundPhrase<true> >
 {
@@ -854,6 +855,7 @@ public:
     }
 };
 
+template<>
 class TrainingSet< GesturePhrase<true> >
 : public _TrainingSetBase< GesturePhrase<true> >
 {
@@ -861,7 +863,7 @@ public:
     typedef map<int, GesturePhrase<true>* >::iterator phrase_iterator;
     
     TrainingSet(Notifiable* _parent=NULL)
-    : _TrainingSetBase<GesturePhrase<true>, labelType>(_parent) {}
+    : _TrainingSetBase< GesturePhrase<true> >(_parent) {}
     
     virtual ~TrainingSet() {}
     
