@@ -18,7 +18,6 @@
 const double EPSILON_GAUSSIAN = 1.0e-40;
 
 using namespace std;
-using namespace momos;
 
 #pragma mark -
 #pragma mark Memory Allocation

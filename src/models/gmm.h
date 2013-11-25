@@ -12,8 +12,6 @@
 #include "em_based_learning_model.h"
 #include "matrix.h"
 
-using namespace momos;
-
 const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
 const double GMM_DEFAULT_COVARIANCE_OFFSET = 0.01;
 
