@@ -770,7 +770,7 @@ namespace momos {
         
         virtual ~TrainingSet() {}
         
-        int get_dimension(inçt modality=0) const
+        int get_dimension(int modality=0) const
         {
             return this->referencePhrase.get_dimension(modality);
         }
