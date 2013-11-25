@@ -271,7 +271,7 @@ public:
     void deleteEmptyPhrases()
     {
         for (phrase_iterator it=phrases.begin(); it != phrases.end(); it++) {
-            if (it->second->is_empty()) {
+            if (it->second->empty()) {
                 deletePhrase(it->first);
             }
         }
@@ -500,7 +500,11 @@ public:
         else
             outStream << "SYM " << defaultLabel.getSym() << endl;
         for (phrase_iterator it = phrases.begin(); it != phrases.end(); it++) {
-            outStream << "# === Phrase " << it->first << ", Label " << phraseLabels[it->first] << endl;
+            outStream << "# === Phrase " << it->first << ", Label ";
+            if (phraseLabels[it->first].type == Label::INT)
+                outStream << "INT " << phraseLabels[it->first].getInt() << endl;
+            else
+                outStream << "SYM " << phraseLabels[it->first].getSym() << endl;
         }
         outStream << endl;
     }
