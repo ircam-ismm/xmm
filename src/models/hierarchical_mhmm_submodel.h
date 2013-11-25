@@ -11,7 +11,6 @@
 
 #include "multimodal_hmm.h"
 
-#define HMHMM_DEFAULT_EXITTRANSITION 0.1
 #define HMHMM_DEFAULT_EXITPROBABILITY 0.1
 
 using namespace std;

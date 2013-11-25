@@ -495,7 +495,10 @@ public:
         outStream << "# Number of Phrases\n";
         outStream << phrases.size() << endl;
         outStream << "# Default Label\n";
-        outStream << defaultLabel << endl;
+        if (defaultLabel.type == Label::INT)
+            outStream << "INT " << defaultLabel.getInt() << endl;
+        else
+            outStream << "SYM " << defaultLabel.getSym() << endl;
         for (phrase_iterator it = phrases.begin(); it != phrases.end(); it++) {
             outStream << "# === Phrase " << it->first << ", Label " << phraseLabels[it->first] << endl;
         }

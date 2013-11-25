@@ -16,8 +16,8 @@
 using namespace std;
 
 
-const double HMHMM_DEFAULT_EXITTRANSITION = 0.1;
-const bool HMHMM_DEFAULT_INCREMENTALLEARNING = false;
+const double HIERARCHICALMODEL_DEFAULT_EXITTRANSITION = 0.1;
+const bool HIERARCHICALMODEL_DEFAULT_INCREMENTALLEARNING = false;
 
 #pragma mark -
 #pragma mark Class Definition
@@ -49,7 +49,7 @@ public:
     HierarchicalModel(TrainingSet<phraseType> *_globalTrainingSet=NULL)
     : ConcurrentModels<ModelType, phraseType>(_globalTrainingSet)
     {
-        incrementalLearning = HMHMM_DEFAULT_INCREMENTALLEARNING;
+        incrementalLearning = HIERARCHICALMODEL_DEFAULT_INCREMENTALLEARNING;
     }
     
     virtual ~HierarchicalModel()
@@ -314,7 +314,7 @@ public:
         } else {
             for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
             {
-                exitTransition[*srcit] = HMHMM_DEFAULT_EXITTRANSITION;
+                exitTransition[*srcit] = HIERARCHICALMODEL_DEFAULT_EXITTRANSITION;
                 
                 for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
                     transition[*srcit][*dstit] = 1/(double)nbPrimitives;
@@ -342,7 +342,7 @@ public:
         int nbPrimitives = this->size();
         for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
         {
-            exitTransition[*srcit] = HMHMM_DEFAULT_EXITTRANSITION;
+            exitTransition[*srcit] = HIERARCHICALMODEL_DEFAULT_EXITTRANSITION;
             for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
                 transition[*srcit][*dstit] =  1/double(nbPrimitives);
         }

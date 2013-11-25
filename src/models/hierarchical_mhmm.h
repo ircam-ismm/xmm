@@ -12,8 +12,6 @@
 #include "hierarchical_model.h"
 #include "hierarchical_mhmm_submodel.h"
 
-#define HMHMM_DEFAULT_EXITTRANSITION 0.1
-
 using namespace std;
 
 #pragma mark -
