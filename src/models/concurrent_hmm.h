@@ -1,29 +1,32 @@
 //
-//  concurrent_gmm.h
+//  concurrent_hmm.h
 //  mhmm
 //
 //  Created by Jules Francoise on 08/08/13.
 //
 //
 
-#ifndef mhmm_concurrent_gmm_h
-#define mhmm_concurrent_gmm_h
+#ifndef mhmm_concurrent_hmm_h
+#define mhmm_concurrent_hmm_h
 
 #include "concurrent_models.h"
-#include "gmm.h"
+#include "hmm.h"
 
 #pragma mark -
 #pragma mark Class Definition
 template<bool ownData>
-class ConcurrentGMM : public ConcurrentModels<GMM<ownData>, Phrase<ownData, 1>, int> {
+class ConcurrentHMM : public ConcurrentModels< HMM<ownData>, Phrase<ownData, 1> > {
 public:
-    typedef typename  map<int, GMM<ownData> >::iterator model_iterator;
-    typedef typename  map<int, GMM<ownData> >::const_iterator const_model_iterator;
-    typedef typename  map<int, int>::iterator labels_iterator;
+    typedef typename  map<Label, HMM<ownData> >::iterator model_iterator;
+    typedef typename  map<Label, HMM<ownData> >::const_iterator const_model_iterator;
+    typedef typename  map<int, Label>::iterator labels_iterator;
     
-    ConcurrentGMM(TrainingSet<Phrase<ownData, 1>, int> *_globalTrainingSet=NULL)
-    : ConcurrentModels<GMM<ownData>, Phrase<ownData, 1>, int>(_globalTrainingSet)
-    {}
+    bool updateWithEstimatedObservation;
+    
+    ConcurrentHMM(TrainingSet< Phrase<ownData, 1> > *_globalTrainingSet=NULL)
+    : ConcurrentModels< HMM<ownData>, Phrase<ownData, 1> >(_globalTrainingSet)
+    {
+    }
     
 #pragma mark -
 #pragma mark Get & Set
@@ -32,7 +35,33 @@ public:
         return this->referenceModel.get_dimension();
     }
     
-    int get_nbMixtureComponents()
+    int get_nbStates()
+    {
+        return this->referenceModel.get_nbStates();
+    }
+    
+    void set_nbStates(int nbStates_)
+    {
+        this->referenceModel.set_nbStates(nbStates_);
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            it->second.set_nbStates(nbStates_);
+        }
+    }
+    
+    string get_transitionMode()
+    {
+        return this->referenceModel.get_transitionMode();
+    }
+    
+    void set_transitionMode(string transMode_str)
+    {
+        this->referenceModel.set_transitionMode(transMode_str);
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            it->second.set_transitionMode(transMode_str);
+        }
+    }
+    
+    int get_nbMixtureComponents() const
     {
         return this->referenceModel.get_nbMixtureComponents();
     }
@@ -97,12 +126,12 @@ public:
         }
     }
     
-    unsigned int get_likelihoodBufferSize() const
+    int get_likelihoodBufferSize() const
     {
         return this->referenceModel.get_likelihoodBufferSize();
     }
     
-    void set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
+    void set_likelihoodBufferSize(int likelihoodBufferSize_)
     {
         this->referenceModel.set_likelihoodBufferSize(likelihoodBufferSize_);
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -110,26 +139,62 @@ public:
         }
     }
     
+    bool get_estimateMeans() const
+    {
+        return this->referenceModel.estimateMeans;
+    }
+    
+    void set_estimateMeans(bool _estimateMeans)
+    {
+        this->referenceModel.estimateMeans = _estimateMeans;
+        for (model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+            it->second.estimateMeans = _estimateMeans;
+    }
+    
 #pragma mark -
-#pragma mark Playing
-    void initPlaying()
+#pragma mark Training
+    virtual void finishTraining()
+    {
+        for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
+            int nbStates = this->get_nbStates();
+            it->second.transition[(nbStates-1)*nbStates] = 0.01; // Add Cyclic Transition probability
+        }
+    }
+    
+    virtual void initPlaying()
     {
         for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
             it->second.initPlaying();
         }
     }
     
-    void play(float *obs, double *modelLikelihoods)
+#pragma mark -
+#pragma mark Performance
+    void addCyclicTransition(double proba)
+    {
+        for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
+            it->second.addCyclicTransition(proba);
+        }
+    }
+    
+    virtual void play(float *obs, double *modelLikelihoods)
     {
         double norm_const(0.0);
         int i(0);
-        for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
+        for (model_iterator it = this->models.begin(); it != this->models.end() ; it++) {
             modelLikelihoods[i] = it->second.play(obs);
             norm_const += modelLikelihoods[i++];
         }
         
         for (unsigned int i=0; i<this->models.size(); i++)
             modelLikelihoods[i] /= norm_const;
+    }
+    
+    HMMResults getResults(int classLabel)
+    {
+        if (this->models.find(classLabel) == this->models.end())
+            throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
+        return this->models[classLabel].results;
     }
     
 #pragma mark -
@@ -141,17 +206,18 @@ public:
     {
         int dimension = this->referenceModel.get_dimension();
         
-        float *obs_float = new float[dimension];
-        for (int i=0 ; i<dimension ; i++)
-            obs_float[i] = float(observation[i]);
+        float *obs = new float[dimension];
+        for (int d=0; d<dimension; d++) {
+            obs[d] = float(observation[d]);
+        }
         
-        play(obs_float, likelihoods);
+        play(obs, likelihoods);
         
         int m(0);
         for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
             cumulativelikelihoods[m++] = it->second.cumulativeloglikelihood;
         
-        delete[] obs_float;
+        delete[] obs;
     }
 #endif
 };

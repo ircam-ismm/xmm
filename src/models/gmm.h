@@ -26,7 +26,7 @@ const double GMM_DEFAULT_COVARIANCE_OFFSET = 0.01;
  @tparam ownData defines if phrases has own data or shared memory
  */
 template<bool ownData>
-class GMM : public EMBasedLearningModel< Phrase<ownData, 1>, int> {
+class GMM : public EMBasedLearningModel< Phrase<ownData, 1> > {
 public:
     typedef typename map<int, Phrase<ownData, 1>* >::iterator phrase_iterator;
     
@@ -43,10 +43,10 @@ public:
      @param nbMixtureComponents\_ number of mixture components
      @param covarianceOffset_ offset to add to the diagonal of covariances matrices (useful to guarantee convergence)
      */
-    GMM(TrainingSet<Phrase<ownData, 1>, int> *_trainingSet=NULL,
+    GMM(TrainingSet< Phrase<ownData, 1> > *_trainingSet=NULL,
                   int nbMixtureComponents_ = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
                   float covarianceOffset_= GMM_DEFAULT_COVARIANCE_OFFSET)
-    : EMBasedLearningModel<Phrase<ownData, 1>, int>(_trainingSet)
+    : EMBasedLearningModel< Phrase<ownData, 1> >(_trainingSet)
     {
         nbMixtureComponents  = nbMixtureComponents_;
         covarianceOffset     = covarianceOffset_;
@@ -64,7 +64,7 @@ public:
     /*!
      Copy constructor
      */
-    GMM(GMM const& src) : EMBasedLearningModel< Phrase<ownData, 1>, int>(src)
+    GMM(GMM const& src) : EMBasedLearningModel< Phrase<ownData, 1> >(src)
     {
         _copy(this, src);
     }
@@ -84,10 +84,10 @@ public:
     /*!
      Copy between 2 MultimodalGMM models
      */
-    using EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy;
+    using EMBasedLearningModel< Phrase<ownData, 1> >::_copy;
     virtual void _copy(GMM *dst, GMM const& src)
     {
-        EMBasedLearningModel<Phrase<ownData, 1>, int>::_copy(dst, src);
+        EMBasedLearningModel< Phrase<ownData, 1> >::_copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->covarianceDeterminant   = src.covarianceDeterminant;
@@ -133,7 +133,7 @@ public:
     /*!
      Set training set associated with the model
      */
-    void set_trainingSet(TrainingSet<Phrase<ownData, 1>, int> *_trainingSet)
+    void set_trainingSet(TrainingSet< Phrase<ownData, 1> > *_trainingSet)
     {
         this->trainingSet = _trainingSet;
         if (this->trainingSet) {
@@ -169,7 +169,7 @@ public:
         int nbPhrases = this->trainingSet->size();
         
         if (nbPhrases == 0) return;
-        int step = this->trainingSet->begin()->second->getlength() / nbMixtureComponents;
+        int step = this->trainingSet->begin()->second->length() / nbMixtureComponents;
 		
         int offset(0);
         for (int c=0; c<nbMixtureComponents; c++) {
@@ -410,6 +410,7 @@ public:
         
     /*!
      Compute likelihoods of each components given a gesture observation vector
+     @param obs multimodal gesture-sound observation vector, gesture part is used for prediction.
      */
     void recognition_beta(const float *obs)
     {
@@ -449,7 +450,7 @@ public:
     {
         outStream << "# Multimodal GMM \n";
         outStream << "# =========================================\n";
-        EMBasedLearningModel<Phrase<ownData, 1>, int>::write(outStream, writeTrainingSet);
+        EMBasedLearningModel< Phrase<ownData, 1> >::write(outStream, writeTrainingSet);
         outStream << "# Dimension\n";
         outStream << dimension << endl;
         outStream << "# Number of mixture Components\n";
@@ -481,7 +482,7 @@ public:
     
     void read(istream& inStream, bool readTrainingSet=false)
     {
-        EMBasedLearningModel<Phrase<ownData, 1>, int>::read(inStream, readTrainingSet);
+        EMBasedLearningModel< Phrase<ownData, 1> >::read(inStream, readTrainingSet);
         
         // Get Dimensions
         skipComments(&inStream);
@@ -545,7 +546,7 @@ public:
             int nbPhrases = this->trainingSet->size();
             cout << "Number of phrases = " << nbPhrases << endl;
             for (phrase_iterator it = this->trainingSet->begin() ; it != this->trainingSet->end() ; it++) {
-                cout << "size of phrase " << it->first << " = " << it->second->getlength() << endl;
+                cout << "size of phrase " << it->first << " = " << it->second->length() << endl;
                 // cout << "phrase " << it->first << ": data = \n";
                 // it->second->print();
             }
@@ -641,7 +642,7 @@ public:
         
         int totalLength(0);
         for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++)
-            totalLength += it->second->getlength();
+            totalLength += it->second->length();
         
         vector< vector<double> > p(nbMixtureComponents);
         vector<double> E(nbMixtureComponents, 0.0);
@@ -653,7 +654,7 @@ public:
         int tbase(0);
         
         for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-            int T = it->second->getlength();
+            int T = it->second->length();
             for (int t=0; t<T; t++) {
                 double norm_const(0.);
                 for (int c=0; c<nbMixtureComponents; c++)
@@ -686,7 +687,7 @@ public:
                 meanOfComponent(c)[d] = 0.;
                 tbase = 0;
                 for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-                    int T = it->second->getlength();
+                    int T = it->second->length();
                     for (int t=0; t<T; t++) {
                         meanOfComponent(c)[d] += p[c][tbase+t] * (*it->second)(t, d);
                     }
@@ -703,7 +704,7 @@ public:
                     covarianceOfComponent(c)[d1*dimension+d2] = 0.;
                     tbase = 0;
                     for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-                        int T = it->second->getlength();
+                        int T = it->second->length();
                         for (int t=0; t<T; t++) {
                             covarianceOfComponent(c)[d1*dimension+d2] += p[c][tbase+t]
                             * ((*it->second)(t, d1) - meanOfComponent(c)[d1])

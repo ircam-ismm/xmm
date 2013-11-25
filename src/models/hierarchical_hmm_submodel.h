@@ -32,7 +32,7 @@ public:
     
 #pragma mark -
 #pragma mark Constructors
-    HierarchicalHMMSubmodel(TrainingSet<Phrase<ownData, 1>, int> *_trainingSet=NULL,
+    HierarchicalHMMSubmodel(TrainingSet< Phrase<ownData, 1> > *_trainingSet=NULL,
                              int nbStates_ = HMM_DEFAULT_NB_STATES,
                              int nbMixtureComponents_ = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
                              float covarianceOffset_ = GMM_DEFAULT_COVARIANCE_OFFSET)

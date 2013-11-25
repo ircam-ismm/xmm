@@ -15,14 +15,14 @@
 #pragma mark -
 #pragma mark Class Definition
 template<bool ownData>
-class ConcurrentMGMM : public ConcurrentModels<MultimodalGMM<ownData>, GestureSoundPhrase<ownData>, int> {
+class ConcurrentMGMM : public ConcurrentModels< MultimodalGMM<ownData>, GestureSoundPhrase<ownData> > {
 public:
-    typedef typename  map<int, MultimodalGMM<ownData> >::iterator model_iterator;
-    typedef typename  map<int, MultimodalGMM<ownData> >::const_iterator const_model_iterator;
-    typedef typename  map<int, int>::iterator labels_iterator;
+    typedef typename  map<Label, MultimodalGMM<ownData> >::iterator model_iterator;
+    typedef typename  map<Label, MultimodalGMM<ownData> >::const_iterator const_model_iterator;
+    typedef typename  map<int, Label>::iterator labels_iterator;
     
-    ConcurrentMGMM(TrainingSet<GestureSoundPhrase<ownData>, int> *_globalTrainingSet=NULL)
-    : ConcurrentModels<MultimodalGMM<ownData>, GestureSoundPhrase<ownData>, int>(_globalTrainingSet)
+    ConcurrentMGMM(TrainingSet< GestureSoundPhrase<ownData> > *_globalTrainingSet=NULL)
+    : ConcurrentModels< MultimodalGMM<ownData>, GestureSoundPhrase<ownData> >(_globalTrainingSet)
     {}
 
 #pragma mark -

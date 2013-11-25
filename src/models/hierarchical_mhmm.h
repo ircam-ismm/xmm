@@ -1,37 +1,37 @@
 //
-//  hierarchical_hmm.h
+//  hierarchical_mhmm.h
 //  mhmm
 //
-//  Created by Jules Francoise on 08/08/13.
+//  Created by Jules Francoise on 17/06/13.
 //
 //
 
-#ifndef mhmm_hierarchical_hmm_h
-#define mhmm_hierarchical_hmm_h
+#ifndef mhmm_hierarchical_mhmm_h
+#define mhmm_hierarchical_mhmm_h
 
 #include "hierarchical_model.h"
-#include "hierarchical_hmm_submodel.h"
+#include "hierarchical_mhmm_submodel.h"
 
-#define HHMM_DEFAULT_EXITTRANSITION 0.1
+#define HMHMM_DEFAULT_EXITTRANSITION 0.1
 
 using namespace std;
 
 #pragma mark -
 #pragma mark Class Definition
 template<bool ownData>
-class HierarchicalHMM : public HierarchicalModel<HierarchicalHMMSubmodel<ownData>, Phrase<ownData, 1>, int> {
+class HierarchicalMHMM : public HierarchicalModel< HierarchicalMHMMSubmodel<ownData>, GestureSoundPhrase<ownData> > {
 public:
-    typedef typename  map<int, HierarchicalHMMSubmodel<ownData> >::iterator model_iterator;
-    typedef typename  map<int, HierarchicalHMMSubmodel<ownData> >::const_iterator const_model_iterator;
-    typedef typename  map<int, int>::iterator labels_iterator;
+    typedef typename  map<Label, HierarchicalMHMMSubmodel<ownData> >::iterator model_iterator;
+    typedef typename  map<Label, HierarchicalMHMMSubmodel<ownData> >::const_iterator const_model_iterator;
+    typedef typename  map<int, Label>::iterator labels_iterator;
     
-    HierarchicalHMM(TrainingSet<Phrase<ownData, 1>, int> *_globalTrainingSet=NULL)
-    : HierarchicalModel<HierarchicalHMMSubmodel<ownData>, Phrase<ownData, 1>, int>(_globalTrainingSet)
+    HierarchicalMHMM(TrainingSet< GestureSoundPhrase<ownData> > *_globalTrainingSet=NULL)
+    : HierarchicalModel< HierarchicalMHMMSubmodel<ownData>, GestureSoundPhrase<ownData> >(_globalTrainingSet)
     {
         forwardInitialized = false;
     }
     
-    virtual ~HierarchicalHMM()
+    virtual ~HierarchicalMHMM()
     {
         V1.clear();
         V2.clear();
@@ -39,9 +39,14 @@ public:
     
 #pragma mark -
 #pragma mark Get & Set
-    int get_dimension() const
+    int get_dimension_gesture() const
     {
-        return this->referenceModel.get_dimension();
+        return this->referenceModel.get_dimension_gesture();
+    }
+    
+    int get_dimension_sound() const
+    {
+        return this->referenceModel.get_dimension_sound();
     }
     
     int get_nbStates() const
@@ -56,6 +61,7 @@ public:
             it->second.set_nbStates(nbStates_);
         }
     }
+    
     
     int get_nbMixtureComponents() const
     {
@@ -175,7 +181,16 @@ public:
         double norm_const(0.0) ;
         
         // TODO: is it useful to do it here? ==> better in play()
-        // int dimension = this->get_dimension();
+        int dimension_gesture = this->get_dimension_gesture();
+        int dimension_sound = this->get_dimension_sound();
+        int dimension_total = dimension_gesture + dimension_sound;
+        
+        float* obs_ref = new float[dimension_total];
+        copy(observation, observation+dimension_gesture, obs_ref);
+        
+        for (int d=0; d<dimension_sound; d++) {
+            obs_ref[dimension_gesture+d] = 0.0;
+        }
         
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++)
         {
@@ -188,7 +203,7 @@ public:
             }
             
             // Compute Emission probability and initialize on the first state of the primitive
-            it->second.alpha_h[0][0] = this->prior[it->first] / it->second.forward_init(observation) ;
+            it->second.alpha_h[0][0] = this->prior[it->first] / it->second.forward_init(obs_ref) ;
             it->second.results_h.likelihood = it->second.alpha_h[0][0] ;
             norm_const += it->second.alpha_h[0][0] ;
         }
@@ -233,7 +248,17 @@ public:
         double norm_const(0.0) ;
         
         // TODO: is it useful to do it here? ==> better in play()
-        // int dimension = this->get_dimension();
+        int dimension_gesture = this->get_dimension_gesture();
+        int dimension_sound = this->get_dimension_sound();
+        int dimension_total = dimension_gesture + dimension_sound;
+        
+        // Copy observation to make separate predictions for each submodel
+        float* obs_ref = new float[dimension_total];
+        copy(observation, observation+dimension_gesture, obs_ref);
+        
+        for (int d=0; d<dimension_sound; d++) {
+            obs_ref[dimension_gesture+d] = 0.0;
+        }
         
         // Frontier Algorithm: variables
         double tmp(0);
@@ -285,7 +310,7 @@ public:
             // end of the primitive: handle exit states
             for (int k=0 ; k<N ; ++k)
             {
-                tmp = dstit->second.obsProb(observation, k) * front[k];
+                tmp = dstit->second.obsprob_gesture(observation, k) * front[k];
                 
                 dstit->second.alpha_h[2][k] = this->exitTransition[dstit->first] * dstit->second.exitProbabilities[k] * tmp ;
                 dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities[k] * tmp ;
@@ -371,7 +396,7 @@ public:
 #pragma mark Playing
     virtual void initPlaying()
     {
-        HierarchicalModel<HierarchicalHMMSubmodel<ownData>, Phrase<ownData, 1>, int>::initPlaying();
+        HierarchicalModel< HierarchicalMHMMSubmodel<ownData>, GestureSoundPhrase<ownData> >::initPlaying();
         
         int nbPrimitives = this->size();
         V1.resize(nbPrimitives, 0.0) ;
@@ -389,16 +414,13 @@ public:
             likeliestModel = this->forward_init(obs, modelLikelihoods);
         }
         
-        // Compute time progression
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.results_h.progress = centroid(it->second.alpha);
-        }
+        likeliestModel->second.estimateObservation(obs);
         
         // TODO: reintegrate Play mode?
         // TODO: reintegrate covariance determinants
     }
     
-    HHMMResults getResults(int classLabel)
+    HMHMMResults getResults(int classLabel)
     {
         if (this->models.find(classLabel) == this->models.end())
             throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
@@ -420,28 +442,36 @@ protected:
 #pragma mark Python
 #ifdef SWIGPYTHON
 public:
-    void play(int dimension_, double *observation,
+    void play(int dimension_gesture_, double *observation_gesture,
+              int dimension_sound_, double *observation_sound_out,
               int nbModels_, double *likelihoods,
               int nbModels__, double *cumulativelikelihoods)
     {
-        int dimension = this->referenceModel.get_dimension();
+        int dimension_gesture = this->referenceModel.get_dimension_gesture();
+        int dimension_sound = this->referenceModel.get_dimension_sound();
+        int dimension_total = dimension_gesture + dimension_sound;
         
-        float *obs = new float[dimension];
-        for (int d=0; d<dimension; d++) {
-            obs[d] = float(observation[d]);
+        float *observation_total = new float[dimension_total];
+        for (int d=0; d<dimension_gesture; d++) {
+            observation_total[d] = float(observation_gesture[d]);
         }
+        for (int d=0; d<dimension_sound; d++)
+            observation_total[d+dimension_gesture] = 0.;
         
-        this->play(obs, likelihoods);
+        this->play(observation_total, likelihoods);
+        
+        for (int d=0; d<dimension_sound_; d++) {
+            observation_sound_out[d] = double(observation_total[dimension_gesture+d]);
+        }
         
         int m(0);
         for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
             cumulativelikelihoods[m++] = it->second.cumulativeloglikelihood;
         
-        delete[] obs;
+        delete[] observation_total;
     }
 #endif
     
 };
-
 
 #endif

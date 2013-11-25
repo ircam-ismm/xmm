@@ -15,7 +15,7 @@
 #include "notifiable.h"
 
 namespace momos {
-    template <typename phraseType, typename labelType=int> class TrainingSet;
+    template <typename phraseType> class TrainingSet;
     
 #pragma mark -
 #pragma mark Class Definition
@@ -26,11 +26,11 @@ namespace momos {
      @tparam phraseType Data type of the phrases composing the training set
      @tparam labelType type of the label for each phrase of the training set
      */
-    template <typename phraseType, typename labelType=int>
+    template <typename phraseType>
     class LearningModel : public Notifiable {
     public:
         bool trained;
-        TrainingSet<phraseType, labelType> *trainingSet;
+        TrainingSet<phraseType> *trainingSet;
         
 #pragma mark -
 #pragma mark Constructors
@@ -39,7 +39,7 @@ namespace momos {
          Constructor
          @param _trainingSet training set on wich the model is trained
          */
-        LearningModel(TrainingSet<phraseType, labelType> *_trainingSet)
+        LearningModel(TrainingSet<phraseType> *_trainingSet)
         {
             trained = false;
             trainingSet = _trainingSet;
@@ -48,7 +48,7 @@ namespace momos {
         /*!
          Copy constructor
          */
-        LearningModel(LearningModel<phraseType, labelType> const& src)
+        LearningModel(LearningModel<phraseType> const& src)
         {
             this->_copy(this, src);
         }
@@ -56,7 +56,7 @@ namespace momos {
         /*!
          Assignment
          */
-        LearningModel<phraseType, labelType>& operator=(LearningModel<phraseType, labelType> const& src)
+        LearningModel<phraseType>& operator=(LearningModel<phraseType> const& src)
         {
             if(this != &src)
             {
@@ -68,8 +68,8 @@ namespace momos {
         /*!
          Copy between to models (called by copy constructor and assignment methods)
          */
-        virtual void _copy(LearningModel<phraseType, labelType> *dst,
-                           LearningModel<phraseType, labelType> const& src)
+        virtual void _copy(LearningModel<phraseType> *dst,
+                           LearningModel<phraseType> const& src)
         
         {
             dst->trained = src.trained;
@@ -88,7 +88,7 @@ namespace momos {
         /*!
          set the training set associated with the model
          */
-        void set_trainingSet(TrainingSet<phraseType, labelType> *_trainingSet)
+        void set_trainingSet(TrainingSet<phraseType> *_trainingSet)
         {
             trainingSet = _trainingSet;
         }

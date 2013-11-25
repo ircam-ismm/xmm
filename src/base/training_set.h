@@ -30,7 +30,7 @@ namespace momos {
      @tparam phraseType Data type of the phrases composing the training set
      @tparam labelType type of the label for each phrase of the training set
      */
-    template <typename phraseType, typename labelType=int>
+    template <typename phraseType>
     class _TrainingSetBase
     {
     public:
@@ -40,12 +40,12 @@ namespace momos {
          */
         typedef typename  map<int, phraseType*>::iterator phrase_iterator;
         typedef typename  map<int, phraseType*>::const_iterator const_phrase_iterator;
-        typedef typename  map<int, labelType>::iterator label_iterator;
-        typedef typename  map<int, labelType>::const_iterator const_label_iterator;
+        typedef typename  map<int, Label>::iterator label_iterator;
+        typedef typename  map<int, Label>::const_iterator const_label_iterator;
         
         map<int, phraseType*> phrases;    //<! Training phrases
-        map<int, labelType> phraseLabels; //<! Phrase labels
-        set<labelType> allLabels;         //<! set of all existing labels
+        map<int, Label> phraseLabels; //<! Phrase labels
+        set<Label> allLabels;         //<! set of all existing labels
         
         /*!
          @return iterator to the beginning of phrases
@@ -87,7 +87,6 @@ namespace momos {
         _TrainingSetBase(Notifiable* _parent=NULL)
         {
             locked = false;
-            defaultLabel = labelType();
             parent = _parent;
             changed = false;
         }
@@ -165,7 +164,7 @@ namespace momos {
          @param src training set to compare
          @return true if the training sets are equal (same phrases and labels)
          */
-        bool operator==(_TrainingSetBase<phraseType, labelType> const &src)
+        bool operator==(_TrainingSetBase<phraseType> const &src)
         {
             if (!this)
                 return false;
@@ -195,7 +194,7 @@ namespace momos {
         /*!
          checks inequality
          */
-        bool operator!=(_TrainingSetBase<phraseType, labelType> const &src)
+        bool operator!=(_TrainingSetBase<phraseType> const &src)
         {
             return !operator==(src);
         }
@@ -253,7 +252,7 @@ namespace momos {
          @warning if the training set is locked, the phrases themselves are not deleted (only their references)
          @param label label of the class to delete
          */
-        void deletePhrasesOfClass(labelType label)
+        void deletePhrasesOfClass(Label label)
         {
             bool contLoop(true);
             while (contLoop) {
@@ -303,9 +302,19 @@ namespace momos {
         /*!
          set default phrase label for new phrases
          */
-        void setDefaultLabel(labelType defLabel)
+        void setDefaultLabel(Label defLabel)
         {
             defaultLabel = defLabel;
+        }
+        
+        void setDefaultLabel(int intLabel)
+        {
+            defaultLabel.setInt(intLabel);
+        }
+        
+        void setDefaultLabel(string symLabel)
+        {
+            defaultLabel.setSym(symLabel);
         }
         
         /*!
@@ -319,14 +328,29 @@ namespace momos {
         /*!
          set the label of a phrase
          */
-        void setPhraseLabel(int phraseIndex, labelType label)
+        void setPhraseLabel(int phraseIndex, Label label)
         {
             if (this->phrases.find(phraseIndex) == this->phrases.end())
                 throw RTMLException("Training set: phrase does not exist", __FILE__, __FUNCTION__, __LINE__);
             
+            phrases[phraseIndex]->label =label;
             phraseLabels[phraseIndex] = label;
             changed = true;
             updateLabelList();
+        }
+        
+        void setPhraseLabel(int phraseIndex, int intLabel)
+        {
+            Label l;
+            l.setInt(intLabel);
+            setPhraseLabel(phraseIndex, l);
+        }
+        
+        void setPhraseLabel(int phraseIndex, string symLabel)
+        {
+            Label l;
+            l.setSym(symLabel);
+            setPhraseLabel(phraseIndex, l);
         }
         
         /*!
@@ -336,9 +360,9 @@ namespace momos {
          @param label label of the class
          @return a training set containing all the phrases of the given class
          */
-        _TrainingSetBase<phraseType, labelType>* getSubTrainingSetForClass(labelType label)
+        _TrainingSetBase<phraseType>* getSubTrainingSetForClass(Label label)
         {
-            _TrainingSetBase<phraseType, labelType> *subTS = new _TrainingSetBase();
+            _TrainingSetBase<phraseType> *subTS = new _TrainingSetBase();
             subTS->setDefaultLabel(defaultLabel);
             subTS->referencePhrase = referencePhrase;
             
@@ -354,6 +378,18 @@ namespace momos {
             }
             
             return subTS;
+        }
+        
+        _TrainingSetBase<phraseType>* getSubTrainingSetForClass(int intLabel) {
+            Label l;
+            l.setInt(intLabel);
+            return getSubTrainingSetForClass(l);
+        }
+        
+        _TrainingSetBase<phraseType>* getSubTrainingSetForClass(string symLabel) {
+            Label l;
+            l.setSym(symLabel);
+            return getSubTrainingSetForClass(l);
         }
         
         /*!
@@ -381,15 +417,16 @@ namespace momos {
             outStream << "# Number of Phrases\n";
             outStream << phrases.size() << endl;
             outStream << "# Default Label\n";
-            outStream << defaultLabel << endl;
+            if (defaultLabel.type == Label::INT)
+                outStream << "INT " << defaultLabel.getInt() << endl;
+            else
+                outStream << "SYM " << defaultLabel.getSym() << endl;
             outStream << "# === Reference Phrase\n";
             referencePhrase.write(outStream);
             for (phrase_iterator it = phrases.begin(); it != phrases.end(); it++) {
                 outStream << "# === Phrase " << it->first << "\n";
                 outStream << "# Index\n";
                 outStream << it->first << endl;
-                outStream << "# Label\n";
-                outStream << phraseLabels[it->first] << endl;
                 outStream << "# Content\n";
                 it->second->write(outStream);
             }
@@ -409,19 +446,31 @@ namespace momos {
             if (!inStream.good())
                 throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
             
-            // Get Default Label
+            // Read label
             skipComments(&inStream);
-            inStream >> defaultLabel;
+            string lType;
+            inStream >> lType;
             if (!inStream.good())
                 throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
+            if (lType == "INT") {
+                int intLab;
+                inStream >> intLab;
+                if (!inStream.good())
+                    throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
+                this->defaultLabel.setInt(intLab);
+            } else {
+                string symLab;
+                inStream >> symLab;
+                if (!inStream.good())
+                    throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
+                this->defaultLabel.setSym(symLab);
+            }
             
             // Get reference phrase
             referencePhrase.read(inStream);
             
             // === Get Phrases
             int index;
-            labelType label;
-            
             for (int p=0; p<nbPhrases; p++) {
                 // index
                 skipComments(&inStream);
@@ -429,16 +478,10 @@ namespace momos {
                 if (!inStream.good())
                     throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
                 
-                // label
-                skipComments(&inStream);
-                inStream >> label;
-                if (!inStream.good())
-                    throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-                
                 // Content
                 phrases[index] = new phraseType(referencePhrase);
                 phrases[index]->read(inStream);
-                phraseLabels[index] = label;
+                phraseLabels[index] = phrases[index]->label;
             }
         }
         
@@ -504,7 +547,7 @@ namespace momos {
         Notifiable* parent;
         phraseType referencePhrase; //<! Reference phrase: used to store Phrase Attributes
         
-        labelType defaultLabel;
+        Label defaultLabel;
         bool changed;
         bool locked;
     };
@@ -521,26 +564,26 @@ namespace momos {
      @tparam phraseType Data type of the phrases composing the training set
      @tparam labelType type of the label for each phrase of the training set
      */
-    template <typename phraseType, typename labelType>
-    class TrainingSet : public _TrainingSetBase<phraseType, labelType>
+    template <typename phraseType>
+    class TrainingSet : public _TrainingSetBase<phraseType>
     {
     public:
-        TrainingSet(Notifiable* _parent=NULL) : _TrainingSetBase<phraseType, labelType>(_parent)
+        TrainingSet(Notifiable* _parent=NULL) : _TrainingSetBase<phraseType>(_parent)
         {}
         
         virtual ~TrainingSet() {}
     };
     
 #pragma mark Phrase specialization
-    template <bool ownData, unsigned int nbModalities, typename labelType>
-    class TrainingSet<Phrase<ownData, nbModalities>, labelType>
-    : public _TrainingSetBase<Phrase<ownData, nbModalities>, labelType>
+    template <bool ownData, unsigned int nbModalities>
+    class TrainingSet< Phrase<ownData, nbModalities> >
+    : public _TrainingSetBase< Phrase<ownData, nbModalities> >
     {
     public:
         typedef typename  map<int, Phrase<ownData, nbModalities>* >::iterator phrase_iterator;
         
         TrainingSet(Notifiable* _parent=NULL)
-        : _TrainingSetBase<Phrase<ownData, nbModalities>, labelType>(_parent) {}
+        : _TrainingSetBase< Phrase<ownData, nbModalities> >(_parent) {}
         
         virtual ~TrainingSet() {}
         
@@ -586,15 +629,15 @@ namespace momos {
     };
     
 #pragma mark GestureSoundPhrase specialization
-    template <bool ownData, typename labelType>
-    class TrainingSet< GestureSoundPhrase<ownData>, labelType>
-    : public _TrainingSetBase< GestureSoundPhrase<ownData>, labelType>
+    template <bool ownData>
+    class TrainingSet< GestureSoundPhrase<ownData> >
+    : public _TrainingSetBase< GestureSoundPhrase<ownData> >
     {
     public:
         typedef typename  map<int, GestureSoundPhrase<ownData>* >::iterator phrase_iterator;
         
         TrainingSet(Notifiable* _parent=NULL)
-        : _TrainingSetBase<GestureSoundPhrase<ownData>, labelType>(_parent) {}
+        : _TrainingSetBase< GestureSoundPhrase<ownData> >(_parent) {}
         
         virtual ~TrainingSet() {}
         
@@ -659,15 +702,15 @@ namespace momos {
     };
     
 #pragma mark GesturePhrase specialization
-    template <bool ownData, typename labelType>
-    class TrainingSet< GesturePhrase<ownData>, labelType>
-    : public _TrainingSetBase< GesturePhrase<ownData>, labelType>
+    template <bool ownData>
+    class TrainingSet< GesturePhrase<ownData> >
+    : public _TrainingSetBase< GesturePhrase<ownData> >
     {
     public:
         typedef typename  map<int, GesturePhrase<ownData>* >::iterator phrase_iterator;
         
         TrainingSet(Notifiable* _parent=NULL)
-        : _TrainingSetBase<GesturePhrase<ownData>, labelType>(_parent) {}
+        : _TrainingSetBase< GesturePhrase<ownData> >(_parent) {}
         
         virtual ~TrainingSet() {}
         
@@ -717,19 +760,18 @@ namespace momos {
      3 templates are specialized here for 3 types of phrases: unimodal, bimodal and gesture-sound.
      */
 #ifdef SWIGPYTHON
-    template <typename labelType>
-    class TrainingSet<Phrase<true, 1>, labelType>
-    : public _TrainingSetBase<Phrase<true, 1>, labelType>
+    class TrainingSet< Phrase<true, 1> >
+    : public _TrainingSetBase< Phrase<true, 1> >
     {
     public:
         typedef  map<int, Phrase<true, 1>* >::iterator phrase_iterator;
         
         TrainingSet(Notifiable* _parent=NULL)
-        : _TrainingSetBase<Phrase<true, 1>, labelType>(_parent) {}
+        : _TrainingSetBase< Phrase<true, 1> >(_parent) {}
         
         virtual ~TrainingSet() {}
         
-        int get_dimension(int modality=0) const
+        int get_dimension(inçt modality=0) const
         {
             return this->referencePhrase.get_dimension(modality);
         }
@@ -745,15 +787,14 @@ namespace momos {
         }
     };
     
-    template <typename labelType>
-    class TrainingSet<Phrase<true, 2>, labelType>
-    : public _TrainingSetBase<Phrase<true, 2>, labelType>
+    class TrainingSet< Phrase<true, 2> >
+    : public _TrainingSetBase< Phrase<true, 2> >
     {
     public:
         typedef  map<int, Phrase<true, 2>* >::iterator phrase_iterator;
         
         TrainingSet(Notifiable* _parent=NULL)
-        : _TrainingSetBase<Phrase<true, 2>, labelType>(_parent) {}
+        : _TrainingSetBase< Phrase<true, 2> >(_parent) {}
         
         virtual ~TrainingSet() {}
         
@@ -773,15 +814,14 @@ namespace momos {
         }
     };
     
-    template <typename labelType>
-    class TrainingSet< GestureSoundPhrase<true>, labelType>
-    : public _TrainingSetBase< GestureSoundPhrase<true>, labelType>
+    class TrainingSet< GestureSoundPhrase<true> >
+    : public _TrainingSetBase< GestureSoundPhrase<true> >
     {
     public:
         typedef map<int, GestureSoundPhrase<true>* >::iterator phrase_iterator;
         
         TrainingSet(Notifiable* _parent=NULL)
-        : _TrainingSetBase<GestureSoundPhrase<true>, labelType>(_parent) {}
+        : _TrainingSetBase< GestureSoundPhrase<true> >(_parent) {}
         
         virtual ~TrainingSet() {}
         
@@ -816,9 +856,8 @@ namespace momos {
         }
     };
     
-    template <typename labelType>
-    class TrainingSet< GesturePhrase<true>, labelType>
-    : public _TrainingSetBase< GesturePhrase<true>, labelType>
+    class TrainingSet< GesturePhrase<true> >
+    : public _TrainingSetBase< GesturePhrase<true> >
     {
     public:
         typedef map<int, GesturePhrase<true>* >::iterator phrase_iterator;

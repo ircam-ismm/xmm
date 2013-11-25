@@ -27,27 +27,27 @@ namespace momos {
      @todo class description
      @tparam modelType type of the models
      @tparam phraseType type of the phrase in the training set (@see Phrase, MultimodalPhrase, GestureSoundPhrase)
-     @tparam labelType type of the labels for each class.
+     @tparam Label type of the labels for each class.
      */
-    template<typename ModelType, typename phraseType, typename labelType=int>
+    template<typename ModelType, typename phraseType>
     class HierarchicalModel
-    : public ConcurrentModels<ModelType, phraseType, labelType> {
+    : public ConcurrentModels<ModelType, phraseType> {
     public:
         /*! @name iterators */
-        typedef typename  map<labelType, ModelType>::iterator model_iterator;
-        typedef typename  map<labelType, ModelType>::const_iterator const_model_iterator;
-        typedef typename  map<int, labelType>::iterator labels_iterator;
-        typedef typename  set<labelType>::iterator labset_iterator;
+        typedef typename  map<Label, ModelType>::iterator model_iterator;
+        typedef typename  map<Label, ModelType>::const_iterator const_model_iterator;
+        typedef typename  map<int, Label>::iterator labels_iterator;
+        typedef typename  set<Label>::iterator labset_iterator;
         
-        map<labelType, double> prior;
-        map<labelType, double> exitTransition;
-        map<labelType, map<labelType, double> > transition;
+        map<Label, double> prior;
+        map<Label, double> exitTransition;
+        map<Label, map<Label, double> > transition;
         
 #pragma mark -
 #pragma mark Constructors
         /*! @name Constructors */
-        HierarchicalModel(TrainingSet<phraseType, labelType> *_globalTrainingSet=NULL)
-        : ConcurrentModels<ModelType, phraseType, labelType>(_globalTrainingSet)
+        HierarchicalModel(TrainingSet<phraseType> *_globalTrainingSet=NULL)
+        : ConcurrentModels<ModelType, phraseType>(_globalTrainingSet)
         {
             incrementalLearning = HMHMM_DEFAULT_INCREMENTALLEARNING;
         }
@@ -218,7 +218,7 @@ namespace momos {
          * @param dstSegmentLabel target segment
          * @param proba probability of making a transition from srcSegmentLabel to dstSegmentLabel
          */
-        void setOneTransition(labelType srcSegmentLabel, labelType dstSegmentLabel, double proba)
+        void setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba)
         {
             transition[srcSegmentLabel][dstSegmentLabel] = min(proba, 1.);
             normalizeTransitions();
@@ -288,7 +288,7 @@ namespace momos {
             
             if (oldNbPrim>0)
             {
-                map<labelType, map<labelType, double> > oldTransition = transition;;
+                map<Label, map<Label, double> > oldTransition = transition;;
                 
                 for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
                 {
@@ -363,13 +363,13 @@ namespace momos {
          */
         virtual void initTraining()
         {
-            ConcurrentModels<ModelType, phraseType, labelType>::initTraining();
+            ConcurrentModels<ModelType, phraseType>::initTraining();
             updateTransitionParameters();
         }
         
-        virtual map<labelType, int> retrain()
+        virtual map<Label, int> retrain()
         {
-            map<labelType, int> nbIterations= ConcurrentModels<ModelType, phraseType, labelType>::retrain();
+            map<Label, int> nbIterations= ConcurrentModels<ModelType, phraseType>::retrain();
             updateTransitionParameters();
             return nbIterations;
         }
@@ -397,13 +397,13 @@ namespace momos {
             outStream << "# incremental learning\n";
             outStream << incrementalLearning << endl;
             // TODO: Write high level transition parameters
-            ConcurrentModels<ModelType, phraseType, labelType>::write(outStream, writeTrainingSet);
+            ConcurrentModels<ModelType, phraseType>::write(outStream, writeTrainingSet);
         }
         
         virtual void read(istream& inStream, bool readTrainingSet=false)
         {
             //TODO: read something maybe?
-            ConcurrentModels<ModelType, phraseType, labelType>::read(inStream, readTrainingSet);
+            ConcurrentModels<ModelType, phraseType>::read(inStream, readTrainingSet);
         }
 #pragma mark -
 #pragma mark Python

@@ -12,6 +12,10 @@
 #define rtml_concurrent_models_h
 
 #include "training_set.h"
+#if __cplusplus > 199711L
+#include <thread>
+#include <future>
+#endif
 
 using namespace std;
 
@@ -26,7 +30,7 @@ namespace momos {
      @tparam phraseType type of the phrase in the training set (@see Phrase, MultimodalPhrase, GestureSoundPhrase)
      @tparam labelType type of the labels for each class.
      */
-    template<typename ModelType, typename phraseType, typename labelType=int>
+    template<typename ModelType, typename phraseType>
     class ConcurrentModels : public Notifiable
     {
     public:
@@ -39,12 +43,12 @@ namespace momos {
             MIXTURE    //<! the play method returns a weighted sum of the results of each model
         };
         
-        typedef typename  map<labelType, ModelType>::iterator model_iterator;
-        typedef typename  map<labelType, ModelType>::const_iterator const_model_iterator;
-        typedef typename  map<int, labelType>::iterator labels_iterator;
+        typedef typename  map<Label, ModelType>::iterator model_iterator;
+        typedef typename  map<Label, ModelType>::const_iterator const_model_iterator;
+        typedef typename  map<int, Label>::iterator labels_iterator;
         
-        map<labelType, ModelType> models;
-        TrainingSet<phraseType, labelType> *globalTrainingSet;    //<! Global training set: contains all phrases (all labels)
+        map<Label, ModelType> models;
+        TrainingSet<phraseType> *globalTrainingSet;    //<! Global training set: contains all phrases (all labels)
         
 #pragma mark -
 #pragma mark Constructors
@@ -53,7 +57,7 @@ namespace momos {
          Constructor
          @param _globalTrainingSet global training set: contains all phrases for each model
          */
-        ConcurrentModels(TrainingSet<phraseType, labelType> *_globalTrainingSet=NULL)
+        ConcurrentModels(TrainingSet<phraseType> *_globalTrainingSet=NULL)
         {
             globalTrainingSet = _globalTrainingSet;
             if (globalTrainingSet)
@@ -95,7 +99,7 @@ namespace momos {
          Set pointer to the global training set
          @param _globalTrainingSet pointer to the global training set
          */
-        void set_trainingSet(TrainingSet<phraseType, labelType> *_globalTrainingSet)
+        void set_trainingSet(TrainingSet<phraseType> *_globalTrainingSet)
         {
             globalTrainingSet = _globalTrainingSet;
             if (globalTrainingSet)
@@ -108,12 +112,28 @@ namespace momos {
          @param classLabel class label of the model
          @throw RTMLException if the class does not exist
          */
-        bool is_trained(labelType classLabel)
+        bool is_trained(Label classLabel)
         {
             if (models.find(classLabel) == models.end())
                 throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
             return models[classLabel].trained;
         }
+        
+        /*
+        bool is_trained(int intLabel)
+        {
+            Label l;
+            l.setInt(intLabel);
+            return is_trained(l);
+        }
+        
+        bool is_trained(string symLabel)
+        {
+            Label l;
+            l.setSym(symLabel);
+            return is_trained(l);
+        }
+        //*/
         
         /*!
          Check if all models have been trained
@@ -145,7 +165,7 @@ namespace momos {
          @param classLabel class label of the model
          @throw RTMLException if the class does not exist
          */
-        virtual void initTraining(labelType classLabel)
+        virtual void initTraining(Label classLabel)
         {
             model_iterator it = models.find(classLabel);
             if (it == models.end())
@@ -168,7 +188,7 @@ namespace momos {
          @param classLabel class label of the model
          @throw RTMLException if the class does not exist
          */
-        virtual int train(labelType classLabel)
+        virtual int train(Label classLabel)
         {
             updateTrainingSets();
             if (models.find(classLabel) == models.end())
@@ -180,10 +200,10 @@ namespace momos {
         /*!
          Train All model which data has changed.
          */
-        virtual map<labelType, int> retrain()
+        virtual map<Label, int> retrain()
         {
             updateTrainingSets();
-            map<labelType, int> nbIterations;
+            map<Label, int> nbIterations;
             
             RTMLException trainingException;
             bool trainingFailed(false);
@@ -211,27 +231,29 @@ namespace momos {
         /*!
          Train All model even if their data has not changed.
          */
-        virtual map<labelType, int> train()
+        virtual map<Label, int> train()
         {
             updateTrainingSets();
             this->initTraining();
-            map<labelType, int> nbIterations;
+            map<Label, int> nbIterations;
             
-            RTMLException trainingException;
-            bool trainingFailed(false);
+#if __cplusplus > 199711L
+            // parallel training of all models (c++11 threads)
+            map<Label, future<int> > nbIterations_future;
+            
+            for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+                nbIterations_future[it->first] = async(launch::async, &ModelType::train, &it->second);
+            }
+            
+            for (map<Label, future<int> >::iterator it=nbIterations_future.begin(); it != nbIterations_future.end(); it++) {
+                nbIterations[it->first] = it->second.get();
+            }
+#else
+            // Sequential training
             for (model_iterator it=models.begin(); it != models.end(); it++) {
-                try {
-                    nbIterations[it->first] = it->second.train();
-                } catch (RTMLException &e) {
-                    trainingException = e;
-                    trainingFailed = true;
-                }
+                nbIterations[it->first] = it->second.train();
             }
-            
-            if (trainingFailed) {
-                throw trainingException;
-            }
-            
+#endif
             return nbIterations;
         }
         
@@ -240,7 +262,7 @@ namespace momos {
          @param classLabel class label of the model
          @throw RTMLException if the class does not exist
          */
-        virtual void finishTraining(labelType classLabel)
+        virtual void finishTraining(Label classLabel)
         {
             model_iterator it = models.find(classLabel);
             if (it == models.end())
@@ -287,7 +309,7 @@ namespace momos {
             }
             
             // Update classes models and training sets
-            for (typename set<labelType>::iterator it=globalTrainingSet->allLabels.begin(); it != globalTrainingSet->allLabels.end(); it++)
+            for (typename set<Label>::iterator it=globalTrainingSet->allLabels.begin(); it != globalTrainingSet->allLabels.end(); it++)
             {
                 // TODO: problem ==> no indication of changes in data
                 if (models.find(*it) == models.end()) {
@@ -295,8 +317,8 @@ namespace momos {
                     models[*it].trainingSet = NULL;
                 }
                 
-                TrainingSet<phraseType, labelType> *model_ts = models[*it].trainingSet;
-                TrainingSet<phraseType, labelType> *new_ts = (TrainingSet<phraseType, labelType> *)globalTrainingSet->getSubTrainingSetForClass(*it);
+                TrainingSet<phraseType> *model_ts = models[*it].trainingSet;
+                TrainingSet<phraseType> *new_ts = (TrainingSet<phraseType> *)globalTrainingSet->getSubTrainingSetForClass(*it);
                 if (!model_ts || *model_ts != *new_ts) {
                     if (model_ts)
                         delete model_ts;
@@ -358,8 +380,11 @@ namespace momos {
             referenceModel.write(outStream, false);
             outStream << "# === MODELS\n";
             for (model_iterator it = models.begin(); it != models.end(); it++) {
-                outStream << "# Model Index\n";
-                outStream << it->first << endl;
+                outStream << "# Model Label\n";
+                if (it->first.type == Label::INT)
+                    outStream << "INT " << it->first.getInt() << endl;
+                else
+                    outStream << "SYM " << it->first.getSym() << endl;
                 it->second.write(outStream);
             }
             if (writeTrainingSet)
@@ -392,14 +417,29 @@ namespace momos {
             this->referenceModel.read(inStream, false);
             
             // Read Models
+            // TODO: I guess the Label Does NOT work
             for (int i=0; i<nbModels; i++) {
-                // Get model index
+                // Read label
                 skipComments(&inStream);
-                int index;
-                inStream >> index;
+                Label lab;
+                string lType;
+                inStream >> lType;
                 if (!inStream.good())
                     throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-                this->models[index].read(inStream, false);
+                if (lType == "INT") {
+                    int intLab;
+                    inStream >> intLab;
+                    if (!inStream.good())
+                        throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
+                    lab.setInt(intLab);
+                } else {
+                    string symLab;
+                    inStream >> symLab;
+                    if (!inStream.good())
+                        throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
+                    lab.setSym(symLab);
+                }
+                this->models[lab].read(inStream, false);
             }
             
             // Read Training set

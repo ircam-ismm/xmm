@@ -15,16 +15,16 @@
 #pragma mark -
 #pragma mark Class Definition
 template<bool ownData>
-class ConcurrentMHMM : public ConcurrentModels<MultimodalHMM<ownData>, GestureSoundPhrase<ownData>, int> {
+class ConcurrentMHMM : public ConcurrentModels< MultimodalHMM<ownData>, GestureSoundPhrase<ownData> > {
 public:
-    typedef typename  map<int, MultimodalHMM<ownData> >::iterator model_iterator;
-    typedef typename  map<int, MultimodalHMM<ownData> >::const_iterator const_model_iterator;
-    typedef typename  map<int, int>::iterator labels_iterator;
+    typedef typename  map<Label, MultimodalHMM<ownData> >::iterator model_iterator;
+    typedef typename  map<Label, MultimodalHMM<ownData> >::const_iterator const_model_iterator;
+    typedef typename  map<int, Label>::iterator labels_iterator;
     
     bool updateWithEstimatedObservation;
     
-    ConcurrentMHMM(TrainingSet<GestureSoundPhrase<ownData>, int> *_globalTrainingSet=NULL)
-    : ConcurrentModels<MultimodalHMM<ownData>, GestureSoundPhrase<ownData>, int>(_globalTrainingSet)
+    ConcurrentMHMM(TrainingSet< GestureSoundPhrase<ownData> > *_globalTrainingSet=NULL)
+    : ConcurrentModels< MultimodalHMM<ownData>, GestureSoundPhrase<ownData> >(_globalTrainingSet)
     {
         updateWithEstimatedObservation = false;
     }
@@ -173,7 +173,7 @@ public:
             it->second.initPlaying();
         }
     }
-
+    
 #pragma mark -
 #pragma mark Performance
     void addCyclicTransition(double proba)
@@ -201,9 +201,42 @@ public:
         if (this->playMode == this->LIKELIEST)
         {
             // EVALUATE SOUND OBSERVATIONS ON LIKELIEST MODEL
+            
+            double maxLikelihood;
             int i(0);
+            
+            // Parallel Version: Bugsssss
+            /*
+            vector< future<double> > modelLikelihoods_future(this->size());
+            for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
+            {
+                modelLikelihoods_future[i++] = async(launch::async, &MultimodalHMM<ownData>::play, &it->second, obs_ref);
+            }
+            
+            for (i=0 ; i<this->size() ; i++)
+            {
+                modelLikelihoods[i] = modelLikelihoods_future[i].get();
+                norm_const += modelLikelihoods[i];
+            }
+            
+            i = 0;
+            for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
+            {
+                if (i==0 || modelLikelihoods[i] > maxLikelihood)
+                {
+                    maxLikelihood = modelLikelihoods[i];
+                    copy(it->second.results.observation_sound.begin(),
+                         it->second.results.observation_sound.end(),
+                         obs+dimension_gesture);
+                }
+                i++;
+            }
+            //*/
+            
+            //*
+            i = 0;
             model_iterator it = this->models.begin();
-            double maxLikelihood = it->second.play(obs_ref);
+            maxLikelihood = it->second.play(obs_ref);
             modelLikelihoods[i++] = maxLikelihood;
             norm_const = maxLikelihood;
             copy(obs_ref+dimension_gesture, obs_ref+dimension_gesture+dimension_sound, obs+dimension_gesture);
@@ -211,14 +244,18 @@ public:
             it++;
             while (it != this->models.end()) {
                 double alphaLikelihood = it->second.play(obs_ref);
-                modelLikelihoods[i++] = alphaLikelihood;
+                modelLikelihoods[i] = alphaLikelihood;
                 norm_const += alphaLikelihood;
                 if (alphaLikelihood > maxLikelihood) {
-                    copy(obs_ref+dimension_gesture, obs_ref+dimension_gesture+dimension_sound, obs+dimension_gesture);
                     maxLikelihood = alphaLikelihood;
+                    copy(it->second.results.observation_sound.begin(),
+                         it->second.results.observation_sound.end(),
+                         obs+dimension_gesture);
                 }
                 it++;
+                i++;
             }
+            //*/
         }
         else // polyPlayMode == MIXTURE
         {
@@ -251,11 +288,13 @@ public:
             modelLikelihoods[i] /= norm_const;
         
         // Invert and Normalize covariance determinants
+        /*
         double s(0.0);
         for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
             s += 1./it->second.results.covarianceDeterminant_sound;
         for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
             it->second.results.covarianceDeterminant_sound = (1./it->second.results.covarianceDeterminant_sound) / s;
+        //*/
         
         delete[] obs_ref;
     }

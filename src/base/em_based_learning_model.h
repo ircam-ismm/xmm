@@ -39,8 +39,8 @@ namespace momos {
      @tparam phraseType type of the phrase in the training set (@see Phrase, MultimodalPhrase, GestureSoundPhrase)
      @tparam labelType type of the labels for each class.
      */
-    template <typename phraseType, typename labelType=int>
-    class EMBasedLearningModel : public LearningModel<phraseType, labelType>
+    template <typename phraseType>
+    class EMBasedLearningModel : public LearningModel<phraseType>
     {
     public:
         double cumulativeloglikelihood;
@@ -52,8 +52,8 @@ namespace momos {
          Constructor
          @param _trainingSet training set associated with the model
          */
-        EMBasedLearningModel(TrainingSet<phraseType, labelType> *_trainingSet)
-        : LearningModel<phraseType, labelType>(_trainingSet)
+        EMBasedLearningModel(TrainingSet<phraseType> *_trainingSet)
+        : LearningModel<phraseType>(_trainingSet)
         {
             stopcriterion.minSteps = EM_MODEL_DEFAULT_EMSTOP_MINSTEPS;
             stopcriterion.maxSteps = EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS;
@@ -64,7 +64,7 @@ namespace momos {
         /*!
          Copy Constructor
          */
-        EMBasedLearningModel(EMBasedLearningModel<phraseType, labelType> const& src) : LearningModel<phraseType, labelType>(src)
+        EMBasedLearningModel(EMBasedLearningModel<phraseType> const& src) : LearningModel<phraseType>(src)
         {
             this->_copy(this, src);
         }
@@ -72,7 +72,7 @@ namespace momos {
         /*!
          Assignment
          */
-        EMBasedLearningModel<phraseType, labelType>& operator=(EMBasedLearningModel<phraseType, labelType> const& src)
+        EMBasedLearningModel<phraseType>& operator=(EMBasedLearningModel<phraseType> const& src)
         {
             if(this != &src)
             {
@@ -84,11 +84,11 @@ namespace momos {
         /*!
          Copy between two models
          */
-        using LearningModel<phraseType, labelType>::_copy;
-        virtual void _copy(EMBasedLearningModel<phraseType, labelType> *dst,
-                           EMBasedLearningModel<phraseType, labelType> const& src)
+        using LearningModel<phraseType>::_copy;
+        virtual void _copy(EMBasedLearningModel<phraseType> *dst,
+                           EMBasedLearningModel<phraseType> const& src)
         {
-            LearningModel<phraseType, labelType>::_copy(dst, src);
+            LearningModel<phraseType>::_copy(dst, src);
             dst->stopcriterion.minSteps = src.stopcriterion.minSteps;
             dst->stopcriterion.maxSteps = src.stopcriterion.maxSteps;
             dst->stopcriterion.percentChg = src.stopcriterion.percentChg;
@@ -257,7 +257,7 @@ namespace momos {
          */
         virtual void initPlaying()
         {
-            LearningModel<phraseType, labelType>::initPlaying();
+            LearningModel<phraseType>::initPlaying();
             likelihoodBuffer.clear();
         }
         
@@ -270,7 +270,7 @@ namespace momos {
             outStream << stopcriterion.minSteps << " " << stopcriterion.maxSteps << " " << stopcriterion.percentChg << endl;
             outStream << "# Size of the likehood buffer\n";
             outStream << likelihoodBuffer.size() << endl;
-            LearningModel<phraseType, labelType>::write(outStream, writeTrainingSet);
+            LearningModel<phraseType>::write(outStream, writeTrainingSet);
         }
         
         virtual void read(istream& inStream, bool readTrainingSet=false)
@@ -294,7 +294,7 @@ namespace momos {
             if (!inStream.good())
                 throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
             set_likelihoodBufferSize(_likelihoodBufferSize);
-            LearningModel<phraseType, labelType>::read(inStream, readTrainingSet);
+            LearningModel<phraseType>::read(inStream, readTrainingSet);
         }
         
 #pragma mark -

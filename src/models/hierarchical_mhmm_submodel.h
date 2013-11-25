@@ -32,7 +32,7 @@ public:
     
 #pragma mark -
 #pragma mark Constructors
-    HierarchicalMHMMSubmodel(TrainingSet<GestureSoundPhrase<ownData>, int> *_trainingSet=NULL,
+    HierarchicalMHMMSubmodel(TrainingSet< GestureSoundPhrase<ownData> > *_trainingSet=NULL,
                              int nbStates_ = MHMM_DEFAULT_NB_STATES,
                              int nbMixtureComponents_ = MGMM_DEFAULT_NB_MIXTURE_COMPONENTS,
                              float covarianceOffset_ = MGMM_DEFAULT_COVARIANCE_OFFSET)

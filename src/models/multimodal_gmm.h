@@ -24,13 +24,15 @@
  @tparam ownData defines if phrases has own data or shared memory
  */
 template<bool ownData>
-class MultimodalGMM : public EMBasedLearningModel< GestureSoundPhrase<ownData>, int> {
+class MultimodalGMM : public EMBasedLearningModel< GestureSoundPhrase<ownData> > {
 public:
     typedef typename map<int, GestureSoundPhrase<ownData>* >::iterator phrase_iterator;
     
     vector<float> mean;
     vector<float> covariance;
     vector<float> mixtureCoeffs;
+    
+    vector<double> beta;
     
     vector<float> observation_sound;
     vector<float> covariance_sound;
@@ -45,10 +47,10 @@ public:
      @param nbMixtureComponents\_ number of mixture components
      @param covarianceOffset_ offset to add to the diagonal of covariances matrices (useful to guarantee convergence)
      */
-    MultimodalGMM(TrainingSet<GestureSoundPhrase<ownData>, int> *_trainingSet=NULL,
+    MultimodalGMM(TrainingSet< GestureSoundPhrase<ownData> > *_trainingSet=NULL,
                   int nbMixtureComponents_ = MGMM_DEFAULT_NB_MIXTURE_COMPONENTS,
                   float covarianceOffset_= MGMM_DEFAULT_COVARIANCE_OFFSET)
-    : EMBasedLearningModel<GestureSoundPhrase<ownData>, int>(_trainingSet)
+    : EMBasedLearningModel< GestureSoundPhrase<ownData> >(_trainingSet)
     {
         nbMixtureComponents  = nbMixtureComponents_;
         covarianceOffset     = covarianceOffset_;
@@ -69,7 +71,7 @@ public:
     /*!
      Copy constructor
      */
-    MultimodalGMM(MultimodalGMM const& src) : EMBasedLearningModel< GestureSoundPhrase<ownData>, int>(src)
+    MultimodalGMM(MultimodalGMM const& src) : EMBasedLearningModel< GestureSoundPhrase<ownData> >(src)
     {
         _copy(this, src);
     }
@@ -89,10 +91,10 @@ public:
     /*!
      Copy between 2 MultimodalGMM models
      */
-    using EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy;
+    using EMBasedLearningModel< GestureSoundPhrase<ownData> >::_copy;
     virtual void _copy(MultimodalGMM *dst, MultimodalGMM const& src)
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::_copy(dst, src);
+        EMBasedLearningModel< GestureSoundPhrase<ownData> >::_copy(dst, src);
         dst->nbMixtureComponents     = src.nbMixtureComponents;
         dst->covarianceOffset        = src.covarianceOffset;
         dst->covarianceDeterminant   = src.covarianceDeterminant;
@@ -151,7 +153,7 @@ public:
     /*!
      Set training set associated with the model
      */
-    void set_trainingSet(TrainingSet<GestureSoundPhrase<ownData>, int> *_trainingSet)
+    void set_trainingSet(TrainingSet< GestureSoundPhrase<ownData> > *_trainingSet)
     {
         this->trainingSet = _trainingSet;
         if (this->trainingSet) {
@@ -194,7 +196,7 @@ public:
         int nbPhrases = this->trainingSet->size();
         
         if (nbPhrases == 0) return;
-        int step = this->trainingSet->begin()->second->getlength() / nbMixtureComponents;
+        int step = this->trainingSet->begin()->second->length() / nbMixtureComponents;
 		
         int offset(0);
         for (int c=0; c<nbMixtureComponents; c++) {
@@ -442,29 +444,27 @@ public:
     /*!
      Create the unimodal covariance matrix of the gesture modality for a particular component
      */
-    vector<float> createCovariance_gesture_OfComponent(int component)
+    void createCovariance_gesture_OfComponent(int component, vector<float>& covariance_gesture)
     {
-        vector<float> cov_gesture(dimension_gesture*dimension_gesture);
+        covariance_gesture.resize(dimension_gesture*dimension_gesture);
         for (int d1=0; d1<dimension_gesture; d1++) {
             for (int d2=0; d2<dimension_gesture; d2++) {
-                cov_gesture[d1*dimension_gesture+d2] = covarianceOfComponent(component)[d1*dimension_total+d2];
+                covariance_gesture[d1*dimension_gesture+d2] = covarianceOfComponent(component)[d1*dimension_total+d2];
             }
         }
-        return cov_gesture;
     }
     
     /*!
      Create the unimodal covariance matrix of the sound modality for a particular component
      */
-    vector<float> createCovariance_sound_OfComponent(int component)
+    void createCovariance_sound_OfComponent(int component, vector<float>& covariance_sound)
     {
-        vector<float> cov_sound(dimension_sound*dimension_sound);
+        covariance_sound.resize(dimension_sound*dimension_sound);
         for (int d1=0; d1<dimension_sound; d1++) {
             for (int d2=0; d2<dimension_sound; d2++) {
-                cov_sound[d1*dimension_sound+d2] = covarianceOfComponent(component)[d1*dimension_total+dimension_gesture+d2];
+                covariance_sound[d1*dimension_sound+d2] = covarianceOfComponent(component)[d1*dimension_total+dimension_gesture+d2];
             }
         }
-        return cov_sound;
     }
     
     /*!
@@ -527,7 +527,7 @@ public:
             delete inverseMat;
             
             // Update inverse covariance for gesture only
-            cov_matrix_gesture._data = createCovariance_gesture_OfComponent(c);
+            createCovariance_gesture_OfComponent(c, cov_matrix_gesture._data);
             inverseMat = cov_matrix_gesture.pinv(&det);
             covarianceDeterminant_gesture[c] = det;
             copy(inverseMat->data,
@@ -549,7 +549,8 @@ public:
      */
     double regression(float *obs)
     {
-        vector<float>  newMeanSound = regression_evaluateMeanSound(obs);
+        vector<float>  newMeanSound;
+        regression_evaluateMeanSound(obs, newMeanSound);
         regression_beta(obs);
         
         for (int d=0; d<dimension_sound; d++) {
@@ -561,7 +562,7 @@ public:
         
         for (int i=0; i<dimension_sound; i++)
             observation_sound[i] = obs[dimension_gesture+i];
-        regression_estimateCovariance();
+        // regression_estimateCovariance();
         
         return obsProb_gesture(obs, -1);
     }
@@ -569,9 +570,9 @@ public:
     /*!
      estimate the sound parameters for each component from the gesture observation vector
      */
-    vector<float> regression_evaluateMeanSound(const float *obs)
+    void regression_evaluateMeanSound(const float *obs, vector<float>& newMeanSound)
     {
-        vector<float> newMeanSound(nbMixtureComponents*dimension_sound);
+        newMeanSound.resize(nbMixtureComponents*dimension_sound);
         float tmp;
         
         for (int c=0; c<nbMixtureComponents; c++) {
@@ -586,7 +587,6 @@ public:
                 }
             }
         }
-        return newMeanSound;
     }
     
     /*!
@@ -691,7 +691,7 @@ public:
     {
         outStream << "# Multimodal GMM \n";
         outStream << "# =========================================\n";
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::write(outStream, writeTrainingSet);
+        EMBasedLearningModel< GestureSoundPhrase<ownData> >::write(outStream, writeTrainingSet);
         outStream << "# Dimensions\n";
         outStream << dimension_gesture << " " << dimension_sound << endl;
         outStream << "# Number of mixture Components\n";
@@ -723,7 +723,7 @@ public:
     
     void read(istream& inStream, bool readTrainingSet=false)
     {
-        EMBasedLearningModel<GestureSoundPhrase<ownData>, int>::read(inStream, readTrainingSet);
+        EMBasedLearningModel< GestureSoundPhrase<ownData> >::read(inStream, readTrainingSet);
         
         // Get Dimensions
         skipComments(&inStream);
@@ -794,7 +794,7 @@ public:
             int nbPhrases = this->trainingSet->size();
             cout << "Number of phrases = " << nbPhrases << endl;
             for (phrase_iterator it = this->trainingSet->begin() ; it != this->trainingSet->end() ; it++) {
-                cout << "size of phrase " << it->first << " = " << it->second->getlength() << endl;
+                cout << "size of phrase " << it->first << " = " << it->second->length() << endl;
                 // cout << "phrase " << it->first << ": data = \n";
                 // it->second->print();
             }
@@ -902,7 +902,7 @@ public:
         
         int totalLength(0);
         for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++)
-            totalLength += it->second->getlength();
+            totalLength += it->second->length();
         
         vector< vector<double> > p(nbMixtureComponents);
         vector<double> E(nbMixtureComponents, 0.0);
@@ -914,7 +914,7 @@ public:
         int tbase(0);
         
         for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-            int T = it->second->getlength();
+            int T = it->second->length();
             for (int t=0; t<T; t++) {
                 double norm_const(0.);
                 for (int c=0; c<nbMixtureComponents; c++) {
@@ -947,7 +947,7 @@ public:
                 meanOfComponent(c)[d] = 0.;
                 tbase = 0;
                 for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-                    int T = it->second->getlength();
+                    int T = it->second->length();
                     for (int t=0; t<T; t++) {
                         meanOfComponent(c)[d] += p[c][tbase+t] * (*it->second)(t, d);
                     }
@@ -964,7 +964,7 @@ public:
                     covarianceOfComponent(c)[d1*dimension_total+d2] = 0.;
                     tbase = 0;
                     for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-                        int T = it->second->getlength();
+                        int T = it->second->length();
                         for (int t=0; t<T; t++) {
                             covarianceOfComponent(c)[d1*dimension_total+d2] += p[c][tbase+t]
                             * ((*it->second)(t, d1) - meanOfComponent(c)[d1])
@@ -1001,7 +1001,6 @@ protected:
     vector<double> covarianceDeterminant_gesture;
     
     vector<float> conditionalSoundCovariance;
-    vector<double> beta;
 };
 
 #endif
