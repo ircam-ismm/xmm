@@ -11,8 +11,7 @@
 #ifndef rtml_training_set_h
 #define rtml_training_set_h
 
-#include "gesturesound_phrase.h"
-#include "gesture_phrase.h"
+#include "phrase.h"
 #include "notifiable.h"
 #include <map>
 #include <vector>
