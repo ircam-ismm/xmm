@@ -299,7 +299,7 @@ public:
         delete[] obs_ref;
     }
     
-    MHMMResults getResults(int classLabel)
+    MHMMResults getResults(Label classLabel)
     {
         if (this->models.find(classLabel) == this->models.end())
             throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);

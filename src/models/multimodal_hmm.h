@@ -15,7 +15,6 @@
  * @section description
  * TODO
  *
- @endcode
  *
  */
 
@@ -76,7 +75,7 @@ public:
      @param nbMixtureComponents_ number of gaussian mixture components for each state
      @param covarianceOffset_ offset added to the diagonal of covariances matrices to ensure convergence
      */
-    MultimodalHMM(TrainingSet< GestureSoundPhrase<ownData> > *_trainingSet=NULL,
+    MultimodalHMM(TrainingSet< GestureSoundPhrase<ownData> > * _trainingSet=NULL,
                   int nbStates_ = MHMM_DEFAULT_NB_STATES,
                   int nbMixtureComponents_ = MGMM_DEFAULT_NB_MIXTURE_COMPONENTS,
                   float covarianceOffset_ = MGMM_DEFAULT_COVARIANCE_OFFSET)

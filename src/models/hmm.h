@@ -69,7 +69,7 @@ public:
      @param nbMixtureComponents_ number of gaussian mixture components for each state
      @param covarianceOffset_ offset added to the diagonal of covariances matrices to ensure convergence
      */
-    HMM(TrainingSet< Phrase<ownData, 1> > *_trainingSet=NULL,
+    HMM(TrainingSet< Phrase<ownData, 1> > *_trainingSet = NULL,
         int nbStates_ = HMM_DEFAULT_NB_STATES,
         int nbMixtureComponents_ = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
         float covarianceOffset_ = GMM_DEFAULT_COVARIANCE_OFFSET)

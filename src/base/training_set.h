@@ -61,7 +61,7 @@ public:
     }
     
     /*!
-     @param m index of phrase
+     @param n index of phrase
      @return iterator to the phrase of index n
      */
     phrase_iterator operator()(int n)

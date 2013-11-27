@@ -362,7 +362,7 @@ public:
      *
      * get instantaneous likelihood on alpha variable for exit state exitNum.
      * @param exitNum number of exit state (0=continue, 1=transition, 2=back to root). if -1, get likelihood over all exit states
-     * @param likelihood likelihood vector (size nbPrimitives)
+     * @param likelihoodVector likelihood vector (size nbPrimitives)
      */
     void likelihoodAlpha(int exitNum, vector<double> &likelihoodVector) const
     {
@@ -418,7 +418,7 @@ public:
         // TODO: reintegrate covariance determinants
     }
     
-    HMHMMResults getResults(int classLabel)
+    HMHMMResults getResults(Label classLabel)
     {
         if (this->models.find(classLabel) == this->models.end())
             throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);

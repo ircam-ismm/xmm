@@ -17,41 +17,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0BD1C5C717D9E3C60061535A /* concurrent_gmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_gmm.h; sourceTree = "<group>"; };
-		0BD1C5C817D9E3C60061535A /* concurrent_hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_hmm.h; sourceTree = "<group>"; };
-		0BD1C5C917D9E3C60061535A /* concurrent_mgmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_mgmm.h; sourceTree = "<group>"; };
-		0BD1C5CA17D9E3C60061535A /* concurrent_mhmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_mhmm.h; sourceTree = "<group>"; };
-		0BD1C5CB17D9E3C60061535A /* gmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gmm.h; sourceTree = "<group>"; };
-		0BD1C5CC17D9E3C60061535A /* hierarchical_hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm.h; sourceTree = "<group>"; };
-		0BD1C5CD17D9E3C60061535A /* hierarchical_hmm_submodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm_submodel.h; sourceTree = "<group>"; };
-		0BD1C5CE17D9E3C60061535A /* hierarchical_mhmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_mhmm.h; sourceTree = "<group>"; };
-		0BD1C5CF17D9E3C60061535A /* hierarchical_mhmm_submodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_mhmm_submodel.h; sourceTree = "<group>"; };
-		0BD1C5D017D9E3C60061535A /* hierarchical_phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_phrase.h; sourceTree = "<group>"; };
-		0BD1C5D117D9E3C60061535A /* hierarchical_template_hmm_submodel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_template_hmm_submodel.h; sourceTree = "<group>"; };
-		0BD1C5D217D9E3C60061535A /* hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
-		0BD1C5D317D9E3C60061535A /* multimodal_gmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = multimodal_gmm.h; sourceTree = "<group>"; };
-		0BD1C5D417D9E3C60061535A /* multimodal_hmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = multimodal_hmm.h; sourceTree = "<group>"; };
-		0BD1C5D617D9E3C60061535A /* concurrent_models.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = concurrent_models.h; sourceTree = "<group>"; };
-		0BD1C5D717D9E3C60061535A /* em_based_learning_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = em_based_learning_model.h; sourceTree = "<group>"; };
-		0BD1C5D817D9E3C60061535A /* gesture_phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gesture_phrase.h; sourceTree = "<group>"; };
-		0BD1C5D917D9E3C60061535A /* gesturesound_phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gesturesound_phrase.h; sourceTree = "<group>"; };
-		0BD1C5DA17D9E3C60061535A /* hierarchical_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hierarchical_model.h; sourceTree = "<group>"; };
-		0BD1C5DB17D9E3C60061535A /* learning_model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = learning_model.h; sourceTree = "<group>"; };
-		0BD1C5DC17D9E3C60061535A /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
-		0BD1C5DD17D9E3C60061535A /* mubu_training_set.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mubu_training_set.h; sourceTree = "<group>"; };
-		0BD1C5DE17D9E3C60061535A /* notifiable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = notifiable.h; sourceTree = "<group>"; };
-		0BD1C5DF17D9E3C60061535A /* phrase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = phrase.h; sourceTree = "<group>"; };
-		0BD1C5E017D9E3C60061535A /* rtmlexception.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rtmlexception.h; sourceTree = "<group>"; };
-		0BD1C5E117D9E3C60061535A /* training_set.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = training_set.h; sourceTree = "<group>"; };
-		0BD1C5E217D9E3C60061535A /* utility.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utility.cpp; sourceTree = "<group>"; };
-		0BD1C5E317D9E3C60061535A /* utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 		0BD1C5E517D9E3D30061535A /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		0BD1C5E717D9E3D30061535A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		0BD1C5E817D9E3D30061535A /* doxy2swig.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = doxy2swig.py; sourceTree = "<group>"; };
 		0BD1C5E917D9E3D30061535A /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		0BD1C5EA17D9E3D30061535A /* mhmm.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = mhmm.i; sourceTree = "<group>"; };
 		0BD1C5EB17D9E3D30061535A /* numpy.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = numpy.i; sourceTree = "<group>"; };
-		0BD1C5EC17D9E3D30061535A /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		0BD1C5ED17D9E3D30061535A /* setup.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
 		0BD1C5EF17D9E3D30061535A /* test_mgmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_mgmm.py; sourceTree = "<group>"; };
 		0BD1C5F017D9E3D30061535A /* test_mhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_mhmm.py; sourceTree = "<group>"; };
@@ -59,6 +30,31 @@
 		0BD1C5F217D9E3D30061535A /* test_polymhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymhmm.py; sourceTree = "<group>"; };
 		0BD1C5F317D9E3D30061535A /* utility.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = utility.py; sourceTree = "<group>"; };
 		0BD1C5FE17D9EB860061535A /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
+		0BD3FF9C1843C07D00F97A6F /* concurrent_models.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = concurrent_models.h; sourceTree = "<group>"; };
+		0BD3FF9D1843C07D00F97A6F /* em_based_learning_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = em_based_learning_model.h; sourceTree = "<group>"; };
+		0BD3FF9E1843C07D00F97A6F /* hierarchical_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_model.h; sourceTree = "<group>"; };
+		0BD3FF9F1843C07D00F97A6F /* learning_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = learning_model.h; sourceTree = "<group>"; };
+		0BD3FFA01843C07D00F97A6F /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		0BD3FFA11843C07D00F97A6F /* mubu_training_set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mubu_training_set.h; sourceTree = "<group>"; };
+		0BD3FFA21843C07D00F97A6F /* notifiable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = notifiable.h; sourceTree = "<group>"; };
+		0BD3FFA31843C07D00F97A6F /* phrase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = phrase.h; sourceTree = "<group>"; };
+		0BD3FFA41843C07D00F97A6F /* rtmlexception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmlexception.h; sourceTree = "<group>"; };
+		0BD3FFA51843C07D00F97A6F /* training_set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = training_set.h; sourceTree = "<group>"; };
+		0BD3FFA61843C07D00F97A6F /* utility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utility.cpp; sourceTree = "<group>"; };
+		0BD3FFA71843C07D00F97A6F /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
+		0BD3FFA91843C07D00F97A6F /* concurrent_gmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = concurrent_gmm.h; sourceTree = "<group>"; };
+		0BD3FFAA1843C07D00F97A6F /* concurrent_hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = concurrent_hmm.h; sourceTree = "<group>"; };
+		0BD3FFAB1843C07D00F97A6F /* concurrent_mgmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = concurrent_mgmm.h; sourceTree = "<group>"; };
+		0BD3FFAC1843C07D00F97A6F /* concurrent_mhmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = concurrent_mhmm.h; sourceTree = "<group>"; };
+		0BD3FFAD1843C07D00F97A6F /* gmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gmm.h; sourceTree = "<group>"; };
+		0BD3FFAE1843C07D00F97A6F /* hierarchical_hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm.h; sourceTree = "<group>"; };
+		0BD3FFAF1843C07D00F97A6F /* hierarchical_hmm_submodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm_submodel.h; sourceTree = "<group>"; };
+		0BD3FFB01843C07D00F97A6F /* hierarchical_mhmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_mhmm.h; sourceTree = "<group>"; };
+		0BD3FFB11843C07D00F97A6F /* hierarchical_mhmm_submodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_mhmm_submodel.h; sourceTree = "<group>"; };
+		0BD3FFB21843C07D00F97A6F /* hierarchical_phrase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_phrase.h; sourceTree = "<group>"; };
+		0BD3FFB31843C07D00F97A6F /* hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
+		0BD3FFB41843C07D00F97A6F /* multimodal_gmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multimodal_gmm.h; sourceTree = "<group>"; };
+		0BD3FFB51843C07D00F97A6F /* multimodal_hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multimodal_hmm.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -68,52 +64,8 @@
 				0BD1C5FE17D9EB860061535A /* config.xcconfig */,
 				0BD1C5E417D9E3D20061535A /* doc */,
 				0BD1C5E617D9E3D30061535A /* python */,
-				0BD1C5C617D9E3C60061535A /* src */,
+				0BD3FF9A1843C07D00F97A6F /* src */,
 			);
-			sourceTree = "<group>";
-		};
-		0BD1C5C617D9E3C60061535A /* src */ = {
-			isa = PBXGroup;
-			children = (
-				0BD1C5C717D9E3C60061535A /* concurrent_gmm.h */,
-				0BD1C5C817D9E3C60061535A /* concurrent_hmm.h */,
-				0BD1C5C917D9E3C60061535A /* concurrent_mgmm.h */,
-				0BD1C5CA17D9E3C60061535A /* concurrent_mhmm.h */,
-				0BD1C5CB17D9E3C60061535A /* gmm.h */,
-				0BD1C5CC17D9E3C60061535A /* hierarchical_hmm.h */,
-				0BD1C5CD17D9E3C60061535A /* hierarchical_hmm_submodel.h */,
-				0BD1C5CE17D9E3C60061535A /* hierarchical_mhmm.h */,
-				0BD1C5CF17D9E3C60061535A /* hierarchical_mhmm_submodel.h */,
-				0BD1C5D017D9E3C60061535A /* hierarchical_phrase.h */,
-				0BD1C5D117D9E3C60061535A /* hierarchical_template_hmm_submodel.h */,
-				0BD1C5D217D9E3C60061535A /* hmm.h */,
-				0BD1C5D317D9E3C60061535A /* multimodal_gmm.h */,
-				0BD1C5D417D9E3C60061535A /* multimodal_hmm.h */,
-				0BD1C5D517D9E3C60061535A /* rtml */,
-			);
-			name = src;
-			path = ../../src;
-			sourceTree = "<group>";
-		};
-		0BD1C5D517D9E3C60061535A /* rtml */ = {
-			isa = PBXGroup;
-			children = (
-				0BD1C5D617D9E3C60061535A /* concurrent_models.h */,
-				0BD1C5D717D9E3C60061535A /* em_based_learning_model.h */,
-				0BD1C5D817D9E3C60061535A /* gesture_phrase.h */,
-				0BD1C5D917D9E3C60061535A /* gesturesound_phrase.h */,
-				0BD1C5DA17D9E3C60061535A /* hierarchical_model.h */,
-				0BD1C5DB17D9E3C60061535A /* learning_model.h */,
-				0BD1C5DC17D9E3C60061535A /* matrix.h */,
-				0BD1C5DD17D9E3C60061535A /* mubu_training_set.h */,
-				0BD1C5DE17D9E3C60061535A /* notifiable.h */,
-				0BD1C5DF17D9E3C60061535A /* phrase.h */,
-				0BD1C5E017D9E3C60061535A /* rtmlexception.h */,
-				0BD1C5E117D9E3C60061535A /* training_set.h */,
-				0BD1C5E217D9E3C60061535A /* utility.cpp */,
-				0BD1C5E317D9E3C60061535A /* utility.h */,
-			);
-			path = rtml;
 			sourceTree = "<group>";
 		};
 		0BD1C5E417D9E3D20061535A /* doc */ = {
@@ -133,7 +85,6 @@
 				0BD1C5E917D9E3D30061535A /* Makefile */,
 				0BD1C5EA17D9E3D30061535A /* mhmm.i */,
 				0BD1C5EB17D9E3D30061535A /* numpy.i */,
-				0BD1C5EC17D9E3D30061535A /* README.txt */,
 				0BD1C5ED17D9E3D30061535A /* setup.py */,
 				0BD1C5EE17D9E3D30061535A /* test */,
 				0BD1C5F317D9E3D30061535A /* utility.py */,
@@ -151,6 +102,55 @@
 				0BD1C5F217D9E3D30061535A /* test_polymhmm.py */,
 			);
 			path = test;
+			sourceTree = "<group>";
+		};
+		0BD3FF9A1843C07D00F97A6F /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0BD3FF9B1843C07D00F97A6F /* base */,
+				0BD3FFA81843C07D00F97A6F /* models */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
+		0BD3FF9B1843C07D00F97A6F /* base */ = {
+			isa = PBXGroup;
+			children = (
+				0BD3FF9C1843C07D00F97A6F /* concurrent_models.h */,
+				0BD3FF9D1843C07D00F97A6F /* em_based_learning_model.h */,
+				0BD3FF9E1843C07D00F97A6F /* hierarchical_model.h */,
+				0BD3FF9F1843C07D00F97A6F /* learning_model.h */,
+				0BD3FFA01843C07D00F97A6F /* matrix.h */,
+				0BD3FFA11843C07D00F97A6F /* mubu_training_set.h */,
+				0BD3FFA21843C07D00F97A6F /* notifiable.h */,
+				0BD3FFA31843C07D00F97A6F /* phrase.h */,
+				0BD3FFA41843C07D00F97A6F /* rtmlexception.h */,
+				0BD3FFA51843C07D00F97A6F /* training_set.h */,
+				0BD3FFA61843C07D00F97A6F /* utility.cpp */,
+				0BD3FFA71843C07D00F97A6F /* utility.h */,
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		0BD3FFA81843C07D00F97A6F /* models */ = {
+			isa = PBXGroup;
+			children = (
+				0BD3FFA91843C07D00F97A6F /* concurrent_gmm.h */,
+				0BD3FFAA1843C07D00F97A6F /* concurrent_hmm.h */,
+				0BD3FFAB1843C07D00F97A6F /* concurrent_mgmm.h */,
+				0BD3FFAC1843C07D00F97A6F /* concurrent_mhmm.h */,
+				0BD3FFAD1843C07D00F97A6F /* gmm.h */,
+				0BD3FFAE1843C07D00F97A6F /* hierarchical_hmm.h */,
+				0BD3FFAF1843C07D00F97A6F /* hierarchical_hmm_submodel.h */,
+				0BD3FFB01843C07D00F97A6F /* hierarchical_mhmm.h */,
+				0BD3FFB11843C07D00F97A6F /* hierarchical_mhmm_submodel.h */,
+				0BD3FFB21843C07D00F97A6F /* hierarchical_phrase.h */,
+				0BD3FFB31843C07D00F97A6F /* hmm.h */,
+				0BD3FFB41843C07D00F97A6F /* multimodal_gmm.h */,
+				0BD3FFB51843C07D00F97A6F /* multimodal_hmm.h */,
+			);
+			path = models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

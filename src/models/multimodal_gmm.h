@@ -340,7 +340,7 @@ public:
     
     /*!
      Unimodal Gesture Observation probability
-     @param obs_gesture gesture observation vector
+     @param obs gesture observation vector
      @param mixtureComponent index of the mixture component. if unspecified or negative,
      full mixture observation probability is computed
      */
@@ -368,7 +368,7 @@ public:
     
     /*!
      Unimodal Sound Observation probability
-     @param obs_sound sound observation vector
+     @param obs sound observation vector
      @param mixtureComponent index of the mixture component. if unspecified or negative,
      full mixture observation probability is computed
      */
@@ -382,7 +382,8 @@ public:
             }
         } else {
             double det;
-            vector<float> covSndArray = createCovariance_sound_OfComponent(mixtureComponent);
+            vector<float> covSndArray;
+            createCovariance_sound_OfComponent(mixtureComponent, covSndArray);
             Matrix<float> covSndMatrix(dimension_sound, dimension_sound, covSndArray.begin());
             Matrix<float> inverseCovSnd = covSndMatrix.pinv(&det);
             

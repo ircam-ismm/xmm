@@ -4,8 +4,6 @@
 	#define SWIG_FILE_WITH_INIT
 	// #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 	#include "phrase.h"
-	#include "gesturesound_phrase.h"
-	#include "gesture_phrase.h"
 	#include "notifiable.h"
 	#include "training_set.h"
 	#include "learning_model.h"
@@ -41,10 +39,8 @@
 %include numpy.i
 %include std_string.i
 %include std_map.i
-%include mhmm_doc.i
+/*%include mhmm_doc.i*/
 %include "phrase.h"
-%include "gesturesound_phrase.h"
-%include "gesture_phrase.h"
 %include "notifiable.h"
 %include "training_set.h"
 %include "learning_model.h"
@@ -77,23 +73,23 @@
 
 // TRAINING SET
 // ====================================
-%template(_uTrainingSetBase1) _TrainingSetBase<Phrase<true, 1>, int>;
-%template(_uTrainingSetBase2) _TrainingSetBase<Phrase<true, 2>, int>;
-%template(_mTrainingSetBase)  _TrainingSetBase<GestureSoundPhrase<true>, int>;
-%template(_gTrainingSetBase)  _TrainingSetBase<GesturePhrase<true>, int>;
-%template(uTrainingSet1) TrainingSet<Phrase<true, 1>, int>;
-%template(uTrainingSet2) TrainingSet<Phrase<true, 2>, int>;
-%template(mTrainingSet)  TrainingSet<GestureSoundPhrase<true>, int>;
+%template(_uTrainingSetBase1) _TrainingSetBase< Phrase<true, 1> >;
+%template(_uTrainingSetBase2) _TrainingSetBase< Phrase<true, 2> >;
+%template(_mTrainingSetBase)  _TrainingSetBase< GestureSoundPhrase<true> >;
+%template(_gTrainingSetBase)  _TrainingSetBase< GesturePhrase<true> >;
+%template(uTrainingSet1) TrainingSet< Phrase<true, 1> >;
+%template(uTrainingSet2) TrainingSet< Phrase<true, 2> >;
+%template(mTrainingSet)  TrainingSet< GestureSoundPhrase<true> >;
 
 // LEARNING MODEL: BASE DEFINITIONS
 // ====================================
-%template(uLearningModel1) LearningModel<Phrase<true, 1>, int>;
-%template(uLearningModel2) LearningModel<Phrase<true, 2>, int>;
-%template(mLearningModel)  LearningModel<GestureSoundPhrase<true>, int>;
+%template(uLearningModel1) LearningModel<Phrase<true, 1> >;
+%template(uLearningModel2) LearningModel<Phrase<true, 2> >;
+%template(mLearningModel)  LearningModel<GestureSoundPhrase<true> >;
 
-%template(uEMBasedLearningModel1) EMBasedLearningModel<Phrase<true, 1>, int>;
-%template(uEMBasedLearningModel2) EMBasedLearningModel<Phrase<true, 2>, int>;
-%template(mEMBasedLearningModel)  EMBasedLearningModel<GestureSoundPhrase<true>, int>;
+%template(uEMBasedLearningModel1) EMBasedLearningModel<Phrase<true, 1> >;
+%template(uEMBasedLearningModel2) EMBasedLearningModel<Phrase<true, 2> >;
+%template(mEMBasedLearningModel)  EMBasedLearningModel<GestureSoundPhrase<true> >;
 
 // MULTIMODAL GMM & MULTIMODAL HMM
 // ====================================
@@ -106,13 +102,13 @@
 %template(pyGMM) GMM<true>;
 %template(pyHMM) HMM<true>;
 
-%template(trainMap) std::map<int, int>;
+%template(trainMap) std::map<Label, int>;
 
 %apply (int DIM1, double* ARGOUT_ARRAY1) { (int nbModels_, double *likelihoods), (int nbModels__, double *cumulativelikelihoods) };
-%template(_mgmmConcurrentModels)  ConcurrentModels<MultimodalGMM<true>, GestureSoundPhrase<true>, int>;
-%template(_mhmmConcurrentModels)  ConcurrentModels<MultimodalHMM<true>, GestureSoundPhrase<true>, int>;
-%template(_gmmConcurrentModels)   ConcurrentModels<GMM<true>, Phrase<true, 1>, int>;
-%template(_hmmConcurrentModels)   ConcurrentModels<HMM<true>, Phrase<true, 1>, int>;
+%template(_mgmmConcurrentModels)  ConcurrentModels<MultimodalGMM<true>, GestureSoundPhrase<true> >;
+%template(_mhmmConcurrentModels)  ConcurrentModels<MultimodalHMM<true>, GestureSoundPhrase<true> >;
+%template(_gmmConcurrentModels)   ConcurrentModels<GMM<true>, Phrase<true, 1> >;
+%template(_hmmConcurrentModels)   ConcurrentModels<HMM<true>, Phrase<true, 1> >;
 
 %template(PolyMGMM) ConcurrentMGMM<true>;
 %template(PolyMHMM) ConcurrentMHMM<true>;
@@ -124,11 +120,11 @@
 %apply (int DIM1, double* IN_ARRAY1) { (int nbPrimitives, double *prior_), (int nbPrimitivesSquared, double *trans_) };
 
 %template(_HMHMMSubmodel) HierarchicalMHMMSubmodel<true>;
-%template(_hmhmmConcurrentModels)  ConcurrentModels<HierarchicalMHMMSubmodel<true>, GestureSoundPhrase<true>, int>;
-%template(_mhmmHierarchicalModel)  HierarchicalModel<HierarchicalMHMMSubmodel<true>, GestureSoundPhrase<true>, int>;
+%template(_hmhmmConcurrentModels)  ConcurrentModels<HierarchicalMHMMSubmodel<true>, GestureSoundPhrase<true> >;
+%template(_mhmmHierarchicalModel)  HierarchicalModel<HierarchicalMHMMSubmodel<true>, GestureSoundPhrase<true> >;
 %template(HMHMM) HierarchicalMHMM<true>;
 
 %template(_HHMMSubmodel) HierarchicalHMMSubmodel<true>;
-%template(_hhmmConcurrentModels)  ConcurrentModels<HierarchicalHMMSubmodel<true>, Phrase<true, 1>, int>;
-%template(_hmmHierarchicalModel)  HierarchicalModel<HierarchicalHMMSubmodel<true>, Phrase<true, 1>, int>;
+%template(_hhmmConcurrentModels)  ConcurrentModels<HierarchicalHMMSubmodel<true>, Phrase<true, 1> >;
+%template(_hmmHierarchicalModel)  HierarchicalModel<HierarchicalHMMSubmodel<true>, Phrase<true, 1> >;
 %template(HHMM) HierarchicalHMM<true>;

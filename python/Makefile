@@ -13,17 +13,17 @@ ifndef DOXYGEN
 DOXYGEN=doxygen
 endif
 
-LIB_DIR=../src/
 DOC_DIR=../doc/
-RTML_DIR = ../src/rtml/
+LIB_DIR=../src/models/
+RTML_DIR = ../src/base/
 
 SWIGOPT=#-debug-template
 
 compile: mhmm.i setup.py $(LIB_DIR)*.h $(RTML_DIR)*.h $(RTML_DIR)*.cpp #$(LIB_DIR)*.cpp
-	@echo "\ngenerating doc\n"
-	@(cd ../doc/ && $(DOXYGEN))
-	@echo "\nCompiling Library\n"
-	python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
+	# @echo "\ngenerating doc\n"
+	# @(cd ../doc/ && $(DOXYGEN))
+	# @echo "\nCompiling Library\n"
+	# python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
 	$(SWIG) -c++ $(SWIGOPT) -I$(LIB_DIR) -I$(RTML_DIR) -python mhmm.i
 	python setup.py build_ext --inplace
 

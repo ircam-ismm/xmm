@@ -10,8 +10,8 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
-src_dir = '../src/'
-rtml_dir = '../src/rtml/'
+src_dir = '../src/models/'
+rtml_dir = '../src/base/'
 
 # mhmm_lib extension module
 mhmm_module = Extension('_mhmm',
@@ -22,7 +22,7 @@ mhmm_module = Extension('_mhmm',
 # mhmm_lib setup
 setup (name        = 'mhmm',
        version     = '0.1',
-       author      = "Herve",
+       author      = "Jules Francoise (jules.francoise@ircam.fr)",
        description = """Real-Time Machine Learning Library""",
        ext_modules = [mhmm_module],
        py_modules  = ["mhmm"],

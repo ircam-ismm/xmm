@@ -190,7 +190,7 @@ public:
             modelLikelihoods[i] /= norm_const;
     }
     
-    HMMResults getResults(int classLabel)
+    HMMResults getResults(Label classLabel)
     {
         if (this->models.find(classLabel) == this->models.end())
             throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
