@@ -405,6 +405,10 @@ public:
     
     virtual void play(float *obs, double *modelLikelihoods)
     {
+        int dimension_gesture = this->referenceModel.get_dimension_gesture();
+        int dimension_sound = this->referenceModel.get_dimension_sound();
+        int dimension_total = dimension_gesture + dimension_sound;
+        
         model_iterator likeliestModel;
         if (forwardInitialized) {
             likeliestModel = this->forward_update(obs, modelLikelihoods);
@@ -412,9 +416,30 @@ public:
             likeliestModel = this->forward_init(obs, modelLikelihoods);
         }
         
-        likeliestModel->second.estimateObservation(obs);
+        if (this->playMode == this->LIKELIEST)
+        {
+            likeliestModel->second.estimateObservation(obs);
+        }
+        else // polyPlayMode == MIXTURE
+        {
+            // EVALUATE SOUND OBSERVATIONS AS A MIXTURE OF MODELS
+            int i(0);
+            float* obs_ref = new float[dimension_total];
+            copy(obs, obs+dimension_total, obs_ref);
+            
+            for (int d=0; d<dimension_sound; d++) {
+                obs[dimension_gesture+d] = 0.0;
+            }
+            
+            for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+                it->second.estimateObservation(obs_ref);
+                for (int d=0; d<dimension_sound; d++) {
+                    obs[dimension_gesture+d] += modelLikelihoods[i] * obs_ref[dimension_gesture+d];
+                }
+                i++;
+            }
+        }
         
-        // TODO: reintegrate Play mode?
         // TODO: reintegrate covariance determinants
     }
     

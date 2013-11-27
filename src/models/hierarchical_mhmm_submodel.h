@@ -29,6 +29,9 @@ class HierarchicalMHMMSubmodel : public MultimodalHMM<ownData>
 public:
     HMHMMResults results_h;
     
+    // Forward variables
+	vector<double> alpha_h[3] ; //!< Alpha variable (forward algorithm)
+    
 #pragma mark -
 #pragma mark Constructors
     HierarchicalMHMMSubmodel(TrainingSet< GestureSoundPhrase<ownData> > *_trainingSet=NULL,
@@ -100,9 +103,6 @@ public:
 #pragma mark protected Attributes
 protected:
     vector<float> exitProbabilities;
-    
-    // Forward variables
-	vector<double> alpha_h[3] ; //!< Alpha variable (forward algorithm)
 };
 
 #endif
