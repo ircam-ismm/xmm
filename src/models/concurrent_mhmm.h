@@ -161,6 +161,7 @@ public:
 #pragma mark Training
     virtual void finishTraining()
     {
+        ConcurrentModels< MultimodalHMM<ownData>, GestureSoundPhrase<ownData> >::finishTraining();
         for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
             int nbStates = this->get_nbStates();
             it->second.transition[(nbStates-1)*nbStates] = 0.01; // Add Cyclic Transition probability

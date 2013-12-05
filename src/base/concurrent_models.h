@@ -14,7 +14,6 @@
 #include "training_set.h"
 #if __cplusplus > 199711L
 #include <thread>
-#include <future>
 #endif
 
 using namespace std;
@@ -236,15 +235,8 @@ public:
         map<Label, int> nbIterations;
         
 #if __cplusplus > 199711L
-        // parallel training of all models (c++11 threads)
-        map<Label, future<int> > nbIterations_future;
-        
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            nbIterations_future[it->first] = async(launch::async, &ModelType::train, &it->second);
-        }
-        
-        for (map<Label, future<int> >::iterator it=nbIterations_future.begin(); it != nbIterations_future.end(); it++) {
-            nbIterations[it->first] = it->second.get();
+            thread (&ModelType::train, &it->second).detach();
         }
 #else
         // Sequential training
@@ -253,6 +245,13 @@ public:
         }
 #endif
         return nbIterations;
+    }
+    
+    void set_trainingCallback(void (*callback)(void *srcModel, bool complete, void* extradata), void* extradata) {
+        this->referenceModel.set_trainingCallback(callback, extradata);
+        for (model_iterator it=models.begin(); it != models.end(); it++) {
+            it->second.set_trainingCallback(callback, extradata);
+        }
     }
     
     /*!

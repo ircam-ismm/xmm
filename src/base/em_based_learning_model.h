@@ -13,6 +13,9 @@
 
 #include "learning_model.h"
 #include <cmath>
+#if __cplusplus > 199711L
+#include <mutex>
+#endif
 
 using namespace std;
 
@@ -27,7 +30,7 @@ const int EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW = 1;
 struct EMStopCriterion {
     int    minSteps;                //!< number of EM iterations is STEPS EM criterion
     int    maxSteps;                //!< number of EM iterations is STEPS EM criterion
-    double percentChg;           //!< log-likelihood difference threshold to stop EM re-estimation
+    double percentChg;              //!< log-likelihood difference threshold to stop EM re-estimation
 };
 
 #pragma mark -
@@ -110,10 +113,14 @@ public:
         if (!this->trainingSet)
             throw RTMLException("No training Set is Connected", __FILE__, __FUNCTION__, __LINE__);
         
-        this->initTraining();
-        
         if (this->trainingSet->is_empty())
             throw RTMLException("No training data", __FILE__, __FUNCTION__, __LINE__);
+        
+#if __cplusplus > 199711L
+        this->trainingMutex.lock();
+#endif
+        
+        this->initTraining();
         
         double log_prob(log(0.)), old_log_prob;
         int nbIterations(0);
@@ -130,6 +137,11 @@ public:
             
             nbIterations++;
             
+            if (stopcriterion.maxSteps > stopcriterion.minSteps)
+                this->trainingProgression = float(nbIterations) / float(stopcriterion.maxSteps);
+            else
+                this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
+            
             if (isnan(100.*fabs((log_prob-old_log_prob)/old_log_prob)) && (nbIterations > 1)) { //  (nbIterations > 0 && log_prob == 0.0)
                 throw RTMLException("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)", __FILE__, __FUNCTION__, __LINE__);
             }
@@ -138,6 +150,11 @@ public:
         this->finishTraining();
         this->trained = true;
         this->trainingSet->set_unchanged();
+        
+#if __cplusplus > 199711L
+        this->trainingMutex.unlock();
+#endif
+        
         return nbIterations;
     }
     
@@ -301,6 +318,10 @@ public:
 protected:
     RingBuffer<double, 1> likelihoodBuffer;
     EMStopCriterion stopcriterion;
+    
+#if __cplusplus > 199711L
+    mutex trainingMutex;
+#endif
     
 #pragma mark -
 #pragma mark Pure virtual methods

@@ -41,6 +41,7 @@ public:
     {
         trained = false;
         trainingSet = _trainingSet;
+        trainingCallback = NULL;
     }
     
     /*!
@@ -72,6 +73,7 @@ public:
     {
         dst->trained = src.trained;
         dst->trainingSet = src.trainingSet;
+        dst->trainingCallback = src.trainingCallback;
     }
     
     /*!
@@ -89,6 +91,17 @@ public:
     void set_trainingSet(TrainingSet<phraseType> *_trainingSet)
     {
         trainingSet = _trainingSet;
+    }
+
+#pragma mark -
+#pragma mark Callback function for training
+    /*! @name training set */
+    /*!
+     set the training set associated with the model
+     */
+    void set_trainingCallback(void (*callback)(void *srcModel, bool complete, void* extradata), void* extradata) {
+        this->trainingExtradata = extradata;
+        this->trainingCallback = callback;
     }
     
 #pragma mark -
@@ -121,7 +134,11 @@ public:
     /*! @name Pure virtual methods */
     virtual void initTraining() = 0;
     virtual int train() = 0;
-    virtual void finishTraining() = 0;
+    virtual void finishTraining()
+    {
+        if (this->trainingCallback)
+            this->trainingCallback(this, true, this->trainingExtradata);
+    }
     virtual void initPlaying()
     {
         if (!this->trained) {
@@ -129,6 +146,11 @@ public:
         }
     }
     virtual double play(float *obs) = 0;
+    
+    float trainingProgression;
+protected:
+    void (*trainingCallback)(void *srcModel, bool complete, void* extradata);
+    void *trainingExtradata;
 };
 
 #endif

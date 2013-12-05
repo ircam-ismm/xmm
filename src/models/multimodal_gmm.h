@@ -895,7 +895,9 @@ public:
     }
     
     virtual void finishTraining()
-    {}
+    {
+        LearningModel< GestureSoundPhrase<ownData> >::finishTraining();
+    }
     
     double train_EM_update()
     {

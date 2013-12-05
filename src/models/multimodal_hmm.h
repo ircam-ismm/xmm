@@ -779,6 +779,7 @@ public:
     void finishTraining()
     {
         normalizeTransitions();
+        LearningModel< GestureSoundPhrase<ownData> >::finishTraining();
     }
     
     /*!

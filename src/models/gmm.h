@@ -632,7 +632,9 @@ public:
     }
     
     virtual void finishTraining()
-    {}
+    {
+        LearningModel< Phrase<ownData, 1> >::finishTraining();
+    }
     
     double train_EM_update()
     {

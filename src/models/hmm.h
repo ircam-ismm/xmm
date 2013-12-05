@@ -666,6 +666,7 @@ public:
     void finishTraining()
     {
         normalizeTransitions();
+        LearningModel< Phrase<ownData, 1> >::finishTraining();
     }
     
     /*!
