@@ -355,6 +355,12 @@ public:
         }
     }
     
+    virtual void updateTrainingSets()
+    {
+        ConcurrentModels<ModelType, phraseType>::updateTrainingSets();
+        updateTransitionParameters();
+    }
+    
 #pragma mark -
 #pragma mark Training
     /*! @name Training */

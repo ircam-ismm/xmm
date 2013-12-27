@@ -143,7 +143,16 @@ public:
                 this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
             
             if (isnan(100.*fabs((log_prob-old_log_prob)/old_log_prob)) && (nbIterations > 1)) { //  (nbIterations > 0 && log_prob == 0.0)
-                throw RTMLException("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)", __FILE__, __FUNCTION__, __LINE__);
+#if __cplusplus > 199711L
+                this->trainingMutex.unlock();
+#endif
+                // TODO: Integrate exception pointer???
+                if (this->trainingCallback) {
+                    this->trainingCallback(this, TRAINING_ERROR, this->trainingExtradata);
+                    return -1;
+                }
+                else
+                    throw RTMLException("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)", __FILE__, __FUNCTION__, __LINE__);
             }
         } while (!train_EM_stop(nbIterations, log_prob, old_log_prob));
         

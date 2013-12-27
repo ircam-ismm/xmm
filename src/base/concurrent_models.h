@@ -12,6 +12,7 @@
 #define rtml_concurrent_models_h
 
 #include "training_set.h"
+#include "learning_model.h"
 #if __cplusplus > 199711L
 #include <thread>
 #endif
@@ -247,7 +248,7 @@ public:
         return nbIterations;
     }
     
-    void set_trainingCallback(void (*callback)(void *srcModel, bool complete, void* extradata), void* extradata) {
+    void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
         this->referenceModel.set_trainingCallback(callback, extradata);
         for (model_iterator it=models.begin(); it != models.end(); it++) {
             it->second.set_trainingCallback(callback, extradata);

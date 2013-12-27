@@ -16,6 +16,13 @@
 
 template <typename phraseType> class TrainingSet;
 
+typedef enum CALLBACK_FLAG__
+{
+    TRAINING_RUN,
+    TRAINING_DONE,
+    TRAINING_ERROR
+} CALLBACK_FLAG;
+
 #pragma mark -
 #pragma mark Class Definition
 /*!
@@ -99,7 +106,7 @@ public:
     /*!
      set the training set associated with the model
      */
-    void set_trainingCallback(void (*callback)(void *srcModel, bool complete, void* extradata), void* extradata) {
+    void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
         this->trainingExtradata = extradata;
         this->trainingCallback = callback;
     }
@@ -137,7 +144,7 @@ public:
     virtual void finishTraining()
     {
         if (this->trainingCallback)
-            this->trainingCallback(this, true, this->trainingExtradata);
+            this->trainingCallback(this, TRAINING_DONE, this->trainingExtradata);
     }
     virtual void initPlaying()
     {
@@ -149,7 +156,7 @@ public:
     
     float trainingProgression;
 protected:
-    void (*trainingCallback)(void *srcModel, bool complete, void* extradata);
+    void (*trainingCallback)(void *srcModel, CALLBACK_FLAG state, void* extradata);
     void *trainingExtradata;
 };
 
