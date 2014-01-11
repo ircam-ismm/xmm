@@ -152,7 +152,7 @@ public:
      */
     unsigned int size() const
     {
-        return models.size();
+        return (unsigned int)(models.size());
     }
     
 #pragma mark -
@@ -446,6 +446,20 @@ public:
             updateTrainingSets();
         }
     }
+    
+#ifdef SWIGPYTHON
+    void printLabels() {
+        cout << "Order of Labels: ";
+        for (model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+            if (it->first.type == Label::INT) {
+                cout << it->first.getInt() << " ";
+            }
+            else {
+                cout << it->first.getSym() << " ";
+            }
+        cout << endl;
+    }
+#endif
     
 #pragma mark -
 #pragma mark Protected attributes

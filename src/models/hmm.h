@@ -236,6 +236,37 @@ public:
     }
     
     /*!
+     initialize the means of each state with the first phrase (single gaussian)
+     */
+    void initMeansWithFirstPhrase()
+    {
+        if (!this->trainingSet) return;
+        int nbPhrases = this->trainingSet->size();
+        if (nbPhrases == 0) return;
+        
+        for (int n=0; n<nbStates; n++)
+            for (int d=0; d<dimension; d++)
+                states[n].mean[d] = 0.0;
+        
+        vector<int> factor(nbStates, 0);
+        int step = ((*this->trainingSet)(0))->second->length() / nbStates;
+        int offset(0);
+        for (int n=0; n<nbStates; n++) {
+            for (int t=0; t<step; t++) {
+                for (int d=0; d<dimension; d++) {
+                    states[n].mean[d] += (*((*this->trainingSet)(0)->second))(offset+t, d);
+                }
+            }
+            offset += step;
+            factor[n] += step;
+        }
+        
+        for (int n=0; n<nbStates; n++)
+            for (int d=0; d<dimension; d++)
+                states[n].mean[d] /= factor[n];
+    }
+    
+    /*!
      initialize the means of each state with all training phrases (single gaussian)
      */
     void initMeansWithAllPhrases_single()
@@ -625,7 +656,8 @@ public:
             initMeansWithAllPhrases_mixture();
             initCovariancesWithAllPhrases_mixture();
         } else {
-            initMeansWithAllPhrases_single();
+            // initMeansWithAllPhrases_single();
+            initMeansWithFirstPhrase();
             initCovariancesWithAllPhrases_single();
         }
         this->trained = false;
