@@ -391,7 +391,7 @@ public:
         
         // Compute time progression
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.results_h.progress = centroid(it->second.alpha);
+            it->second.results_h.progress = centroid(it->second.alpha_h[0]);
         }
         
         // TODO: reintegrate Play mode?

@@ -22,7 +22,7 @@ using namespace std;
 #pragma mark -
 #pragma mark Memory Allocation
 template <typename T>
-T* reallocate(T *src, int dim_src, int dim_dst) {
+T* reallocate(T *src, unsigned int dim_src, unsigned int dim_dst) {
     T *dst = new T[dim_dst];
     
     if (!src) return dst;
@@ -42,7 +42,7 @@ template <typename T>
 T centroid(T const *vect, int size) {
     T c(0.0);
     for (int i=0 ; i<size; i++) {
-        c += vect[i] * i;
+        c += vect[i] * T(i);
     }
     c /= T(size-1);
     return c;
@@ -51,8 +51,8 @@ T centroid(T const *vect, int size) {
 template <typename T>
 T centroid(vector<T> const &vect) {
     T c(0.0);
-    for (int i=0 ; i<vect.size(); i++) {
-        c += vect[i] * i;
+    for (unsigned int i=0 ; i<vect.size(); i++) {
+        c += vect[i] * T(i);
     }
     c /= T(vect.size()-1);
     return c;
@@ -107,11 +107,11 @@ public:
         }
     }
     
-    T operator()(int c, int i)
+    T operator()(unsigned int c, unsigned int i)
     {
         if (c >= channels)
             throw RTMLException("channel out of bounds", __FILE__, __FUNCTION__, __LINE__);
-        int m = full ? length : index;
+        unsigned int m = full ? length : index;
         if (i >= m)
             throw RTMLException("index out of bounds", __FILE__, __FUNCTION__, __LINE__);
         return data[c][i];

@@ -17,118 +17,15 @@
 #include <sstream>
 #include <rtmlexception.h>
 #include "utility.h"
+#include "label.h"
 
 using namespace std;
 
 const int PHRASE_DEFAULT_DIMENSION = 1;
 const int PHRASE_ALLOC_BLOCKSIZE = 256;
-
-#pragma mark -
-#pragma mark == Label
-#pragma mark -
-/*!
- @class Label
- @brief Label of a data phrase
- Possible types are int and string
- */
-class Label {
-public:
-    enum {INT, SYM} type;
-    
-    /*!
-     Constructor. Default label type is INT. Default Value is 0
-     */
-    Label() {
-        type = INT;
-        intLabel = 0;
-        symLabel = "";
-    }
-    
-    /*!
-     Check for label equality
-     */
-    bool operator==(Label const& src) const
-    {
-        if (!this->type == src.type)
-            return false;
-        if (this->type == INT)
-            return (this->intLabel == src.intLabel);
-        return (this->symLabel == src.symLabel);
-    }
-    
-    /*!
-     Check for label inequality
-     */
-    bool operator!=(Label const& src) const
-    {
-        return !operator==(src);
-    }
-    
-    bool operator<(Label const& src) const
-    {
-        if (type == INT)
-            return intLabel < src.intLabel;
-        else
-            return symLabel < src.symLabel;
-    }
-    
-    bool operator<=(Label const& src) const
-    {
-        return (operator<(src) || operator==(src));
-    }
-    
-    bool operator>(Label const& src) const
-    {
-        return !operator<=(src);
-    }
-    
-    bool operator>=(Label const& src) const
-    {
-        return !operator<(src);
-    }
-    
-    /*!
-     Get integer label value
-     @throw RTMLException if label type is not INT
-     */
-    int getInt() const
-    {
-        if (type != INT)
-            throw RTMLException("Can't get INT from SYM label");
-        return intLabel;
-    }
-    
-    /*!
-     Get symbolic label value
-     @throw RTMLException if label type is not SYM
-     */
-    string getSym() const
-    {
-        if (type != SYM)
-            throw RTMLException("Can't get SYM from INT label");
-        return symLabel;
-    }
-    
-    /*!
-     Set integer label value => sets label type to INT
-     */
-    void setInt(int l) {
-        type = INT;
-        intLabel = l;
-    }
-    
-    /*!
-     Set symbolic label value => sets label type to SYM
-     */
-    void setSym(string l) {
-        type = SYM;
-        symLabel = l;
-    }
-    
-protected:
-    int intLabel;
-    string symLabel;
-};
+const int GPHRASE_DEFAULT_DIMENSION_GESTURE = 1;
+const int GSPHRASE_DEFAULT_DIMENSION_GESTURE = 1;
+const int GSPHRASE_DEFAULT_DIMENSION_SOUND = 1;
 
 #pragma mark -
 #pragma mark == Phrase
@@ -155,14 +52,14 @@ public:
      Class Constructor
      @param _dimension dimensions of the data (Default=PHRASE_DEFAULT_DIMENSION)
      */
-    Phrase(int _dimension[nbModalities]=NULL)
+    Phrase(unsigned int _dimension[nbModalities]=NULL)
     {
         for (unsigned int modality=0; modality<nbModalities; modality++) {
             dimension[modality] = _dimension ? _dimension[modality] : PHRASE_DEFAULT_DIMENSION;
             data[modality] = NULL;
         }
         _length = 0;
-        max_length = 0;
+        _max_length = 0;
         isempty = true;
     }
     
@@ -196,7 +93,7 @@ public:
      */
     virtual void _copy(Phrase<ownData, nbModalities> *dst, Phrase<ownData, nbModalities> const& src)
     {
-        dst->max_length = src.max_length;
+        dst->_max_length = src._max_length;
         dst->_length = src._length;
         dst->isempty = src.isempty;
         
@@ -209,8 +106,8 @@ public:
                     delete[] dst->data[modality];
                     dst->data[modality] = NULL;
                 }
-                if (dst->max_length > 0) {
-                    dst->data[modality] = new float[dst->max_length*dst->dimension[modality]];
+                if (dst->_max_length > 0) {
+                    dst->data[modality] = new float[dst->_max_length*dst->dimension[modality]];
                     copy(src.data[modality], src.data[modality]+dst->_length*dst->dimension[modality], dst->data[modality]);
                 }
             }
@@ -272,9 +169,18 @@ public:
     /*!
      @return length of the phrase
      */
-    int length() const
+    unsigned int length() const
     {
         return _length;
+    }
+    
+    /*!
+     @brief crop phrase to specific length phrase length
+     @todo: check if not conflicts with ownData
+     */
+    void crop(unsigned int phraseLength)
+    {
+        _length = phraseLength;
     }
     
     /*!
@@ -282,7 +188,7 @@ public:
      @todo unsigned would be better
      @param modality index of the modality to consider
      */
-    int get_dimension(int modality=0) const
+    unsigned int get_dimension(unsigned int modality=0) const
     {
         return dimension[modality];
     }
@@ -293,15 +199,15 @@ public:
      @param modality index of the modality to consider
      @throw RTMLException if _dimension < 1
      */
-    void set_dimension(int _dimension, int modality=0)
+    void set_dimension(unsigned int _dimension, unsigned int modality=0)
     {
         if (_dimension < 1) throw RTMLException("Dimension must be striclty positive", __FILE__, __FUNCTION__, __LINE__);
         if (_dimension == dimension[modality]) return;
         
         if (ownData) {
             data[modality] = reallocate(data[modality],
-                                        max_length*dimension[modality],
-                                        max_length*_dimension);
+                                        _max_length*dimension[modality],
+                                        _max_length*_dimension);
         }
         dimension[modality] = _dimension;
     }
@@ -318,7 +224,7 @@ public:
      @throw RTMLException if phrase has own Data
      */
     void connect(float *_data[nbModalities],
-                 int length)
+                 unsigned int length)
     {
         if (ownData) throw RTMLException("Cannot connect a phrase with own data", __FILE__, __FUNCTION__, __LINE__);
         
@@ -326,6 +232,27 @@ public:
             data[modality] = _data[modality];
         }
         _length = length;
+        isempty = false;
+    }
+    
+    /*!
+     @brief Connect a modality array to a shared container
+     
+     This method is only usable in Shared Memory (ownData=false)
+     @param _data array of pointers to the data (nbModalities C-like Array)
+     @param length length of the data array (dimension can only be set via the accessor)
+     @throw RTMLException if phrase has own Data
+     */
+    void connect(float *_data,
+                 unsigned int length,
+                 unsigned int modality=0)
+    {
+        if (ownData) throw RTMLException("Cannot connect a phrase with own data", __FILE__, __FUNCTION__, __LINE__);
+        if (modality >= nbModalities) throw RTMLException("modality out of bounds", __FILE__, __FUNCTION__, __LINE__);
+        
+        data[modality] = _data;
+        if (_length == 0 || length < _length)
+            _length = length;
         isempty = false;
     }
     
@@ -360,7 +287,7 @@ public:
     {
         if (!ownData) throw RTMLException("Cannot record in shared data phrase", __FILE__, __FUNCTION__, __LINE__);
         
-        if (_length >= max_length || max_length == 0) {
+        if (_length >= _max_length || _max_length == 0) {
             reallocate_length();
         }
         
@@ -381,10 +308,10 @@ public:
     {
         for (unsigned int modality=0; modality<nbModalities; modality++) {
             data[modality] = reallocate<float>(data[modality],
-                                               max_length*dimension[modality],
-                                               (max_length+PHRASE_ALLOC_BLOCKSIZE)*dimension[modality]);
+                                               _max_length*dimension[modality],
+                                               (_max_length+PHRASE_ALLOC_BLOCKSIZE)*dimension[modality]);
         }
-        max_length += PHRASE_ALLOC_BLOCKSIZE;
+        _max_length += PHRASE_ALLOC_BLOCKSIZE;
     }
     
     /*!
@@ -409,7 +336,7 @@ public:
      @param dim dimension considered, indexed from 0 to the total dimension of the data across modalities
      @throw RTMLException if time index or dimension are out of bounds
      */
-    float operator()(int index, int dim) const
+    float operator()(unsigned int index, unsigned int dim) const
     {
         if (index >= _length) throw RTMLException("Phrase: index out of bounds", __FILE__, __FUNCTION__, __LINE__);
         
@@ -430,7 +357,7 @@ public:
      @throw RTMLException if time index is out of bounds
      @return pointer to the data array of the modality, for the given time index
      */
-    float* get_dataPointer(int index, int modality=0) const
+    float* get_dataPointer(unsigned int index, unsigned int modality=0) const
     {
         if (index >= _length) throw RTMLException("Phrase: index out of bounds", __FILE__, __FUNCTION__, __LINE__);
         
@@ -564,14 +491,14 @@ public:
      */
     vector<float> mean() const
     {
-        int dimension_total(0);
+        unsigned int dimension_total(0);
         for (unsigned int modality=0; modality<nbModalities; modality++)
             dimension_total += dimension[modality];
         
         vector<float> mean(dimension_total);
-        for (int d=0; d<dimension_total; d++) {
+        for (unsigned int d=0; d<dimension_total; d++) {
             mean[d] = 0.;
-            for (int t=0; t<_length; t++) {
+            for (unsigned int t=0; t<_length; t++) {
                 mean[d] += operator()(t, d);
             }
             mean[d] /= float(_length);
@@ -584,15 +511,15 @@ public:
      */
     vector<float> variance() const
     {
-        int dimension_total(0);
+        unsigned int dimension_total(0);
         for (unsigned int modality=0; modality<nbModalities; modality++)
             dimension_total += dimension[modality];
         
         vector<float> variance(dimension_total);
         vector<float> _mean = mean();
-        for (int d=0; d<dimension_total; d++) {
+        for (unsigned int d=0; d<dimension_total; d++) {
             variance[d] = 0.;
-            for (int t=0; t<_length; t++) {
+            for (unsigned int t=0; t<_length; t++) {
                 variance[d] += pow(operator()(t, d) - _mean[d], 2);
             }
             variance[d] /= float(_length);
@@ -630,63 +557,14 @@ public:
     /*!@name*/
 protected:
     bool isempty;
-    int _length;
-    int max_length;
-    int dimension[nbModalities];
-};
-
-#pragma mark -
-#pragma mark == Gesture Phrase
-#pragma mark -
-const int GPHRASE_DEFAULT_DIMENSION_GESTURE = 1;
-
-/*!
- @class GesturePhrase
- @brief Unimodal Gesture phrase
- @tparam ownData Defines if the data is stored in the Phrase or shared with another container
- */
-template <bool ownData>
-class GesturePhrase : public Phrase<ownData, 1> {
-public:
-#pragma mark -
-#pragma mark Constructors
-    /*! @name Constructors */
-    /*!
-     Class Constructor
-     @param _dimension_gesture dimension of the gesture stream
-     */
-    GesturePhrase(int _dimension_gesture=GPHRASE_DEFAULT_DIMENSION_GESTURE)
-    : Phrase<ownData, 1>(NULL)
-    {
-        this->set_dimension(_dimension_gesture);
-    }
-    
-#pragma mark -
-#pragma mark Connect (shared data)
-    /*! @name Connect (shared data) */
-    /*!
-     @brief Connect the phrase to a shared container
-     
-     This method is only usable in Shared Memory (ownData=false)
-     @param _data_gesture pointer to the gesture data array
-     @param _length length of the data array
-     @throw runtime_error if phrase has own Data
-     */
-    
-    void connect(float *_data_gesture,
-                 int _length)
-    {
-        float* _data[1] = {_data_gesture};
-        Phrase<ownData, 1>::connect(_data, _length);
-    }
-    
+    unsigned int _length;
+    unsigned int _max_length;
+    unsigned int dimension[nbModalities];
 };
 
 #pragma mark -
 #pragma mark == Gesture-Sound Phrase
 #pragma mark -
-const int GSPHRASE_DEFAULT_DIMENSION_GESTURE = 1;
-const int GSPHRASE_DEFAULT_DIMENSION_SOUND = 1;
 
 /*!
  @class GestureSoundPhrase
@@ -704,8 +582,8 @@ public:
      @param _dimension_gesture dimension of the gesture stream
      @param _dimension_sound dimension of the sound parameter stream
      */
-    GestureSoundPhrase(int _dimension_gesture=GSPHRASE_DEFAULT_DIMENSION_GESTURE,
-                       int _dimension_sound=GSPHRASE_DEFAULT_DIMENSION_SOUND)
+    GestureSoundPhrase(unsigned int _dimension_gesture=GSPHRASE_DEFAULT_DIMENSION_GESTURE,
+                       unsigned int _dimension_sound=GSPHRASE_DEFAULT_DIMENSION_SOUND)
     : Phrase<ownData, 2>(NULL)
     {
         this->set_dimension_gesture(_dimension_gesture);
@@ -727,7 +605,7 @@ public:
     
     void connect(float *_data_gesture,
                  float *_data_sound,
-                 int _length)
+                 unsigned int _length)
     {
         float* _data[2] = {_data_gesture, _data_sound};
         Phrase<ownData, 2>::connect(_data, _length);
@@ -740,7 +618,7 @@ public:
      Get pointer to the gesture array for a given time index
      @param timeIndex time index
      */
-    float *get_dataPointer_gesture(int timeIndex) const
+    float *get_dataPointer_gesture(unsigned int timeIndex) const
     {
         return this->get_dataPointer(timeIndex, 0);
     }
@@ -749,7 +627,7 @@ public:
      Get pointer to the sound parameters array for a given time index
      @param timeIndex time index
      */
-    float *get_dataPointer_sound(int timeIndex) const
+    float *get_dataPointer_sound(unsigned int timeIndex) const
     {
         return this->get_dataPointer(timeIndex, 1);
     }
@@ -757,22 +635,22 @@ public:
 #pragma mark -
 #pragma mark Accessors
     /*! @name Accessors */
-    int get_dimension_gesture() const
+    unsigned int get_dimension_gesture() const
     {
         return this->get_dimension(0);
     }
     
-    int get_dimension_sound() const
+    unsigned int get_dimension_sound() const
     {
         return this->get_dimension(1);
     }
     
-    void set_dimension_gesture(int _dimension_gesture)
+    void set_dimension_gesture(unsigned int _dimension_gesture)
     {
         this->set_dimension(_dimension_gesture, 0);
     }
     
-    void set_dimension_sound(int _dimension_sound)
+    void set_dimension_sound(unsigned int _dimension_sound)
     {
         this->set_dimension(_dimension_sound, 1);
     }

@@ -1288,14 +1288,13 @@ public:
      Write model to stream
      @todo check if all attributes are written
      @param outStream output stream
-     @param writeTrainingSet defines if the training set needs to be written with the model
      */
-    void write(ostream& outStream, bool writeTrainingSet=false)
+    void write(ostream& outStream)
     {
         // TODO: check if all attributes are written
         outStream << "# Multimodal HMM \n";
         outStream << "# =========================================\n";
-        EMBasedLearningModel< GestureSoundPhrase<ownData> >::write(outStream, writeTrainingSet);
+        EMBasedLearningModel< GestureSoundPhrase<ownData> >::write(outStream);
         outStream << "# Dimensions\n";
         outStream << dimension_gesture << " " << dimension_sound << endl;
         outStream << "# Number of states\n";
@@ -1330,11 +1329,10 @@ public:
      Read model from stream
      @todo check if all attributes are written
      @param inStream input stream
-     @param readTrainingSet defines if the training set needs to be read with the model
      */
-    void read(istream& inStream, bool readTrainingSet=false)
+    void read(istream& inStream)
     {
-        EMBasedLearningModel< GestureSoundPhrase<ownData> >::read(inStream, readTrainingSet);
+        EMBasedLearningModel< GestureSoundPhrase<ownData> >::read(inStream);
         
         // Get Dimensions
         skipComments(&inStream);

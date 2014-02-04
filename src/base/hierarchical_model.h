@@ -373,6 +373,18 @@ public:
         updateTransitionParameters();
     }
     
+    /*!
+     Train 1 model. The model is trained even if the dataset has not changed
+     @param classLabel class label of the model
+     @throw RTMLException if the class does not exist
+     */
+    virtual int train(Label classLabel)
+    {
+        int nbIterations = ConcurrentModels<ModelType, phraseType>::train(classLabel);
+        updateTransitionParameters();
+        return nbIterations;
+    }
+    
     virtual map<Label, int> retrain()
     {
         map<Label, int> nbIterations= ConcurrentModels<ModelType, phraseType>::retrain();
@@ -381,19 +393,9 @@ public:
     }
     
 #pragma mark -
-#pragma mark Playing
-    /*! @name Playing */
-    virtual void initPlaying()
-    {
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.initPlaying();
-        }
-    }
-    
-#pragma mark -
 #pragma mark File IO
     /*! @name File IO */
-    virtual void write(ostream& outStream, bool writeTrainingSet=false)
+    virtual void write(ostream& outStream)
     {
         outStream << "# =============================================================\n";
         outStream << "# =============================================================\n";
@@ -403,13 +405,13 @@ public:
         outStream << "# incremental learning\n";
         outStream << incrementalLearning << endl;
         // TODO: Write high level transition parameters
-        ConcurrentModels<ModelType, phraseType>::write(outStream, writeTrainingSet);
+        ConcurrentModels<ModelType, phraseType>::write(outStream);
     }
     
-    virtual void read(istream& inStream, bool readTrainingSet=false)
+    virtual void read(istream& inStream)
     {
         //TODO: read something maybe?
-        ConcurrentModels<ModelType, phraseType>::read(inStream, readTrainingSet);
+        ConcurrentModels<ModelType, phraseType>::read(inStream);
     }
 #pragma mark -
 #pragma mark Python

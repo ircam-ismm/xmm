@@ -12,7 +12,7 @@
 #define rtml_training_set_h
 
 #include "phrase.h"
-#include "notifiable.h"
+#include "listener.h"
 #include <map>
 #include <vector>
 #include <set>
@@ -81,7 +81,7 @@ public:
      @param _parent parent learning model => the parent is notified each time the training set
      attributes are modified
      */
-    _TrainingSetBase(Notifiable* _parent=NULL)
+    _TrainingSetBase(Listener* _parent=NULL)
     {
         locked = false;
         parent = _parent;
@@ -151,7 +151,7 @@ public:
      Set parent model (to be notified when attributes are modified)
      @param _parent parent model
      */
-    void set_parent(Notifiable* _parent)
+    void set_parent(Listener* _parent)
     {
         parent = _parent;
     }
@@ -548,7 +548,7 @@ public:
 #pragma mark Protected Attributes
     /*! @name Protected Attributes */
 protected:
-    Notifiable* parent;
+    Listener* parent;
     phraseType referencePhrase; //<! Reference phrase: used to store Phrase Attributes
     
     Label defaultLabel;
@@ -571,7 +571,7 @@ template <typename phraseType>
 class TrainingSet : public _TrainingSetBase<phraseType>
 {
 public:
-    TrainingSet(Notifiable* _parent=NULL) : _TrainingSetBase<phraseType>(_parent)
+    TrainingSet(Listener* _parent=NULL) : _TrainingSetBase<phraseType>(_parent)
     {}
     
     virtual ~TrainingSet() {}
@@ -585,7 +585,7 @@ class TrainingSet< Phrase<ownData, nbModalities> >
 public:
     typedef typename  map<int, Phrase<ownData, nbModalities>* >::iterator phrase_iterator;
     
-    TrainingSet(Notifiable* _parent=NULL)
+    TrainingSet(Listener* _parent=NULL)
     : _TrainingSetBase< Phrase<ownData, nbModalities> >(_parent) {}
     
     virtual ~TrainingSet() {}
@@ -596,7 +596,7 @@ public:
      @param _data array of pointers to shared data
      @param _length length of the phrase
      */
-    void connect(int phraseIndex, float *_data[nbModalities], int _length)
+    void connect(int phraseIndex, float *_data[nbModalities], unsigned int _length)
     {
         if (this->phrases.find(phraseIndex) == this->phrases.end()) {
             this->phrases[phraseIndex] = new Phrase<ownData, nbModalities>(this->referencePhrase);
@@ -610,7 +610,7 @@ public:
      get dimension of a modality
      @param modality index of the modality
      */
-    int get_dimension(int modality=0) const
+    unsigned int get_dimension(unsigned int modality=0) const
     {
         return this->referencePhrase.get_dimension(modality);
     }
@@ -620,7 +620,7 @@ public:
      @param _dimension new dimension
      @param modality index of the modality
      */
-    void set_dimension(int _dimension, int modality=0)
+    void set_dimension(unsigned int _dimension, unsigned int modality=0)
     {
         this->referencePhrase.set_dimension(_dimension, modality);
         for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
@@ -639,7 +639,7 @@ class TrainingSet< GestureSoundPhrase<ownData> >
 public:
     typedef typename  map<int, GestureSoundPhrase<ownData>* >::iterator phrase_iterator;
     
-    TrainingSet(Notifiable* _parent=NULL)
+    TrainingSet(Listener* _parent=NULL)
     : _TrainingSetBase< GestureSoundPhrase<ownData> >(_parent) {}
     
     virtual ~TrainingSet() {}
@@ -651,7 +651,7 @@ public:
      @param _data_sound pointer to shared sound data array
      @param _length length of the phrase
      */
-    void connect(int phraseIndex, float *_data_gesture, float *_data_sound, int _length)
+    void connect(int phraseIndex, float *_data_gesture, float *_data_sound, unsigned int _length)
     {
         if (this->phrases.find(phraseIndex) == this->phrases.end()) {
             this->phrases[phraseIndex] = new GestureSoundPhrase<ownData>(this->referencePhrase);
@@ -664,7 +664,7 @@ public:
     /*!
      get dimension of the gesture modality
      */
-    int get_dimension_gesture() const
+    unsigned int get_dimension_gesture() const
     {
         return this->referencePhrase.get_dimension_gesture();
     }
@@ -672,7 +672,7 @@ public:
     /*!
      set dimension of the gesture modality
      */
-    void set_dimension_gesture(int _dimension_gesture)
+    void set_dimension_gesture(unsigned int _dimension_gesture)
     {
         this->referencePhrase.set_dimension_gesture(_dimension_gesture);
         for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
@@ -685,7 +685,7 @@ public:
     /*!
      get dimension of the sound modality
      */
-    int get_dimension_sound() const
+    unsigned int get_dimension_sound() const
     {
         return this->referencePhrase.get_dimension_sound();
     }
@@ -693,7 +693,7 @@ public:
     /*!
      set dimension of the sound modality
      */
-    void set_dimension_sound(int _dimension_sound)
+    void set_dimension_sound(unsigned int _dimension_sound)
     {
         this->referencePhrase.set_dimension_sound(_dimension_sound);
         for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
@@ -704,56 +704,6 @@ public:
     }
 };
 
-#pragma mark GesturePhrase specialization
-template <bool ownData>
-class TrainingSet< GesturePhrase<ownData> >
-: public _TrainingSetBase< GesturePhrase<ownData> >
-{
-public:
-    typedef typename  map<int, GesturePhrase<ownData>* >::iterator phrase_iterator;
-    
-    TrainingSet(Notifiable* _parent=NULL)
-    : _TrainingSetBase< GesturePhrase<ownData> >(_parent) {}
-    
-    virtual ~TrainingSet() {}
-    
-    /*!
-     Connect a phrase to a shared data container (gesture-sound)
-     @param phraseIndex phrase index
-     @param _data pointer to shared gesture data array
-     @param _length length of the phrase
-     */
-    void connect(int phraseIndex, float *_data, int _length)
-    {
-        if (this->phrases.find(phraseIndex) == this->phrases.end()) {
-            this->phrases[phraseIndex] = new GesturePhrase<ownData>(this->referencePhrase);
-            this->setPhraseLabelToDefault(phraseIndex);
-        }
-        this->phrases[phraseIndex]->connect(_data, _length);
-        this->changed = true;
-    }
-    
-    /*!
-     get dimension of the gesture modality
-     */
-    int get_dimension() const
-    {
-        return this->referencePhrase.get_dimension();
-    }
-    
-    /*!
-     set dimension of the gesture modality
-     */
-    void set_dimension(int _dimension)
-    {
-        this->referencePhrase.set_dimension(_dimension);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
-            it->second->set_dimension(_dimension);
-        if (this->parent)
-            this->parent->notify("dimension");
-        this->changed = true;
-    }
-};
 
 #pragma mark -
 #pragma mark Python Specializations
@@ -770,7 +720,7 @@ class TrainingSet< Phrase<true, 1> >
 public:
     typedef  map<int, Phrase<true, 1>* >::iterator phrase_iterator;
     
-    TrainingSet(Notifiable* _parent=NULL)
+    TrainingSet(Listener* _parent=NULL)
     : _TrainingSetBase< Phrase<true, 1> >(_parent) {}
     
     virtual ~TrainingSet() {}
@@ -798,7 +748,7 @@ class TrainingSet< Phrase<true, 2> >
 public:
     typedef  map<int, Phrase<true, 2>* >::iterator phrase_iterator;
     
-    TrainingSet(Notifiable* _parent=NULL)
+    TrainingSet(Listener* _parent=NULL)
     : _TrainingSetBase< Phrase<true, 2> >(_parent) {}
     
     virtual ~TrainingSet() {}
@@ -826,7 +776,7 @@ class TrainingSet< GestureSoundPhrase<true> >
 public:
     typedef map<int, GestureSoundPhrase<true>* >::iterator phrase_iterator;
     
-    TrainingSet(Notifiable* _parent=NULL)
+    TrainingSet(Listener* _parent=NULL)
     : _TrainingSetBase< GestureSoundPhrase<true> >(_parent) {}
     
     virtual ~TrainingSet() {}
@@ -869,7 +819,7 @@ class TrainingSet< GesturePhrase<true> >
 public:
     typedef map<int, GesturePhrase<true>* >::iterator phrase_iterator;
     
-    TrainingSet(Notifiable* _parent=NULL)
+    TrainingSet(Listener* _parent=NULL)
     : _TrainingSetBase< GesturePhrase<true> >(_parent) {}
     
     virtual ~TrainingSet() {}

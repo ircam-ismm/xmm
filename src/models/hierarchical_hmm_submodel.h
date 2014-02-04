@@ -30,6 +30,9 @@ class HierarchicalHMMSubmodel : public HMM<ownData>
 public:
     HHMMResults results_h;
     
+    // Forward variables
+	vector<double> alpha_h[3] ; //!< Alpha variable (forward algorithm)
+    
 #pragma mark -
 #pragma mark Constructors
     HierarchicalHMMSubmodel(TrainingSet< Phrase<ownData, 1> > *_trainingSet=NULL,
@@ -86,9 +89,6 @@ public:
 #pragma mark protected Attributes
 protected:
     vector<float> exitProbabilities;
-    
-    // Forward variables
-	vector<double> alpha_h[3] ; //!< Alpha variable (forward algorithm)
 };
 
 

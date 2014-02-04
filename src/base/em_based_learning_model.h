@@ -245,7 +245,7 @@ public:
     /*!
      get size of the likelihood smoothing buffer (number of frames)
      */
-    int get_likelihoodBufferSize() const
+    unsigned int get_likelihoodBufferSize() const
     {
         return likelihoodBuffer.size();
     }
@@ -253,7 +253,7 @@ public:
     /*!
      set size of the likelihood smoothing buffer (number of frames)
      */
-    void set_likelihoodBufferSize(int likelihoodBufferSize_)
+    void set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
     {
         if (likelihoodBufferSize_ < 1) throw RTMLException("Likelihood Buffer size must be > 1", __FILE__, __FUNCTION__, __LINE__);
         likelihoodBuffer.resize(likelihoodBufferSize_);
@@ -288,16 +288,16 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
-    virtual void write(ostream& outStream, bool writeTrainingSet=false)
+    virtual void write(ostream& outStream)
     {
         outStream << "# EM stop criterion\n";
         outStream << stopcriterion.minSteps << " " << stopcriterion.maxSteps << " " << stopcriterion.percentChg << endl;
         outStream << "# Size of the likehood buffer\n";
         outStream << likelihoodBuffer.size() << endl;
-        LearningModel<phraseType>::write(outStream, writeTrainingSet);
+        LearningModel<phraseType>::write(outStream);
     }
     
-    virtual void read(istream& inStream, bool readTrainingSet=false)
+    virtual void read(istream& inStream)
     {
         // Get EM Stop Criterion
         skipComments(&inStream);
@@ -318,7 +318,7 @@ public:
         if (!inStream.good())
             throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
         set_likelihoodBufferSize(_likelihoodBufferSize);
-        LearningModel<phraseType>::read(inStream, readTrainingSet);
+        LearningModel<phraseType>::read(inStream);
     }
     
 #pragma mark -

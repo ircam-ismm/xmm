@@ -1063,14 +1063,13 @@ public:
      Write model to stream
      @todo check if all attributes are written
      @param outStream output stream
-     @param writeTrainingSet defines if the training set needs to be written with the model
      */
-    void write(ostream& outStream, bool writeTrainingSet=false)
+    void write(ostream& outStream)
     {
         // TODO: check if all attributes are written
         outStream << "# HMM \n";
         outStream << "# =========================================\n";
-        EMBasedLearningModel< Phrase<ownData, 1> >::write(outStream, writeTrainingSet);
+        EMBasedLearningModel< Phrase<ownData, 1> >::write(outStream);
         outStream << "# Dimension\n";
         outStream << dimension << endl;
         outStream << "# Number of states\n";
@@ -1105,11 +1104,10 @@ public:
      Read model from stream
      @todo check if all attributes are written
      @param inStream input stream
-     @param readTrainingSet defines if the training set needs to be read with the model
      */
-    void read(istream& inStream, bool readTrainingSet=false)
+    void read(istream& inStream)
     {
-        EMBasedLearningModel< Phrase<ownData, 1> >::read(inStream, readTrainingSet);
+        EMBasedLearningModel< Phrase<ownData, 1> >::read(inStream);
         
         // Get Dimensions
         skipComments(&inStream);

@@ -12,7 +12,7 @@
 #define rtml_learning_model_h
 
 #include "training_set.h"
-#include "notifiable.h"
+#include "listener.h"
 
 template <typename phraseType> class TrainingSet;
 
@@ -32,7 +32,7 @@ typedef enum CALLBACK_FLAG__
  @tparam phraseType Data type of the phrases composing the training set
  */
 template <typename phraseType>
-class LearningModel : public Notifiable {
+class LearningModel : public Listener {
 public:
     bool trained;
     TrainingSet<phraseType> *trainingSet;
@@ -117,23 +117,17 @@ public:
     /*!
      write model to stream
      @param outStream output stream
-     @param writeTrainingSet defines if the training set needs to be written
      */
-    virtual void write(ostream& outStream, bool writeTrainingSet=false)
+    virtual void write(ostream& outStream)
     {
-        if (writeTrainingSet)
-            trainingSet->write(outStream);
     }
     
     /*!
      read model from stream
      @param inStream input stream
-     @param readTrainingSet defines if the training set needs to be read
      */
-    virtual void read(istream& inStream, bool readTrainingSet=false)
+    virtual void read(istream& inStream)
     {
-        if (readTrainingSet)
-            trainingSet->read(inStream);
     }
     
 #pragma mark -

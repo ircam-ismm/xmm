@@ -444,11 +444,11 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
-    void write(ostream& outStream, bool writeTrainingSet=false)
+    void write(ostream& outStream)
     {
         outStream << "# Multimodal GMM \n";
         outStream << "# =========================================\n";
-        EMBasedLearningModel< Phrase<ownData, 1> >::write(outStream, writeTrainingSet);
+        EMBasedLearningModel< Phrase<ownData, 1> >::write(outStream);
         outStream << "# Dimension\n";
         outStream << dimension << endl;
         outStream << "# Number of mixture Components\n";
@@ -478,9 +478,9 @@ public:
         }
     }
     
-    void read(istream& inStream, bool readTrainingSet=false)
+    void read(istream& inStream)
     {
-        EMBasedLearningModel< Phrase<ownData, 1> >::read(inStream, readTrainingSet);
+        EMBasedLearningModel< Phrase<ownData, 1> >::read(inStream);
         
         // Get Dimensions
         skipComments(&inStream);

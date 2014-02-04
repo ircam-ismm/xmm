@@ -1,7 +1,7 @@
 //
 // rtmlexception.h
 //
-// Simple exception
+// Simple exception class
 //
 // Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
 // author: Jules Françoise
