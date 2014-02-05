@@ -357,7 +357,7 @@ public:
     
     virtual void updateTrainingSets()
     {
-        ConcurrentModels<ModelType, phraseType>::updateTrainingSets();
+        ConcurrentModels<ModelType, phraseType>::updateAllTrainingSets();
         updateTransitionParameters();
     }
     
@@ -388,6 +388,13 @@ public:
     virtual map<Label, int> retrain()
     {
         map<Label, int> nbIterations= ConcurrentModels<ModelType, phraseType>::retrain();
+        updateTransitionParameters();
+        return nbIterations;
+    }
+    
+    virtual map<Label, int> train()
+    {
+        map<Label, int> nbIterations= ConcurrentModels<ModelType, phraseType>::train();
         updateTransitionParameters();
         return nbIterations;
     }
