@@ -48,7 +48,7 @@ public:
     {
         for (int i=0 ; i<3 ; i++)
             this->alpha_h[i].clear();
-        this->exitProbabilities.clear();
+        exitProbabilities.clear();
     }
     
 #pragma mark -
@@ -84,6 +84,57 @@ public:
         for (int i=0 ; i<3 ; i++)
             alpha_h[i].resize(this->nbStates, 0.0);
     }
+    
+#pragma mark -
+#pragma mark JSON I/O
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_hhmmsub(JSON_NODE);
+        json_hhmmsub.set_name("HHMM SubModel");
+        
+        // Write Parent: EM Learning Model
+        JSONNode json_hmm = HMM<ownData>::to_json();
+        json_hmm.set_name("parent");
+        json_hhmmsub.push_back(json_hmm);
+
+        // Exit probabilities
+        json_hhmmsub.push_back(vector2json(exitProbabilities, "exitProbabilities"));
+        
+        return json_hhmmsub;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            HMM<ownData>::from_json(*root_it);
+            root_it++;
+            
+            // Get Exit probabilities
+            assert(root_it != root.end());
+            assert(root_it->name() == "exitProbabilities");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, exitProbabilities, this->nbStates);
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+        
+        this->trained = true;
+    }
+
     
 #pragma mark -
 #pragma mark protected Attributes

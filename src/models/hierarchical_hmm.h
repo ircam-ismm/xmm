@@ -414,7 +414,6 @@ protected:
     // Forward variables
     vector<double> V1 ;              //!< intermediate Forward variable
     vector<double> V2 ;              //!< intermediate Forward variable
-    bool          isAllocatedAlpha; //!< boolean, true if alpha variable are allocated
     
 #pragma mark -
 #pragma mark Python

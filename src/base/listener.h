@@ -14,6 +14,8 @@
 #include <string>
 #include <ostream>
 #include <fstream>
+#include "libjson.h"
+#include "json_utilities.h"
 
 using namespace std;
 
@@ -44,6 +46,31 @@ public:
      */
     virtual void read(istream& inStream) = 0;
     
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const { return JSONNode(JSON_NULL); }// = 0;
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root){}// = 0;
+    
+    /*
+    void writeFile(string filename)
+    {
+        JSONNode root = this->to_json();
+        ofstream outputFile;
+        outputFile.open(filename);
+        outputFile.close();
+    }
+    
+    void readFile(string filename)
+    {
+        ifstream inputFile;
+    }
+    //*/
+    
 #ifdef SWIGPYTHON
     /*!
      write method for python wrapping ('write' keyword forbidden, name has to be different)
@@ -52,7 +79,8 @@ public:
     {
         ofstream outStream;
         outStream.open(fileName);
-        this->write(outStream);
+        JSONNode jsonfile = this->to_json();
+        outStream << jsonfile.write_formatted();
         outStream.close();
     }
     
@@ -61,9 +89,17 @@ public:
      */
     void readFile(char* fileName)
     {
+        string jsonstring;
         ifstream inStream;
         inStream.open(fileName);
-        this->read(inStream);
+        inStream.seekg(0, ios::end);
+        jsonstring.reserve(inStream.tellg());
+        inStream.seekg(0, ios::beg);
+        
+        jsonstring.assign((istreambuf_iterator<char>(inStream)),
+                          istreambuf_iterator<char>());
+        cout << jsonstring << endl;
+        
         inStream.close();
     }
     

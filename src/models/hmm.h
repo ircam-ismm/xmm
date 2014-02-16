@@ -22,10 +22,10 @@
  @enum TRANSITION_MODE
  Mode of transition of the model
  */
-enum TRANSITION_MODE {
+typedef enum _TRANSITION_MODE {
     ERGODIC,
     LEFT_RIGHT
-};
+} TRANSITION_MODE;
 
 using namespace std;
 
@@ -77,14 +77,6 @@ public:
     {
         nbStates = nbStates_;
         
-        transition.resize(nbStates*nbStates);
-        prior.resize(nbStates);
-        
-        alpha.resize(nbStates);
-        previousAlpha.resize(nbStates);
-        beta.resize(nbStates);
-        previousBeta.resize(nbStates);
-        
         if (this->trainingSet) {
             dimension = this->trainingSet->get_dimension();
         } else {
@@ -94,7 +86,7 @@ public:
         nbMixtureComponents = nbMixtureComponents_;
         covarianceOffset = covarianceOffset_;
         
-        states.resize(nbStates, GMM<ownData>(NULL, nbMixtureComponents, covarianceOffset));
+        reallocParameters();
         
         for (int i=0; i<nbStates; i++) {
             states[i].set_trainingSet(_trainingSet);
@@ -212,6 +204,20 @@ public:
 #pragma mark -
 #pragma mark Parameters initialization
     /*! @name Parameters initialization */
+    /*!
+     Re-allocate model parameters
+     */
+    void reallocParameters()
+    {
+        prior.resize(nbStates);
+        transition.resize(nbStates*nbStates);
+        alpha.resize(nbStates);
+        previousAlpha.resize(nbStates);
+        beta.resize(nbStates);
+        previousBeta.resize(nbStates);
+        states.resize(nbStates, GMM<ownData>(this->trainingSet, nbMixtureComponents, covarianceOffset));
+    }
+    
     /*!
      evaluate the number of hidden states based on the length of the training examples
      @todo integrate state factor as attribute
@@ -456,15 +462,9 @@ public:
         if (nbStates_ < 1) throw RTMLException("Number of states must be > 0", __FILE__, __FUNCTION__, __LINE__);;
         if (nbStates_ == nbStates) return;
         
-        prior.resize(nbStates_);
-        transition.resize(nbStates_*nbStates_);
-        states.resize(nbStates_, GMM<ownData>(this->trainingSet, nbMixtureComponents, covarianceOffset));
-        alpha.resize(nbStates_);
-        previousAlpha.resize(nbStates_);
-        beta.resize(nbStates_);
-        previousBeta.resize(nbStates_);
-        
         nbStates = nbStates_;
+        reallocParameters();
+        
         this->trained = false;
     }
     
@@ -480,8 +480,10 @@ public:
         for (int i=0; i<nbStates; i++) {
             states[i].set_nbMixtureComponents(nbMixtureComponents_);
         }
-        this->trained = false;
+        
         nbMixtureComponents = nbMixtureComponents_;
+        
+        this->trained = false;
     }
     
     float  get_covarianceOffset() const
@@ -502,6 +504,7 @@ public:
     /*!
      get transition mode of the hidden Markov Chain
      @return string correpsonding to the transition mode (left-right / ergodic)
+     @todo: remove transitionMode to simplify forward complexity (cf gf)
      */
     string get_transitionMode() const
     {
@@ -1059,6 +1062,125 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_hmm(JSON_NODE);
+        json_hmm.set_name("HMM");
+        
+        // Write Parent: EM Learning Model
+        JSONNode json_emmodel = EMBasedLearningModel< Phrase<ownData, 1> >::to_json();
+        json_emmodel.set_name("parent");
+        json_hmm.push_back(json_emmodel);
+        
+        // Scalar Attributes
+        json_hmm.push_back(JSONNode("dimension", dimension));
+        json_hmm.push_back(JSONNode("nbStates", nbStates));
+        json_hmm.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents));
+        json_hmm.push_back(JSONNode("covarianceOffset", covarianceOffset));
+        json_hmm.push_back(JSONNode("transitionMode", int(transitionMode)));
+        
+        // Model Parameters
+        json_hmm.push_back(vector2json(prior, "prior"));
+        json_hmm.push_back(vector2json(transition, "transition"));
+        
+        // States
+        JSONNode json_states(JSON_ARRAY);
+        for (int i=0 ; i<nbStates ; i++)
+        {
+            json_states.push_back(states[i].to_json());
+        }
+        json_states.set_name("states");
+        json_hmm.push_back(json_states);
+        
+        return json_hmm;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            EMBasedLearningModel< Phrase<ownData, 1> >::from_json(*root_it);
+            root_it++;
+            
+            // Get Dimension
+            assert(root_it != root.end());
+            assert(root_it->name() == "dimension");
+            assert(root_it->type() == JSON_NUMBER);
+            dimension = root_it->as_int();
+            root_it++;
+            
+            // Get Number of states
+            assert(root_it != root.end());
+            assert(root_it->name() == "nbStates");
+            assert(root_it->type() == JSON_NUMBER);
+            nbStates = root_it->as_int();
+            root_it++;
+            
+            // Get Number of Mixture Components
+            assert(root_it != root.end());
+            assert(root_it->name() == "nbMixtureComponents");
+            assert(root_it->type() == JSON_NUMBER);
+            nbMixtureComponents = root_it->as_int();
+            root_it++;
+            
+            // Get Covariance Offset
+            assert(root_it != root.end());
+            assert(root_it->name() == "covarianceOffset");
+            assert(root_it->type() == JSON_NUMBER);
+            covarianceOffset = root_it->as_float();
+            root_it++;
+            
+            // Get Transition Mode
+            assert(root_it != root.end());
+            assert(root_it->name() == "transitionMode");
+            assert(root_it->type() == JSON_NUMBER);
+            transitionMode = TRANSITION_MODE(root_it->as_int());
+            root_it++;
+            
+            // Reallocate model parameters
+            reallocParameters();
+            
+            // Get Prior
+            assert(root_it != root.end());
+            assert(root_it->name() == "prior");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, prior, nbStates);
+            root_it++;
+            
+            // Get Mean
+            assert(root_it != root.end());
+            assert(root_it->name() == "transition");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, transition, nbStates*nbStates);
+            root_it++;
+            
+            // Get States
+            assert(root_it != root.end());
+            assert(root_it->name() == "states");
+            assert(root_it->type() == JSON_ARRAY);
+            for (int i=0 ; i<nbStates ; i++) {
+                states[i].from_json((*root_it)[i]);
+            }
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+        
+        this->trained = true;
+    }
+    
     /*!
      Write model to stream
      @todo check if all attributes are written

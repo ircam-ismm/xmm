@@ -17,7 +17,8 @@
 #include <sstream>
 #include <rtmlexception.h>
 #include "utility.h"
-#include "label.h"
+#include "libjson.h"
+#include "json_utilities.h"
 
 using namespace std;
 
@@ -42,7 +43,6 @@ const int GSPHRASE_DEFAULT_DIMENSION_SOUND = 1;
 template <bool ownData=true, unsigned int nbModalities=1>
 class Phrase {
 public:
-    Label label;
     float *data[nbModalities];
     
 #pragma mark -
@@ -368,17 +368,89 @@ public:
 #pragma mark File IO / Stream IO
     /*! @name File IO  */
     /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_phrase(JSON_NODE);
+        json_phrase.set_name("Phrase");
+        json_phrase.push_back(JSONNode("modalities", nbModalities));
+        json_phrase.push_back(JSONNode("length", _length));
+        json_phrase.push_back(array2json(dimension, nbModalities, "dimensions"));
+        JSONNode json_data(JSON_ARRAY);
+        json_data.set_name("data");
+        for (unsigned int modality=0; modality<nbModalities; modality++) {
+            json_data.push_back(array2json(data[modality], _length*dimension[modality]));
+        }
+        json_phrase.push_back(json_data);
+        return json_phrase;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        if (!ownData)
+            throw RTMLException("Cannot read Phrase with Shared memory");
+        
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::const_iterator root_it = root.begin();
+            
+            // Get Number of modalities
+            assert(root_it != root.end());
+            assert(root_it->name() == "modalities");
+            assert(root_it->type() == JSON_NUMBER);
+            if (root_it->as_int() != nbModalities)
+                throw exception();
+            root_it++;
+            
+            // Get Length
+            assert(root_it != root.end());
+            assert(root_it->name() == "length");
+            assert(root_it->type() == JSON_NUMBER);
+            _length = root_it->as_int();
+            root_it++;
+            
+            // Get Dimensions
+            assert(root_it != root.end());
+            assert(root_it->name() == "dimensions");
+            assert(root_it->type() == JSON_ARRAY);
+            json2array(*root_it, dimension, nbModalities);
+            root_it++;
+            
+            // Allocate memory
+            for (unsigned int modality=0; modality<nbModalities; modality++) {
+                data[modality] = reallocate<float>(data[modality],
+                                                   _max_length*dimension[modality],
+                                                   _length*dimension[modality]);
+            }
+            _max_length = _length;
+            
+            // Get Data
+            assert(root_it != root.end());
+            assert(root_it->name() == "data");
+            assert(root_it->type() == JSON_ARRAY);
+            unsigned int modality = 0;
+            for (JSONNode::const_iterator array_it = root_it->begin(); array_it != root_it->end(); array_it++)
+            {
+                json2array(*array_it, data[modality], _length*dimension[modality]);
+                modality++;
+            }
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+    }
+    
+    /*!
      Write Data to Stream
      @param outStream output stream
      */
     void write(ostream& outStream) const
     {
         outStream << "# Phrase\n";
-        outStream << "# Label\n";
-        if (label.type == Label::INT)
-            outStream << "INT " << label.getInt() << endl;
-        else
-            outStream << "SYM" << label.getSym() << endl;
         outStream << "# Number of modalities\n";
         outStream << nbModalities << endl;
         outStream << "# Length\n";
@@ -407,26 +479,6 @@ public:
     {
         if (!ownData) {
             throw RTMLException("Phrase: cannot read phrase with shared data", __FILE__, __FUNCTION__, __LINE__);
-        }
-        
-        // Read label
-        skipComments(&inStream);
-        string lType;
-        inStream >> lType;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        if (lType == "INT") {
-            int intLab;
-            inStream >> intLab;
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-            this->label.setInt(intLab);
-        } else {
-            string symLab;
-            inStream >> symLab;
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-            this->label.setSym(symLab);
         }
         
         // Read Number of modalities

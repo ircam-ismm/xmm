@@ -83,14 +83,6 @@ public:
     {
         nbStates = nbStates_;
         
-        transition.resize(nbStates*nbStates);
-        prior.resize(nbStates);
-        
-        alpha.resize(nbStates);
-        previousAlpha.resize(nbStates);
-        beta.resize(nbStates);
-        previousBeta.resize(nbStates);
-        
         if (this->trainingSet) {
             dimension_gesture = this->trainingSet->get_dimension_gesture();
             dimension_sound = this->trainingSet->get_dimension_sound();
@@ -103,7 +95,7 @@ public:
         nbMixtureComponents = nbMixtureComponents_;
         covarianceOffset = covarianceOffset_;
         
-        states.resize(nbStates, MultimodalGMM<ownData>(NULL, nbMixtureComponents, covarianceOffset));
+        reallocParameters();
         
         for (int i=0; i<nbStates; i++) {
             states[i].set_trainingSet(_trainingSet);
@@ -235,6 +227,17 @@ public:
 #pragma mark -
 #pragma mark Parameters initialization
     /*! @name Parameters initialization */
+    void reallocParameters()
+    {
+        prior.resize(nbStates);
+        transition.resize(nbStates*nbStates);
+        alpha.resize(nbStates);
+        previousAlpha.resize(nbStates);
+        beta.resize(nbStates);
+        previousBeta.resize(nbStates);
+        states.resize(nbStates, MultimodalGMM<ownData>(this->trainingSet, nbMixtureComponents, covarianceOffset));
+    }
+    
     /*!
      evaluate the number of hidden states based on the length of the training examples
      @todo integrate state factor as attribute
@@ -484,15 +487,10 @@ public:
         if (nbStates_ < 1) throw RTMLException("Number of states must be > 0", __FILE__, __FUNCTION__, __LINE__);;
         if (nbStates_ == nbStates) return;
         
-        prior.resize(nbStates_);
-        transition.resize(nbStates_*nbStates_);
-        states.resize(nbStates_, MultimodalGMM<ownData>(this->trainingSet, nbMixtureComponents, covarianceOffset));
-        alpha.resize(nbStates_);
-        previousAlpha.resize(nbStates_);
-        beta.resize(nbStates_);
-        previousBeta.resize(nbStates_);
-        
         nbStates = nbStates_;
+        
+        reallocParameters();
+        
         this->trained = false;
     }
     
@@ -697,7 +695,7 @@ public:
     }
     
     /*!
-     foward update with estimated sound observation 
+     foward update with estimated sound observation
      @warning generally unused in current version of max/python implementations
      */
     double forward_update_withNewObservation(const float *obs_gesture, const float *obs_sound)
@@ -1140,6 +1138,7 @@ public:
         EMBasedLearningModel< GestureSoundPhrase<ownData> >::initPlaying();
         forwardInitialized = false;
         for (int i=0; i<nbStates; i++) {
+            states[i].initPlaying();
             states[i].estimateConditionalSoundCovariance();
         }
         
@@ -1284,6 +1283,143 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_mhmm(JSON_NODE);
+        json_mhmm.set_name("MHMM");
+        
+        // Write Parent: EM Learning Model
+        JSONNode json_emmodel = EMBasedLearningModel< GestureSoundPhrase<ownData> >::to_json();
+        json_emmodel.set_name("parent");
+        json_mhmm.push_back(json_emmodel);
+        
+        // Dimensions
+        JSONNode json_dims = JSONNode(JSON_ARRAY);
+        json_dims.set_name("dimensions");
+        json_dims.push_back(JSONNode("", dimension_gesture));
+        json_dims.push_back(JSONNode("", dimension_sound));
+        json_mhmm.push_back(json_dims);
+        
+        // Scalar Attributes
+        json_mhmm.push_back(JSONNode("nbStates", nbStates));
+        json_mhmm.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents));
+        json_mhmm.push_back(JSONNode("covarianceOffset", covarianceOffset));
+        json_mhmm.push_back(JSONNode("transitionMode", int(transitionMode)));
+        json_mhmm.push_back(JSONNode("estimateMeans", estimateMeans));
+        
+        // Model Parameters
+        json_mhmm.push_back(vector2json(prior, "prior"));
+        json_mhmm.push_back(vector2json(transition, "transition"));
+        
+        // States
+        JSONNode json_states(JSON_ARRAY);
+        for (int i=0 ; i<nbStates ; i++)
+        {
+            json_states.push_back(states[i].to_json());
+        }
+        json_states.set_name("states");
+        json_mhmm.push_back(json_states);
+        
+        return json_mhmm;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            EMBasedLearningModel< GestureSoundPhrase<ownData> >::from_json(*root_it);
+            root_it++;
+            
+            // Get Dimension
+            assert(root_it != root.end());
+            assert(root_it->name() == "dimensions");
+            assert(root_it->type() == JSON_ARRAY);
+            dimension_gesture = 0;
+            dimension_sound = 0;
+            dimension_gesture = (*root_it)[0].as_int();
+            dimension_sound = (*root_it)[1].as_int();
+            dimension_total = dimension_gesture + dimension_sound;
+            root_it++;
+            
+            // Get Number of states
+            assert(root_it != root.end());
+            assert(root_it->name() == "nbStates");
+            assert(root_it->type() == JSON_NUMBER);
+            nbStates = root_it->as_int();
+            root_it++;
+            
+            // Get Number of Mixture Components
+            assert(root_it != root.end());
+            assert(root_it->name() == "nbMixtureComponents");
+            assert(root_it->type() == JSON_NUMBER);
+            nbMixtureComponents = root_it->as_int();
+            root_it++;
+            
+            // Get Covariance Offset
+            assert(root_it != root.end());
+            assert(root_it->name() == "covarianceOffset");
+            assert(root_it->type() == JSON_NUMBER);
+            covarianceOffset = root_it->as_float();
+            root_it++;
+            
+            // Get Transition Mode
+            assert(root_it != root.end());
+            assert(root_it->name() == "transitionMode");
+            assert(root_it->type() == JSON_NUMBER);
+            transitionMode = TRANSITION_MODE(root_it->as_int());
+            root_it++;
+            
+            // Get estimateMeans
+            assert(root_it != root.end());
+            assert(root_it->name() == "estimateMeans");
+            assert(root_it->type() == JSON_BOOL);
+            estimateMeans = root_it->as_bool();
+            root_it++;
+            
+            // Reallocate model parameters
+            reallocParameters();
+            
+            // Get Prior
+            assert(root_it != root.end());
+            assert(root_it->name() == "prior");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, prior, nbStates);
+            root_it++;
+            
+            // Get Mean
+            assert(root_it != root.end());
+            assert(root_it->name() == "transition");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, transition, nbStates*nbStates);
+            root_it++;
+            
+            // Get States
+            assert(root_it != root.end());
+            assert(root_it->name() == "states");
+            assert(root_it->type() == JSON_ARRAY);
+            for (int i=0 ; i<nbStates ; i++) {
+                states[i].from_json((*root_it)[i]);
+            }
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+        
+        this->trained = true;
+    }
+    
     /*!
      Write model to stream
      @todo check if all attributes are written

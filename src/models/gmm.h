@@ -444,6 +444,101 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_hmodel(JSON_NODE);
+        json_hmodel.set_name("GMM");
+        
+        // Write Parent: EM Learning Model
+        JSONNode json_emmodel = EMBasedLearningModel< Phrase<ownData, 1> >::to_json();
+        json_emmodel.set_name("parent");
+        json_hmodel.push_back(json_emmodel);
+        
+        // Scalar Attributes
+        json_hmodel.push_back(JSONNode("dimension", dimension));
+        json_hmodel.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents));
+        json_hmodel.push_back(JSONNode("covarianceOffset", covarianceOffset));
+        
+        // Model Parameters
+        json_hmodel.push_back(vector2json(mixtureCoeffs, "mixtureCoefficients"));
+        json_hmodel.push_back(vector2json(mean, "mean"));
+        json_hmodel.push_back(vector2json(covariance, "covariance"));
+        
+        return json_hmodel;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+//        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            EMBasedLearningModel< Phrase<ownData, 1> >::from_json(*root_it);
+            root_it++;
+            
+            // Get Dimension
+            assert(root_it != root.end());
+            assert(root_it->name() == "dimension");
+            assert(root_it->type() == JSON_NUMBER);
+            dimension = root_it->as_int();
+            root_it++;
+            
+            // Get Mixture Components
+            assert(root_it != root.end());
+            assert(root_it->name() == "nbMixtureComponents");
+            assert(root_it->type() == JSON_NUMBER);
+            nbMixtureComponents = root_it->as_int();
+            root_it++;
+            
+            // Get Covariance Offset
+            assert(root_it != root.end());
+            assert(root_it->name() == "covarianceOffset");
+            assert(root_it->type() == JSON_NUMBER);
+            covarianceOffset = root_it->as_float();
+            root_it++;
+            
+            reallocParameters();
+            
+            // Get Mixture Coefficients
+            assert(root_it != root.end());
+            assert(root_it->name() == "mixtureCoefficients");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, mixtureCoeffs, nbMixtureComponents);
+            root_it++;
+            
+            // Get Mean
+            assert(root_it != root.end());
+            assert(root_it->name() == "mean");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, mean, nbMixtureComponents*dimension);
+            root_it++;
+            
+            // Get Covariance
+            assert(root_it != root.end());
+            assert(root_it->name() == "covariance");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, covariance, nbMixtureComponents*dimension*dimension);
+        
+            if (libjson::to_std_string(root.name()) != "reference model")
+                updateInverseCovariances();
+            
+//        } catch (exception &e) {
+//            throw RTMLException("Error reading JSON, Node: " + root.name());
+//        }
+        
+        this->trained = true;
+    }
+    
     void write(ostream& outStream)
     {
         outStream << "# Multimodal GMM \n";

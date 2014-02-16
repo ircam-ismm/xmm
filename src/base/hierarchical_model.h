@@ -402,6 +402,116 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    using ConcurrentModels<ModelType, phraseType>::to_json;
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_hmodel(JSON_NODE);
+        json_hmodel.set_name("Hierarchical Model");
+        
+        // Write Parent: Concurrent models
+        JSONNode json_ccmodel = ConcurrentModels<ModelType, phraseType>::to_json();
+        json_ccmodel.set_name("parent");
+        json_hmodel.push_back(json_ccmodel);
+        
+        json_hmodel.push_back(JSONNode("incrementalLearning", incrementalLearning));
+        
+        // Write Prior
+        JSONNode json_prior(JSON_ARRAY);
+        json_prior.set_name("prior");
+        for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+            json_prior.push_back(JSONNode("", prior.at(it->first)));
+        json_hmodel.push_back(json_prior);
+        
+        // Write Exit Probabilities
+        JSONNode json_exit(JSON_ARRAY);
+        json_exit.set_name("exit");
+        for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+            json_exit.push_back(JSONNode("", exitTransition.at(it->first)));
+        json_hmodel.push_back(json_exit);
+        
+        // Write Transition Matrix
+        JSONNode json_transition(JSON_ARRAY);
+        json_transition.set_name("transition");
+        for (const_model_iterator it1 = this->models.begin() ; it1 != this->models.end() ; it1++)
+            for (const_model_iterator it2 = this->models.begin() ; it2 != this->models.end() ; it2++)
+                json_transition.push_back(JSONNode("", transition.at(it1->first).at(it2->first)));
+        json_hmodel.push_back(json_transition);
+        
+        return json_hmodel;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            ConcurrentModels<ModelType, phraseType>::from_json(*root_it);
+            root_it++;
+            
+            // Get Learning Model
+            assert(root_it != root.end());
+            assert(root_it->name() == "incrementalLearning");
+            assert(root_it->type() == JSON_BOOL);
+            incrementalLearning = root_it->as_bool();
+            root_it++;
+            
+            // Get Prior
+            assert(root_it != root.end());
+            assert(root_it->name() == "prior");
+            assert(root_it->type() == JSON_ARRAY);
+            prior.clear();
+            JSONNode::const_iterator array_it = (*root_it).begin();
+            for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++) {
+                assert(array_it != root.end());
+                prior[it->first] = double(array_it->as_float());
+                array_it++;
+            }
+            root_it++;
+            
+            // Get Exit Probabilities
+            assert(root_it != root.end());
+            assert(root_it->name() == "exit");
+            assert(root_it->type() == JSON_ARRAY);
+            exitTransition.clear();
+            array_it = (*root_it).begin();
+            for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++) {
+                assert(array_it != root.end());
+                exitTransition[it->first] = double(array_it->as_float());
+                array_it++;
+            }
+            root_it++;
+            
+            // Get Prior
+            assert(root_it != root.end());
+            assert(root_it->name() == "transition");
+            assert(root_it->type() == JSON_ARRAY);
+            transition.clear();
+            array_it = (*root_it).begin();
+            for (const_model_iterator it1 = this->models.begin() ; it1 != this->models.end() ; it1++) {
+                for (const_model_iterator it2 = this->models.begin() ; it2 != this->models.end() ; it2++)
+                {
+                    assert(array_it != root.end());
+                    transition[it1->first][it2->first] = double(array_it->as_float());
+                    array_it++;
+                }
+            }
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+    }
+    
     virtual void write(ostream& outStream)
     {
         outStream << "# =============================================================\n";

@@ -688,6 +688,111 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_mgmm(JSON_NODE);
+        json_mgmm.set_name("GMR");
+        
+        // Write Parent: EM Learning Model
+        JSONNode json_emmodel = EMBasedLearningModel< GestureSoundPhrase<ownData> >::to_json();
+        json_emmodel.set_name("parent");
+        json_mgmm.push_back(json_emmodel);
+        
+        // Dimensions
+        JSONNode json_dims = JSONNode(JSON_ARRAY);
+        json_dims.set_name("dimensions");
+        json_dims.push_back(JSONNode("", dimension_gesture));
+        json_dims.push_back(JSONNode("", dimension_sound));
+        json_mgmm.push_back(json_dims);
+        
+        json_mgmm.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents));
+        json_mgmm.push_back(JSONNode("covarianceOffset", covarianceOffset));
+        
+        // Model Parameters
+        json_mgmm.push_back(vector2json(mixtureCoeffs, "mixtureCoefficients"));
+        json_mgmm.push_back(vector2json(mean, "mean"));
+        json_mgmm.push_back(vector2json(covariance, "covariance"));
+        
+        return json_mgmm;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            EMBasedLearningModel< GestureSoundPhrase<ownData> >::from_json(*root_it);
+            root_it++;
+            
+            // Get Dimension
+            assert(root_it != root.end());
+            assert(root_it->name() == "dimensions");
+            assert(root_it->type() == JSON_ARRAY);
+            dimension_gesture = 0;
+            dimension_sound = 0;
+            dimension_gesture = (*root_it)[0].as_int();
+            dimension_sound = (*root_it)[1].as_int();
+            dimension_total = dimension_gesture + dimension_sound;
+            root_it++;
+            
+            // Get Mixture Components
+            assert(root_it != root.end());
+            assert(root_it->name() == "nbMixtureComponents");
+            assert(root_it->type() == JSON_NUMBER);
+            nbMixtureComponents = root_it->as_int();
+            root_it++;
+            
+            // Get Covariance Offset
+            assert(root_it != root.end());
+            assert(root_it->name() == "covarianceOffset");
+            assert(root_it->type() == JSON_NUMBER);
+            covarianceOffset = root_it->as_float();
+            root_it++;
+            
+            // Reallocate parameter Arrays
+            reallocParameters();
+            
+            // Get Mixture Coefficients
+            assert(root_it != root.end());
+            assert(root_it->name() == "mixtureCoefficients");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, mixtureCoeffs, nbMixtureComponents);
+            root_it++;
+            
+            // Get Mean
+            assert(root_it != root.end());
+            assert(root_it->name() == "mean");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, mean, nbMixtureComponents*dimension_total);
+            root_it++;
+            
+            // Get Covariance
+            assert(root_it != root.end());
+            assert(root_it->name() == "covariance");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, covariance, nbMixtureComponents*dimension_total*dimension_total);
+            
+            //            if (libjson::to_std_string(root.name()) != "reference_model")
+            //                updateInverseCovariances();
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+        
+        this->trained = true;
+    }
+    
     void write(ostream& outStream)
     {
         outStream << "# Multimodal GMM \n";

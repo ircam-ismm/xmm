@@ -12,6 +12,7 @@
 #define __mhmm__label__
 
 #include <iostream>
+#include "libjson.h"
 
 using namespace std;
 
@@ -28,6 +29,9 @@ public:
      Constructor. Default label type is INT. Default Value is 0
      */
     Label();
+    Label(int l);
+    Label(string l);
+    Label(char* l);
     
     bool operator==(Label const& src) const;
     bool operator!=(Label const& src) const;
@@ -58,9 +62,31 @@ public:
      */
     void setSym(string l);
     
+    /*!
+     Set symbolic label value => sets label type to SYM
+     */
+    void setSym(char* l);
+    
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const ;
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root);
+    
+    /*!
+     print label as c++ string
+     */
+    string as_string();
+    
 protected:
     int intLabel;
     string symLabel;
 };
+
+ostream& operator<<(std::ostream& stream, Label const& l);
 
 #endif

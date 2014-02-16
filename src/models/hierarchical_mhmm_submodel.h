@@ -74,7 +74,7 @@ public:
             throw RTMLException("State index out of bounds", __FILE__, __FUNCTION__, __LINE__);
         exitProbabilities[state] = proba;
     }
-
+    
 #pragma mark -
 #pragma mark Play !
     void initPlaying()
@@ -98,7 +98,57 @@ public:
             }
         }
     }
-
+    
+#pragma mark -
+#pragma mark JSON I/O
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_mhmmsub(JSON_NODE);
+        json_mhmmsub.set_name("HMHMM SubModel");
+        
+        // Write Parent: EM Learning Model
+        JSONNode json_mhmm = MultimodalHMM<ownData>::to_json();
+        json_mhmm.set_name("parent");
+        json_mhmmsub.push_back(json_mhmm);
+        
+        // Exit probabilities
+        json_mhmmsub.push_back(vector2json(exitProbabilities, "exitProbabilities"));
+        
+        return json_mhmmsub;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::iterator root_it = root.begin();
+            
+            // Get Parent: Concurrent models
+            assert(root_it != root.end());
+            assert(root_it->name() == "parent");
+            assert(root_it->type() == JSON_NODE);
+            MultimodalHMM<ownData>::from_json(*root_it);
+            root_it++;
+            
+            // Get Exit probabilities
+            assert(root_it != root.end());
+            assert(root_it->name() == "exitProbabilities");
+            assert(root_it->type() == JSON_ARRAY);
+            json2vector(*root_it, exitProbabilities, this->nbStates);
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+        
+        this->trained = true;
+    }
+    
 #pragma mark -
 #pragma mark protected Attributes
 protected:

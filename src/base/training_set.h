@@ -11,6 +11,7 @@
 #ifndef rtml_training_set_h
 #define rtml_training_set_h
 
+#include "label.h"
 #include "phrase.h"
 #include "listener.h"
 #include <map>
@@ -403,6 +404,109 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_ts(JSON_NODE);
+        json_ts.set_name("Training Set");
+        json_ts.push_back(JSONNode("size", phrases.size()));
+        JSONNode json_deflabel = defaultLabel.to_json();
+        json_deflabel.set_name("default label");
+        json_ts.push_back(json_deflabel);
+        
+        // Add reference phrase
+        JSONNode json_refphrase = referencePhrase.to_json();
+        json_refphrase.set_name("reference phrase");
+        json_ts.push_back(json_refphrase);
+        
+        // Add phrases
+        JSONNode json_phrases(JSON_ARRAY);
+        for (const_phrase_iterator it = phrases.begin(); it != phrases.end(); it++)
+        {
+            JSONNode json_phrase(JSON_NODE);
+            json_phrase.push_back(JSONNode("index", it->first));
+            json_phrase.push_back(phraseLabels.at(it->first).to_json());
+            json_phrase.push_back(it->second->to_json());
+            json_phrases.push_back(json_phrase);
+        }
+        json_phrases.set_name("phrases");
+        json_ts.push_back(json_phrases);
+        
+        return json_ts;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::const_iterator root_it = root.begin();
+            
+            // Get Size: Number of Phrases
+            assert(root_it != root.end());
+            assert(root_it->name() == "size");
+            assert(root_it->type() == JSON_NUMBER);
+            int ts_size = root_it->as_int();
+            root_it++;
+            
+            // Get Default label
+            assert(root_it != root.end());
+            assert(root_it->name() == "default label");
+            assert(root_it->type() == JSON_NODE);
+            defaultLabel.from_json(*root_it);
+            root_it++;
+            
+            // Get Reference Phrase
+            assert(root_it != root.end());
+            assert(root_it->name() == "reference phrase");
+            assert(root_it->type() == JSON_NODE);
+            referencePhrase.from_json(*root_it);
+            root_it++;
+            
+            // Get Phrases
+            phrases.clear();
+            phraseLabels.clear();
+            assert(root_it != root.end());
+            assert(root_it->name() == "phrases");
+            assert(root_it->type() == JSON_ARRAY);
+            for (int i=0 ; i<ts_size ; i++)
+            {
+                JSONNode::const_iterator array_it = (*root_it)[i].begin();
+                // Get Index
+                assert(array_it != root.end());
+                assert(array_it->name() == "index");
+                assert(array_it->type() == JSON_NUMBER);
+                int phraseIndex = array_it->as_int();
+                array_it++;
+                
+                // Get Label
+                assert(array_it != root.end());
+                assert(array_it->name() == "label");
+                assert(array_it->type() == JSON_NODE);
+                phraseLabels[phraseIndex].from_json(*array_it);
+                updateLabelList();
+                array_it++;
+                
+                // Get Phrase Content
+                assert(array_it != root.end());
+                assert(array_it->name() == "Phrase");
+                assert(array_it->type() == JSON_NODE);
+                phrases[phraseIndex] = new phraseType(this->referencePhrase);
+                phraseLabels[phraseIndex].from_json(*array_it);
+            }
+            
+            assert(ts_size == phrases.size());
+            changed = true;
+            
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+    }
+    
     /*!
      write training set to stream
      @todo check if complete

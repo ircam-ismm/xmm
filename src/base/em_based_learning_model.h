@@ -288,6 +288,69 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_model(JSON_NODE);
+        json_model.set_name("Model");
+        JSONNode json_stopcriterion(JSON_NODE);
+        json_stopcriterion.set_name("EMStopCriterion");
+        json_stopcriterion.push_back(JSONNode("minsteps", stopcriterion.minSteps));
+        json_stopcriterion.push_back(JSONNode("maxsteps", stopcriterion.maxSteps));
+        json_stopcriterion.push_back(JSONNode("percentchg", stopcriterion.percentChg));
+        json_model.push_back(json_stopcriterion);
+        json_model.push_back(JSONNode("likelihoodwindow", likelihoodBuffer.size()));
+        
+        return json_model;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::const_iterator root_it = root.begin();
+            
+            // Get EM Algorithm stop criterion
+            assert(root_it != root.end());
+            assert(root_it->name() == "EMStopCriterion");
+            assert(root_it->type() == JSON_NODE);
+            JSONNode json_stopcriterion = *root_it;
+            JSONNode::const_iterator crit_it = json_stopcriterion.begin();
+            assert(crit_it != json_stopcriterion.end());
+            assert(crit_it->name() == "minsteps");
+            assert(crit_it->type() == JSON_NUMBER);
+            stopcriterion.minSteps = crit_it->as_int();
+            crit_it++;
+            
+            assert(crit_it != json_stopcriterion.end());
+            assert(crit_it->name() == "maxsteps");
+            assert(crit_it->type() == JSON_NUMBER);
+            stopcriterion.maxSteps = crit_it->as_int();
+            crit_it++;
+            
+            assert(crit_it != json_stopcriterion.end());
+            assert(crit_it->name() == "percentchg");
+            assert(crit_it->type() == JSON_NUMBER);
+            stopcriterion.percentChg = crit_it->as_float();
+            
+            root_it++;
+            
+            // Get likelihood window size
+            assert(root_it != root.end());
+            assert(root_it->name() == "likelihoodwindow");
+            assert(root_it->type() == JSON_NUMBER);
+            this->set_likelihoodBufferSize((unsigned int)(root_it->as_int()));
+            root_it++;
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name());
+        }
+    }
+    
     virtual void write(ostream& outStream)
     {
         outStream << "# EM stop criterion\n";

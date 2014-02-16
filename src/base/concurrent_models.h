@@ -394,6 +394,98 @@ public:
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */
+    /*!
+     Write to JSON Node
+     */
+    virtual JSONNode to_json() const
+    {
+        JSONNode json_ccmodels(JSON_NODE);
+        json_ccmodels.set_name("Concurrent Models");
+        json_ccmodels.push_back(JSONNode("size", models.size()));
+        json_ccmodels.push_back(JSONNode("playmode", int(playMode)));
+        
+        // Add reference model
+        JSONNode json_refModel = referenceModel.to_json();
+        json_refModel.set_name("reference model");
+        json_ccmodels.push_back(json_refModel);
+        
+        // Add phrases
+        JSONNode json_models(JSON_ARRAY);
+        for (const_model_iterator it = models.begin(); it != models.end(); it++)
+        {
+            JSONNode json_model(JSON_NODE);
+            json_model.push_back(it->first.to_json());
+            json_model.push_back(it->second.to_json());
+            json_models.push_back(json_model);
+        }
+        json_models.set_name("models");
+        json_ccmodels.push_back(json_models);
+        
+        return json_ccmodels;
+    }
+    
+    /*!
+     Read from JSON Node
+     */
+    virtual void from_json(JSONNode root)
+    {
+//        try {
+            assert(root.type() == JSON_NODE);
+            JSONNode::const_iterator root_it = root.begin();
+            
+            // Get Size: Number of Models
+            assert(root_it != root.end());
+            assert(root_it->name() == "size");
+            assert(root_it->type() == JSON_NUMBER);
+            int numModels = root_it->as_int();
+            root_it++;
+            
+            // Get Play Mode
+            assert(root_it != root.end());
+            assert(root_it->name() == "playmode");
+            assert(root_it->type() == JSON_NUMBER);
+            playMode = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
+            root_it++;
+            
+            // Get Reference Model
+            assert(root_it != root.end());
+            assert(root_it->name() == "reference model");
+            assert(root_it->type() == JSON_NODE);
+            referenceModel.from_json(*root_it);
+            root_it++;
+            
+            // Get Phrases
+            models.clear();
+            assert(root_it != root.end());
+            assert(root_it->name() == "models");
+            assert(root_it->type() == JSON_ARRAY);
+            for (int i=0 ; i<numModels ; i++)
+            {
+                // Get Label
+                JSONNode::const_iterator array_it = (*root_it)[i].begin();
+                assert(array_it != root_it->end());
+                assert(array_it->name() == "label");
+                assert(array_it->type() == JSON_NODE);
+                Label l;
+                l.from_json(*array_it);
+                array_it++;
+                
+                // Get Phrase Content
+                assert(array_it != root_it->end());
+                assert(array_it->type() == JSON_NODE);
+                models[l] = this->referenceModel;
+                models[l].trainingSet = NULL;
+                models[l].from_json(*array_it);
+            }
+            
+            assert(numModels == models.size());
+            
+//        } catch (exception &e) {
+//            throw RTMLException("Error reading JSON, Node: " + root.name());
+//        }
+    }
+    
+    
     virtual void write(ostream& outStream)
     {
         outStream << "# CONCURRENT MODELS\n";
