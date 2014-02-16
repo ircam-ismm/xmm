@@ -331,7 +331,6 @@ public:
         if (this->phrases.find(phraseIndex) == this->phrases.end())
             throw RTMLException("Training set: phrase does not exist", __FILE__, __FUNCTION__, __LINE__);
         
-        phrases[phraseIndex]->label =label;
         phraseLabels[phraseIndex] = label;
         changed = true;
         updateLabelList();
@@ -351,6 +350,11 @@ public:
         setPhraseLabel(phraseIndex, l);
     }
     
+    Label getPhraseLabel(int phraseIndex)
+    {
+        return phraseLabels[phraseIndex];
+    }
+    
     /*!
      create a training set containing all phrases of a given class
      @warning in order to protect the phrases in the current training set, the sub-training set
@@ -368,26 +372,16 @@ public:
         subTS->lock();
         subTS->changed = true;
         
+        int newPhraseIndex(0);
         for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); it++) {
             if (it->second == label) {
-                subTS->phrases[it->first] = this->phrases[it->first];
-                subTS->phraseLabels[it->first] = label;
+                subTS->phrases[newPhraseIndex] = this->phrases[it->first];
+                subTS->phraseLabels[newPhraseIndex] = label;
+                newPhraseIndex++;
             }
         }
         
         return subTS;
-    }
-    
-    _TrainingSetBase<phraseType>* getSubTrainingSetForClass(int intLabel) {
-        Label l;
-        l.setInt(intLabel);
-        return getSubTrainingSetForClass(l);
-    }
-    
-    _TrainingSetBase<phraseType>* getSubTrainingSetForClass(string symLabel) {
-        Label l;
-        l.setSym(symLabel);
-        return getSubTrainingSetForClass(l);
     }
     
     /*!

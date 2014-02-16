@@ -127,7 +127,7 @@ public:
         
         do {
             old_log_prob = log_prob;
-            log_prob = train_EM_update();
+            log_prob = this->train_EM_update();
             
             /*
              cout << "step "<< nbIterations
@@ -163,7 +163,6 @@ public:
 #if __cplusplus > 199711L
         this->trainingMutex.unlock();
 #endif
-        
         return nbIterations;
     }
     

@@ -81,6 +81,7 @@ public:
         dst->trained = src.trained;
         dst->trainingSet = src.trainingSet;
         dst->trainingCallback = src.trainingCallback;
+        dst->trainingExtradata = src.trainingExtradata;
     }
     
     /*!

@@ -37,8 +37,8 @@ public:
      type of playing mode for concurrent models
      */
     enum POLYPLAYMODE {
-        LIKELIEST, //<! the play method returns the results of the likeliest model
-        MIXTURE    //<! the play method returns a weighted sum of the results of each model
+        LIKELIEST = 0, //<! the play method returns the results of the likeliest model
+        MIXTURE = 1    //<! the play method returns a weighted sum of the results of each model
     };
     
     typedef typename  map<Label, ModelType>::iterator model_iterator;
@@ -164,10 +164,7 @@ public:
      */
     virtual void initTraining(Label classLabel)
     {
-        model_iterator it = models.find(classLabel);
-        if (it == models.end())
-            throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
-        it->second.initTraining();
+        models[classLabel].initTraining();
     }
     
     /*!
@@ -188,7 +185,13 @@ public:
     virtual int train(Label classLabel)
     {
         updateTrainingSet(classLabel);
+        this->initTraining(classLabel);
+#if __cplusplus > 199711L
+        thread (&ModelType::train, &models[classLabel]).detach();
+        return 0;
+#else
         return models[classLabel].train();
+#endif
     }
     
     /*!
@@ -307,7 +310,9 @@ public:
     virtual void updateTrainingSet(Label label)
     {
         if (globalTrainingSet->is_empty()) return;
-        
+        if (globalTrainingSet->allLabels.find(label) == globalTrainingSet->allLabels.end())
+            throw RTMLException("Class " + label.as_string() + " Does not exist", __FILE__, __FUNCTION__, __LINE__);
+            
         if (models.find(label) == models.end()) {
             models[label] = referenceModel;
             models[label].trainingSet = NULL;

@@ -673,7 +673,9 @@ public:
      initialize playing mode
      */
     void initPlaying()
-    {}
+    {
+        updateInverseCovariances();
+    }
     
     /*!
      play function: estimate sound parameters using gesture input and compute likelihood

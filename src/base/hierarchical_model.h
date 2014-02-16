@@ -37,7 +37,6 @@ public:
     typedef typename  map<Label, ModelType>::iterator model_iterator;
     typedef typename  map<Label, ModelType>::const_iterator const_model_iterator;
     typedef typename  map<int, Label>::iterator labels_iterator;
-    typedef typename  set<Label>::iterator labset_iterator;
     
     map<Label, double> prior;
     map<Label, double> exitTransition;
@@ -197,17 +196,17 @@ public:
     void normalizeTransitions()
     {
         double sumPrior(0.0);
-        for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
+        for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; srcit++)
         {
-            sumPrior += prior[*srcit];
+            sumPrior += prior[srcit->first];
             double sumTrans(0.0);
-            for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
-                sumTrans += transition[*srcit][*dstit];
-            for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
-                transition[*srcit][*dstit] /= sumTrans;
+            for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; dstit++)
+                sumTrans += transition[srcit->first][dstit->first];
+            for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; dstit++)
+                transition[srcit->first][dstit->first] /= sumTrans;
         }
-        for (labset_iterator it = this->globalTrainingSet->allLabels.begin() ; it != this->globalTrainingSet->allLabels.end() ; it++)
-            prior[*it] /= sumPrior;
+        for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; srcit++)
+            prior[srcit->first] /= sumPrior;
     }
     
     /*!
@@ -260,17 +259,17 @@ public:
         
         if (oldNbPrim>0)
         {
-            for (labset_iterator it = this->globalTrainingSet->allLabels.begin() ; it != this->globalTrainingSet->allLabels.end() ; it++)
-                if (prior.find(*it) == prior.end())
+            for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+                if (prior.find(it->first) == prior.end())
                 {
-                    prior[*it] += double(regularizationFactor);
-                    prior[*it] /= double(nbPrimitives + regularizationFactor) ;
+                    prior[it->first] += double(regularizationFactor);
+                    prior[it->first] /= double(nbPrimitives + regularizationFactor) ;
                 } else {
-                    prior[*it] = 1. / double(nbPrimitives + regularizationFactor);
+                    prior[it->first] = 1. / double(nbPrimitives + regularizationFactor);
                 }
         } else {
-            for (labset_iterator it = this->globalTrainingSet->allLabels.begin() ; it != this->globalTrainingSet->allLabels.end() ; it++)
-                prior[*it] = 1. / double(nbPrimitives);
+            for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+                prior[it->first] = 1. / double(nbPrimitives);
         }
         
     }
@@ -290,34 +289,34 @@ public:
         {
             map<Label, map<Label, double> > oldTransition = transition;;
             
-            for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
+            for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; srcit++)
             {
-                for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
+                for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; dstit++)
                 {
-                    if (transition.find(*srcit) == transition.end() || transition[*srcit].find(*dstit) == transition[*srcit].end())
+                    if (transition.find(srcit->first) == transition.end() || transition[srcit->first].find(dstit->first) == transition[srcit->first].end())
                     {
-                        transition[*srcit][*dstit] = 1/double(nbPrimitives+regularizationFactor);
+                        transition[srcit->first][dstit->first] = 1/double(nbPrimitives+regularizationFactor);
                     } else {
-                        transition[*srcit][*dstit] += double(regularizationFactor);
-                        transition[*srcit][*dstit] /= double(nbPrimitives+regularizationFactor);
+                        transition[srcit->first][dstit->first] += double(regularizationFactor);
+                        transition[srcit->first][dstit->first] /= double(nbPrimitives+regularizationFactor);
                     }
                 }
                 
-                if (exitTransition.find(*srcit) == exitTransition.end())
+                if (exitTransition.find(srcit->first) == exitTransition.end())
                 {
-                    exitTransition[*srcit] = 1/double(nbPrimitives+regularizationFactor);
+                    exitTransition[srcit->first] = 1/double(nbPrimitives+regularizationFactor);
                 } else {
-                    exitTransition[*srcit] += double(regularizationFactor);
-                    exitTransition[*srcit] /= double(nbPrimitives+regularizationFactor);
+                    exitTransition[srcit->first] += double(regularizationFactor);
+                    exitTransition[srcit->first] /= double(nbPrimitives+regularizationFactor);
                 }
             }
         } else {
-            for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
+            for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; srcit++)
             {
-                exitTransition[*srcit] = HIERARCHICALMODEL_DEFAULT_EXITTRANSITION;
+                exitTransition[srcit->first] = HIERARCHICALMODEL_DEFAULT_EXITTRANSITION;
                 
-                for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
-                    transition[*srcit][*dstit] = 1/(double)nbPrimitives;
+                for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; dstit++)
+                    transition[srcit->first][dstit->first] = 1/(double)nbPrimitives;
             }
         }
     }
@@ -328,8 +327,8 @@ public:
     void updatePrior_ergodic()
     {
         int nbPrimitives = this->size();
-        for (labset_iterator it = this->globalTrainingSet->allLabels.begin() ; it != this->globalTrainingSet->allLabels.end() ; it++)
-            prior[*it] = 1/double(nbPrimitives);
+        for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+            prior[it->first] = 1/double(nbPrimitives);
     }
     
     /*!
@@ -340,11 +339,11 @@ public:
     void updateTransition_ergodic()
     {
         int nbPrimitives = this->size();
-        for (labset_iterator srcit = this->globalTrainingSet->allLabels.begin() ; srcit != this->globalTrainingSet->allLabels.end() ; srcit++)
+        for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; srcit++)
         {
-            exitTransition[*srcit] = HIERARCHICALMODEL_DEFAULT_EXITTRANSITION;
-            for (labset_iterator dstit = this->globalTrainingSet->allLabels.begin() ; dstit != this->globalTrainingSet->allLabels.end() ; dstit++)
-                transition[*srcit][*dstit] =  1/double(nbPrimitives);
+            exitTransition[srcit->first] = HIERARCHICALMODEL_DEFAULT_EXITTRANSITION;
+            for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; dstit++)
+                transition[srcit->first][dstit->first] =  1/double(nbPrimitives);
         }
     }
     
