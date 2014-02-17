@@ -346,7 +346,7 @@ public:
             this->set_likelihoodBufferSize((unsigned int)(root_it->as_int()));
             root_it++;
         } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name());
+            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
         }
     }
     

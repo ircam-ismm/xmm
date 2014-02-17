@@ -129,7 +129,7 @@ public:
             json2vector(*root_it, exitProbabilities, this->nbStates);
             
         } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name());
+            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
         }
         
         this->trained = true;

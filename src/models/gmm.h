@@ -475,7 +475,7 @@ public:
      */
     virtual void from_json(JSONNode root)
     {
-//        try {
+        try {
             assert(root.type() == JSON_NODE);
             JSONNode::iterator root_it = root.begin();
             
@@ -532,10 +532,10 @@ public:
             if (libjson::to_std_string(root.name()) != "reference model")
                 updateInverseCovariances();
             
-//        } catch (exception &e) {
-//            throw RTMLException("Error reading JSON, Node: " + root.name());
-//        }
-        
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
+        }
+    
         this->trained = true;
     }
     

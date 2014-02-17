@@ -1414,7 +1414,7 @@ public:
             }
             
         } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name());
+            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
         }
         
         this->trained = true;

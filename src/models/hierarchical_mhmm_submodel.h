@@ -75,6 +75,12 @@ public:
         exitProbabilities[state] = proba;
     }
     
+    void set_nbStates(int nbStates_)
+    {
+        MultimodalHMM<ownData>::set_nbStates(nbStates_);
+        updateExitProbabilities();
+    }
+    
 #pragma mark -
 #pragma mark Play !
     void initPlaying()
@@ -143,7 +149,7 @@ public:
             json2vector(*root_it, exitProbabilities, this->nbStates);
             
         } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name());
+            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
         }
         
         this->trained = true;

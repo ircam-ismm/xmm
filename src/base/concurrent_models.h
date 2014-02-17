@@ -164,6 +164,9 @@ public:
      */
     virtual void initTraining(Label classLabel)
     {
+        model_iterator it = models.find(classLabel);
+        if (it == models.end())
+            throw RTMLException("Class " + classLabel.as_string() + " Does not exist", __FILE__, __FUNCTION__, __LINE__);
         models[classLabel].initTraining();
     }
     
@@ -434,7 +437,7 @@ public:
      */
     virtual void from_json(JSONNode root)
     {
-//        try {
+        try {
             assert(root.type() == JSON_NODE);
             JSONNode::const_iterator root_it = root.begin();
             
@@ -485,9 +488,9 @@ public:
             
             assert(numModels == models.size());
             
-//        } catch (exception &e) {
-//            throw RTMLException("Error reading JSON, Node: " + root.name());
-//        }
+        } catch (exception &e) {
+            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
+        }
     }
     
     
