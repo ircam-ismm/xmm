@@ -142,6 +142,14 @@ public:
 #pragma mark -
 #pragma mark Model Utilities
     /*!
+     Remove All models
+     */
+    virtual void clear()
+    {
+        models.clear();
+    }
+    
+    /*!
      Remove Specific model
      @param classLabel class label of the model
      @throw RTMLException if the class does not exist
