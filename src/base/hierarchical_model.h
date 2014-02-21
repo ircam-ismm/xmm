@@ -398,6 +398,17 @@ public:
         return nbIterations;
     }
     
+    /*!
+     Remove Specific model
+     @param classLabel class label of the model
+     @throw RTMLException if the class does not exist
+     */
+    virtual void remove(Label classLabel)
+    {
+        ConcurrentModels<ModelType, phraseType>::remove(classLabel);
+        updateTransitionParameters();
+    }
+    
 #pragma mark -
 #pragma mark File IO
     /*! @name File IO */

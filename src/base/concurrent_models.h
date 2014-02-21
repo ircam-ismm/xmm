@@ -159,7 +159,7 @@ public:
         model_iterator it = models.find(classLabel);
         if (it == models.end())
             throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
-        it->second.initTraining();
+        models.erase(it);
     }
     
 #pragma mark -
