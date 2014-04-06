@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <vector>
-#include "rtmlexception.h"
+#include <sstream>
 
 const double EPSILON_GAUSSIAN = 1.0e-40;
 
@@ -110,10 +110,10 @@ public:
     T operator()(unsigned int c, unsigned int i)
     {
         if (c >= channels)
-            throw RTMLException("channel out of bounds", __FILE__, __FUNCTION__, __LINE__);
+            throw out_of_range("channel out of bounds");
         unsigned int m = full ? length : index;
         if (i >= m)
-            throw RTMLException("index out of bounds", __FILE__, __FUNCTION__, __LINE__);
+            throw out_of_range("index out of bounds");
         return data[c][i];
     }
 	
@@ -127,7 +127,7 @@ public:
     void push(T const value)
     {
         if (channels > 1)
-            throw RTMLException(" you must pass a vector or array", __FILE__, __FUNCTION__, __LINE__);
+            throw invalid_argument("You must pass a vector or array");
         data[0][index] = value;
         index++;
         if (index == length)
@@ -204,5 +204,9 @@ protected:
 	unsigned int index;
 	bool full;
 };
+
+
+bool is_number(const string& s);
+int to_int(const string& s);
 
 #endif

@@ -563,7 +563,6 @@ public:
         
         for (int i=0; i<dimension_sound; i++)
             observation_sound[i] = obs[dimension_gesture+i];
-        // regression_estimateCovariance();
         
         return obsProb_gesture(obs, -1);
     }
@@ -1040,7 +1039,8 @@ public:
                     p[c][tbase+t] /= norm_const;
                     E[c] += p[c][tbase+t];
                 }
-                if (norm_const > 1.) cout << "Training Error: covarianceOffset is too small\n";//throw runtime_error("Training Error: covarianceOffset is too small");
+                if (norm_const > 1.) throw runtime_error("Training Error: covarianceOffset is too small");
+//                cout << "Training Error: covarianceOffset is too small\n";
                 log_prob += log(norm_const);
             }
             tbase += T;

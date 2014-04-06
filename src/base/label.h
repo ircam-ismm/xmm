@@ -33,6 +33,11 @@ public:
     Label(string l);
     Label(char* l);
     
+    Label& operator=(Label const& src);
+    Label& operator=(int l);
+    Label& operator=(string l);
+    Label& operator=(char* l);
+    
     bool operator==(Label const& src) const;
     bool operator!=(Label const& src) const;
     bool operator<(Label const& src) const;

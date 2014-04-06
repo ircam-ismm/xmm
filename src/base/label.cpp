@@ -11,36 +11,57 @@
 #include "label.h"
 #include "rtmlexception.h"
 
-Label::Label() {
-    type = INT;
-    intLabel = 0;
-    symLabel = "";
+Label::Label() : type(INT), intLabel(0), symLabel("")
+{
 }
 
-Label::Label(int l)
+Label::Label(int l) : type(INT), intLabel(l), symLabel("")
 {
-    type = INT;
-    intLabel = l;
-    symLabel = "";
 }
 
-Label::Label(string l)
+Label::Label(string l) : type(SYM), intLabel(0), symLabel(l)
 {
-    type = SYM;
-    intLabel = 0;
-    symLabel = l;
 }
 
-Label::Label(char* l)
+Label::Label(char* l) : type(SYM), intLabel(0), symLabel(l)
 {
-    type = SYM;
-    intLabel = 0;
-    symLabel = l;
+}
+
+
+Label& Label::operator=(Label const& src)
+{
+    if (this != &src) {
+        this->type = src.type;
+        this->intLabel = src.intLabel;
+        this->symLabel = src.symLabel;
+    }
+    return *this;
+}
+Label& Label::operator=(int l)
+{
+    this->type = INT;
+    this->intLabel = l;
+    this->symLabel = "";
+    return *this;
+}
+Label& Label::operator=(string l)
+{
+    this->type = SYM;
+    this->intLabel = 0;
+    this->symLabel = l;
+    return *this;
+}
+Label& Label::operator=(char* l)
+{
+    this->type = SYM;
+    this->intLabel = 0;
+    this->symLabel = l;
+    return *this;
 }
 
 bool Label::operator==(Label const& src) const
 {
-    if (!this->type == src.type)
+    if (!(this->type == src.type))
         return false;
     if (this->type == INT)
         return (this->intLabel == src.intLabel);
@@ -130,7 +151,7 @@ void Label::from_json(JSONNode root)
             type = INT;
         else
             type = SYM;
-        root_it++;
+        ++root_it;
         assert(root_it != root.end());
         assert(root_it->name() == "value");
         if (type == INT) {

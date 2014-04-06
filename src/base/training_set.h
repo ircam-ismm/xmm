@@ -69,7 +69,7 @@ public:
     {
         phrase_iterator pp = phrases.begin();
         for (int i=0; i<n; i++) {
-            pp++;
+            ++pp;
         }
         return pp;
     }
@@ -97,7 +97,7 @@ public:
     virtual ~_TrainingSetBase()
     {
         if (!locked) {
-            for (phrase_iterator it=phrases.begin(); it != phrases.end(); it++)
+            for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it)
                 delete it->second;
         }
         phrases.clear();
@@ -121,7 +121,7 @@ public:
      */
     bool is_empty() const
     {
-        return (phrases.size() == 0);
+        return phrases.empty();
     }
     
     /*!
@@ -173,7 +173,7 @@ public:
         if (this->referencePhrase != src.referencePhrase) // TODO: keep that?
             return false;
         
-        for (const_phrase_iterator it=src.phrases.begin(); it != src.phrases.end(); it++)
+        for (const_phrase_iterator it=src.phrases.begin(); it != src.phrases.end(); ++it)
         {
             if (this->phrases.find(it->first) == this->phrases.end())
                 return false;
@@ -181,7 +181,7 @@ public:
             if (*(this->phrases[it->first]) != *(it->second))
                 return false;
         }
-        for (const_label_iterator it = src.phraseLabels.begin(); it != src.phraseLabels.end(); it++)
+        for (const_label_iterator it = src.phraseLabels.begin(); it != src.phraseLabels.end(); ++it)
         {
             if (phraseLabels[it->first] != it->second) return false;
         }
@@ -255,7 +255,7 @@ public:
         bool contLoop(true);
         while (contLoop) {
             contLoop = false;
-            for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); it++) {
+            for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
                 if (it->second == label) {
                     deletePhrase(it->first);
                     contLoop = true;
@@ -271,7 +271,7 @@ public:
      */
     void deleteEmptyPhrases()
     {
-        for (phrase_iterator it=phrases.begin(); it != phrases.end(); it++) {
+        for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it) {
             if (it->second->empty()) {
                 deletePhrase(it->first);
             }
@@ -286,7 +286,7 @@ public:
     void clear()
     {
         if (!locked)
-            for (phrase_iterator it = this->begin(); it != this->end(); it++) {
+            for (phrase_iterator it = this->begin(); it != this->end(); ++it) {
                 delete it->second;
             }
         phrases.clear();
@@ -373,7 +373,7 @@ public:
         subTS->changed = true;
         
         int newPhraseIndex(0);
-        for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); it++) {
+        for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
             if (it->second == label) {
                 subTS->phrases[newPhraseIndex] = this->phrases[it->first];
                 subTS->phraseLabels[newPhraseIndex] = label;
@@ -390,7 +390,7 @@ public:
     void updateLabelList()
     {
         allLabels.clear();
-        for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); it++) {
+        for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
             allLabels.insert(it->second);
         }
     }
@@ -417,7 +417,7 @@ public:
         
         // Add phrases
         JSONNode json_phrases(JSON_ARRAY);
-        for (const_phrase_iterator it = phrases.begin(); it != phrases.end(); it++)
+        for (const_phrase_iterator it = phrases.begin(); it != phrases.end(); ++it)
         {
             JSONNode json_phrase(JSON_NODE);
             json_phrase.push_back(JSONNode("index", it->first));
@@ -445,21 +445,21 @@ public:
             assert(root_it->name() == "size");
             assert(root_it->type() == JSON_NUMBER);
             int ts_size = root_it->as_int();
-            root_it++;
+            ++root_it;
             
             // Get Default label
             assert(root_it != root.end());
             assert(root_it->name() == "default label");
             assert(root_it->type() == JSON_NODE);
             defaultLabel.from_json(*root_it);
-            root_it++;
+            ++root_it;
             
             // Get Reference Phrase
             assert(root_it != root.end());
             assert(root_it->name() == "reference phrase");
             assert(root_it->type() == JSON_NODE);
             referencePhrase.from_json(*root_it);
-            root_it++;
+            ++root_it;
             
             // Get Phrases
             phrases.clear();
@@ -475,7 +475,7 @@ public:
                 assert(array_it->name() == "index");
                 assert(array_it->type() == JSON_NUMBER);
                 int phraseIndex = array_it->as_int();
-                array_it++;
+                ++array_it;
                 
                 // Get Label
                 assert(array_it != root.end());
@@ -483,7 +483,7 @@ public:
                 assert(array_it->type() == JSON_NODE);
                 phraseLabels[phraseIndex].from_json(*array_it);
                 updateLabelList();
-                array_it++;
+                ++array_it;
                 
                 // Get Phrase Content
                 assert(array_it != root.end());
@@ -518,7 +518,7 @@ public:
             outStream << "SYM " << defaultLabel.getSym() << endl;
         outStream << "# === Reference Phrase\n";
         referencePhrase.write(outStream);
-        for (phrase_iterator it = phrases.begin(); it != phrases.end(); it++) {
+        for (phrase_iterator it = phrases.begin(); it != phrases.end(); ++it) {
             outStream << "# === Phrase " << it->first << "\n";
             outStream << "# Index\n";
             outStream << it->first << endl;
@@ -597,7 +597,7 @@ public:
             outStream << "INT " << defaultLabel.getInt() << endl;
         else
             outStream << "SYM " << defaultLabel.getSym() << endl;
-        for (phrase_iterator it = phrases.begin(); it != phrases.end(); it++) {
+        for (phrase_iterator it = phrases.begin(); it != phrases.end(); ++it) {
             outStream << "# === Phrase " << it->first << ", Label ";
             if (phraseLabels[it->first].type == Label::INT)
                 outStream << "INT " << phraseLabels[it->first].getInt() << endl;
@@ -721,7 +721,7 @@ public:
     void set_dimension(unsigned int _dimension, unsigned int modality=0)
     {
         this->referencePhrase.set_dimension(_dimension, modality);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension(_dimension, modality);
         if (this->parent)
             this->parent->notify("dimension");
@@ -773,7 +773,7 @@ public:
     void set_dimension_gesture(unsigned int _dimension_gesture)
     {
         this->referencePhrase.set_dimension_gesture(_dimension_gesture);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension_gesture(_dimension_gesture);
         if (this->parent)
             this->parent->notify("dimension_gesture");
@@ -794,7 +794,7 @@ public:
     void set_dimension_sound(unsigned int _dimension_sound)
     {
         this->referencePhrase.set_dimension_sound(_dimension_sound);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension_sound(_dimension_sound);
         if (this->parent)
             this->parent->notify("dimension_sound");
@@ -831,7 +831,7 @@ public:
     void set_dimension(int _dimension, int modality=0)
     {
         this->referencePhrase.set_dimension(_dimension, modality);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension(_dimension, modality);
         if (this->parent)
             this->parent->notify("dimension");
@@ -859,7 +859,7 @@ public:
     void set_dimension(int _dimension, int modality=0)
     {
         this->referencePhrase.set_dimension(_dimension, modality);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension(_dimension, modality);
         if (this->parent)
             this->parent->notify("dimension");
@@ -887,7 +887,7 @@ public:
     void set_dimension_gesture(int _dimension_gesture)
     {
         this->referencePhrase.set_dimension_gesture(_dimension_gesture);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension_gesture(_dimension_gesture);
         if (this->parent)
             this->parent->notify("dimension_gesture");
@@ -902,7 +902,7 @@ public:
     void set_dimension_sound(int _dimension_sound)
     {
         this->referencePhrase.set_dimension_sound(_dimension_sound);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension_sound(_dimension_sound);
         if (this->parent)
             this->parent->notify("dimension_sound");
@@ -930,7 +930,7 @@ public:
     void set_dimension(int _dimension)
     {
         this->referencePhrase.set_dimension(_dimension);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); it++)
+        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
             it->second->set_dimension(_dimension);
         if (this->parent)
             this->parent->notify("dimension");

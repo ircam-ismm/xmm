@@ -26,7 +26,7 @@ void json2array(JSONNode root, T* a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Array: Index out of bounds");
@@ -42,7 +42,7 @@ void json2array(JSONNode root, float* a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Array: Index out of bounds");
@@ -58,7 +58,7 @@ void json2array(JSONNode root, double* a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Array: Index out of bounds");
@@ -74,7 +74,7 @@ void json2array(JSONNode root, bool* a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Array: Index out of bounds");
@@ -90,7 +90,7 @@ void json2array(JSONNode root, string* a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Array: Index out of bounds");
@@ -117,7 +117,7 @@ void json2vector(JSONNode root, vector<T>& a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Vector: Index out of bounds");
@@ -133,7 +133,7 @@ void json2vector(JSONNode root, vector<float>& a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Vector: Index out of bounds");
@@ -149,7 +149,7 @@ void json2vector(JSONNode root, vector<double>& a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Vector: Index out of bounds");
@@ -165,7 +165,7 @@ void json2vector(JSONNode root, vector<bool>& a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Vector: Index out of bounds");
@@ -181,7 +181,7 @@ void json2vector(JSONNode root, vector<string>& a, int n)
     // Get Dimensions
     assert(root.type() == JSON_ARRAY);
     unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); array_it++)
+    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
             throw RTMLException("JSON 2 Vector: Index out of bounds");

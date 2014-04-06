@@ -24,9 +24,8 @@ double gaussianProbabilityFullCovariance(const float *obs,
     if (covarianceDeterminant == 0.0) throw runtime_error("Covariance Matrix is not invertible");
     
     double euclidianDistance(0.0);
-    double tmp(0.0);
     for (int l=0; l<dimension; l++) {
-        tmp = 0.0;
+        double tmp(0.0);
         for (int k=0; k<dimension; k++) {
             tmp += inverseCovariance[l*dimension+k] * (obs[k] - mean[k]);
         }
@@ -52,9 +51,8 @@ double gaussianProbabilityFullCovariance_GestureSound(const float *obs_gesture,
     
     int dimension_total = dimension_gesture + dimension_sound;
     double euclidianDistance(0.0);
-    double tmp(0.0);
     for (int l=0; l<dimension_total; l++) {
-        tmp = 0.0;
+        double tmp(0.0);
         for (int k=0; k<dimension_gesture; k++) {
             tmp += inverseCovariance[l*dimension_total+k] * (obs_gesture[k] - mean[k]);
         }
@@ -113,4 +111,20 @@ void skipComments(istream *s)
         s->getline(tmp_str, MAX_STR_SIZE);
     } while (*tmp_str == '#' || *tmp_str == 0 || *tmp_str == ' ' || *tmp_str == '\n');
     s->seekg(prevPos);
+}
+
+
+bool is_number(const string& s)
+{
+    string::const_iterator it = s.begin();
+    while (it != s.end() && isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+int to_int(const string& s)
+{
+    istringstream myString(s);
+    int value;
+    myString >> value;
+    return value;
 }
