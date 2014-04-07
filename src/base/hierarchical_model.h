@@ -419,11 +419,11 @@ public:
     virtual JSONNode to_json() const
     {
         JSONNode json_hmodel(JSON_NODE);
-        json_hmodel.set_name("Hierarchical Model");
+        json_hmodel.set_name("HierarchicalModel");
         
         // Write Parent: Concurrent models
         JSONNode json_ccmodel = ConcurrentModels<ModelType, phraseType>::to_json();
-        json_ccmodel.set_name("parent");
+        json_ccmodel.set_name("ConcurrentModels");
         json_hmodel.push_back(json_ccmodel);
         
         json_hmodel.push_back(JSONNode("incrementalLearning", incrementalLearning));
@@ -464,7 +464,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "ConcurrentModels");
             assert(root_it->type() == JSON_NODE);
             ConcurrentModels<ModelType, phraseType>::from_json(*root_it);
             root_it++;

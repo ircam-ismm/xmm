@@ -412,7 +412,7 @@ public:
         
         // Add reference phrase
         JSONNode json_refphrase = referencePhrase.to_json();
-        json_refphrase.set_name("reference phrase");
+        json_refphrase.set_name("phrase:reference");
         json_ts.push_back(json_refphrase);
         
         // Add phrases

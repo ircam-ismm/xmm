@@ -1293,7 +1293,7 @@ public:
         
         // Write Parent: EM Learning Model
         JSONNode json_emmodel = EMBasedLearningModel< GestureSoundPhrase<ownData> >::to_json();
-        json_emmodel.set_name("parent");
+        json_emmodel.set_name("EMBasedLearningModel");
         json_mhmm.push_back(json_emmodel);
         
         // Dimensions
@@ -1337,7 +1337,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "EMBasedLearningModel");
             assert(root_it->type() == JSON_NODE);
             EMBasedLearningModel< GestureSoundPhrase<ownData> >::from_json(*root_it);
             root_it++;

@@ -699,7 +699,7 @@ public:
         
         // Write Parent: EM Learning Model
         JSONNode json_emmodel = EMBasedLearningModel< GestureSoundPhrase<ownData> >::to_json();
-        json_emmodel.set_name("parent");
+        json_emmodel.set_name("EMBasedLearningModel");
         json_mgmm.push_back(json_emmodel);
         
         // Dimensions
@@ -731,7 +731,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "EMBasedLearningModel");
             assert(root_it->type() == JSON_NODE);
             EMBasedLearningModel< GestureSoundPhrase<ownData> >::from_json(*root_it);
             root_it++;
@@ -784,8 +784,7 @@ public:
             assert(root_it->type() == JSON_ARRAY);
             json2vector(*root_it, covariance, nbMixtureComponents*dimension_total*dimension_total);
             
-            //            if (libjson::to_std_string(root.name()) != "reference_model")
-            //                updateInverseCovariances();
+            updateInverseCovariances();
             
         } catch (exception &e) {
             throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());

@@ -416,13 +416,15 @@ public:
     virtual JSONNode to_json() const
     {
         JSONNode json_ccmodels(JSON_NODE);
-        json_ccmodels.set_name("Concurrent Models");
+        json_ccmodels.set_name("ConcurrentModels");
         json_ccmodels.push_back(JSONNode("size", models.size()));
         json_ccmodels.push_back(JSONNode("playmode", int(playMode)));
         
         // Add reference model
         JSONNode json_refModel = referenceModel.to_json();
-        json_refModel.set_name("reference model");
+        cout << json_refModel.name() + ":reference" << endl;
+        json_refModel.set_name(json_refModel.name() + ":reference"
+                               );
         json_ccmodels.push_back(json_refModel);
         
         // Add phrases
@@ -465,9 +467,13 @@ public:
             
             // Get Reference Model
             assert(root_it != root.end());
-            assert(root_it->name() == "reference model");
+            string rootname = root_it->name();
+            assert(rootname.substr(rootname.length() - 9, 9) == "reference");
             assert(root_it->type() == JSON_NODE);
-            referenceModel.from_json(*root_it);
+            try {
+                referenceModel.from_json(*root_it);
+            } catch (exception &e) {
+            }
             root_it++;
             
             // Get Phrases

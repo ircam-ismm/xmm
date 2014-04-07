@@ -1072,7 +1072,7 @@ public:
         
         // Write Parent: EM Learning Model
         JSONNode json_emmodel = EMBasedLearningModel< Phrase<ownData, 1> >::to_json();
-        json_emmodel.set_name("parent");
+        json_emmodel.set_name("EMBasedLearningModel");
         json_hmm.push_back(json_emmodel);
         
         // Scalar Attributes
@@ -1109,7 +1109,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "EMBasedLearningModel");
             assert(root_it->type() == JSON_NODE);
             EMBasedLearningModel< Phrase<ownData, 1> >::from_json(*root_it);
             root_it++;

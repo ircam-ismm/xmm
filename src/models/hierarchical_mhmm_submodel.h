@@ -113,11 +113,11 @@ public:
     virtual JSONNode to_json() const
     {
         JSONNode json_mhmmsub(JSON_NODE);
-        json_mhmmsub.set_name("HMHMM SubModel");
+        json_mhmmsub.set_name("HMHMMSubModel");
         
         // Write Parent: EM Learning Model
         JSONNode json_mhmm = MultimodalHMM<ownData>::to_json();
-        json_mhmm.set_name("parent");
+        json_mhmm.set_name("MultimodalHMM");
         json_mhmmsub.push_back(json_mhmm);
         
         // Exit probabilities
@@ -137,7 +137,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "MultimodalHMM");
             assert(root_it->type() == JSON_NODE);
             MultimodalHMM<ownData>::from_json(*root_it);
             root_it++;

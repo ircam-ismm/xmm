@@ -93,11 +93,11 @@ public:
     virtual JSONNode to_json() const
     {
         JSONNode json_hhmmsub(JSON_NODE);
-        json_hhmmsub.set_name("HHMM SubModel");
+        json_hhmmsub.set_name("HHMMSubModel");
         
         // Write Parent: EM Learning Model
         JSONNode json_hmm = HMM<ownData>::to_json();
-        json_hmm.set_name("parent");
+        json_hmm.set_name("HMM");
         json_hhmmsub.push_back(json_hmm);
 
         // Exit probabilities
@@ -117,7 +117,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "HMM");
             assert(root_it->type() == JSON_NODE);
             HMM<ownData>::from_json(*root_it);
             root_it++;

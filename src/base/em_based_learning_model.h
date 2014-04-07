@@ -290,10 +290,10 @@ public:
     /*!
      Write to JSON Node
      */
-    virtual JSONNode to_json() const
+    virtual JSONNode to_json(bool is_reference = false) const
     {
         JSONNode json_model(JSON_NODE);
-        json_model.set_name("Model");
+        json_model.set_name("EMBasedLearningModel");
         JSONNode json_stopcriterion(JSON_NODE);
         json_stopcriterion.set_name("EMStopCriterion");
         json_stopcriterion.push_back(JSONNode("minsteps", stopcriterion.minSteps));

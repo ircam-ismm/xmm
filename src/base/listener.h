@@ -49,12 +49,12 @@ public:
     /*!
      Write to JSON Node
      */
-    virtual JSONNode to_json() const { return JSONNode(JSON_NULL); }// = 0;
+    virtual JSONNode to_json() const = 0;
     
     /*!
      Read from JSON Node
      */
-    virtual void from_json(JSONNode root){}// = 0;
+    virtual void from_json(JSONNode root) = 0;
     
     /*
     void writeFile(string filename)

@@ -454,7 +454,7 @@ public:
         
         // Write Parent: EM Learning Model
         JSONNode json_emmodel = EMBasedLearningModel< Phrase<ownData, 1> >::to_json();
-        json_emmodel.set_name("parent");
+        json_emmodel.set_name("EMBasedLearningModel");
         json_hmodel.push_back(json_emmodel);
         
         // Scalar Attributes
@@ -481,7 +481,7 @@ public:
             
             // Get Parent: Concurrent models
             assert(root_it != root.end());
-            assert(root_it->name() == "parent");
+            assert(root_it->name() == "EMBasedLearningModel");
             assert(root_it->type() == JSON_NODE);
             EMBasedLearningModel< Phrase<ownData, 1> >::from_json(*root_it);
             root_it++;
@@ -528,9 +528,8 @@ public:
             assert(root_it->name() == "covariance");
             assert(root_it->type() == JSON_ARRAY);
             json2vector(*root_it, covariance, nbMixtureComponents*dimension*dimension);
-        
-            if (libjson::to_std_string(root.name()) != "reference model")
-                updateInverseCovariances();
+            
+            updateInverseCovariances();
             
         } catch (exception &e) {
             throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
