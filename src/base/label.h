@@ -16,12 +16,16 @@
 using namespace std;
 
 /**
+ * @ingroup TrainingSet
  * @class Label
  * @brief Label of a data phrase
  * @details Possible types are int and string
  */
 class Label {
 public:
+    /**
+     * @brief Type of the Label: 'INT' or 'SYM'
+     */
     enum {INT, SYM} type;
     
     /**

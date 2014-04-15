@@ -13,9 +13,10 @@
 #include "training_set.h"
 
 /**
+ * @enum CALLBACK_FLAG
  * @brief Flags for the Callback called by the training algorithm
  */
-typedef enum CALLBACK_FLAG__
+enum CALLBACK_FLAG
 {
     /**
      * Training is still running
@@ -31,56 +32,59 @@ typedef enum CALLBACK_FLAG__
      * An error occured during training (probably convergence issue)
      */
     TRAINING_ERROR
-} CALLBACK_FLAG;
+};
 
 /**
- * @class LearningModel
+ * @defgroup ModelBase Base Classes for Probabilistic Models
+ */
+
+/**
+ * @ingroup ModelBase
+ * @class BaseModel
  * @brief Base class for Machine Learning models
  * @details both unimodal and multimodal (specified in Constructor flags)
  * @todo class description
  */
-class LearningModel : public Listener {
+class BaseModel : public Listener {
 public:
-    friend class ConcurrentGMM;
+    friend class GMMGroup;
+    friend class HierarchicalHMM;
         
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Constructor
-     * @param_trainingSet training set on which the model is trained
+     * @param trainingSet training set on which the model is trained
      * @param flags Construction Flags. BIMODAL indicates that the model should be used for regression
      * (bimodal model). To use in conjunction with a bimodal training set.
      */
-    LearningModel(rtml_flags flags = NONE,
+    BaseModel(rtml_flags flags = NONE,
                   TrainingSet *trainingSet = NULL);
     
     /**
      * @brief Copy constructor
      * @param src Source model
      */
-    LearningModel(LearningModel const& src);
+    BaseModel(BaseModel const& src);
     
     /**
      * @brief Assignment
      * @param src Source model
      */
-    LearningModel& operator=(LearningModel const& src);
-    
-    /**
-     * @brief Copy between to models (called by copy constructor and assignment methods)
-     * @param src Source model
-     * @param dst Destination model
-     */
-    virtual void _copy(LearningModel *dst, LearningModel const& src);
+    BaseModel& operator=(BaseModel const& src);
     
     /**
      * @brief destructor
      */
-    virtual ~LearningModel();
+    virtual ~BaseModel();
     
+    /*@}*/
+
 #pragma mark > Training set
+    /*@{*/
     /** @name Training set */
     /**
      * @brief set the training set associated with the model
@@ -97,7 +101,11 @@ public:
      */
     void notify(string attribute);
     
+    /*@}*/
+
 #pragma mark > Accessors
+    /*@{*/
+    /** @name Accessors */
     /**
      * @brief Get Total Dimension of the model (sum of dimension of modalities)
      * @return total dimension of Gaussian Distributions
@@ -120,15 +128,21 @@ public:
         return dimension_input_;
     }
 
+    /*@}*/
+
 #pragma mark > Callback function for training
-    /** @name training set */
+    /*@{*/
+    /** @name Callback function for training */
     /**
      * @brief set the callback function associated with the training algorithm
      * @details the function is called whenever the training is over or an error happened during training
      */
     void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata);
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
@@ -143,8 +157,11 @@ public:
      */
     virtual void from_json(JSONNode root);
     
+    /*@}*/
+
 #pragma mark > Pure Virtual Methods: Allocation, Training, Playing
-    /** @name Pure virtual methods */
+    /*@{*/
+    /** @name Pure Virtual Methods: Allocation, Training, Playing */
     /**
      * @brief Allocate memory for the model's parameters
      * @details called when dimensions are modified
@@ -153,6 +170,7 @@ public:
     
     /**
      * @brief Initialize the training algorithm
+     * @todo Put this in EMBasedModel and rename to train_EM_init()
      */
     virtual void initTraining() = 0;
 
@@ -180,6 +198,8 @@ public:
      */
     virtual double play(float *observation) = 0;
     
+    /*@}*/
+    
 #pragma mark -
 #pragma mark === Public Attributes ===
     /**
@@ -200,6 +220,19 @@ public:
     float trainingProgression;
     
 protected:
+#pragma mark -
+#pragma mark === Protected Methods ===
+#pragma mark > Copy between models
+    /*@{*/
+    /** @name Copy between models */
+    /**
+     * @brief Copy between to models (called by copy constructor and assignment methods)
+     * @param src Source model
+     * @param dst Destination model
+     */
+    virtual void _copy(BaseModel *dst, BaseModel const& src);
+
+    /*@}*/
 #pragma mark -
 #pragma mark === Protected Attributes ===
     /**

@@ -7,25 +7,25 @@
 // author: Jules Francoise <jules.francoise@ircam.fr>
 //
 
-#include "concurrent_gmm.h"
+#include "gmm_group.h"
 
 #pragma mark -
 #pragma mark Constructor
-ConcurrentGMM::ConcurrentGMM(rtml_flags flags,
+GMMGroup::GMMGroup(rtml_flags flags,
                              TrainingSet *_globalTrainingSet)
-: ConcurrentModels< GMM >(flags, _globalTrainingSet)
+: ModelGroup< GMM >(flags, _globalTrainingSet)
 {
     bimodal_ = (flags & BIMODAL);
 }
 
 #pragma mark -
 #pragma mark Get & Set
-int ConcurrentGMM::get_nbMixtureComponents() const
+int GMMGroup::get_nbMixtureComponents() const
 {
     return this->referenceModel_.get_nbMixtureComponents();
 }
 
-void ConcurrentGMM::set_nbMixtureComponents(int nbMixtureComponents_)
+void GMMGroup::set_nbMixtureComponents(int nbMixtureComponents_)
 {
     this->referenceModel_.set_nbMixtureComponents(nbMixtureComponents_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -33,12 +33,12 @@ void ConcurrentGMM::set_nbMixtureComponents(int nbMixtureComponents_)
     }
 }
 
-float ConcurrentGMM::get_covarianceOffset() const
+float GMMGroup::get_covarianceOffset() const
 {
     return this->referenceModel_.get_covarianceOffset();
 }
 
-void ConcurrentGMM::set_covarianceOffset(float covarianceOffset_)
+void GMMGroup::set_covarianceOffset(float covarianceOffset_)
 {
     this->referenceModel_.set_covarianceOffset(covarianceOffset_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -46,22 +46,22 @@ void ConcurrentGMM::set_covarianceOffset(float covarianceOffset_)
     }
 }
 
-int ConcurrentGMM::get_EM_minSteps() const
+int GMMGroup::get_EM_minSteps() const
 {
     return this->referenceModel_.get_EM_minSteps();
 }
 
-int ConcurrentGMM::get_EM_maxSteps() const
+int GMMGroup::get_EM_maxSteps() const
 {
     return this->referenceModel_.get_EM_maxSteps();
 }
 
-double ConcurrentGMM::get_EM_percentChange() const
+double GMMGroup::get_EM_percentChange() const
 {
     return this->referenceModel_.get_EM_percentChange();
 }
 
-void ConcurrentGMM::set_EM_minSteps(int steps)
+void GMMGroup::set_EM_minSteps(int steps)
 {
     this->referenceModel_.set_EM_minSteps(steps);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -69,7 +69,7 @@ void ConcurrentGMM::set_EM_minSteps(int steps)
     }
 }
 
-void ConcurrentGMM::set_EM_maxSteps(int steps)
+void GMMGroup::set_EM_maxSteps(int steps)
 {
     this->referenceModel_.set_EM_maxSteps(steps);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -77,7 +77,7 @@ void ConcurrentGMM::set_EM_maxSteps(int steps)
     }
 }
 
-void ConcurrentGMM::set_EM_percentChange(double logLikPercentChg_)
+void GMMGroup::set_EM_percentChange(double logLikPercentChg_)
 {
     this->referenceModel_.set_EM_percentChange(logLikPercentChg_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -85,12 +85,12 @@ void ConcurrentGMM::set_EM_percentChange(double logLikPercentChg_)
     }
 }
 
-unsigned int ConcurrentGMM::get_likelihoodBufferSize() const
+unsigned int GMMGroup::get_likelihoodBufferSize() const
 {
     return this->referenceModel_.get_likelihoodBufferSize();
 }
 
-void ConcurrentGMM::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
+void GMMGroup::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
 {
     this->referenceModel_.set_likelihoodBufferSize(likelihoodBufferSize_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -100,14 +100,14 @@ void ConcurrentGMM::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
 
 #pragma mark -
 #pragma mark Playing
-void ConcurrentGMM::initPlaying()
+void GMMGroup::initPlaying()
 {
     for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
         it->second.initPlaying();
     }
 }
 
-void ConcurrentGMM::play(float *observation, double *modelLikelihoods)
+void GMMGroup::play(float *observation, double *modelLikelihoods)
 {
     double norm_const(0.0);
     int i(0);
@@ -157,10 +157,10 @@ void ConcurrentGMM::play(float *observation, double *modelLikelihoods)
  * @brief Write to JSON Node
  * @return JSON Node containing training set information and data
  */
-JSONNode ConcurrentGMM::to_json() const
+JSONNode GMMGroup::to_json() const
 {
     JSONNode json_ccmodels(JSON_NODE);
-    json_ccmodels.set_name("ConcurrentGMM");
+    json_ccmodels.set_name("GMMGroup");
     json_ccmodels.push_back(JSONNode("bimodal", bimodal_));
     json_ccmodels.push_back(JSONNode("dimension", get_dimension()));
     if (bimodal_)
@@ -190,7 +190,7 @@ JSONNode ConcurrentGMM::to_json() const
  * @param root JSON Node containing training set information and data
  * @throws JSONException if the JSON Node has a wrong format
  */
-void ConcurrentGMM::from_json(JSONNode root)
+void GMMGroup::from_json(JSONNode root)
 {
     try {
         assert(root.type() == JSON_NODE);

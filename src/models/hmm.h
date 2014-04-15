@@ -26,7 +26,7 @@ const float HMM_DEFAULT_EXITPROBABILITY_LAST_STATE = 0.1;
  * @enum TRANSITION_MODE
  * @brief Mode of transition of the HMM
  */
-typedef enum _TRANSITION_MODE {
+enum TRANSITION_MODE {
     /**
      * @brief Ergodic Transition Matrix
      * @todo  remove this? And simplify algorithm for left-right matrix?
@@ -38,17 +38,21 @@ typedef enum _TRANSITION_MODE {
      * @details  The only authorized transitions are: auto-transition and transition to the next state
      */
     LEFT_RIGHT
-} TRANSITION_MODE;
+};
 
 /**
+ * @defgroup HMM Hidden Markov Models
+ */
+
+/** @ingroup HMM
  * @class HMM
  * @brief Hidden Markov Model
  * @details Support Hierarchical Model: if built with the flag 'HIERARCHICAL', the model includes exit
  * transition probabilities. The model can be eith unimodal, or Multimodal when constructed with the flag 'BIMODAL'.
  */
-class HMM : public EMBasedLearningModel
+class HMM : public EMBasedModel
 {
-    friend class ConcurrentHMM;
+    friend class HMMGroup;
     friend class HierarchicalHMM;
     
 public:
@@ -56,7 +60,7 @@ public:
      * @struct Results
      * @brief Structure containing the results of the recognition using the HMM.
      */
-    typedef struct _ResultsHMM {
+    struct Results {
         /**
          * @brief Estimated time progression.
          * @details The time progression is computed as the centroid of the state
@@ -73,7 +77,7 @@ public:
          * @brief Likelihood of the gesture normalized over all gestures
          */
         double likelihoodnorm;
-    } ResultsHMM;
+    };
     
     /**
      * @brief Iterator over the phrases of the associated training set
@@ -83,6 +87,7 @@ public:
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Constructor
@@ -114,7 +119,10 @@ public:
      */
     virtual ~HMM();
     
+    /*@}*/
+
 #pragma mark > Accessors
+    /*@{*/
     /** @name Accessors */
     /**
      * @brief Get the Number of hidden states of the model
@@ -169,7 +177,10 @@ public:
      */
     void set_transitionMode(string transMode_str);
     
+    /*@}*/
+
 #pragma mark > Observation probabilities
+    /*@{*/
     /** @name Observation probabilities */
     /**
      * @brief Gaussian observation probability of a given state
@@ -213,7 +224,10 @@ public:
                            unsigned int stateIndex,
                            int mixtureComponent=-1);
     
+    /*@}*/
+
 #pragma mark > Play!
+    /*@{*/
     /** @name Playing */
     /**
      * @brief Initialize the 'Performance' phase
@@ -232,9 +246,12 @@ public:
      * @brief Get the results structure
      * @return Results structure
      */
-    Results getResults();
+    Results getResults() const;
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
@@ -250,7 +267,11 @@ public:
      */
     virtual void from_json(JSONNode root);
     
+    /*@}*/
+
 #pragma mark > Exit Probabilities
+    /*@{*/
+    /** @name Exit Probabilities*/
     /**
      * @brief Set the exit probability of a specific state
      * @details this method is only active in 'HIERARCHICAL' mode. The probability
@@ -261,9 +282,12 @@ public:
      */
     void addExitPoint(int stateIndex, float proba);
     
+    /*@}*/
+
 #pragma mark > Python
-    /** @name Python methods */
 #ifdef SWIGPYTHON
+    /*@{*/
+    /** @name Python methods */
     /**
      * @brief Python Binding for the play function (to use with SWIG)
      * @param dimension_ dimension of the observation vector (both modalities if BIMODAL)
@@ -274,6 +298,7 @@ public:
      */
     double play(int dimension_, double *observation,
                 int nbStates_, double *alpha_);
+    /*@}*/
 #endif
     
 #pragma mark -
@@ -282,7 +307,7 @@ public:
      * @brief Results estimated by the model
      * @details These results are updated for each new observation in playing mode
      */
-    ResultsHMM results_hmm;
+    Results results_hmm;
     
     /**
      * @brief State probabilities estimated by the forward algorithm.
@@ -298,15 +323,19 @@ public:
     protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
+    /*@{*/
+    /** @name Copy between models */
     /**
      * @brief Copy between 2 MHMM models (called by copy constructor and assignment methods)
      * @param src Source Model
      * @param dst Destination Model
      */
-    using EMBasedLearningModel::_copy;
+    using EMBasedModel::_copy;
     virtual void _copy(HMM *dst, HMM const& src);
     
+    /*@}*/
 #pragma mark > Parameters initialization
+    /*@{*/
     /** @name Parameters initialization */
     /**
      * @brief Allocate model parameters
@@ -322,7 +351,7 @@ public:
     /**
      * @brief initialize model parameters to their default values
      */
-    virtual void initParametersToDefault();
+    void initParametersToDefault();
     
     /**
      * @brief initialize the means of each state with the first phrase (single gaussian)
@@ -364,28 +393,37 @@ public:
      */
     void normalizeTransitions();
     
+    /*@}*/
+
 #pragma mark > Forward-Backward algorithm
+    /*@{*/
     /** @name Forward-Backward Algorithm */
     /**
      * @brief Initialization of the forward algorithm
-     * @param observation observation vector (input modalit if bimodal)
-     * @param observation observation vector for the output modality. If undefined, the algorithm
-     * is only ran on the input modality.
-     * @return likelihood of the observation
+     * @param observation observation vector at time t. If the model is bimodal, this vector
+     * should be only the observation on the input modality.
+     * @param observation_output observation on the output modality (only used if the model is bimodal). 
+     * If unspecified, the update is performed on the input modality only.
+     * @return instantaneous likelihood
      */
     double forward_init(const float *observation, const float *observation_output=NULL);
     
     /**
      * @brief Update of the forward algorithm
-     * @param observation observation vector (input modalit if bimodal)
-     * @param observation observation vector for the output modality. If undefined, the algorithm
-     * @return likelihood
+     * @param observation observation vector at time t. If the model is bimodal, this vector
+     * should be only the observation on the input modality.
+     * @param observation_output observation on the output modality (only used if the model is bimodal). 
+     * If unspecified, the update is performed on the input modality only.
+     * @return instantaneous likelihood
      */
     double forward_update(const float *observation, const float *observation_output=NULL);
     
     /**
      @brief Forward update with the estimated output observation
      @deprecated generally unused in current version of max/python implementations
+     * @param observation observation on the input modality.
+     * @param observation_output observation on the output modality
+     * @return instantaneous likelihood computed with the output observation. 
      */
     double forward_update_withNewObservation(const float *observation, const float *observation_output);
     
@@ -398,14 +436,20 @@ public:
     
     /**
      * @brief Update of the Backward algorithm
-     * @param observation observation vector at time t
      * @param ct inverse of the likelihood at time step t computed
      * with the forward algorithm (see Rabiner 1989)
+     * @param observation observation vector at time t. If the model is bimodal, this vector
+     * should be only the observation on the input modality.
+     * @param observation_output observation on the output modality (only used if the model is bimodal). 
+     * If unspecified, the update is performed on the input modality only.
      */
     void backward_update(double ct, const float *observation, const float *observation_output = NULL);
     
-#pragma mark > Training algorithm
-    /** @name Training Algorithm */
+    /*@}*/
+
+#pragma mark > Training
+    /*@{*/
+    /** @name Training: protected methods */
     /**
      * @brief Initialization of the parameters before training
      */
@@ -433,10 +477,13 @@ public:
      */
     double baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex);
     
+    /**
+     * @brief Compute the sum of the gamma variable (for use in EM)
+     */
     void baumWelch_gammaSum();
     
     /**
-     * @brief Estimate the Coefficiant of the Gaussian Mixture for each state
+     * @brief Estimate the Coefficients of the Gaussian Mixture for each state
      */
     void baumWelch_estimateMixtureCoefficients();
     
@@ -460,8 +507,11 @@ public:
      */
     void baumWelch_estimateTransitions();
     
+    /*@}*/
+
 #pragma mark > Play!
-    /** @name Playing */
+    /*@{*/
+    /** @name Playing: protected methods */
     /**
      * @brief Adds a cyclic Transition probability (from last state to first state)
      * @details avoids getting stuck at the end of the model. this method is idle for a hierarchical model.
@@ -469,11 +519,26 @@ public:
      */
     void addCyclicTransition(double proba);
     
+    /**
+     * @brief Compute the regression for the case of a bimodal model, given the estimated
+     * state probabilities estimated by forward algorithm
+     * @param observation_input observation on the input modality
+     * @param predicted_output output predicted by non-linear regression.
+     */
     void regression(float *observation_input, vector<float>& predicted_output);
     
+    /**
+     * @brief Updates the normalized time progression in the results.
+     * @details The time progression is computed as the expected value of the states probabilities,
+     * normalized between 0 and 1.
+     */
     void updateTimeProgression();
     
+    /*@}*/
+
 #pragma mark > Exit Probabilities
+    /*@{*/
+    /** @name Exit Probabilities: update */
     /**
      * @brief Update the exit probability vector given the probabilities
      * @details this method is only active in 'HIERARCHICAL' mode. The probability
@@ -484,110 +549,121 @@ public:
      */
     void updateExitProbabilities(float *_exitProbabilities = NULL);
     
+    /*@}*/
+
 #pragma mark -
 #pragma mark === Protected Attributes ===
     /**
-     * Number of hidden states of the Markov chain
+     * @brief Number of hidden states of the Markov chain
      */
     int nbStates_;
     
     /**
-     * Number of Gaussian mixture components for each state
+     * @brief Number of Gaussian mixture components for each state
      */
     int nbMixtureComponents_;
     
     /**
-     * Offset added to the diagonal of covariance matrices for convergence
+     * @brief Offset added to the diagonal of covariance matrices for convergence
      */
     float  covarianceOffset_;
     
     /**
-     * Transition mode of the model (left-right vs ergodic)
+     * @brief Transition mode of the model (left-right vs ergodic)
      */
     TRANSITION_MODE transitionMode_;
     
     /**
-     * Prior probabilities
+     * @brief Prior probabilities
      */
     vector<float> prior_;
     
     /**
-     * Transition Matrix
+     * @brief Transition Matrix
      * @todo make it smaller to be left-right specific
      */
     vector<float> transition_;
     
     /**
-     * States of the model (Gaussian Mixture Models)
+     * @brief States of the model (Gaussian Mixture Models)
      */
     vector<GMM> states_;
     
     /**
-     * Stop criterion for the EM estimation during performance
+     * @brief Stop criterion for the EM estimation during performance
      * @deprecated this is not currently used
      */
     EMStopCriterion play_EM_stopCriterion_;
     
     /**
-     * Defines if the forward algorithm has been initialized
+     * @brief Defines if the forward algorithm has been initialized
      */
     bool forwardInitialized_;
     
     /**
-     * Define if the EM algorithm should re-estimate the means of each state.
+     * @brief Define if the EM algorithm should re-estimate the means of each state.
      */
     bool estimateMeans_;
     
     /**
-     * used to store the alpha estimated at the previous time step
+     * @brief used to store the alpha estimated at the previous time step
      */
     vector<double> previousAlpha_;
     
     /**
-     * backward state probabilities
+     * @brief backward state probabilities
      */
     vector<double> beta_;
     
     /**
-     * used to store the beta estimated at the previous time step
+     * @brief used to store the beta estimated at the previous time step
      */
     vector<double> previousBeta_;
     
     /**
-     * Sequence of Gamma probabilities
+     * @brief Sequence of Gamma probabilities
      */
     vector< vector<double> > gammaSequence_;
     
     /**
-     * Sequence of Epsilon probabilities
+     * @brief Sequence of Epsilon probabilities
      */
     vector< vector<double> > epsilonSequence_;
     
     /**
-     * Sequence of Gamma probabilities for each mixture component
+     * @brief Sequence of Gamma probabilities for each mixture component
      */
     vector< vector< vector<double> > > gammaSequencePerMixture_;
     
     /**
-     * Sequence of alpha (forward) probabilities
+     * @brief Sequence of alpha (forward) probabilities
      */
     vector<double> alpha_seq_;
     
     /**
-     * Sequence of beta (backward) probabilities
+     * @brief Sequence of beta (backward) probabilities
      */
     vector<double> beta_seq_;
     
+    /**
+     * @brief Used to store the sums of the gamma variable
+     */
     vector<double> gammaSum_;
+
+    /**
+     * @brief Used to store the sums of the gamma variable for each mixture component
+     */
     vector<double> gammaSumPerMixture_;
     
     /**
-     * Defines if the model is a submodel of a hierarchical HMM
+     * @brief Defines if the model is a submodel of a hierarchical HMM.
+     * @details in practice this adds exit probabilities to each state. These probabilities are set
+     * to the last state by default.
      */
     bool is_hierarchical_;
     
     /**
-     * Exit probabilities for a hierarchical model.
+     * @brief Exit probabilities for a hierarchical model.
      */
     vector<float> exitProbabilities_;
 };

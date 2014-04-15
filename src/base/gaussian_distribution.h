@@ -11,7 +11,7 @@
 #define __mhmm__gaussian_distribution__
 
 #include "json_utilities.h"
-#include "listener.h"
+#include "mbd_common.h"
 
 /**
  * default offset for covariance matrix
@@ -25,6 +25,7 @@ const double GAUSSIAN_DEFAULT_COVARIANCE_OFFSET = 0.01;
 const double EPSILON_GAUSSIAN = 1.0e-40;
 
 /**
+ * @ingroup ModelBase
  * @class GaussianDistribution
  * @brief Multivariate Gaussian Distribution
  * @details Full covariance, optionally multimodal with support for regression
@@ -33,12 +34,13 @@ class GaussianDistribution
 {
 public:
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Default Constructor
+     * @param flags construction flags. Use the flag 'BIMODAL' for use with regression.
      * @param dimension dimension of the distribution
      * @param offset offset added to the covariances to ensure convergence / avoid numeric errors
-     * @param useRegression defines if the distribution can be used for regression (bimodal mode)
      * @param dimension_input dimension of the input modality in bimodal mode.
      * @todo change useRegression boolean to BIMODAL flag
      */
@@ -71,7 +73,10 @@ public:
      */
     ~GaussianDistribution();
     
+    /*@}*/
+    
 #pragma mark > Accessors
+    /*@{*/
     /** @name Accessors */
     /**
      * @brief Get Dimension of the distribution
@@ -106,7 +111,10 @@ public:
      */
     void set_offset(double offset);
     
+    /*@}*/
+
 #pragma mark > Likelihood & Regression
+    /*@{*/
     /** @name Likelihood & Regression */
     /**
      * @brief Get Likelihood of a data vector
@@ -146,7 +154,10 @@ public:
      */
     void regression(const float *observation_input, vector<float>& predicted_output) const;
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
@@ -160,7 +171,10 @@ public:
      */
     void from_json(JSONNode root);
     
+    /*@}*/
+
 #pragma mark > Utilities
+    /*@{*/
     /** @name Utilities */
     /**
      * @brief Resize Mean and Covariance Vectors to appropriate dimension.
@@ -184,6 +198,8 @@ public:
      * @throws runtime_error if the covariance matrix is not invertible
      */
     void updateInverseCovariance();
+
+    /*@}*/
 
 #pragma mark -
 #pragma mark === Public Attributes ===

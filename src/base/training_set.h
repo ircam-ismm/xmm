@@ -10,15 +10,15 @@
 #ifndef rtml_training_set_h
 #define rtml_training_set_h
 
-#include "label.h"
-#include "phrase.h"
-#include "listener.h"
 #include <map>
 #include <set>
+#include "label.h"
+#include "phrase.h"
 
 using namespace std;
 
 /**
+ * @ingroup TrainingSet
  * @class TrainingSet
  * @brief Base class for the definition of (multimodal) training sets
  * @todo class description
@@ -28,9 +28,6 @@ class TrainingSet
 public:
 #pragma mark -
 #pragma mark === Public Interface ===
-#pragma mark > Iterators
-    /** @name iterators */
-    
     /**
      * @brief Phrase iterator: allows to iterate over the phrases of the training set
      * @details phrases are stored as a map, the iterator is therefore equivalent to: map<int, Phrase*>::iterator
@@ -56,6 +53,7 @@ public:
     typedef typename  map<int, Label>::const_iterator const_label_iterator;
     
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Constructor
@@ -81,7 +79,10 @@ public:
      */
     virtual ~TrainingSet();
     
+    /*@}*/
+
 #pragma mark > Accessors & tests
+    /*@{*/
     /** @name accessors and tests */
     /**
      * @brief checks if the training set is bimodal
@@ -140,7 +141,7 @@ public:
     
     /**
      * @brief Set the dimension of the input modality in bimodal mode
-     * @param int dimension_input dimension of the input modality
+     * @param dimension_input dimension of the input modality
      * @throws runtime_error if the phrase is not bimodal
      * @throws invalid_argument if The dimension of the input modality exceeds the total dimension
      */
@@ -159,7 +160,10 @@ public:
      */
     bool operator!=(TrainingSet const &src);
 
+    /*@}*/
+
 #pragma mark > Access Phrases
+    /*@{*/
     /** @name Access Phrases */
     /**
      * @brief iterator to the beginning of phrases
@@ -179,7 +183,10 @@ public:
      */
     phrase_iterator operator()(int n);
     
+    /*@}*/
+
 #pragma mark > Connect Phrases
+    /*@{*/
     /** @name Connect Phrases */
     /**
      * @brief Connect a phrase to the training set (unimodal case)
@@ -193,9 +200,23 @@ public:
      */
     void connect(int phraseIndex, float *pointer_to_data, unsigned int length);
     
+    /**
+     * @brief Connect a phrase to the training set (synchronous bimodal case)
+     * @details This method is used in shared memory to pass an array to the training set.
+     * If the phrase does not exist, it is created at the specified index.
+     * @param phraseIndex index of the phrase in the training set. If it does not exist, the phrase is created.
+     * @param pointer_to_data_input pointer to the data array for the input modality
+     * @param pointer_to_data_output pointer to the data array for the output modality
+     * @param length length of the phrase
+     * @throws runtime_error if not in shared memory (construction with SHARED_MEMORY flag)
+     * @throws runtime_error if bimodal (construction with the BIMODAL flag)
+     */
     void connect(int phraseIndex, float *pointer_to_data_input, float *pointer_to_data_output, unsigned int length);
     
+    /*@}*/
+
 #pragma mark > Record training Data
+    /*@{*/
     /** @name Record training Data */
     /**
      * @brief Record training data
@@ -247,8 +268,11 @@ public:
      */
     void clear();
     
+    /*@}*/
+
 #pragma mark > Handle Labels
-    /** @name Manipulation of Labels */
+    /*@{*/
+    /** @name Handle Labels */
     /**
      * @brief set default phrase label for new phrases
      * @param defLabel default Label
@@ -287,7 +311,10 @@ public:
      */
     TrainingSet* getSubTrainingSetForClass(Label const& label);
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name File IO */
     /**
      * @brief Write to JSON Node
@@ -302,7 +329,10 @@ public:
      */
     void from_json(JSONNode root);
     
+    /*@}*/
+
 #pragma mark > Debug
+    /*@{*/
     /** @name Debug */
     /**
      * @brief Dump training set information to stream
@@ -310,9 +340,12 @@ public:
      */
     void dump(ostream& outStream);
     
-#pragma mark > Python
-    /** @name Python methods */
+    /*@}*/
+
 #ifdef SWIGPYTHON
+#pragma mark > Python
+    /*@{*/
+    /** @name Python methods */
     /**
      * @brief special python "print" method to get information on the object
      */
@@ -342,6 +375,7 @@ public:
         
         delete[] observation_float;
     }
+    /*@}*/
 #endif
     
 #pragma mark -
@@ -366,16 +400,31 @@ public:
 private:
 #pragma mark -
 #pragma mark === Private Methods ===
-#pragma mark > Copy
+#pragma mark > between Training Sets
+    /*@{*/
+    /** @name Copy between Training Sets */
+    /**
+     * @brief Copy between Training Sets
+     * @param dst destination Training Set
+     * @param src Source Training Set
+     */
     void _copy(TrainingSet *dst, TrainingSet const& src);
 
+    /*@}*/
+
 #pragma mark > Lock
+    /*@{*/
+    /** @name Lock */
     /**
      * @brief Lock training set to keep the phrases from being deleted at destruction
      */
     void lock();
     
+    /*@}*/
+
 #pragma mark > Handle Labels
+    /*@{*/
+    /** @name Handle Labels: protected methods */
     /**
      * @brief update the sub-training set for a given label
      */
@@ -391,6 +440,8 @@ private:
      * @brief update the list of all existing labels of the training set
      */
     void updateLabelList();
+
+    /*@}*/
     
 #pragma mark -
 #pragma mark === Private Attributes ===

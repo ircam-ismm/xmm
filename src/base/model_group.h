@@ -11,7 +11,7 @@
 #ifndef rtml_concurrent_models_h
 #define rtml_concurrent_models_h
 
-#include "learning_model.h"
+#include "base_model.h"
 #if __cplusplus > 199711L
 #include <thread>
 #endif
@@ -21,12 +21,13 @@ using namespace std;
 #pragma mark -
 #pragma mark Class Definition
 /**
- * @class ConcurrentModels
+ * @ingroup Base
+ * @class ModelGroup
  * @brief Handle machine learning models running in parallel
  * @tparam modelType type of the models (implemented: GMM, HMM)
  */
 template<typename ModelType>
-class ConcurrentModels : public Listener
+class ModelGroup : public Listener
 {
 public:
 #pragma mark -
@@ -64,6 +65,7 @@ public:
     typedef typename  map<int, Label>::iterator labels_iterator;
     
 #pragma mark > Constructors
+    /*@{*/
     /** name Constructors */
     /**
      * @brief Constructor
@@ -72,7 +74,7 @@ public:
      * For the Hierarchial HMM, use 'HIERARCHICAL' to specify the submodels they are embedded
      * in a hierarchical structure
      */
-    ConcurrentModels(rtml_flags flags = NONE,
+    ModelGroup(rtml_flags flags = NONE,
                      TrainingSet *globalTrainingSet=NULL)
     {
         bimodal_ = (flags & BIMODAL);
@@ -86,12 +88,15 @@ public:
     /**
      * @brief Destructor
      */
-    virtual ~ConcurrentModels()
+    virtual ~ModelGroup()
     {
         models.clear();
     }
+
+    /*@}*/
     
 #pragma mark > Notifications
+    /*@{*/
     /** @name Notifications */
     /**
      * @brief Receives notifications from the global training set and dispatches to models
@@ -104,8 +109,10 @@ public:
         }
     }
     
+    /*@}*/
     
 #pragma mark > Accessors
+    /*@{*/
     /** @name Accessors */
     /**
      * @brief Get Total Dimension of the model (sum of dimension of modalities)
@@ -179,8 +186,12 @@ public:
     {
         return (unsigned int)(models.size());
     }
+
+    /*@}*/
     
-#pragma mark > Model Utilities
+#pragma mark > Utilities
+    /*@{*/
+    /** @name Utilities */
     /**
      * @brief Remove All models
      */
@@ -201,10 +212,12 @@ public:
             throw out_of_range("Class Label Does not exist");
         models.erase(it);
     }
+
+    /*@}*/
     
 #pragma mark > Training
+    /*@{*/
     /** @name Training */
-    
     /**
      * @brief Train a specific model
      * @details  The model is trained even if the dataset has not changed
@@ -287,8 +300,11 @@ public:
             it->second.set_trainingCallback(callback, extradata);
         }
     }
-    
+
+    /*@}*/
+
 #pragma mark > Performance
+    /*@{*/
     /** @name Performance */
     /**
      * @brief Sets the playing mode (likeliest vs mixture)
@@ -342,9 +358,12 @@ public:
      */
     virtual void play(float *observation, double *modelLikelihoods) = 0;
     
-#pragma mark > Python
-    /** @name Python */
+    /*@}*/
+
 #ifdef SWIGPYTHON
+#pragma mark > Python
+    /*@{*/
+    /** @name Python */
     void printLabels() {
         cout << "Order of Labels: ";
         for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
@@ -356,6 +375,7 @@ public:
             }
         cout << endl;
     }
+    /*@}*/
 #endif
     
 #pragma mark -
@@ -374,7 +394,8 @@ protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Training Set
-    /** @name Training set */
+    /*@{*/
+    /** @name Training set: Protected Methods */
     /**
      * @brief Remove models which label is not in the training set anymore
      */
@@ -439,6 +460,8 @@ protected:
         
         globalTrainingSet->set_unchanged();
     }
+    
+    /*@}*/
     
 #pragma mark -
 #pragma mark === Protected attributes ===

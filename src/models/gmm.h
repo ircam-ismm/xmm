@@ -11,17 +11,22 @@
 #define mhmm_gmm_h
 
 #include "gaussian_distribution.h"
-#include "em_based_learning_model.h"
+#include "em_based_model.h"
 
 const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
 
 /**
+ * @defgroup GMM Gaussian Mixture Model
+ */
+
+/**
+ * @ingroup GMM
  * @class GMM
  * @brief Gaussian Mixture Model
  * @details Multivariate Gaussian Mixture Model. Supports Bimodal data and Gaussian Mixture Regression.
  * Can be either autonomous or a state of a HMM: defines observation probabilities for each state.
  */
-class GMM : public EMBasedLearningModel {
+class GMM : public EMBasedModel {
 public:
     friend class HMM;
     
@@ -38,11 +43,12 @@ public:
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Constructor
-     * @param _trainingSet training set associated with the model
      * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
+     * @param trainingSet training set associated with the model
      * @param nbMixtureComponents number of mixture components
      * @param covarianceOffset offset added to the diagonal of covariances matrices (useful to guarantee convergence)
      */
@@ -68,8 +74,11 @@ public:
      */
     virtual ~GMM();
     
-#pragma mark > Accessors & Attributes
-    /** @name Accessors & Attributes */
+    /*@}*/
+
+#pragma mark > Accessors
+    /*@{*/
+    /** @name Accessors */
     /**
      * @brief Get the number of Gaussian mixture Components
      * @return number of Gaussian mixture components
@@ -98,7 +107,10 @@ public:
      */
     void set_covarianceOffset(float covarianceOffset);
     
+    /*@}*/
+
 #pragma mark > Performance
+    /*@{*/
     /** @name Performance */
     /**
      * @brief Initialize playing mode
@@ -112,8 +124,11 @@ public:
      * @return instantaneous likelihood
      */
     double play(float *observation);
+
+    /*@}*/
     
 #pragma mark > Training
+    /*@{*/
     /** @name Training */
     /**
      * @brief Initialize the EM Training Algorithm
@@ -127,7 +142,10 @@ public:
      */
     virtual void finishTraining();
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
@@ -143,8 +161,12 @@ public:
      */
     virtual void from_json(JSONNode root);
     
-#pragma mark > Python
+    /*@}*/
+
+
 #ifdef SWIGPYTHON
+#pragma mark > Python
+    /*@{*/
     /** @name Python Bindings */
     /**
      * @brief Python bindings for play function.
@@ -166,7 +188,7 @@ public:
         
         return likelihood;
     }
-    
+    /*@}*/
 #endif
     
 #pragma mark -
@@ -190,16 +212,20 @@ protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Utilities
-    /** @name Utilities */
+    /*@{*/
+    /** @name Copy between models */
     /**
      * @brief Copy between 2 GMMs
      * @param dst Destination GMM
      * @param src Source GMM
      */
-    using EMBasedLearningModel::_copy;
+    using EMBasedModel::_copy;
     virtual void _copy(GMM *dst, GMM const& src);
     
+    /*@}*/
     
+    /*@{*/
+    /** @name Utilities */
     /**
      @brief Allocate model parameters
      */
@@ -218,7 +244,7 @@ protected:
     
     /**
      * @brief Observation probability on the input modality
-     * @param obs observation vector of the input modality (must be of size 'dimension_input')
+     * @param observation_input observation vector of the input modality (must be of size 'dimension_input')
      * @param mixtureComponent index of the mixture component. if unspecified or negative,
      * full mixture observation probability is computed
      * @return likelihood of the observation of the input modality given the model
@@ -239,8 +265,11 @@ protected:
      */
     double obsProb_bimodal(const float *observation_input, const float *observation_output, int mixtureComponent=-1);
     
+    /*@}*/
+
 #pragma mark > Training
-    /** @name Training */
+    /*@{*/
+    /** @name Training: protected methods */
     /**
      * @brief Initialize the means of the Gaussian components with the first phrase of the training set
      */
@@ -281,8 +310,11 @@ protected:
      */
     void updateInverseCovariances();
     
+    /*@}*/
+
 #pragma mark > Performance
-    /** @name Performance */
+    /*@{*/
+    /** @name Performance: protected methods */
     /**
      * @brief Compute likelihood and estimate components probabilities
      * @details If the model is bimodal, the likelihood is computed only on the input modality,
@@ -304,27 +336,10 @@ protected:
      */
     void regression(float *observation_input, vector<float>& predicted_output);
     
-#pragma mark > Deprecated
-    //    /** @name Deprecated */
-    //    /**
-    //     * @brief Get index of the likeliest component
-    //     * @details this is independent from observation
-    //     * @return index of the likeliest component
-    //     * @todo delete this method? > unused
-    //     */
-    //    int likeliestComponent();
-    //
-    //    /**
-    //     * @brief Compute the likeliest component given an observation.
-    //     * @details The likelihood is computed using observation probabilities and mixture coefficients
-    //     * @param obs observation (must be of size 'dimension')
-    //     * @todo delete this method? > unused
-    //     */
-    //    int likeliestComponent(const float *obs);
+    /*@}*/
 
 #pragma mark -
 #pragma mark === Protected attributes ===
-    /** @name Protected attributes */
     /**
      * @brief Number of Gaussian Mixture Components
      */

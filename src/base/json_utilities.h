@@ -18,26 +18,45 @@
 
 using namespace std;
 
+/**
+ * @ingroup Utilities
+ * @class JSONException
+ * @brief Simple Exception class for handling JSON I/O errors
+ */
 class JSONException : public exception
 {
 public:
+    /**
+     * @brief Default Constructor
+     * @param message error message
+     * @param nodename name of the JSON node where the error occurred
+     */
     JSONException(string message="", string nodename="")
-    {
-        message_ = message;
-        nodename_ = nodename;
-    }
+    : message_(message), nodename_(nodename)
+    {}
     
-    JSONException(exception const& src, string nodename = "")
-    {
-        message_ = src.what();
-        nodename_ = nodename;
-    }
+    /**
+     * @brief Constructor From exception message
+     * @param src Source Exception
+     * @param nodename name of the
+     */
+    explicit JSONException(exception const& src, string nodename = "")
+    : message_(src.what()), nodename_(nodename)
+    {}
     
+    /**
+     * @brief Copy Constructor
+     * @param src Source JSON exception
+     */
     JSONException(JSONException const& src)
     {
         this->_copy(this, src);
     }
     
+    /**
+     * @brief Assigment
+     * @param src Source JSON exception
+     */
     JSONException& operator=(JSONException const& src)
     {
         if(this != &src)
@@ -47,6 +66,11 @@ public:
         return *this;
     }
     
+    /**
+     * @brief Copy between two JSON exceptions
+     * @param dst destination JSON exception
+     * @param src Source JSON exception
+     */
     virtual void _copy(JSONException *dst,
                        JSONException const& src)
     
@@ -55,11 +79,16 @@ public:
         dst->nodename_ = src.nodename_;
     }
     
+    /**
+     * @brief Destructor
+     */
     virtual ~JSONException() throw()
-    {
-        
-    }
+    {}
     
+    /**
+     * @brief Get exception message
+     * @return exception message
+     */
     virtual const char * what() const throw()
     {
         string fullmsg = "Error reading JSON, Node '" + nodename_ + "': " + message_;
@@ -71,6 +100,10 @@ private:
     string nodename_;
 };
 
+/*@{*/
+/**
+ * @name JSON conversion to/from arrays and vectors
+ */
 template <typename T>
 JSONNode array2json(T const* a, int n, string name="array")
 {
@@ -135,5 +168,6 @@ template <> void json2vector(JSONNode root, vector<double>& a, int n);
 template <> void json2vector(JSONNode root, vector<bool>& a, int n);
 template <> void json2vector(JSONNode root, vector<string>& a, int n);
 
+/*@}*/
 
 #endif

@@ -13,7 +13,7 @@
 #pragma mark Constructors
 HierarchicalHMM::HierarchicalHMM(rtml_flags flags,
                                  TrainingSet *_globalTrainingSet)
-: ConcurrentModels< HMM >(flags, _globalTrainingSet)
+: ModelGroup< HMM >(flags, _globalTrainingSet)
 {
     incrementalLearning_ = HHMM_DEFAULT_INCREMENTALLEARNING;
     forwardInitialized_ = false;
@@ -397,7 +397,7 @@ void HierarchicalHMM::updateExitProbabilities()
 
 void HierarchicalHMM::updateTrainingSet(Label const& label)
 {
-    ConcurrentModels<HMM>::updateTrainingSet(label);
+    ModelGroup<HMM>::updateTrainingSet(label);
     updateTransitionParameters();
 }
 
@@ -595,7 +595,7 @@ void HierarchicalHMM::likelihoodAlpha(int exitNum, vector<double> &likelihoodVec
 
 void HierarchicalHMM::remove(Label const& label)
 {
-    ConcurrentModels<HMM>::remove(label);
+    ModelGroup<HMM>::remove(label);
     updateTransitionParameters();
 }
 
@@ -603,7 +603,7 @@ void HierarchicalHMM::remove(Label const& label)
 #pragma mark Playing
 void HierarchicalHMM::initPlaying()
 {
-    ConcurrentModels<HMM>::initPlaying();
+    ModelGroup<HMM>::initPlaying();
     V1_.resize(this->size()) ;
     V2_.resize(this->size()) ;
     forwardInitialized_ = false;
@@ -653,17 +653,15 @@ void HierarchicalHMM::play(float *observation, double *modelLikelihoods)
     }
 }
 
-HMM::Results HierarchicalHMM::getResults(Label classLabel)
+HMM::Results HierarchicalHMM::getResults(Label const& label) const
 {
-    if (this->models.find(classLabel) == this->models.end())
+    if (this->models.find(label) == this->models.end())
         throw out_of_range("Class Label Does not exist");
-    return this->models[classLabel].results;
+    return this->models.at(label).results_hmm;
 }
 
 #pragma mark -
 #pragma mark File IO
-
-
 JSONNode HierarchicalHMM::to_json() const
 {
     JSONNode json_hhmm(JSON_NODE);

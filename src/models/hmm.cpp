@@ -18,7 +18,7 @@ HMM::HMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbStates,
          int nbMixtureComponents)
-: EMBasedLearningModel(flags, trainingSet)
+: EMBasedModel(flags, trainingSet)
 {
     is_hierarchical_ = !(flags & HIERARCHICAL);
     
@@ -42,7 +42,7 @@ HMM::HMM(rtml_flags flags,
     initTraining();
 }
 
-HMM::HMM(HMM const& src) : EMBasedLearningModel(src)
+HMM::HMM(HMM const& src) : EMBasedModel(src)
 {
     _copy(this, src);
 }
@@ -58,7 +58,7 @@ HMM& HMM::operator=(HMM const& src)
 
 void HMM::_copy(HMM *dst, HMM const& src)
 {
-    EMBasedLearningModel::_copy(dst, src);
+    EMBasedModel::_copy(dst, src);
     dst->nbMixtureComponents_     = src.nbMixtureComponents_;
     dst->covarianceOffset_        = src.covarianceOffset_;
     dst->nbStates_ = src.nbStates_;
@@ -606,7 +606,7 @@ void HMM::initTraining()
 void HMM::finishTraining()
 {
     normalizeTransitions();
-    LearningModel::finishTraining();
+    BaseModel::finishTraining();
 }
 
 
@@ -948,7 +948,7 @@ void HMM::baumWelch_estimateTransitions()
 
 void HMM::initPlaying()
 {
-    EMBasedLearningModel::initPlaying();
+    EMBasedModel::initPlaying();
     forwardInitialized_ = false;
     if (is_hierarchical_) {
         for (int i=0 ; i<3 ; i++)
@@ -1030,12 +1030,6 @@ void HMM::regression(float *observation_input, vector<float>& predicted_output)
     }
 }
 
-
-/**
- * @brief Compute the centroid of a vector (normalized between 0 and 1)
- * @param vect source vector
- * @return centroid of the vector (normalized between 0 and 1)
- */
 void HMM::updateTimeProgression()
 {
     results_hmm.progress = 0.0;
@@ -1049,9 +1043,9 @@ void HMM::updateTimeProgression()
 }
 
 
-HMM::Results HMM::getResults()
+HMM::Results HMM::getResults() const
 {
-    return results;
+    return results_hmm;
 }
 
 #pragma mark -
@@ -1064,8 +1058,8 @@ JSONNode HMM::to_json() const
     json_hmm.set_name("HMM");
     
     // Write Parent: EM Learning Model
-    JSONNode json_emmodel = EMBasedLearningModel::to_json();
-    json_emmodel.set_name("EMBasedLearningModel");
+    JSONNode json_emmodel = EMBasedModel::to_json();
+    json_emmodel.set_name("EMBasedModel");
     json_hmm.push_back(json_emmodel);
     
     // Scalar Attributes
@@ -1102,11 +1096,11 @@ void HMM::from_json(JSONNode root)
         assert(root.type() == JSON_NODE);
         JSONNode::iterator root_it = root.begin();
         
-        // Get Parent: Concurrent models
+        // Get Parent: EMBasedModel
         assert(root_it != root.end());
-        assert(root_it->name() == "EMBasedLearningModel");
+        assert(root_it->name() == "EMBasedModel");
         assert(root_it->type() == JSON_NODE);
-        EMBasedLearningModel::from_json(*root_it);
+        EMBasedModel::from_json(*root_it);
         ++root_it;
         
         // Get If Hierarchical

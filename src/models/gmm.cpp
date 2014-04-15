@@ -14,7 +14,7 @@ GMM::GMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbMixtureComponents,
          float covarianceOffset)
-: EMBasedLearningModel(flags, trainingSet)
+: EMBasedModel(flags, trainingSet)
 {
     nbMixtureComponents_  = nbMixtureComponents;
     covarianceOffset_     = covarianceOffset;
@@ -25,7 +25,7 @@ GMM::GMM(rtml_flags flags,
 }
 
 
-GMM::GMM(GMM const& src) : EMBasedLearningModel(src)
+GMM::GMM(GMM const& src) : EMBasedModel(src)
 {
     _copy(this, src);
 }
@@ -105,7 +105,7 @@ void GMM::initTraining()
 
 void GMM::finishTraining()
 {
-    LearningModel::finishTraining();
+    BaseModel::finishTraining();
 }
 
 #pragma mark > JSON I/O
@@ -115,8 +115,8 @@ JSONNode GMM::to_json() const
     json_gmm.set_name("GMM");
     
     // Write Parent: EM Learning Model
-    JSONNode json_emmodel = EMBasedLearningModel::to_json();
-    json_emmodel.set_name("EMBasedLearningModel");
+    JSONNode json_emmodel = EMBasedModel::to_json();
+    json_emmodel.set_name("EMBasedModel");
     json_gmm.push_back(json_emmodel);
     
     // Scalar Attributes
@@ -144,11 +144,11 @@ void GMM::from_json(JSONNode root)
         assert(root.type() == JSON_NODE);
         JSONNode::iterator root_it = root.begin();
         
-        // Get Parent: EMBasedLearningModel
+        // Get Parent: EMBasedModel
         assert(root_it != root.end());
-        assert(root_it->name() == "EMBasedLearningModel");
+        assert(root_it->name() == "EMBasedModel");
         assert(root_it->type() == JSON_NODE);
-        EMBasedLearningModel::from_json(*root_it);
+        EMBasedModel::from_json(*root_it);
         ++root_it;
         
         // Get Mixture Components
@@ -196,7 +196,7 @@ void GMM::from_json(JSONNode root)
 #pragma mark > Utilities
 void GMM::_copy(GMM *dst, GMM const& src)
 {
-    EMBasedLearningModel::_copy(dst, src);
+    EMBasedModel::_copy(dst, src);
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->covarianceOffset_ = src.covarianceOffset_;
     dst->mixtureCoeffs = src.mixtureCoeffs;

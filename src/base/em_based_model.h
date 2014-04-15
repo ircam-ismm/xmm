@@ -10,7 +10,7 @@
 #ifndef rtml_em_based_learning_model_h
 #define rtml_em_based_learning_model_h
 
-#include "learning_model.h"
+#include "base_model.h"
 #include "ringbuffer.h"
 #if __cplusplus > 199711L
 #include <mutex>
@@ -65,10 +65,11 @@ struct EMStopCriterion {
 };
 
 /**
- @class EMBasedLearningModel
- @brief Generic Template for Machine Learning Probabilistic models based on the EM algorithm
+ * @ingroup ModelBase
+ * @class EMBasedModel
+ * @brief Generic Template for Machine Learning Probabilistic models based on the EM algorithm
  */
-class EMBasedLearningModel : public LearningModel
+class EMBasedModel : public BaseModel
 {
 public:
     /**
@@ -92,10 +93,11 @@ public:
          */
         vector<float> predicted_output;
     };
-    
+
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors*/
     /**
      * @brief Constructor
@@ -103,27 +105,30 @@ public:
      * @param flags Construction Flags. The only valid flag here is BIMODAL, that defines if the
      * model is bimodal (can be used for regression).
      */
-    EMBasedLearningModel(rtml_flags flags = NONE, TrainingSet *trainingSet = NULL);
+    EMBasedModel(rtml_flags flags = NONE, TrainingSet *trainingSet = NULL);
     
     /**
      * @brief Copy Constructor
      * @param src Source Model
      */
-    EMBasedLearningModel(EMBasedLearningModel const& src);
+    EMBasedModel(EMBasedModel const& src);
     
     /**
      * @brief Assignment
      * @param src Source Model
      */
-    EMBasedLearningModel& operator=(EMBasedLearningModel const& src);
+    EMBasedModel& operator=(EMBasedModel const& src);
     
     /**
      * @brief Destructor
      */
-    virtual ~EMBasedLearningModel();
+    virtual ~EMBasedModel();
     
+    /*@}*/
+
 #pragma mark > Training
-    /** @name Training algorithm */
+    /*@{*/
+    /** @name Training */
     /**
      * @brief Main training method based on the EM algorithm
      * @details the method performs a loop over the pure virtual method train_EM_update() until convergence.
@@ -132,7 +137,11 @@ public:
      */
     int train();
     
+    /*@}*/
+
 #pragma mark > EM Stop Criterion
+    /*@{*/
+    /** @name EM Stop Criterion */
     /**
      * @brief Get minimum number of EM steps
      * @return minimum number of steps of the EM algorithm
@@ -174,8 +183,11 @@ public:
      */
     void set_EM_percentChange(double logLikelihoodPercentChg);
     
+    /*@}*/
+
 #pragma mark > Likelihood Buffer
-    /** @name Likelihood smoothing buffer */
+    /*@{*/
+    /** @name Likelihood Buffer */
     /**
      * @brief get size of the likelihood smoothing buffer (number of frames)
      * @return size of the likelihood smoothing buffer
@@ -184,7 +196,7 @@ public:
     
     /**
      * @brief set size of the likelihood smoothing buffer (number of frames)
-     * @param likelihoodBufferSize_ size of the likelihood smoothing buffer
+     * @param likelihoodBufferSize size of the likelihood smoothing buffer
      * @throws invalid_argument if likelihoodBufferSize is < 1
      */
     void set_likelihoodBufferSize(unsigned int likelihoodBufferSize);
@@ -202,7 +214,10 @@ public:
      */
     virtual void initPlaying();
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
@@ -217,6 +232,8 @@ public:
      */
     virtual void from_json(JSONNode root);
     
+    /*@}*/
+
 #pragma mark -
 #pragma mark === Public Attributes ===
     /**
@@ -227,15 +244,21 @@ public:
 protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
+    /*@{*/
+    /** @name Copy between models */
     /**
      * @brief Copy between two models
      * @param src Source Model
      * @param dst Destination Model
      */
-    using LearningModel::_copy;
-    virtual void _copy(EMBasedLearningModel *dst, EMBasedLearningModel const& src);
+    using BaseModel::_copy;
+    virtual void _copy(EMBasedModel *dst, EMBasedModel const& src);
     
+    /*@}*/
+
 #pragma mark > Training
+    /*@{*/
+    /** @name Training: pure virtual methods */
     /**
      * @brief Update Method of the EM algorithm
      * @details performs E and M steps of the EM algorithm.
@@ -251,6 +274,8 @@ protected:
      */
     bool train_EM_stop(int step, double log_prob, double old_log_prob) const;
     
+    /*@}*/
+
 #pragma mark -
 #pragma mark === Protected Attributes ===
     /**

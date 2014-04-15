@@ -10,12 +10,13 @@
 #define mhmm_ringbuffer_h
 
 /**
+ * @ingroup Utility
  * @class RingBuffer
  * @brief Simple RingBuffer Class
  * @details Multichannel
  * @tparam T Data type
  * @tparam channels number of channels
- * @todo remove template parameters
+ * @todo remove template parameters?
  */
 template <typename T, int channels>
 class RingBuffer {

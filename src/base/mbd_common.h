@@ -46,6 +46,11 @@ enum FLAGS {
 };
 
 /**
+ * @defgroup Utilities Utilities
+ */
+
+/**
+ * @ingroup Utilities
  * @class Listener
  * @brief Dummy class for handling training set notifications
  * @details It is an abstract class that contains a pure virtual method "notify" called by a training set

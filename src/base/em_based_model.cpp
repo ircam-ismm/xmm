@@ -7,14 +7,14 @@
 // author: Jules Francoise <jules.francoise@ircam.fr>
 // 
 
-#include "em_based_learning_model.h"
 #include <cmath>
+#include "em_based_model.h"
 
 #pragma mark -
 #pragma mark Constructors
-EMBasedLearningModel::EMBasedLearningModel(rtml_flags flags,
+EMBasedModel::EMBasedModel(rtml_flags flags,
                                            TrainingSet *trainingSet)
-: LearningModel(flags, trainingSet)
+: BaseModel(flags, trainingSet)
 {
     results.instant_likelihood = 0.0;
     results.logLikelihood = 0.0;
@@ -24,12 +24,12 @@ EMBasedLearningModel::EMBasedLearningModel(rtml_flags flags,
     likelihoodBuffer_.resize(EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW);
 }
 
-EMBasedLearningModel::EMBasedLearningModel(EMBasedLearningModel const& src) : LearningModel(src)
+EMBasedModel::EMBasedModel(EMBasedModel const& src) : BaseModel(src)
 {
     this->_copy(this, src);
 }
 
-EMBasedLearningModel& EMBasedLearningModel::operator=(EMBasedLearningModel const& src)
+EMBasedModel& EMBasedModel::operator=(EMBasedModel const& src)
 {
     if(this != &src)
     {
@@ -38,10 +38,10 @@ EMBasedLearningModel& EMBasedLearningModel::operator=(EMBasedLearningModel const
     return *this;
 };
 
-void EMBasedLearningModel::_copy(EMBasedLearningModel *dst,
-                   EMBasedLearningModel const& src)
+void EMBasedModel::_copy(EMBasedModel *dst,
+                   EMBasedModel const& src)
 {
-    LearningModel::_copy(dst, src);
+    BaseModel::_copy(dst, src);
     dst->stopcriterion_.minSteps = src.stopcriterion_.minSteps;
     dst->stopcriterion_.maxSteps = src.stopcriterion_.maxSteps;
     dst->stopcriterion_.percentChg = src.stopcriterion_.percentChg;
@@ -49,12 +49,12 @@ void EMBasedLearningModel::_copy(EMBasedLearningModel *dst,
     dst->likelihoodBuffer_.clear();
 }
 
-EMBasedLearningModel::~EMBasedLearningModel()
+EMBasedModel::~EMBasedModel()
 {}
 
 #pragma mark -
 #pragma mark Training
-int EMBasedLearningModel::train()
+int EMBasedModel::train()
 {
     if (!this->trainingSet)
         throw runtime_error("No training Set is Connected");
@@ -107,36 +107,36 @@ int EMBasedLearningModel::train()
 
 #pragma mark -
 #pragma mark EM Stop Criterion
-int EMBasedLearningModel::get_EM_minSteps() const
+int EMBasedModel::get_EM_minSteps() const
 {
     return stopcriterion_.minSteps;
 }
 
-int EMBasedLearningModel::get_EM_maxSteps() const
+int EMBasedModel::get_EM_maxSteps() const
 {
     return stopcriterion_.maxSteps;
 }
 
-double EMBasedLearningModel::get_EM_percentChange() const
+double EMBasedModel::get_EM_percentChange() const
 {
     return stopcriterion_.percentChg;
 }
 
-void EMBasedLearningModel::set_EM_minSteps(int steps)
+void EMBasedModel::set_EM_minSteps(int steps)
 {
     if (steps < 1) throw invalid_argument("Minimum number of EM steps must be > 0");
     
     stopcriterion_.minSteps = steps;
 }
 
-void EMBasedLearningModel::set_EM_maxSteps(int steps)
+void EMBasedModel::set_EM_maxSteps(int steps)
 {
     if (steps < 0) throw invalid_argument("Maximum number of EM steps must be >= 0");
     
     stopcriterion_.maxSteps = steps;
 }
 
-void EMBasedLearningModel::set_EM_percentChange(double logLikelihoodPercentChg)
+void EMBasedModel::set_EM_percentChange(double logLikelihoodPercentChg)
 {
     if (logLikelihoodPercentChg > 0) {
         stopcriterion_.percentChg = logLikelihoodPercentChg;
@@ -145,7 +145,7 @@ void EMBasedLearningModel::set_EM_percentChange(double logLikelihoodPercentChg)
     }
 }
 
-bool EMBasedLearningModel::train_EM_stop(int step, double log_prob, double old_log_prob) const
+bool EMBasedModel::train_EM_stop(int step, double log_prob, double old_log_prob) const
 {
     if (stopcriterion_.maxSteps > stopcriterion_.minSteps)
         return (step >= stopcriterion_.maxSteps);
@@ -155,18 +155,18 @@ bool EMBasedLearningModel::train_EM_stop(int step, double log_prob, double old_l
 
 #pragma mark -
 #pragma mark Likelihood Buffer
-unsigned int EMBasedLearningModel::get_likelihoodBufferSize() const
+unsigned int EMBasedModel::get_likelihoodBufferSize() const
 {
     return likelihoodBuffer_.size();
 }
 
-void EMBasedLearningModel::set_likelihoodBufferSize(unsigned int likelihoodBufferSize)
+void EMBasedModel::set_likelihoodBufferSize(unsigned int likelihoodBufferSize)
 {
     if (likelihoodBufferSize < 1) throw invalid_argument("Likelihood Buffer size must be > 1");
     likelihoodBuffer_.resize(likelihoodBufferSize);
 }
 
-void EMBasedLearningModel::updateLikelihoodBuffer(double instantLikelihood)
+void EMBasedModel::updateLikelihoodBuffer(double instantLikelihood)
 {
     likelihoodBuffer_.push(log(instantLikelihood));
     results.instant_likelihood = instantLikelihood;
@@ -178,21 +178,21 @@ void EMBasedLearningModel::updateLikelihoodBuffer(double instantLikelihood)
     results.logLikelihood /= double(bufSize);
 }
 
-void EMBasedLearningModel::initPlaying()
+void EMBasedModel::initPlaying()
 {
-    LearningModel::initPlaying();
+    BaseModel::initPlaying();
     likelihoodBuffer_.clear();
 }
 
 #pragma mark -
 #pragma mark File IO
-JSONNode EMBasedLearningModel::to_json() const
+JSONNode EMBasedModel::to_json() const
 {
     JSONNode json_model(JSON_NODE);
-    json_model.set_name("EMBasedLearningModel");
+    json_model.set_name("EMBasedModel");
     
     // Write Parent: Learning Model
-    JSONNode json_learningmodel = LearningModel::to_json();
+    JSONNode json_learningmodel = BaseModel::to_json();
     json_learningmodel.set_name("LearningModel");
     json_model.push_back(json_learningmodel);
     
@@ -207,7 +207,7 @@ JSONNode EMBasedLearningModel::to_json() const
     return json_model;
 }
 
-void EMBasedLearningModel::from_json(JSONNode root)
+void EMBasedModel::from_json(JSONNode root)
 {
     try {
         assert(root.type() == JSON_NODE);
@@ -217,7 +217,7 @@ void EMBasedLearningModel::from_json(JSONNode root)
         assert(root_it != root.end());
         assert(root_it->name() == "LearningModel");
         assert(root_it->type() == JSON_NODE);
-        LearningModel::from_json(*root_it);
+        BaseModel::from_json(*root_it);
         ++root_it;
         
         // Get EM Algorithm stop criterion

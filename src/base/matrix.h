@@ -24,11 +24,10 @@ using namespace std;
  */
 const double EPS = 1.0e-9;
 
-#pragma mark -
-#pragma mark Class definition
 /**
+ * @ingroup Utility
  * @class Matrix
- * @brief Dirty and very incomplete Matrix Library
+ * @brief Dirty and very incomplete Matrix Class
  * @details Contains few utilities for matrix operations, with possibility to share data with vectors
  * @tparam numType data type of the matrix (should be used with float/double)
  */
@@ -85,7 +84,7 @@ public:
      * @param ncols Number of columns
      * @param ownData defines if the matrix stores the data itself (true by default)
      */
-    Matrix(int nrows, int ncols, bool ownDat_=true);
+    Matrix(int nrows, int ncols, bool ownData=true);
 
     /**
      * @brief Constructor from vector (shared data)

@@ -7,11 +7,11 @@
 // author: Jules Francoise <jules.francoise@ircam.fr>
 // 
 
-#include "learning_model.h"
+#include "base_model.h"
 
 #pragma mark -
 #pragma mark Constructors
-LearningModel::LearningModel(rtml_flags flags,
+BaseModel::BaseModel(rtml_flags flags,
                              TrainingSet *trainingSet)
 : trainingSet(trainingSet),
   trained(false),
@@ -34,12 +34,12 @@ LearningModel::LearningModel(rtml_flags flags,
     }
 }
 
-LearningModel::LearningModel(LearningModel const& src)
+BaseModel::BaseModel(BaseModel const& src)
 {
     this->_copy(this, src);
 }
 
-LearningModel& LearningModel::operator=(LearningModel const& src)
+BaseModel& BaseModel::operator=(BaseModel const& src)
 {
     if(this != &src)
     {
@@ -48,7 +48,7 @@ LearningModel& LearningModel::operator=(LearningModel const& src)
     return *this;
 }
 
-void LearningModel::_copy(LearningModel *dst, LearningModel const& src)
+void BaseModel::_copy(BaseModel *dst, BaseModel const& src)
 {
     dst->flags_ = src.flags_;
     dst->trained = src.trained;
@@ -61,12 +61,12 @@ void LearningModel::_copy(LearningModel *dst, LearningModel const& src)
     dst->dimension_ = src.dimension_;
 }
 
-LearningModel::~LearningModel()
+BaseModel::~BaseModel()
 {}
 
 #pragma mark -
 #pragma mark Connect Training set
-void LearningModel::set_trainingSet(TrainingSet *trainingSet)
+void BaseModel::set_trainingSet(TrainingSet *trainingSet)
 {
     this->trainingSet = trainingSet;
     if (this->trainingSet) {
@@ -84,7 +84,7 @@ void LearningModel::set_trainingSet(TrainingSet *trainingSet)
     this->allocate();
 }
 
-void LearningModel::notify(string attribute)
+void BaseModel::notify(string attribute)
 {
     if (!trainingSet) return;
     if (attribute == "dimension") {
@@ -101,19 +101,19 @@ void LearningModel::notify(string attribute)
 
 #pragma mark -
 #pragma mark Callback function for training
-void LearningModel::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
+void BaseModel::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
     trainingExtradata_ = extradata;
     trainingCallback_ = callback;
 }
 
 #pragma mark -
 #pragma mark Pure Virtual Methods: Training, Playing
-void LearningModel::finishTraining()
+void BaseModel::finishTraining()
 {
     if (trainingCallback_)
         trainingCallback_(this, TRAINING_DONE, trainingExtradata_);
 }
-void LearningModel::initPlaying()
+void BaseModel::initPlaying()
 {
     if (!this->trained) {
         throw runtime_error("Cannot play: model has not been trained");
@@ -122,10 +122,10 @@ void LearningModel::initPlaying()
 
 #pragma mark -
 #pragma mark File IO
-JSONNode LearningModel::to_json() const
+JSONNode BaseModel::to_json() const
 {
     JSONNode json_model(JSON_NODE);
-    json_model.set_name("LearningModel");
+    json_model.set_name("BaseModel");
     json_model.push_back(JSONNode("flags", flags_));
     json_model.push_back(JSONNode("bimodal", bimodal_));
     json_model.push_back(JSONNode("dimension", dimension_));
@@ -135,7 +135,7 @@ JSONNode LearningModel::to_json() const
     return json_model;
 }
 
-void LearningModel::from_json(JSONNode root)
+void BaseModel::from_json(JSONNode root)
 {
     try {
         assert(root.type() == JSON_NODE);

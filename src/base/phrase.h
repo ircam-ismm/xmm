@@ -11,7 +11,7 @@
 #define __rtml__phrase__
 
 #include "json_utilities.h"
-#include "listener.h"
+#include "mbd_common.h"
 
 using namespace std;
 
@@ -19,6 +19,7 @@ const int PHRASE_DEFAULT_DIMENSION = 1;
 const int PHRASE_ALLOC_BLOCKSIZE = 256;
 
 /**
+ * @ingroup TrainingSet
  * @class Phrase
  * @brief Data phrase
  * @details The Phrase class can be used to store unimodal and Bimodal data phrases.
@@ -33,6 +34,7 @@ public:
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Phrase Constructor
@@ -64,7 +66,10 @@ public:
      */
     ~Phrase();
     
+    /*@}*/
+
 #pragma mark > Tests
+    /*@{*/
     /** @name Tests */
     /**
      * @brief Checks if the phrase is empty (length 0)
@@ -85,7 +90,10 @@ public:
      */
     bool operator!=(Phrase const& src);
     
+    /*@}*/
+
 #pragma mark > Accessors
+    /*@{*/
     /** @name Accessors */
     /**
      * @return length of the phrase
@@ -133,7 +141,10 @@ public:
      */
     void set_dimension_input(unsigned int dimension_input);
     
+    /*@}*/
+
 #pragma mark > Connect (shared data)
+    /*@{*/
     /** @name Connect (shared data) */
     /**
      * @brief Connect a unimodal phrase to a shared container
@@ -178,9 +189,12 @@ public:
      * @throws runtime_error if phrase has own Data
      */
     void disconnect();
+
+    /*@}*/
     
-#pragma mark > Record Methods (own Data)
-    /** @name Record Methods (own Data) */
+#pragma mark > Record (own Data)
+    /*@{*/
+    /** @name Record (own Data) */
     /**
      * @brief Record observation
      * @details Appends the observation vector observation to the data array.\n
@@ -217,7 +231,10 @@ public:
      */
     void clear();
     
+    /*@}*/
+
 #pragma mark > Access Data
+    /*@{*/
     /** @name Access Data */
     /**
      * @brief Access data at a given time index and dimension.
@@ -257,7 +274,10 @@ public:
      */
     float* get_dataPointer_output(unsigned int index) const;
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O  */
     /**
      * @brief Write to JSON Node
@@ -272,7 +292,10 @@ public:
      */
     void from_json(JSONNode root);
     
+    /*@}*/
+
 #pragma mark > Moments
+    /*@{*/
     /** @name Moments */
     /**
      * @brief Compute the mean of the data phrase along the time axis
@@ -286,8 +309,11 @@ public:
      */
     vector<float> variance() const;
     
-#pragma mark > Python
+    /*@}*/
+
 #ifdef SWIGPYTHON
+#pragma mark > Python
+    /*@{*/
     /**@name Python utility */
     /**
      * @brief Record observation
@@ -310,22 +336,31 @@ public:
         
         delete[] observation_float;
     }
+    /*@}*/
 #endif
 
 private:
 #pragma mark -
 #pragma mark === Private Methods ===
+    /*@{*/
+    /** @name Copy Between models */ 
     /**
      Copy from a Phrase (called by copy constructor and assignment)
      */
     void _copy(Phrase *dst, Phrase const& src);
     
+    /*@}*/
+
+    /*@{*/
+    /** @name Memory allocation */
     /**
      * @brief Memory Allocation
      * @details used record mode (no SHARED_MEMORY flag), the data vector is reallocated
      * with a block size PHRASE_ALLOC_BLOCKSIZE
      */
     void reallocate_length();
+
+    /*@}*/
 
 #pragma mark -
 #pragma mark === Private Attributes ===

@@ -10,10 +10,17 @@
 #ifndef mhmm_concurrent_gmm_h
 #define mhmm_concurrent_gmm_h
 
-#include "concurrent_models.h"
+#include "model_group.h"
 #include "gmm.h"
 
-class ConcurrentGMM : public ConcurrentModels< GMM > {
+/**
+ * @ingroup GMM
+ * @class GMMGroup
+ * @brief Set of GMMs Running in parallel
+ * @details Allows to perform GMM-based pattern recognition.
+ * @see ModelGroup
+ */
+class GMMGroup : public ModelGroup< GMM > {
 public:
     /**
      * @brief Iterator over models
@@ -26,18 +33,21 @@ public:
     typedef typename  map<Label, GMM>::const_iterator const_model_iterator;
     
 #pragma mark > Constructors
+    /*@{*/
     /** @name Constructors */
     /**
      * @brief Constructor
-     * @param trainingSet training set associated with the model
+     * @param globalTrainingSet training set associated with the model
      * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
-     * @param nbMixtureComponents number of mixture components
-     * @param covarianceOffset offset added to the diagonal of covariances matrices (useful to guarantee convergence)
      */
-    ConcurrentGMM(rtml_flags flags = NONE,
+    GMMGroup(rtml_flags flags = NONE,
                   TrainingSet *globalTrainingSet=NULL);
     
-#pragma mark > Get & Set
+    /*@}*/
+
+#pragma mark > Accessors
+    /*@{*/
+    /** @name Accessors */
     /**
      * @brief Get the number of Gaussian mixture Components
      * @return number of Gaussian mixture components
@@ -115,12 +125,15 @@ public:
     
     /**
      * @brief set size of the likelihood smoothing buffer (number of frames)
-     * @param likelihoodBufferSize_ size of the likelihood smoothing buffer
+     * @param likelihoodBufferSize size of the likelihood smoothing buffer
      * @throws invalid_argument if likelihoodBufferSize is < 1
      */
     void set_likelihoodBufferSize(unsigned int likelihoodBufferSize);
     
+    /*@}*/
+
 #pragma mark > Performance
+    /*@{*/
     /** @name Performance */
     /**
      * @brief Initialize playing mode
@@ -131,12 +144,15 @@ public:
      * @brief Main Play function: performs recognition (unimodal mode) and regression (bimodal mode)
      * @details The predicted output is stored in the observation vector in bimodal mode
      * @param observation observation (must allocated to size 'dimension')
-     * @return instantaneous likelihood
+     * @param modelLikelihoods output: instantaneous likelihood of each model
      */
     void play(float *observation, double *modelLikelihoods);
+    
+    /*@}*/
 
-#pragma mark > File IO
-    /** @name File IO */
+#pragma mark > JSON I/O
+    /*@{*/
+    /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
      * @return JSON Node containing training set information and data
@@ -150,8 +166,12 @@ public:
      */
     virtual void from_json(JSONNode root);
     
-#pragma mark > Python
+    /*@}*/
+
 #ifdef SWIGPYTHON
+#pragma mark > Python
+    /*@{*/
+    /** @name Python */
     void play(int dimension_, double *observation,
               int nbModels_, double *likelihoods,
               int nbModels__, double *cumulativelikelihoods)
@@ -170,6 +190,7 @@ public:
         
         delete[] obs_float;
     }
+    /*@}*/
 #endif
 };
 

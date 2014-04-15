@@ -10,7 +10,7 @@
 #ifndef mhmm_hierarchical_hmm_h
 #define mhmm_hierarchical_hmm_h
 
-#include "concurrent_models.h"
+#include "model_group.h"
 #include "hmm.h"
 
 using namespace std;
@@ -31,11 +31,16 @@ const bool HHMM_DEFAULT_INCREMENTALLEARNING = false;
  */
 const bool HHMM_DEFAULT_REGULARIZATIONFACTOR = false;
 
-class HierarchicalHMM : public ConcurrentModels< HMM > {
+/**
+ * @ingroup HMM
+ * @class HierarchicalHMM
+ * @brief Hierarchical Hidden Markov Model
+ * @todo Write detailed documentation
+ */
+class HierarchicalHMM : public ModelGroup< HMM > {
 public:
 #pragma mark -
-#pragma mark === Public attributes ===
-#pragma mark > Iterators
+#pragma mark === Public Interface ===
     /**
      * @brief Iterator over models
      */
@@ -46,13 +51,19 @@ public:
      */
     typedef typename  map<Label, HMM>::const_iterator const_model_iterator;
     
-#pragma mark > Constructors
+#pragma mark > Constructor
+    /*@{*/
+    /** @name Constructor */
     HierarchicalHMM(rtml_flags flags = NONE,
                     TrainingSet *_globalTrainingSet=NULL);
     
     virtual ~HierarchicalHMM();
     
-#pragma mark Accessors
+    /*@}*/
+
+#pragma mark 
+    /*@{*/
+    /** @name Accessors */
     /**
      * @brief Get the Number of hidden states of the model
      * @return number of hidden states
@@ -155,7 +166,7 @@ public:
     
     /**
      * @brief set size of the likelihood smoothing buffer (number of frames)
-     * @param likelihoodBufferSize_ size of the likelihood smoothing buffer
+     * @param likelihoodBufferSize size of the likelihood smoothing buffer
      * @throws invalid_argument if likelihoodBufferSize is < 1
      */
     void set_likelihoodBufferSize(unsigned int likelihoodBufferSize);
@@ -241,8 +252,11 @@ public:
      */
     void setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba);
 
+    /*@}*/
     
 #pragma mark > Training
+    /*@{*/
+    /** @name Training */
     /**
      * @brief Remove Specific model
      * @details The method updates the transition parameters
@@ -251,14 +265,38 @@ public:
      */
     virtual void remove(Label const& label);
     
-#pragma mark > Playing
+    /*@}*/
+
+#pragma mark > Performance
+    /*@{*/
+    /** @name Performance */
+    /**
+     * @brief Initialize performance mode
+     */
     virtual void initPlaying();
     
+    /**
+     * @brief Main performance Function: perform joint recognition and mapping 
+     * (in the case of a bimodal model)
+     * @param observation observation vector. If the model is bimodal, this should be allocated for
+     * both modalities, and should contain the observation on the input modality. The predicted
+     * output will be appended to the input modality observation
+     * @param modelLikelihoods output: likelihood of each model
+     */
     virtual void play(float *observation, double *modelLikelihoods);
     
-    HMM::Results getResults(Label classLabel);
+    /**
+     * @brief Get the Results of a specific model
+     * @param label label of the model
+     * @return Results estimated by the model by the latest call at the play function
+     * @todo this results stuff is crappy
+     */
+    HMM::Results getResults(Label const& label) const;
     
+    /*@}*/
+
 #pragma mark > JSON I/O
+    /*@{*/
     /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
@@ -273,8 +311,13 @@ public:
      */
     virtual void from_json(JSONNode root);
     
-#pragma mark > Python
+    /*@}*/
+
+
 #ifdef SWIGPYTHON
+#pragma mark > Python
+    /*@{*/
+    /** @name Python */
     void play(int dimension_, double *observation,
               int nbModels_, double *likelihoods,
               int nbModels__, double *cumulativelikelihoods)
@@ -320,6 +363,7 @@ public:
             throw RTMLException("Transition matrix: wrong size");
         this->set_transition(trans_);
     }
+    /*@}*/
 #endif
     
 #pragma mark -
@@ -343,6 +387,7 @@ protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > High level parameters: update and estimation
+    /*@{*/
     /** @name High level parameters: update and estimation */
     /**
      * @brief update high-level parameters when a new primitive is learned
@@ -384,9 +429,21 @@ protected:
      */
     void normalizeTransitions();
     
+    /*@}*/
+
 #pragma mark > Forward Algorithm
+    /*@{*/
+    /** @name Forward Algorithm */
+    /**
+     * @brief TODO
+     * @todo doc this
+     */
     model_iterator forward_init(const float* observation, double* modelLikelihoods);
     
+    /**
+     * @brief TODO
+     * @todo doc this
+     */
     model_iterator forward_update(const float* observation, double* modelLikelihoods);
     
     /**
@@ -397,6 +454,8 @@ protected:
      * @param likelihoodVector likelihood vector (size nbPrimitives)
      */
     void likelihoodAlpha(int exitNum, vector<double> &likelihoodVector) const;
+
+    /*@}*/
 
 #pragma mark -
 #pragma mark === Protected Attributes ===
