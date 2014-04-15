@@ -3,156 +3,234 @@
 //
 // Base class for machine learning models. Real-time implementation and interface.
 //
-// Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
-// author: Jules Françoise
-// contact: jules.francoise@ircam.fr
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
 //
 
 #ifndef rtml_learning_model_h
 #define rtml_learning_model_h
 
 #include "training_set.h"
-#include "listener.h"
 
-template <typename phraseType> class TrainingSet;
-
+/**
+ * @brief Flags for the Callback called by the training algorithm
+ */
 typedef enum CALLBACK_FLAG__
 {
+    /**
+     * Training is still running
+     */
     TRAINING_RUN,
+
+    /**
+     * Training is done without error
+     */
     TRAINING_DONE,
+
+    /**
+     * An error occured during training (probably convergence issue)
+     */
     TRAINING_ERROR
 } CALLBACK_FLAG;
 
-#pragma mark -
-#pragma mark Class Definition
-/*!
- @class LearningModel
- @brief Base class for Machine Learning models
- @todo class description
- @tparam phraseType Data type of the phrases composing the training set
+/**
+ * @class LearningModel
+ * @brief Base class for Machine Learning models
+ * @details both unimodal and multimodal (specified in Constructor flags)
+ * @todo class description
  */
-template <typename phraseType>
 class LearningModel : public Listener {
 public:
-    bool trained;
-    TrainingSet<phraseType> *trainingSet;
-    
+    friend class ConcurrentGMM;
+        
 #pragma mark -
-#pragma mark Constructors
-    /*! @name Constructors */
-    /*!
-     Constructor
-     @param _trainingSet training set on wich the model is trained
+#pragma mark === Public Interface ===
+#pragma mark > Constructors
+    /** @name Constructors */
+    /**
+     * @brief Constructor
+     * @param_trainingSet training set on which the model is trained
+     * @param flags Construction Flags. BIMODAL indicates that the model should be used for regression
+     * (bimodal model). To use in conjunction with a bimodal training set.
      */
-    LearningModel(TrainingSet<phraseType> *_trainingSet)
+    LearningModel(rtml_flags flags = NONE,
+                  TrainingSet *trainingSet = NULL);
+    
+    /**
+     * @brief Copy constructor
+     * @param src Source model
+     */
+    LearningModel(LearningModel const& src);
+    
+    /**
+     * @brief Assignment
+     * @param src Source model
+     */
+    LearningModel& operator=(LearningModel const& src);
+    
+    /**
+     * @brief Copy between to models (called by copy constructor and assignment methods)
+     * @param src Source model
+     * @param dst Destination model
+     */
+    virtual void _copy(LearningModel *dst, LearningModel const& src);
+    
+    /**
+     * @brief destructor
+     */
+    virtual ~LearningModel();
+    
+#pragma mark > Training set
+    /** @name Training set */
+    /**
+     * @brief set the training set associated with the model
+     * @details updates the dimensions of the model
+     * @param trainingSet pointer to the training set.
+     * @throws runtime_error if the training set has not the same number of modalities
+     */
+    void set_trainingSet(TrainingSet *trainingSet);
+    
+    /**
+     * @brief handle notifications of the training set
+     * @details here only the dimensions attributes of the training set are considered
+     * @param attribute name of the attribute: should be either "dimension" or "dimension_input"
+     */
+    void notify(string attribute);
+    
+#pragma mark > Accessors
+    /**
+     * @brief Get Total Dimension of the model (sum of dimension of modalities)
+     * @return total dimension of Gaussian Distributions
+     */
+    int get_dimension() const
     {
-        trained = false;
-        trainingSet = _trainingSet;
-        trainingCallback = NULL;
+        return dimension_;
     }
     
-    /*!
-     Copy constructor
+    /**
+     * @brief Get the dimension of the input modality
+     * @warning This can only be used in bimodal mode (construction with 'BIMODAL' flag)
+     * @return dimension of the input modality
+     * @throws runtime_error if not in bimodal mode
      */
-    LearningModel(LearningModel<phraseType> const& src)
+    int get_dimension_input() const
     {
-        this->_copy(this, src);
-    }
-    
-    /*!
-     Assignment
-     */
-    LearningModel<phraseType>& operator=(LearningModel<phraseType> const& src)
-    {
-        if(this != &src)
-        {
-            _copy(this, src);
-        }
-        return *this;
-    }
-    
-    /*!
-     Copy between to models (called by copy constructor and assignment methods)
-     */
-    virtual void _copy(LearningModel<phraseType> *dst,
-                       LearningModel<phraseType> const& src)
-    
-    {
-        dst->trained = src.trained;
-        dst->trainingSet = src.trainingSet;
-        dst->trainingCallback = src.trainingCallback;
-        dst->trainingExtradata = src.trainingExtradata;
-    }
-    
-    /*!
-     destructor
-     */
-    virtual ~LearningModel()
-    {}
-    
-#pragma mark -
-#pragma mark Connect Training set
-    /*! @name training set */
-    /*!
-     set the training set associated with the model
-     */
-    void set_trainingSet(TrainingSet<phraseType> *_trainingSet)
-    {
-        trainingSet = _trainingSet;
+        if (!bimodal_)
+            throw runtime_error("Phrase is not Bimodal");
+        return dimension_input_;
     }
 
-#pragma mark -
-#pragma mark Callback function for training
-    /*! @name training set */
-    /*!
-     set the training set associated with the model
+#pragma mark > Callback function for training
+    /** @name training set */
+    /**
+     * @brief set the callback function associated with the training algorithm
+     * @details the function is called whenever the training is over or an error happened during training
      */
-    void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
-        this->trainingExtradata = extradata;
-        this->trainingCallback = callback;
-    }
+    void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata);
     
-#pragma mark -
-#pragma mark File IO
-    /*! @name File IO */
-    /*!
-     write model to stream
-     @param outStream output stream
+#pragma mark > JSON I/O
+    /** @name JSON I/O */
+    /**
+     * @brief Write to JSON Node
+     * @return JSON Node containing training set information and data
      */
-    virtual void write(ostream& outStream)
-    {
-    }
+    virtual JSONNode to_json() const;
     
-    /*!
-     read model from stream
-     @param inStream input stream
+    /**
+     * @brief Read from JSON Node
+     * @param root JSON Node containing training set information and data
+     * @throws JSONException if the JSON Node has a wrong format
      */
-    virtual void read(istream& inStream)
-    {
-    }
+    virtual void from_json(JSONNode root);
     
-#pragma mark -
-#pragma mark Pure Virtual Methods: Training, Playing
-    /*! @name Pure virtual methods */
+#pragma mark > Pure Virtual Methods: Allocation, Training, Playing
+    /** @name Pure virtual methods */
+    /**
+     * @brief Allocate memory for the model's parameters
+     * @details called when dimensions are modified
+     */
+    virtual void allocate() = 0;
+    
+    /**
+     * @brief Initialize the training algorithm
+     */
     virtual void initTraining() = 0;
+
+    /**
+     * @brief Main Training Function
+     * @return number of iteration of the training process
+     */
     virtual int train() = 0;
-    virtual void finishTraining()
-    {
-        if (this->trainingCallback)
-            this->trainingCallback(this, TRAINING_DONE, this->trainingExtradata);
-    }
-    virtual void initPlaying()
-    {
-        if (!this->trained) {
-            throw RTMLException("Cannot play: model has not been trained", __FILE__, __FUNCTION__, __LINE__);
-        }
-    }
-    virtual double play(float *obs) = 0;
+
+    /**
+     * @brief Terminate the training algorithm
+     */
+    virtual void finishTraining();
+
+    /**
+     * @brief Initialize the 'Performance' phase: prepare model for playing.
+     */
+    virtual void initPlaying();
+
+    /**
+     * @brief Main Play function: updates the predictions of the model given a new observation
+     * @param observation observation vector (must be of size 'dimension' or 'dimension_input' 
+     * depending on the mode [unimodal/bimodal])
+     * @return likelihood of the observation
+     */
+    virtual double play(float *observation) = 0;
     
+#pragma mark -
+#pragma mark === Public Attributes ===
+    /**
+     * Pointer to the training set.
+     */
+    TrainingSet *trainingSet;
+    
+    /**
+     * defines if the model is trained
+     */
+    bool trained;
+    
+    /**
+     * progression within the training algorithm
+     * @warning  not yet implemented?
+     * @todo  implement training progression
+     */
     float trainingProgression;
+    
 protected:
-    void (*trainingCallback)(void *srcModel, CALLBACK_FLAG state, void* extradata);
-    void *trainingExtradata;
+#pragma mark -
+#pragma mark === Protected Attributes ===
+    /**
+     * @brief Construction flags
+     */
+    rtml_flags flags_;
+    
+    /**
+     * @brief defines if the phrase is bimodal (true) or unimodal (false)
+     */
+    bool bimodal_;
+    
+    /**
+     * @brief Total dimension of the data (both modalities if bimodal)
+     */
+    int dimension_;
+    
+    /**
+     * @brief Dimension of the input modality
+     */
+    int dimension_input_;
+    
+    /**
+     * @brief Callback function for the training algorithm
+     */
+    void (*trainingCallback_)(void *srcModel, CALLBACK_FLAG state, void* extradata);
+
+    /**
+     * @brief Extra data to pass in argument to the callback function
+     */
+    void *trainingExtradata_;
 };
 
 #endif

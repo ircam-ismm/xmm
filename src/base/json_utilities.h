@@ -1,13 +1,75 @@
 //
-//  json_utilities.h
-//  mhmm
+// json_utilities.h
 //
-//  Created by Jules Francoise on 14/02/2014.
+// Set of utility functions for JSON I/O
 //
-//
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
+// 
 
 #ifndef mhmm_json_utilities_h
 #define mhmm_json_utilities_h
+
+#include <iostream>
+#include <string>
+#include <exception>
+#include <vector>
+#include "libjson.h"
+
+using namespace std;
+
+class JSONException : public exception
+{
+public:
+    JSONException(string message="", string nodename="")
+    {
+        message_ = message;
+        nodename_ = nodename;
+    }
+    
+    JSONException(exception const& src, string nodename = "")
+    {
+        message_ = src.what();
+        nodename_ = nodename;
+    }
+    
+    JSONException(JSONException const& src)
+    {
+        this->_copy(this, src);
+    }
+    
+    JSONException& operator=(JSONException const& src)
+    {
+        if(this != &src)
+        {
+            _copy(this, src);
+        }
+        return *this;
+    }
+    
+    virtual void _copy(JSONException *dst,
+                       JSONException const& src)
+    
+    {
+        dst->message_ = src.message_;
+        dst->nodename_ = src.nodename_;
+    }
+    
+    virtual ~JSONException() throw()
+    {
+        
+    }
+    
+    virtual const char * what() const throw()
+    {
+        string fullmsg = "Error reading JSON, Node '" + nodename_ + "': " + message_;
+        return fullmsg.c_str();
+    }
+    
+private:
+    string message_;
+    string nodename_;
+};
 
 template <typename T>
 JSONNode array2json(T const* a, int n, string name="array")
@@ -29,76 +91,17 @@ void json2array(JSONNode root, T* a, int n)
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
-            throw RTMLException("JSON 2 Array: Index out of bounds");
+            throw JSONException("JSON 2 Array: Index out of bounds");
         if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
+            throw JSONException("JSON 2 Vector: Wrong type");
         a[i++] = array_it->as_int();
     }
 }
 
-template <>
-void json2array(JSONNode root, float* a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Array: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = array_it->as_float();
-    }
-}
-
-template <>
-void json2array(JSONNode root, double* a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Array: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = double(array_it->as_float());
-    }
-}
-
-template <>
-void json2array(JSONNode root, bool* a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Array: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = array_it->as_bool();
-    }
-}
-
-template <>
-void json2array(JSONNode root, string* a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Array: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = libjson::to_std_string(array_it->as_string());
-    }
-}
+template <> void json2array(JSONNode root, float* a, int n);
+template <> void json2array(JSONNode root, double* a, int n);
+template <> void json2array(JSONNode root, bool* a, int n);
+template <> void json2array(JSONNode root, string* a, int n);
 
 template <typename T>
 JSONNode vector2json(vector<T> const& a, string name="array")
@@ -120,76 +123,17 @@ void json2vector(JSONNode root, vector<T>& a, int n)
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
         if (i >= n)
-            throw RTMLException("JSON 2 Vector: Index out of bounds");
+            throw JSONException("JSON 2 Vector: Index out of bounds");
         if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
+            throw JSONException("JSON 2 Vector: Wrong type");
         a[i++] = array_it->as_int();
     }
 }
 
-template <>
-void json2vector(JSONNode root, vector<float>& a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Vector: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = array_it->as_float();
-    }
-}
-
-template <>
-void json2vector(JSONNode root, vector<double>& a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Vector: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = double(array_it->as_float());
-    }
-}
-
-template <>
-void json2vector(JSONNode root, vector<bool>& a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Vector: Index out of bounds");
-        if (array_it->type() != JSON_BOOL)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = array_it->as_bool();
-    }
-}
-
-template <>
-void json2vector(JSONNode root, vector<string>& a, int n)
-{
-    // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
-    {
-        if (i >= n)
-            throw RTMLException("JSON 2 Vector: Index out of bounds");
-        if (array_it->type() != JSON_STRING)
-            throw RTMLException("JSON 2 Vector: Wrong type");
-        a[i++] = libjson::to_std_string(array_it->as_string());
-    }
-}
+template <> void json2vector(JSONNode root, vector<float>& a, int n);
+template <> void json2vector(JSONNode root, vector<double>& a, int n);
+template <> void json2vector(JSONNode root, vector<bool>& a, int n);
+template <> void json2vector(JSONNode root, vector<string>& a, int n);
 
 
 #endif

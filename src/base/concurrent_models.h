@@ -11,7 +11,6 @@
 #ifndef rtml_concurrent_models_h
 #define rtml_concurrent_models_h
 
-#include "training_set.h"
 #include "learning_model.h"
 #if __cplusplus > 199711L
 #include <thread>
@@ -21,208 +20,229 @@ using namespace std;
 
 #pragma mark -
 #pragma mark Class Definition
-/*!
- @class ConcurrentModels
- @brief Handle concurrent machine learning models running in parallel
- @todo class description
- @tparam modelType type of the models
- @tparam phraseType type of the phrase in the training set (@see Phrase, MultimodalPhrase, GestureSoundPhrase)
+/**
+ * @class ConcurrentModels
+ * @brief Handle machine learning models running in parallel
+ * @tparam modelType type of the models (implemented: GMM, HMM)
  */
-template<typename ModelType, typename phraseType>
+template<typename ModelType>
 class ConcurrentModels : public Listener
 {
 public:
-    /*!
-     @enum POLYPLAYMODE
-     type of playing mode for concurrent models
+#pragma mark -
+#pragma mark === Public Interface ===
+#pragma mark > Iterators
+    /**
+     * @enum POLYPLAYMODE
+     * Type of playing mode for concurrent models
      */
     enum POLYPLAYMODE {
-        LIKELIEST = 0, //<! the play method returns the results of the likeliest model
-        MIXTURE = 1    //<! the play method returns a weighted sum of the results of each model
+        /**
+         * @brief the play method returns the results of the likeliest model
+         */
+        LIKELIEST = 0,
+
+        /**
+         * @brief the play method returns a weighted sum of the results of each model
+         */
+        MIXTURE = 1
     };
     
+    /**
+     * @brief Iterator over models
+     */
     typedef typename  map<Label, ModelType>::iterator model_iterator;
+
+    /**
+     * @brief Constant Iterator over models
+     */
     typedef typename  map<Label, ModelType>::const_iterator const_model_iterator;
+
+    /**
+     * @brief Iterator over labels
+     */
     typedef typename  map<int, Label>::iterator labels_iterator;
     
-    map<Label, ModelType> models;
-    TrainingSet<phraseType> *globalTrainingSet;    //<! Global training set: contains all phrases (all labels)
-    
-#pragma mark -
-#pragma mark Constructors
-    /*! name Constructors */
-    /*!
-     Constructor
-     @param _globalTrainingSet global training set: contains all phrases for each model
+#pragma mark > Constructors
+    /** name Constructors */
+    /**
+     * @brief Constructor
+     * @param globalTrainingSet global training set: contains all phrases for each model
+     * @param flags Construction flags: use 'BIMODAL' for a use with Regression / Generation.
+     * For the Hierarchial HMM, use 'HIERARCHICAL' to specify the submodels they are embedded
+     * in a hierarchical structure
      */
-    ConcurrentModels(TrainingSet<phraseType> *_globalTrainingSet=NULL)
+    ConcurrentModels(rtml_flags flags = NONE,
+                     TrainingSet *globalTrainingSet=NULL)
     {
-        globalTrainingSet = _globalTrainingSet;
-        if (globalTrainingSet)
-            globalTrainingSet->set_parent(this);
-        referenceModel.set_trainingSet(globalTrainingSet);
-        playMode = LIKELIEST;
+        bimodal_ = (flags & BIMODAL);
+        this->globalTrainingSet = globalTrainingSet;
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->set_parent(this);
+        referenceModel_ = ModelType(flags, this->globalTrainingSet);
+        playMode_ = LIKELIEST;
     }
     
-    /*!
-     Destructor
+    /**
+     * @brief Destructor
      */
     virtual ~ConcurrentModels()
     {
-        for (model_iterator it=models.begin(); it != models.end(); it++) {
-            delete it->second.trainingSet;
-        }
         models.clear();
     }
     
-#pragma mark -
-#pragma mark Notifications
-    /*! @name Notifications */
-    /*!
-     Receives notifications from the global training set and dispatches to sub training sets
+#pragma mark > Notifications
+    /** @name Notifications */
+    /**
+     * @brief Receives notifications from the global training set and dispatches to models
      */
     virtual void notify(string attribute)
     {
-        referenceModel.notify(attribute);
-        for (model_iterator it=models.begin(); it != models.end(); it++) {
+        referenceModel_.notify(attribute);
+        for (model_iterator it=models.begin(); it != models.end(); ++it) {
             it->second.notify(attribute);
         }
     }
     
     
-#pragma mark -
-#pragma mark Accessors
-    /*! @name Accessors */
-    /*!
-     Set pointer to the global training set
-     @param _globalTrainingSet pointer to the global training set
+#pragma mark > Accessors
+    /** @name Accessors */
+    /**
+     * @brief Get Total Dimension of the model (sum of dimension of modalities)
+     * @return total dimension of Gaussian Distributions
      */
-    void set_trainingSet(TrainingSet<phraseType> *_globalTrainingSet)
+    int get_dimension() const
     {
-        globalTrainingSet = _globalTrainingSet;
-        if (globalTrainingSet)
-            globalTrainingSet->set_parent(this);
-        referenceModel.set_trainingSet(globalTrainingSet);
+        return this->referenceModel_.get_dimension();
     }
     
-    /*!
-     Check if a model has been trained
-     @param classLabel class label of the model
-     @throw RTMLException if the class does not exist
+    /**
+     * @brief Get the dimension of the input modality
+     * @warning This can only be used in bimodal mode (construction with 'BIMODAL' flag)
+     * @return dimension of the input modality
+     * @throws runtime_error if not in bimodal mode
      */
-    bool is_trained(Label classLabel)
+    int get_dimension_input() const
     {
-        if (models.find(classLabel) == models.end())
-            throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
-        return models[classLabel].trained;
+        if (!bimodal_)
+            throw runtime_error("Model is not bimodal");
+        return this->referenceModel_.get_dimension_input();
     }
     
-    /*!
-     Check if all models have been trained
+    /**
+     * @brief Set pointer to the global training set
+     * @param globalTrainingSet pointer to the global training set
      */
-    bool is_trained()
+    void set_trainingSet(TrainingSet *globalTrainingSet)
     {
-        if (this->size() == 0)
+        this->globalTrainingSet = globalTrainingSet;
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->set_parent(this);
+        referenceModel_.set_trainingSet(this->globalTrainingSet);
+    }
+    
+    /**
+     * @brief Check if a model has been trained
+     * @param label class label of the model
+     * @return true if the model has been trained and the training data has not been
+     * modified in between
+     * @throw out_of_range if the label does not exist
+     */
+    bool is_trained(Label const& label) const
+    {
+        if (models.find(label) == models.end())
+            throw out_of_range("Class Label Does not exist");
+        return models[label].trained;
+    }
+    
+    /**
+     * @brief Check if all models have been trained
+     * @return true if all the models has been trained and the training data has not been
+     * modified in between
+     */
+    bool is_trained() const
+    {
+        if (size() == 0)
             return false;
-        for (model_iterator it = models.begin(); it != models.end(); it++) {
+        for (const_model_iterator it = models.begin(); it != models.end(); ++it) {
             if (!it->second.trained)
                 return false;
         }
         return true;
     }
     
-    /*!
-     get size: number of models
+    /**
+     * @brief get the number of models
+     * @return number of models
      */
     unsigned int size() const
     {
         return (unsigned int)(models.size());
     }
     
-#pragma mark -
-#pragma mark Model Utilities
-    /*!
-     Remove All models
+#pragma mark > Model Utilities
+    /**
+     * @brief Remove All models
      */
     virtual void clear()
     {
         models.clear();
     }
     
-    /*!
-     Remove Specific model
-     @param classLabel class label of the model
-     @throw RTMLException if the class does not exist
+    /**
+     * @brief Remove Specific model
+     * @param label label of the model
+     * @throw out_of_range if the label does not exist
      */
-    virtual void remove(Label classLabel)
+    virtual void remove(Label const& label)
     {
-        model_iterator it = models.find(classLabel);
+        model_iterator it = models.find(label);
         if (it == models.end())
-            throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
+            throw out_of_range("Class Label Does not exist");
         models.erase(it);
     }
     
-#pragma mark -
-#pragma mark Training
-    /*! @name Training */
-    /*!
-     Initialize training for given model
-     @param classLabel class label of the model
-     @throw RTMLException if the class does not exist
-     */
-    virtual void initTraining(Label classLabel)
-    {
-        model_iterator it = models.find(classLabel);
-        if (it == models.end())
-            throw RTMLException("Class " + classLabel.as_string() + " Does not exist", __FILE__, __FUNCTION__, __LINE__);
-        models[classLabel].initTraining();
-    }
+#pragma mark > Training
+    /** @name Training */
     
-    /*!
-     Initialize training for each model
+    /**
+     * @brief Train a specific model
+     * @details  The model is trained even if the dataset has not changed
+     * @param label label of the model
+     * @throw out_of_range if the label does not exist
+     * @warning the training is done in a separate thread if compiled with c++11
      */
-    virtual void initTraining()
+    virtual int train(Label const& label)
     {
-        for (model_iterator it = models.begin(); it != models.end(); it++) {
-            it->second.initTraining();
-        }
-    }
-    
-    /*!
-     Train 1 model. The model is trained even if the dataset has not changed
-     @param classLabel class label of the model
-     @throw RTMLException if the class does not exist
-     */
-    virtual int train(Label classLabel)
-    {
-        updateTrainingSet(classLabel);
-        this->initTraining(classLabel);
+        updateTrainingSet(label);
 #if __cplusplus > 199711L
-        thread (&ModelType::train, &models[classLabel]).detach();
+        thread (&ModelType::train, &models[label]).detach();
         return 0;
 #else
-        return models[classLabel].train();
+        return models[label].train();
 #endif
     }
     
-    /*!
-     Train All model which data has changed.
+    /**
+     * @brief Train all model which data has changed.
+     * @deprecated function unused now, need checking
+     * @throws exception if an error occurs during Training
+     * @todo create a TrainingException Class to handle training errors
      */
     virtual map<Label, int> retrain()
     {
         updateAllTrainingSets();
         map<Label, int> nbIterations;
         
-        RTMLException trainingException;
+        exception trainingException;
         bool trainingFailed(false);
         
-        for (model_iterator it=models.begin(); it != models.end(); it++) {
+        for (model_iterator it=models.begin(); it != models.end(); ++it) {
             nbIterations[it->first] = 0;
             if (!it->second.trained || it->second.trainingSet->has_changed()) {
-                it->second.initTraining();
                 try {
                     nbIterations[it->first] = it->second.train();
-                } catch (RTMLException &e) {
+                } catch (exception &e) {
                     trainingException = e;
                     trainingFailed = true;
                 }
@@ -236,13 +256,16 @@ public:
         return nbIterations;
     }
     
-    /*!
-     Train All model even if their data has not changed.
+    /**
+     * @brief Train All model even if their data have not changed.
+     * @warning if compiled with c++11, each model is trained in a separate thread. Once trained, 
+     * the model calls the trainingCallback function defined in LearningModel.
+     * @return number of iterations for each model if sequential training (not c++11).
+     * @throws runtime_error if an error occurs during training and no callback function is defined
      */
     virtual map<Label, int> train()
     {
         updateAllTrainingSets();
-        this->initTraining();
         map<Label, int> nbIterations;
         
 #if __cplusplus > 199711L
@@ -251,7 +274,7 @@ public:
         }
 #else
         // Sequential training
-        for (model_iterator it=models.begin(); it != models.end(); it++) {
+        for (model_iterator it=models.begin(); it != models.end(); ++it) {
             nbIterations[it->first] = it->second.train();
         }
 #endif
@@ -259,333 +282,72 @@ public:
     }
     
     void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
-        this->referenceModel.set_trainingCallback(callback, extradata);
-        for (model_iterator it=models.begin(); it != models.end(); it++) {
+        this->referenceModel_.set_trainingCallback(callback, extradata);
+        for (model_iterator it=models.begin(); it != models.end(); ++it) {
             it->second.set_trainingCallback(callback, extradata);
         }
     }
     
-    /*!
-     Finish training for given model
-     @param classLabel class label of the model
-     @throw RTMLException if the class does not exist
+#pragma mark > Performance
+    /** @name Performance */
+    /**
+     * @brief Sets the playing mode (likeliest vs mixture)
+     * @see playMode
+     * @param playMode_str playing mode: if "likeliest", the play function estimates
+     * the output modality with the likeliest model. If "mixture",  the play function estimates
+     * the output modality as a weighted sum of all models' predictions.
+     * @throws invalid_argument if the argument is not "likeliest" or "mixture"
      */
-    virtual void finishTraining(Label classLabel)
-    {
-        model_iterator it = models.find(classLabel);
-        if (it == models.end())
-            throw RTMLException("Class Label Does not exist", __FILE__, __FUNCTION__, __LINE__);
-        it->second.finishTraining();
-    }
-    
-    /*!
-     Finish training for each model
-     */
-    virtual void finishTraining()
-    {
-        for (model_iterator it = models.begin(); it != models.end(); it++) {
-            it->second.finishTraining();
-        }
-    }
-    
-#pragma mark -
-#pragma mark Training Set
-    /*! @name Handle Training set */
-    /*!
-     Remove models which label is not in the training set anymore
-     */
-    virtual void removeDeprecatedModels()
-    {
-        if (globalTrainingSet->is_empty()) return;
-        
-        // Look for deleted classes
-        bool contLoop(true);
-        while (contLoop) {
-            contLoop = false;
-            for (model_iterator it = models.begin(); it != models.end(); it++) {
-                if (globalTrainingSet->allLabels.find(it->first) == globalTrainingSet->allLabels.end())
-                {
-                    delete models[it->first].trainingSet;
-                    models.erase(it->first);
-                    contLoop = true;
-                    break;
-                }
-            }
-        }
-    }
-    
-    /*!
-     Update training set for a specific model
-     @param label label of the sub-training set to update
-     */
-    virtual void updateTrainingSet(Label label)
-    {
-        if (globalTrainingSet->is_empty()) return;
-        if (globalTrainingSet->allLabels.find(label) == globalTrainingSet->allLabels.end())
-            throw RTMLException("Class " + label.as_string() + " Does not exist", __FILE__, __FUNCTION__, __LINE__);
-            
-        if (models.find(label) == models.end()) {
-            models[label] = referenceModel;
-            models[label].trainingSet = NULL;
-        }
-        
-        TrainingSet<phraseType> *model_ts = models[label].trainingSet;
-        TrainingSet<phraseType> *new_ts = (TrainingSet<phraseType> *)globalTrainingSet->getSubTrainingSetForClass(label);
-        if (!model_ts || *model_ts != *new_ts) {
-            if (model_ts)
-                delete model_ts;
-            models[label].set_trainingSet(new_ts);
-            new_ts->set_parent(&models[label]);
-            
-            models[label].trained = false;
-        }
-    }
-    
-    /*!
-     Update the training set for each model
-     
-     Checks for deleted classes, and tracks modifications of the training sets associated with each class
-     */
-    virtual void updateAllTrainingSets()
-    {
-        if (globalTrainingSet->is_empty()) return;
-        if (!globalTrainingSet->has_changed()) return;
-        
-        removeDeprecatedModels();
-        
-        // Update classes models and training sets
-        for (typename set<Label>::iterator it=globalTrainingSet->allLabels.begin(); it != globalTrainingSet->allLabels.end(); it++)
-        {
-            updateTrainingSet(*it);
-        }
-        
-        globalTrainingSet->set_unchanged();
-    }
-    
-#pragma mark -
-#pragma mark Play Mode
-    /*! @name Play Mode */
     void set_playMode(string playMode_str)
     {
         if (!playMode_str.compare("likeliest")) {
-            playMode = LIKELIEST;
+            playMode_ = LIKELIEST;
         } else if (!playMode_str.compare("mixture")) {
-            playMode = MIXTURE;
+            playMode_ = MIXTURE;
         } else {
-            throw RTMLException("Unknown playing mode for multiple models", __FILE__, __FUNCTION__, __LINE__);
+            throw invalid_argument("Unknown playing mode for multiple models");
         }
     }
     
+    /**
+     * @brief Get the playing mode (likeliest vs mixture)
+     * @see playMode
+     * @return playing mode: if "likeliest", the play function estimates
+     * the output modality with the likeliest model. If "mixture",  the play function estimates
+     * the output modality as a weighted sum of all models' predictions.
+     */
     string get_playMode()
     {
-        if (playMode == LIKELIEST)
+        if (playMode_ == LIKELIEST)
             return "likeliest";
         else
             return "mixture";
     }
     
-#pragma mark -
-#pragma mark Playing
-#pragma mark -
-#pragma mark Playing
-    /*! @name Playing */
-    /*!
-     Initialize Playing
+    /**
+     * @brief Initialize Performance
      */
     virtual void initPlaying()
     {
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             it->second.initPlaying();
         }
     }
-    
-    /*! @name Play /// Pure virtual */
-    /*!
-     Play method for multiple models
-     @param obs multimodal observation vector
-     @param modelLikelihoods array to contain the likelihood of each
+
+    /**
+     * @brief Main Performance method for multiple models (pure virtual method)
+     * @param observation observation vector (must be of size 'dimension' or 'dimension_input' 
+     * depending on the mode [unimodal/bimodal])
+     * @param modelLikelihoods array to contain the likelihood of each model
      */
-    virtual void play(float *obs, double *modelLikelihoods) = 0;
+    virtual void play(float *observation, double *modelLikelihoods) = 0;
     
-#pragma mark -
-#pragma mark File IO
-    /*! @name File IO */
-    /*!
-     Write to JSON Node
-     */
-    virtual JSONNode to_json() const
-    {
-        JSONNode json_ccmodels(JSON_NODE);
-        json_ccmodels.set_name("ConcurrentModels");
-        json_ccmodels.push_back(JSONNode("size", models.size()));
-        json_ccmodels.push_back(JSONNode("playmode", int(playMode)));
-        
-        // Add reference model
-        JSONNode json_refModel = referenceModel.to_json();
-        cout << json_refModel.name() + ":reference" << endl;
-        json_refModel.set_name(json_refModel.name() + ":reference"
-                               );
-        json_ccmodels.push_back(json_refModel);
-        
-        // Add phrases
-        JSONNode json_models(JSON_ARRAY);
-        for (const_model_iterator it = models.begin(); it != models.end(); it++)
-        {
-            JSONNode json_model(JSON_NODE);
-            json_model.push_back(it->first.to_json());
-            json_model.push_back(it->second.to_json());
-            json_models.push_back(json_model);
-        }
-        json_models.set_name("models");
-        json_ccmodels.push_back(json_models);
-        
-        return json_ccmodels;
-    }
-    
-    /*!
-     Read from JSON Node
-     */
-    virtual void from_json(JSONNode root)
-    {
-        try {
-            assert(root.type() == JSON_NODE);
-            JSONNode::const_iterator root_it = root.begin();
-            
-            // Get Size: Number of Models
-            assert(root_it != root.end());
-            assert(root_it->name() == "size");
-            assert(root_it->type() == JSON_NUMBER);
-            int numModels = root_it->as_int();
-            root_it++;
-            
-            // Get Play Mode
-            assert(root_it != root.end());
-            assert(root_it->name() == "playmode");
-            assert(root_it->type() == JSON_NUMBER);
-            playMode = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
-            root_it++;
-            
-            // Get Reference Model
-            assert(root_it != root.end());
-            string rootname = root_it->name();
-            assert(rootname.substr(rootname.length() - 9, 9) == "reference");
-            assert(root_it->type() == JSON_NODE);
-            try {
-                referenceModel.from_json(*root_it);
-            } catch (exception &e) {
-            }
-            root_it++;
-            
-            // Get Phrases
-            models.clear();
-            assert(root_it != root.end());
-            assert(root_it->name() == "models");
-            assert(root_it->type() == JSON_ARRAY);
-            for (int i=0 ; i<numModels ; i++)
-            {
-                // Get Label
-                JSONNode::const_iterator array_it = (*root_it)[i].begin();
-                assert(array_it != root_it->end());
-                assert(array_it->name() == "label");
-                assert(array_it->type() == JSON_NODE);
-                Label l;
-                l.from_json(*array_it);
-                array_it++;
-                
-                // Get Phrase Content
-                assert(array_it != root_it->end());
-                assert(array_it->type() == JSON_NODE);
-                models[l] = this->referenceModel;
-                models[l].trainingSet = NULL;
-                models[l].from_json(*array_it);
-            }
-            
-            assert(numModels == models.size());
-            
-        } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
-        }
-    }
-    
-    
-    virtual void write(ostream& outStream)
-    {
-        outStream << "# CONCURRENT MODELS\n";
-        outStream << "# ======================================\n";
-        outStream << "# Number of models\n";
-        outStream << models.size() << endl;
-        outStream << "# Play Mode\n";
-        outStream << playMode << endl;
-        outStream << "# Reference Model\n";
-        referenceModel.initParametersToDefault();
-        referenceModel.write(outStream);
-        outStream << "# === MODELS\n";
-        for (model_iterator it = models.begin(); it != models.end(); it++) {
-            outStream << "# Model Label\n";
-            if (it->first.type == Label::INT)
-                outStream << "INT " << it->first.getInt() << endl;
-            else
-                outStream << "SYM " << it->first.getSym() << endl;
-            it->second.write(outStream);
-        }
-    }
-    
-    virtual void read(istream& inStream)
-    {
-        // Get number of models
-        skipComments(&inStream);
-        int nbModels;
-        inStream >> nbModels;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        
-        for (model_iterator it=models.begin(); it != models.end(); it++) {
-            delete it->second.trainingSet;
-        }
-        models.clear();
-        
-        // Get playing mode
-        skipComments(&inStream);
-        int _playmmode;
-        inStream >> _playmmode;
-        playMode = POLYPLAYMODE(_playmmode);
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        
-        // Read Reference Model
-        this->referenceModel.read(inStream);
-        
-        // Read Models
-        // TODO: I guess the Label Does NOT work
-        for (int i=0; i<nbModels; i++) {
-            // Read label
-            skipComments(&inStream);
-            Label lab;
-            string lType;
-            inStream >> lType;
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-            if (lType == "INT") {
-                int intLab;
-                inStream >> intLab;
-                if (!inStream.good())
-                    throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-                lab.setInt(intLab);
-            } else {
-                string symLab;
-                inStream >> symLab;
-                if (!inStream.good())
-                    throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-                lab.setSym(symLab);
-            }
-            this->models[lab].read(inStream);
-        }
-    }
-    
+#pragma mark > Python
+    /** @name Python */
 #ifdef SWIGPYTHON
     void printLabels() {
         cout << "Order of Labels: ";
-        for (model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
+        for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
             if (it->first.type == Label::INT) {
                 cout << it->first.getInt() << " ";
             }
@@ -597,11 +359,105 @@ public:
 #endif
     
 #pragma mark -
-#pragma mark Protected attributes
-    /*! @name Protected attributes */
+#pragma mark === Public attributes ===
+    /**
+     * @brief Models stored in a map. Each model is associated with a label
+     */
+    map<Label, ModelType> models;
+    
+    /**
+     * @brief Global Training set for all labels
+     */
+    TrainingSet *globalTrainingSet;
+    
 protected:
-    POLYPLAYMODE playMode;
-    ModelType referenceModel; // Used to store shared model attributes
+#pragma mark -
+#pragma mark === Protected Methods ===
+#pragma mark > Training Set
+    /** @name Training set */
+    /**
+     * @brief Remove models which label is not in the training set anymore
+     */
+    virtual void removeDeprecatedModels()
+    {
+        if (globalTrainingSet->is_empty()) return;
+        
+        // Look for deleted classes
+        bool contLoop(true);
+        while (contLoop) {
+            contLoop = false;
+            for (model_iterator it = models.begin(); it != models.end(); ++it) {
+                if (globalTrainingSet->allLabels.find(it->first) == globalTrainingSet->allLabels.end())
+                {
+                    delete models[it->first].trainingSet;
+                    models.erase(it->first);
+                    contLoop = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    /**
+     * @brief Update training set for a specific label
+     * @param label label of the sub-training set to update
+     * @throws out_of_range if the label does not exist
+     */
+    virtual void updateTrainingSet(Label const& label)
+    {
+        if (globalTrainingSet->is_empty()) return;
+        if (globalTrainingSet->allLabels.find(label) == globalTrainingSet->allLabels.end())
+            throw out_of_range("Class " + label.as_string() + " Does not exist");
+        
+        if (models.find(label) == models.end()) {
+            models[label] = referenceModel_;
+            models[label].trainingSet = NULL;
+        }
+        
+        TrainingSet* new_ts = globalTrainingSet->getSubTrainingSetForClass(label);
+        models[label].set_trainingSet(new_ts);
+        new_ts->set_parent(&models[label]);
+        models[label].trained = false;
+    }
+    
+    /**
+     * @brief Update the training set for all labels
+     * @details Checks for deleted classes, and tracks modifications of the training sets associated with each class
+     */
+    virtual void updateAllTrainingSets()
+    {
+        if (globalTrainingSet->is_empty()) return;
+        if (!globalTrainingSet->has_changed()) return;
+        
+        removeDeprecatedModels();
+        
+        // Update classes models and training sets
+        for (typename set<Label>::iterator it=globalTrainingSet->allLabels.begin(); it != globalTrainingSet->allLabels.end(); ++it)
+        {
+            updateTrainingSet(*it);
+        }
+        
+        globalTrainingSet->set_unchanged();
+    }
+    
+#pragma mark -
+#pragma mark === Protected attributes ===
+    /** @name Protected attributes */
+    /**
+     * @brief defines if the phrase is bimodal (true) or unimodal (false)
+     */
+    bool bimodal_;
+    
+    /**
+     * @brief Playing mode
+     * @see POLYPLAYMODE
+     */
+    POLYPLAYMODE playMode_;
+
+    /**
+     * @brief reference model, Used to store shared model attributes
+     */
+    ModelType referenceModel_;
 };
 
 #endif

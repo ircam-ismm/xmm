@@ -3,10 +3,9 @@
 //
 // Matrix utilities
 //
-// Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
-// author: Jules Françoise
-// contact: jules.francoise@ircam.fr
-//
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
+// 
 
 #ifndef __mhmm__matrix__
 #define __mhmm__matrix__
@@ -19,43 +18,160 @@
 
 using namespace std;
 
-
-const double EPS = 1.0e-9;
-/*!
- * @class Matrix
- * @brief Dirty and very incomplete Matrix Library
- *
- * Contains few utilities for matrix operations, with possibility to share data with vectors
+/**
+ * @brief Epsilon value for Matrix inversion
+ * @details  defines 
  */
+const double EPS = 1.0e-9;
+
 #pragma mark -
 #pragma mark Class definition
+/**
+ * @class Matrix
+ * @brief Dirty and very incomplete Matrix Library
+ * @details Contains few utilities for matrix operations, with possibility to share data with vectors
+ * @tparam numType data type of the matrix (should be used with float/double)
+ */
 template <typename numType>
 class Matrix {
 public:
+    /**
+     * @brief Vector iterator
+     */
     typedef typename vector<numType>::iterator iterator;
     
+    /**
+     * @brief number of rows of the matrix
+     */
     int nrows;
+
+    /**
+     * @brief number of columns of the matrix
+     */
     int ncols;
+
+    /**
+     * @brief Matrix Data if not shared
+     */
     vector<numType> _data;
+
+    /**
+     * @brief Data iterator
+     * @details Can point to own data vector, or can be shared with another container.
+     */
     iterator data;
+
+    /**
+     * @brief Defines if the matrix has its own data
+     */
     bool ownData;
     
-    Matrix(bool ownData_=true);
-    Matrix(int nrows_, bool ownData_=true);
-    Matrix(int nrows_, int ncols_, bool ownData_=true);
-    Matrix(int nrows_, int ncols_, iterator data_it);
+    /**
+     * @brief Default Constructor
+     * @param ownData defines if the matrix stores the data itself (true by default)
+     */
+    Matrix(bool ownData=true);
+
+    /**
+     * @brief Square Matrix Constructor
+     * @param nrows Number of rows (defines a square matrix)
+     * @param ownData defines if the matrix stores the data itself (true by default)
+     */
+    Matrix(int nrows, bool ownData=true);
+
+    /**
+     * @brief Constructor
+     * @param nrows Number of rows
+     * @param ncols Number of columns
+     * @param ownData defines if the matrix stores the data itself (true by default)
+     */
+    Matrix(int nrows, int ncols, bool ownDat_=true);
+
+    /**
+     * @brief Constructor from vector (shared data)
+     * @param nrows Number of rows
+     * @param ncols Number of columns
+     * @param data_it iterator to the vector data
+     */
+    Matrix(int nrows, int ncols, iterator data_it);
+
+    /**
+     * @brief Destructor
+     * @details Frees memory only if data is owned
+     */
     ~Matrix();
     
-    void resize(int nrows_, int ncols_);
-    void resize(int nrows_);
+    /**
+     * @brief Resize the matrix
+     * @param nrows Number of rows
+     * @param ncols Number of columns
+     * @throws runtime_error if the matrix is not square
+     */
+    void resize(int nrows, int ncols);
+
+
+    /**
+     * @brief Resize a Square Matrix
+     * @param nrows Number of rows
+     */
+    void resize(int nrows);
+
+    /**
+     * @brief Compute the Sum of the matrix
+     * @return sum of all elements in the matrix
+     */
     float sum();
+
+    /**
+     * @brief Print the matrix
+     */
     void print();
     
+    /**
+     * @brief Compute the transpose matrix
+     * @return pointer to the transpose Matrix
+     * @warning Memory is allocated for the new matrix (need to be freed)
+     */
     Matrix<numType>* transpose();
+
+    /**
+     * @brief Compute the product of matrices
+     * @return pointer to the Matrix resulting of the product
+     * @warning Memory is allocated for the new matrix (need to be freed)
+     * @throws runtime_error if the matrices have wrong dimensions
+     */
     Matrix<numType>* product(Matrix const* mat);
+
+    /**
+     * @brief Compute the Pseudo-Inverse of a Matrix
+     * @param det Determinant (computed with the inversion)
+     * @return pointer to the inverse Matrix
+     * @warning Memory is allocated for the new matrix (need to be freed)
+     */
     Matrix<numType>* pinv(double *det);
+
+    /**
+     * @brief Compute the Gauss-Jordan Inverse of a Square Matrix
+     * @param det Determinant (computed with the inversion)
+     * @return pointer to the inverse Matrix
+     * @warning Memory is allocated for the new matrix (need to be freed)
+     * @throws runtime_error if the matrix is not square
+     * @throws runtime_error if the matrix is not invertible
+     */
     Matrix<numType>* gauss_jordan_inverse(double *det) const;
+
+    /**
+     * @brief Swap 2 lines of the matrix
+     * @param i index of the first line
+     * @param j index of the second line
+     */
     void swap_lines(int i, int j);
+
+    /**
+     * @brief Swap 2 columns of the matrix
+     * @param i index of the first column
+     * @param j index of the second column
+     */
     void swap_columns(int i, int j);
 };
 
@@ -213,7 +329,7 @@ template <typename numType>
 Matrix<numType>* Matrix<numType>::gauss_jordan_inverse(double *det) const
 {
     if (nrows != ncols) {
-        throw runtime_error("Gauss-Jordan: Can't invert Non-quare matrix");
+        throw runtime_error("Gauss-Jordan inversion: Can't invert Non-square matrix");
     }
     *det = 1.0f;
     Matrix<numType> mat(nrows, ncols*2);
@@ -234,7 +350,7 @@ Matrix<numType>* Matrix<numType>::gauss_jordan_inverse(double *det) const
         while (abs(mat.data[i*2*n+k]) < EPS) {
             i++;
             if (i==n) {
-                throw runtime_error("Error: non-invertible matrix");
+                throw runtime_error("Non-invertible matrix");
             }
         }
         *det *= mat.data[i*2*n+k];

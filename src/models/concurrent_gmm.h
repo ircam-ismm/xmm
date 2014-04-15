@@ -1,10 +1,11 @@
 //
-//  concurrent_gmm.h
-//  mhmm
+// concurrent_gmm.h
 //
-//  Created by Jules Francoise on 08/08/13.
+// Class for Multiple Gaussian Mixture Models running in Parallel
 //
-//
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
+// 
 
 #ifndef mhmm_concurrent_gmm_h
 #define mhmm_concurrent_gmm_h
@@ -12,128 +13,144 @@
 #include "concurrent_models.h"
 #include "gmm.h"
 
-#pragma mark -
-#pragma mark Class Definition
-template<bool ownData>
-class ConcurrentGMM : public ConcurrentModels< GMM<ownData>, Phrase<ownData, 1> > {
+class ConcurrentGMM : public ConcurrentModels< GMM > {
 public:
-    typedef typename  map<Label, GMM<ownData> >::iterator model_iterator;
-    typedef typename  map<Label, GMM<ownData> >::const_iterator const_model_iterator;
-    typedef typename  map<int, Label>::iterator labels_iterator;
+    /**
+     * @brief Iterator over models
+     */
+    typedef typename  map<Label, GMM>::iterator model_iterator;
     
-    ConcurrentGMM(TrainingSet< Phrase<ownData, 1> > *_globalTrainingSet=NULL)
-    : ConcurrentModels< GMM<ownData>, Phrase<ownData, 1> >(_globalTrainingSet)
-    {}
+    /**
+     * @brief Constant Iterator over models
+     */
+    typedef typename  map<Label, GMM>::const_iterator const_model_iterator;
     
-#pragma mark -
-#pragma mark Get & Set
-    int get_dimension()
-    {
-        return this->referenceModel.get_dimension();
-    }
+#pragma mark > Constructors
+    /** @name Constructors */
+    /**
+     * @brief Constructor
+     * @param trainingSet training set associated with the model
+     * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
+     * @param nbMixtureComponents number of mixture components
+     * @param covarianceOffset offset added to the diagonal of covariances matrices (useful to guarantee convergence)
+     */
+    ConcurrentGMM(rtml_flags flags = NONE,
+                  TrainingSet *globalTrainingSet=NULL);
     
-    int get_nbMixtureComponents()
-    {
-        return this->referenceModel.get_nbMixtureComponents();
-    }
+#pragma mark > Get & Set
+    /**
+     * @brief Get the number of Gaussian mixture Components
+     * @return number of Gaussian mixture components
+     */
+    int get_nbMixtureComponents() const;
     
-    void set_nbMixtureComponents(int nbMixtureComponents_)
-    {
-        this->referenceModel.set_nbMixtureComponents(nbMixtureComponents_);
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_nbMixtureComponents(nbMixtureComponents_);
-        }
-    }
+    /**
+     * @brief Get Offset added to covariance matrices for convergence
+     * @return Offset added to covariance matrices for convergence
+     */
+    float get_covarianceOffset() const;
     
-    float  get_covarianceOffset()
-    {
-        return this->referenceModel.get_covarianceOffset();
-    }
+    /**
+     * @brief Set the number of mixture components of the model
+     * @warning sets the model to be untrained.
+     * @todo : change this untrained behavior via mirror models for training?
+     * @param nbMixtureComponents number of Gaussian Mixture Components
+     * @throws invalid_argument if nbMixtureComponents is <= 0
+     */
+    void set_nbMixtureComponents(int nbMixtureComponents);
     
-    void   set_covarianceOffset(float covarianceOffset_)
-    {
-        this->referenceModel.set_covarianceOffset(covarianceOffset_);
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_covarianceOffset(covarianceOffset_);
-        }
-    }
+    /**
+     * @brief Set the offset to add to the covariance matrices
+     * @param covarianceOffset offset to add to the diagonal of covariance matrices
+     * @throws invalid_argument if the covariance offset is <= 0
+     */
+    void set_covarianceOffset(float covarianceOffset);
     
-    int get_EM_minSteps()
-    {
-        return this->referenceModel.get_EM_minSteps();
-    }
+    /**
+     * @brief Get minimum number of EM steps
+     * @return minimum number of steps of the EM algorithm
+     */
+    int get_EM_minSteps() const;
     
-    int get_EM_maxSteps()
-    {
-        return this->referenceModel.get_EM_maxSteps();
-    }
+    /**
+     * @brief Get maximum number of EM steps
+     * @return maximum number of steps of the EM algorithm
+     * @see EMStopCriterion
+     */
+    int get_EM_maxSteps() const;
     
-    double get_EM_percentChange()
-    {
-        return this->referenceModel.get_EM_percentChange();
-    }
+    /**
+     * @brief Get EM convergence threshold in percent-change of the likelihood
+     * @return loglikelihood percent-change convergence threshold
+     * @see EMStopCriterion
+     */
+    double get_EM_percentChange() const;
     
-    void set_EM_minSteps(int steps)
-    {
-        this->referenceModel.set_EM_minSteps(steps);
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_EM_minSteps(steps);
-        }
-    }
+    /**
+     * @brief Set minimum number of steps of the EM algorithm
+     * @param steps minimum number of steps of the EM algorithm
+     * @throws invalid_argument if steps < 1
+     */
+    void set_EM_minSteps(int steps);
     
-    void set_EM_maxSteps(int steps)
-    {
-        this->referenceModel.set_EM_maxSteps(steps);
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_EM_maxSteps(steps);
-        }
-    }
+    /**
+     * @brief Set maximum number of steps of the EM algorithm
+     * @param steps maximum number of steps of the EM algorithm
+     * @throws invalid_argument if steps < 1
+     */
+    void set_EM_maxSteps(int steps);
     
-    void set_EM_percentChange(double logLikPercentChg_)
-    {
-        this->referenceModel.set_EM_percentChange(logLikPercentChg_);
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_EM_percentChange(logLikPercentChg_);
-        }
-    }
+    /**
+     * @brief Set convergence threshold in percent-change of the likelihood
+     * @param logLikelihoodPercentChg log-likelihood percent-change convergence threshold
+     * @throws invalid_argument if logLikelihoodPercentChg <= 0
+     */
+    void set_EM_percentChange(double logLikelihoodPercentChg);
     
-    unsigned int get_likelihoodBufferSize() const
-    {
-        return this->referenceModel.get_likelihoodBufferSize();
-    }
+    /**
+     * @brief get size of the likelihood smoothing buffer (number of frames)
+     * @return size of the likelihood smoothing buffer
+     */
+    unsigned int get_likelihoodBufferSize() const;
     
-    void set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
-    {
-        this->referenceModel.set_likelihoodBufferSize(likelihoodBufferSize_);
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            it->second.set_likelihoodBufferSize(likelihoodBufferSize_);
-        }
-    }
+    /**
+     * @brief set size of the likelihood smoothing buffer (number of frames)
+     * @param likelihoodBufferSize_ size of the likelihood smoothing buffer
+     * @throws invalid_argument if likelihoodBufferSize is < 1
+     */
+    void set_likelihoodBufferSize(unsigned int likelihoodBufferSize);
     
-#pragma mark -
-#pragma mark Playing
-    void initPlaying()
-    {
-        for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
-            it->second.initPlaying();
-        }
-    }
+#pragma mark > Performance
+    /** @name Performance */
+    /**
+     * @brief Initialize playing mode
+     */
+    void initPlaying();
     
-    void play(float *obs, double *modelLikelihoods)
-    {
-        double norm_const(0.0);
-        int i(0);
-        for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
-            modelLikelihoods[i] = it->second.play(obs);
-            norm_const += modelLikelihoods[i++];
-        }
-        
-        for (unsigned int i=0; i<this->models.size(); i++)
-            modelLikelihoods[i] /= norm_const;
-    }
+    /**
+     * @brief Main Play function: performs recognition (unimodal mode) and regression (bimodal mode)
+     * @details The predicted output is stored in the observation vector in bimodal mode
+     * @param observation observation (must allocated to size 'dimension')
+     * @return instantaneous likelihood
+     */
+    void play(float *observation, double *modelLikelihoods);
+
+#pragma mark > File IO
+    /** @name File IO */
+    /**
+     * @brief Write to JSON Node
+     * @return JSON Node containing training set information and data
+     */
+    virtual JSONNode to_json() const;
     
-#pragma mark -
-#pragma mark Python
+    /**
+     * @brief Read from JSON Node
+     * @param root JSON Node containing training set information and data
+     * @throws JSONException if the JSON Node has a wrong format
+     */
+    virtual void from_json(JSONNode root);
+    
+#pragma mark > Python
 #ifdef SWIGPYTHON
     void play(int dimension_, double *observation,
               int nbModels_, double *likelihoods,

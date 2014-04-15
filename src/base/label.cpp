@@ -3,59 +3,59 @@
 //
 // Simple Label class (int & symbolic)
 //
-// Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
-// author: Jules Françoise
-// contact: jules.francoise@ircam.fr
-//
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
+// 
 
 #include "label.h"
-#include "rtmlexception.h"
+#include <sstream>
 
-Label::Label() : type(INT), intLabel(0), symLabel("")
-{
-}
+Label::Label() : type(INT), intLabel_(0), symLabel_("")
+{}
 
-Label::Label(int l) : type(INT), intLabel(l), symLabel("")
-{
-}
+Label::Label(int l) : type(INT), intLabel_(l), symLabel_("")
+{}
 
-Label::Label(string l) : type(SYM), intLabel(0), symLabel(l)
-{
-}
+Label::Label(string l) : type(SYM), intLabel_(0), symLabel_(l)
+{}
 
-Label::Label(char* l) : type(SYM), intLabel(0), symLabel(l)
-{
-}
+Label::Label(char* l) : type(SYM), intLabel_(0), symLabel_(l)
+{}
 
+Label::Label(Label const& src) : type(src.type), intLabel_(src.intLabel_), symLabel_(src.symLabel_)
+{}
 
 Label& Label::operator=(Label const& src)
 {
     if (this != &src) {
         this->type = src.type;
-        this->intLabel = src.intLabel;
-        this->symLabel = src.symLabel;
+        this->intLabel_ = src.intLabel_;
+        this->symLabel_ = src.symLabel_;
     }
     return *this;
 }
+
 Label& Label::operator=(int l)
 {
     this->type = INT;
-    this->intLabel = l;
-    this->symLabel = "";
+    this->intLabel_ = l;
+    this->symLabel_ = "";
     return *this;
 }
+
 Label& Label::operator=(string l)
 {
     this->type = SYM;
-    this->intLabel = 0;
-    this->symLabel = l;
+    this->intLabel_ = 0;
+    this->symLabel_ = l;
     return *this;
 }
+
 Label& Label::operator=(char* l)
 {
     this->type = SYM;
-    this->intLabel = 0;
-    this->symLabel = l;
+    this->intLabel_ = 0;
+    this->symLabel_ = l;
     return *this;
 }
 
@@ -64,8 +64,8 @@ bool Label::operator==(Label const& src) const
     if (!(this->type == src.type))
         return false;
     if (this->type == INT)
-        return (this->intLabel == src.intLabel);
-    return (this->symLabel == src.symLabel);
+        return (this->intLabel_ == src.intLabel_);
+    return (this->symLabel_ == src.symLabel_);
 }
 
 bool Label::operator!=(Label const& src) const
@@ -76,9 +76,9 @@ bool Label::operator!=(Label const& src) const
 bool Label::operator<(Label const& src) const
 {
     if (type == INT)
-        return intLabel < src.intLabel;
+        return intLabel_ < src.intLabel_;
     else
-        return symLabel < src.symLabel;
+        return symLabel_ < src.symLabel_;
 }
 
 bool Label::operator<=(Label const& src) const
@@ -99,30 +99,43 @@ bool Label::operator>=(Label const& src) const
 int Label::getInt() const
 {
     if (type != INT)
-        throw RTMLException("Can't get INT from SYM label");
-    return intLabel;
+        throw runtime_error("Can't get INT from SYM label");
+    return intLabel_;
 }
 
 string Label::getSym() const
 {
     if (type != SYM)
-        throw RTMLException("Can't get SYM from INT label");
-    return symLabel;
+        throw runtime_error("Can't get SYM from INT label");
+    return symLabel_;
 }
 
-void Label::setInt(int l) {
+void Label::setInt(int l)
+{
     type = INT;
-    intLabel = l;
+    intLabel_ = l;
 }
 
-void Label::setSym(string l) {
-    type = SYM;
-    symLabel = l;
+bool Label::trySetInt(string l)
+{
+    if (is_number(l)) {
+        setInt(to_int(l));
+        return true;
+    }
+    return false;
 }
 
-void Label::setSym(char* l) {
+
+void Label::setSym(string l)
+{
     type = SYM;
-    symLabel = l;
+    symLabel_ = l;
+}
+
+void Label::setSym(char* l)
+{
+    type = SYM;
+    symLabel_ = l;
 }
 
 JSONNode Label::to_json() const 
@@ -131,10 +144,10 @@ JSONNode Label::to_json() const
 	json_label.set_name("label");
     if (type == INT) {
         json_label.push_back(JSONNode("type", "INT"));
-        json_label.push_back(JSONNode("value", intLabel));
+        json_label.push_back(JSONNode("value", intLabel_));
     } else {
         json_label.push_back(JSONNode("type", "SYM"));
-        json_label.push_back(JSONNode("value", symLabel));
+        json_label.push_back(JSONNode("value", symLabel_));
     }
 	return json_label;
 }
@@ -156,17 +169,19 @@ void Label::from_json(JSONNode root)
         assert(root_it->name() == "value");
         if (type == INT) {
             assert(root_it->type() == JSON_NUMBER);
-            intLabel = root_it->as_int();
+            intLabel_ = root_it->as_int();
         } else {
             assert(root_it->type() == JSON_STRING);
-            symLabel = root_it->as_string();
+            symLabel_ = root_it->as_string();
         }
+    } catch (JSONException &e) {
+        throw JSONException(e);
     } catch (exception &e) {
-        throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
+        throw JSONException(e, root.name());
     }
 }
 
-string Label::as_string()
+string Label::as_string() const
 {
     stringstream ss;
     ss << *this;
@@ -180,4 +195,19 @@ ostream& operator<<(std::ostream& stream, Label const& l)
     else
         stream << l.getSym();
     return stream;
+}
+
+bool is_number(const string& s)
+{
+    string::const_iterator it = s.begin();
+    while (it != s.end() && isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+int to_int(const string& s)
+{
+    istringstream myString(s);
+    int value;
+    myString >> value;
+    return value;
 }

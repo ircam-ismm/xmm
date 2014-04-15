@@ -1,79 +1,67 @@
 //
 // listener.h
 //
-// Base Class for objects receiveing notifications
+// Common Definitions for Machine Learning Models
 //
-// Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
-// author: Jules Françoise
-// contact: jules.francoise@ircam.fr
+// Copyright (C) 2014 Ircam - Jules Françoise. All Rights Reserved.
+// author: Jules Françoise <jules.francoise@ircam.fr>
 //
 
 #ifndef mhmm_listener_object_h
 #define mhmm_listener_object_h
 
-#include <string>
-#include <ostream>
-#include <fstream>
-#include "libjson.h"
 #include "json_utilities.h"
 
 using namespace std;
 
-/*!
- @class Listener
- Dummy class for handling training set notifications\n
- It is an abstract class that contains a pure virtual method "notify" called by a training set
- to notify changes of the training data\n
- (also includes read/write pure virtual methods)
+typedef unsigned char rtml_flags;
+
+/**
+ * @brief Flags for the construction of data phrases
+ */
+enum FLAGS {
+    /**
+     * @brief no specific Flag: Unimodal and own Memory
+     */
+    NONE = 0,
+    
+    /**
+     * @brief Defines a shared memory phrase.
+     * @details If this flag is used, data can only be passed by pointer.
+     * Recording functions are disabled and the memory cannot be freed from a Phrase Object.
+     */
+    SHARED_MEMORY = 1 << 1,
+    
+    /**
+     * @brief Defines is a phrase is used to store bimodal data
+     * @details If this falg is used, the phrase contains 2 arrays for input and output modalities
+     */
+    BIMODAL = 1 << 2,
+    
+    /**
+     * @brief Defines is the model is used by a hierarchical Algorithm
+     * @details If this falg is used, the phrase contains 2 arrays for input and output modalities
+     */
+    HIERARCHICAL = 1 << 3
+};
+
+/**
+ * @class Listener
+ * @brief Dummy class for handling training set notifications
+ * @details It is an abstract class that contains a pure virtual method "notify" called by a training set
+ * to notify changes of the training data
  */
 class Listener {
 public:
-    /*!
-     pure virtual method for handling training set notifications.
-     @param attribute name of the modified attribute of the training set
+    /**
+     * @brief pure virtual method for handling training set notifications.
+     * @param attribute name of the modified attribute of the training set
      */
     virtual void notify(string attribute) = 0;
     
-    /*!
-     pure virtual method for file IO => writing
-     @param outStream output stream
-     */
-    virtual void write(ostream& outStream) = 0;
-    
-    /*!
-     pure virtual method for file IO => reading
-     @param inStream input stream
-     */
-    virtual void read(istream& inStream) = 0;
-    
-    /*!
-     Write to JSON Node
-     */
-    virtual JSONNode to_json() const = 0;
-    
-    /*!
-     Read from JSON Node
-     */
-    virtual void from_json(JSONNode root) = 0;
-    
-    /*
-    void writeFile(string filename)
-    {
-        JSONNode root = this->to_json();
-        ofstream outputFile;
-        outputFile.open(filename);
-        outputFile.close();
-    }
-    
-    void readFile(string filename)
-    {
-        ifstream inputFile;
-    }
-    //*/
-    
 #ifdef SWIGPYTHON
-    /*!
-     write method for python wrapping ('write' keyword forbidden, name has to be different)
+    /**
+     * @brief write method for python wrapping ('write' keyword forbidden, name has to be different)
      */
     void writeFile(char* fileName)
     {
@@ -84,8 +72,8 @@ public:
         outStream.close();
     }
     
-    /*!
-     read method for python wrapping ('read' keyword forbidden, name has to be different)
+    /**
+     * @brief read method for python wrapping ('read' keyword forbidden, name has to be different)
      */
     void readFile(char* fileName)
     {
@@ -103,8 +91,8 @@ public:
         inStream.close();
     }
     
-    /*!
-     "print" method for python => returns the results of write method
+    /**
+     * @brief "print" method for python => returns the results of write method
      */
     char *__str__() {
         stringstream ss;

@@ -3,10 +3,9 @@
 //
 // Multimodal training set
 //
-// Copyright (C) 2013 Ircam - Jules Françoise. All Rights Reserved.
-// author: Jules Françoise
-// contact: jules.francoise@ircam.fr
-//
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
+// 
 
 #ifndef rtml_training_set_h
 #define rtml_training_set_h
@@ -15,604 +14,307 @@
 #include "phrase.h"
 #include "listener.h"
 #include <map>
-#include <vector>
 #include <set>
 
 using namespace std;
 
-#pragma mark -
-#pragma mark Base Training Set Class
-/*!
- @class _TrainingSetBase
- @brief Base class for the definition of training sets
- @todo class description
- @tparam phraseType Data type of the phrases composing the training set
+/**
+ * @class TrainingSet
+ * @brief Base class for the definition of (multimodal) training sets
+ * @todo class description
  */
-template <typename phraseType>
-class _TrainingSetBase
+class TrainingSet
 {
 public:
+#pragma mark -
+#pragma mark === Public Interface ===
+#pragma mark > Iterators
+    /** @name iterators */
     
-    /*!
-     @name iterators
+    /**
+     * @brief Phrase iterator: allows to iterate over the phrases of the training set
+     * @details phrases are stored as a map, the iterator is therefore equivalent to: map<int, Phrase*>::iterator
      */
-    typedef typename  map<int, phraseType*>::iterator phrase_iterator;
-    typedef typename  map<int, phraseType*>::const_iterator const_phrase_iterator;
+    typedef typename  map<int, Phrase*>::iterator phrase_iterator;
+
+    /**
+     * @brief constant Phrase iterator: allows to iterate over the phrases of the training set
+     * @details phrases are stored as a map, the iterator is therefore equivalent to: map<int, Phrase*>::const_iterator
+     */
+    typedef typename  map<int, Phrase*>::const_iterator const_phrase_iterator;
+
+    /**
+     * @brief label iterator: allows to iterate over the labels of the training set
+     * @details labels are stored as a map, the iterator is therefore equivalent to: map<int, Label>::iterator
+     */
     typedef typename  map<int, Label>::iterator label_iterator;
+    
+    /**
+     * @brief constant label iterator: allows to iterate over the labels of the training set
+     * @details labels are stored as a map, the iterator is therefore equivalent to: map<int, Label>::const_iterator
+     */
     typedef typename  map<int, Label>::const_iterator const_label_iterator;
     
-    map<int, phraseType*> phrases;    //<! Training phrases
-    map<int, Label> phraseLabels; //<! Phrase labels
-    set<Label> allLabels;         //<! set of all existing labels
-    
-    /*!
-     @return iterator to the beginning of phrases
+#pragma mark > Constructors
+    /** @name Constructors */
+    /**
+     * @brief Constructor
+     * @param _parent parent learning model => the parent is notified each time the training set
+     * attributes are modified.
+     * @param dimension total dimension of the training data.
+     * @param flags construction flags (@see Phrase).
+     * @param dimension_input dimension of the input modality in bimodal mode.
      */
-    phrase_iterator begin()
-    {
-        return phrases.begin();
-    }
+    TrainingSet(rtml_flags flags=0,
+                Listener* _parent=NULL,
+                unsigned int dimension=PHRASE_DEFAULT_DIMENSION,
+                unsigned int dimension_input = 0);
     
-    /*!
-     @return iterator to the end of phrases
+    TrainingSet(TrainingSet const& src);
+    
+    TrainingSet& operator=(TrainingSet const& src);
+    
+    /**
+     * @brief Destructor
+     * @warning phrases are only deleted if the training set is unlocked
+     * @see lock()
      */
-    phrase_iterator end()
-    {
-        return phrases.end();
-    }
+    virtual ~TrainingSet();
     
-    /*!
-     @param n index of phrase
-     @return iterator to the phrase of index n
+#pragma mark > Accessors & tests
+    /** @name accessors and tests */
+    /**
+     * @brief checks if the training set is bimodal
+     * @return true if the training set is bimodal (construction with BIMODAL flag)
      */
-    phrase_iterator operator()(int n)
-    {
-        phrase_iterator pp = phrases.begin();
-        for (int i=0; i<n; i++) {
-            ++pp;
-        }
-        return pp;
-    }
+    bool is_bimodal() const;
     
-#pragma mark -
-#pragma mark Constructors
-    /*! @name Constructors */
-    /*!
-     Constructor
-     @param _parent parent learning model => the parent is notified each time the training set
-     attributes are modified
+    /**
+     * @brief checks if the training set is empty
+     * @return true if the training set is empty (no training phrases)
      */
-    _TrainingSetBase(Listener* _parent=NULL)
-    {
-        locked = false;
-        parent = _parent;
-        changed = false;
-    }
+    bool is_empty() const;
     
-    /*!
-     Destructor\n
-     @warning phrases are only deleted if the training set is unlocked
-     @see lock()
+    /**
+     * @brief Size of the training set
+     * @return size of the training set (number of phrases)
      */
-    virtual ~_TrainingSetBase()
-    {
-        if (!locked) {
-            for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it)
-                delete it->second;
-        }
-        phrases.clear();
-        phraseLabels.clear();
-        allLabels.clear();
-    }
+    unsigned int size() const;
     
-    /*!
-     Lock training set to keep the phrases from being deleted at destruction
+    /**
+     * @brief check if the training data has changed.
+     * @return true is the training data or attributes have changed
      */
-    void lock()
-    {
-        locked = true;
-    }
+    bool has_changed();
     
-#pragma mark -
-#pragma mark Accessors & tests
-    /*! @name accessors and tests */
-    /*!
-     @return true if the training set is empty (no training phrases)
+    /**
+     * @brief set the status of the training set to unchanged
      */
-    bool is_empty() const
-    {
-        return phrases.empty();
-    }
+    void set_unchanged();
     
-    /*!
-     @return size of the training set (number of phrases)
+    /**
+     * @brief Set parent model (to be notified when attributes are modified)
+     * @param _parent parent model
      */
-    unsigned int size() const
-    {
-        return phrases.size();
-    }
+    void set_parent(Listener* _parent);
     
-    /*!
-     @return true is the training data or attributes have changed
+    /**
+     * @brief Get total dimension of the training data
+     * @return dimension of the training data
      */
-    bool has_changed()
-    {
-        return changed;
-    }
+    unsigned int get_dimension();
     
-    /*!
-     set the status of the training set to unchanged
+    /**
+     * @brief Get dimension of the input modality in bimodal mode
+     * @return dimension of the input modality
+     * @throws runtime_error if the phrase is unimodal (no BIMODAL construction flag)
      */
-    void set_unchanged()
-    {
-        changed = false;
-    }
+    unsigned int get_dimension_input();
     
-    /*!
-     Set parent model (to be notified when attributes are modified)
-     @param _parent parent model
+    /**
+     * @brief Set total dimension of the training data
+     * @param dimension dimension of the training data
+     * @throws out_of_range if the dimension is < 1
      */
-    void set_parent(Listener* _parent)
-    {
-        parent = _parent;
-    }
+    void set_dimension(unsigned int dimension);
     
-    /*!
-     checks equality
-     @param src training set to compare
-     @return true if the training sets are equal (same phrases and labels)
+    /**
+     * @brief Set the dimension of the input modality in bimodal mode
+     * @param int dimension_input dimension of the input modality
+     * @throws runtime_error if the phrase is not bimodal
+     * @throws invalid_argument if The dimension of the input modality exceeds the total dimension
      */
-    bool operator==(_TrainingSetBase<phraseType> const &src)
-    {
-        if (!this)
-            return false;
-        
-        if (this->defaultLabel != src.defaultLabel)
-            return false;
-        
-        if (this->referencePhrase != src.referencePhrase) // TODO: keep that?
-            return false;
-        
-        for (const_phrase_iterator it=src.phrases.begin(); it != src.phrases.end(); ++it)
-        {
-            if (this->phrases.find(it->first) == this->phrases.end())
-                return false;
-            
-            if (*(this->phrases[it->first]) != *(it->second))
-                return false;
-        }
-        for (const_label_iterator it = src.phraseLabels.begin(); it != src.phraseLabels.end(); ++it)
-        {
-            if (phraseLabels[it->first] != it->second) return false;
-        }
-        
-        return true;
-    }
+    void set_dimension_input(unsigned int dimension_input);
     
-    /*!
-     checks inequality
+    /**
+     * @brief checks equality
+     * @param src training set to compare
+     * @return true if the training sets are equal (same phrases and labels)
      */
-    bool operator!=(_TrainingSetBase<phraseType> const &src)
-    {
-        return !operator==(src);
-    }
+    bool operator==(TrainingSet const &src);
     
-#pragma mark -
-#pragma mark Record training Data
-    /*! @name Record training Data */
-    /*!
-     record training data\n
-     A phrase is created if it does not exists at the given index
-     @warning this method is only usable if phrases have own data (no shared memory)
-     @param phraseIndex index of the phrase
-     @param observation observation vector to append to the phrase
+    /**
+     * @brief checks inequality
+     * @see operator==
      */
-    void recordPhrase(int phraseIndex, float *observation)
-    {
-        if (this->phrases.find(phraseIndex) == this->phrases.end()) {
-            resetPhrase(phraseIndex);
-            setPhraseLabelToDefault(phraseIndex);
-        }
-        phrases[phraseIndex]->record(observation);
-        changed = true;
-    }
-    
-    /*!
-     reset phrase to default\n
-     the phrase is created if it does not exists at the given index
-     @param phraseIndex index of the phrase
+    bool operator!=(TrainingSet const &src);
+
+#pragma mark > Access Phrases
+    /** @name Access Phrases */
+    /**
+     * @brief iterator to the beginning of phrases
      */
-    void resetPhrase(int phraseIndex)
-    {
-        if (this->phrases.find(phraseIndex) == this->phrases.end())
-            phrases[phraseIndex] = new phraseType(referencePhrase);
-        else
-            *(phrases[phraseIndex]) = referencePhrase;
-        changed = true;
-    }
+    phrase_iterator begin();
     
-    /*!
-     delete a phrase
-     @warning if the training set is locked, the phrases iself is not deleted (only the reference)
-     @param phraseIndex index of the phrase
+    /**
+     * @brief iterator to the end of phrases
      */
-    void deletePhrase(int phraseIndex)
-    {
-        if (!locked)
-            delete phrases[phraseIndex];
-        phrases.erase(phraseIndex);
-        phraseLabels.erase(phraseIndex);
-        changed = true;
-    }
+    phrase_iterator end();
     
-    /*!
-     delete all phrases of a given class
-     @warning if the training set is locked, the phrases themselves are not deleted (only their references)
-     @param label label of the class to delete
+    /**
+     * @brief Access Phrase by index
+     * @param n index of the phrase
+     * @return iterator to the phrase of index n
+     * @throws out_of_range if the phrase does not exist.
      */
-    void deletePhrasesOfClass(Label label)
-    {
-        bool contLoop(true);
-        while (contLoop) {
-            contLoop = false;
-            for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
-                if (it->second == label) {
-                    deletePhrase(it->first);
-                    contLoop = true;
-                    break;
-                }
-            }
-        }
-        
-    }
+    phrase_iterator operator()(int n);
     
-    /*!
-     delete all empty phrases
+#pragma mark > Connect Phrases
+    /** @name Connect Phrases */
+    /**
+     * @brief Connect a phrase to the training set (unimodal case)
+     * @details This method is used in shared memory to pass an array to the training set.
+     * If the phrase does not exist, it is created at the specified index.
+     * @param phraseIndex index of the phrase in the training set. If it does not exist, the phrase is created.
+     * @param pointer_to_data pointer to the data array
+     * @param length length of the phrase
+     * @throws runtime_error if not in shared memory (construction with SHARED_MEMORY flag)
+     * @throws runtime_error if bimodal (construction with the BIMODAL flag)
      */
-    void deleteEmptyPhrases()
-    {
-        for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it) {
-            if (it->second->empty()) {
-                deletePhrase(it->first);
-            }
-        }
-        changed = true;
-    }
+    void connect(int phraseIndex, float *pointer_to_data, unsigned int length);
     
-    /*!
-     delete all phrases
-     @warning if the training set is locked, the phrases themselves are not deleted (only their references)
+    void connect(int phraseIndex, float *pointer_to_data_input, float *pointer_to_data_output, unsigned int length);
+    
+#pragma mark > Record training Data
+    /** @name Record training Data */
+    /**
+     * @brief Record training data
+     * @details The method appends an observation to the data phrase. The observation need to have a 
+     * size "dimension". In bimodal mode, the observation must concatenate input and output observations.
+     * A phrase is created if it does not exists at the given index
+     * @param phraseIndex index of the phrase
+     * @param observation observation vector to append to the phrase
+     * @throws runtime_errpr if phrase has shared memory (construction with SHARED_MEMORY flag)
+     * @todo: Add input/output methods
      */
-    void clear()
-    {
-        if (!locked)
-            for (phrase_iterator it = this->begin(); it != this->end(); ++it) {
-                delete it->second;
-            }
-        phrases.clear();
-        phraseLabels.clear();
-        changed = true;
-    }
+    void recordPhrase(int phraseIndex, float *observation);
     
-#pragma mark -
-#pragma mark Handle Class Labels
-    /*! @name Manipulation of Class Labels */
-    /*!
-     set default phrase label for new phrases
+    /**
+     * @brief reset phrase to default
+     * @details The phrase is set to an empty phrase with the current attributes (dimensions, etc).
+     * The phrase is created if it does not exists at the given index.
+     * @param phraseIndex index of the phrase
      */
-    void setDefaultLabel(Label defLabel)
-    {
-        defaultLabel = defLabel;
-    }
+    void resetPhrase(int phraseIndex);
     
-    void setDefaultLabel(int intLabel)
-    {
-        defaultLabel.setInt(intLabel);
-    }
-    
-    void setDefaultLabel(string symLabel)
-    {
-        defaultLabel.setSym(symLabel);
-    }
-    
-    /*!
-     set label of a phrase to default
+    /**
+     * @brief delete a phrase
+     * @warning if the training set is locked, the phrase iself is not deleted (only the reference), 
+     * i.e. its memory is not released.
+     * @param phraseIndex index of the phrase
+     * @throws out_of_bounds if the phrase does not exist
      */
-    void setPhraseLabelToDefault(int phraseIndex)
-    {
-        setPhraseLabel(phraseIndex, defaultLabel);
-    }
+    void deletePhrase(int phraseIndex);
     
-    /*!
-     set the label of a phrase
+    /**
+     * @brief delete all phrases of a given class
+     * @warning if the training set is locked, the phrases themselves are not deleted (only the references), 
+     * i.e. their memory is not released.
+     * @param label label of the class to delete
+     * @throws out_of_bounds if the label does not exist
      */
-    void setPhraseLabel(int phraseIndex, Label label)
-    {
-        if (this->phrases.find(phraseIndex) == this->phrases.end())
-            throw RTMLException("Training set: phrase does not exist", __FILE__, __FUNCTION__, __LINE__);
-        
-        phraseLabels[phraseIndex] = label;
-        changed = true;
-        updateLabelList();
-    }
+    void deletePhrasesOfClass(Label const& label);
     
-    void setPhraseLabel(int phraseIndex, int intLabel)
-    {
-        Label l;
-        l.setInt(intLabel);
-        setPhraseLabel(phraseIndex, l);
-    }
-    
-    void setPhraseLabel(int phraseIndex, string symLabel)
-    {
-        Label l;
-        l.setSym(symLabel);
-        setPhraseLabel(phraseIndex, l);
-    }
-    
-    Label getPhraseLabel(int phraseIndex)
-    {
-        return phraseLabels[phraseIndex];
-    }
-    
-    /*!
-     create a training set containing all phrases of a given class
-     @warning in order to protect the phrases in the current training set, the sub-training set
-     returned is locked
-     @param label label of the class
-     @return a training set containing all the phrases of the given class
+    /**
+     * @brief delete all empty phrases
      */
-    _TrainingSetBase<phraseType>* getSubTrainingSetForClass(Label label)
-    {
-        _TrainingSetBase<phraseType> *subTS = new _TrainingSetBase();
-        subTS->setDefaultLabel(defaultLabel);
-        subTS->referencePhrase = referencePhrase;
-        
-        // Ensure Phrases can't be deleted from a subset
-        subTS->lock();
-        subTS->changed = true;
-        
-        int newPhraseIndex(0);
-        for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
-            if (it->second == label) {
-                subTS->phrases[newPhraseIndex] = this->phrases[it->first];
-                subTS->phraseLabels[newPhraseIndex] = label;
-                newPhraseIndex++;
-            }
-        }
-        
-        return subTS;
-    }
+    void deleteEmptyPhrases();
     
-    /*!
-     update the list of all existing labels of the training set
+    /**
+     * @brief delete all phrases
+     * @warning if the training set is locked, the phrases themselves are not deleted (only their references), 
+     * i.e. their memory is not released.
      */
-    void updateLabelList()
-    {
-        allLabels.clear();
-        for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
-            allLabels.insert(it->second);
-        }
-    }
+    void clear();
     
-#pragma mark -
-#pragma mark File IO
-    /*! @name File IO */
-    /*!
-     Write to JSON Node
+#pragma mark > Handle Labels
+    /** @name Manipulation of Labels */
+    /**
+     * @brief set default phrase label for new phrases
+     * @param defLabel default Label
      */
-    virtual JSONNode to_json() const
-    {
-        JSONNode json_ts(JSON_NODE);
-        json_ts.set_name("Training Set");
-        json_ts.push_back(JSONNode("size", phrases.size()));
-        JSONNode json_deflabel = defaultLabel.to_json();
-        json_deflabel.set_name("default label");
-        json_ts.push_back(json_deflabel);
-        
-        // Add reference phrase
-        JSONNode json_refphrase = referencePhrase.to_json();
-        json_refphrase.set_name("phrase:reference");
-        json_ts.push_back(json_refphrase);
-        
-        // Add phrases
-        JSONNode json_phrases(JSON_ARRAY);
-        for (const_phrase_iterator it = phrases.begin(); it != phrases.end(); ++it)
-        {
-            JSONNode json_phrase(JSON_NODE);
-            json_phrase.push_back(JSONNode("index", it->first));
-            json_phrase.push_back(phraseLabels.at(it->first).to_json());
-            json_phrase.push_back(it->second->to_json());
-            json_phrases.push_back(json_phrase);
-        }
-        json_phrases.set_name("phrases");
-        json_ts.push_back(json_phrases);
-        
-        return json_ts;
-    }
+    void setDefaultLabel(Label const& defLabel);
     
-    /*!
-     Read from JSON Node
+    /**
+     * @brief set label of a phrase to default
+     * @param phraseIndex index of the phrase in the training set
+     * @throws out_of_range if the phrase does not exist
      */
-    virtual void from_json(JSONNode root)
-    {
-        try {
-            assert(root.type() == JSON_NODE);
-            JSONNode::const_iterator root_it = root.begin();
-            
-            // Get Size: Number of Phrases
-            assert(root_it != root.end());
-            assert(root_it->name() == "size");
-            assert(root_it->type() == JSON_NUMBER);
-            int ts_size = root_it->as_int();
-            ++root_it;
-            
-            // Get Default label
-            assert(root_it != root.end());
-            assert(root_it->name() == "default label");
-            assert(root_it->type() == JSON_NODE);
-            defaultLabel.from_json(*root_it);
-            ++root_it;
-            
-            // Get Reference Phrase
-            assert(root_it != root.end());
-            assert(root_it->name() == "reference phrase");
-            assert(root_it->type() == JSON_NODE);
-            referencePhrase.from_json(*root_it);
-            ++root_it;
-            
-            // Get Phrases
-            phrases.clear();
-            phraseLabels.clear();
-            assert(root_it != root.end());
-            assert(root_it->name() == "phrases");
-            assert(root_it->type() == JSON_ARRAY);
-            for (int i=0 ; i<ts_size ; i++)
-            {
-                JSONNode::const_iterator array_it = (*root_it)[i].begin();
-                // Get Index
-                assert(array_it != root.end());
-                assert(array_it->name() == "index");
-                assert(array_it->type() == JSON_NUMBER);
-                int phraseIndex = array_it->as_int();
-                ++array_it;
-                
-                // Get Label
-                assert(array_it != root.end());
-                assert(array_it->name() == "label");
-                assert(array_it->type() == JSON_NODE);
-                phraseLabels[phraseIndex].from_json(*array_it);
-                updateLabelList();
-                ++array_it;
-                
-                // Get Phrase Content
-                assert(array_it != root.end());
-                assert(array_it->name() == "Phrase");
-                assert(array_it->type() == JSON_NODE);
-                phrases[phraseIndex] = new phraseType(this->referencePhrase);
-                phraseLabels[phraseIndex].from_json(*array_it);
-            }
-            
-            assert(ts_size == phrases.size());
-            changed = true;
-            
-        } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
-        }
-    }
+    void setPhraseLabelToDefault(int phraseIndex);
     
-    /*!
-     write training set to stream
-     @todo check if complete
+    /**
+     * @brief set the label of a phrase
+     * @param phraseIndex index of the phrase in the training set
+     * @param label label to set
+     * @throws out_of_range if the phrase does not exist
      */
-    void write(ostream& outStream)
-    {
-        outStream << "# Training Set\n";
-        outStream << "# ===========================\n";
-        outStream << "# Number of Phrases\n";
-        outStream << phrases.size() << endl;
-        outStream << "# Default Label\n";
-        if (defaultLabel.type == Label::INT)
-            outStream << "INT " << defaultLabel.getInt() << endl;
-        else
-            outStream << "SYM " << defaultLabel.getSym() << endl;
-        outStream << "# === Reference Phrase\n";
-        referencePhrase.write(outStream);
-        for (phrase_iterator it = phrases.begin(); it != phrases.end(); ++it) {
-            outStream << "# === Phrase " << it->first << "\n";
-            outStream << "# Index\n";
-            outStream << it->first << endl;
-            outStream << "# Content\n";
-            it->second->write(outStream);
-        }
-    }
+    void setPhraseLabel(int phraseIndex, Label const& label);
     
-    /*!
-     read training set from stream
-     @todo check if complete
+    /**
+     * @brief get the current label of a phrase in the training set
+     * @param phraseIndex index of the phrase in the training set
+     * @return label of the phrase
      */
-    void read(istream& inStream)
-    {
-        skipComments(&inStream);
-        
-        // Get Number of phrases
-        int nbPhrases;
-        inStream >> nbPhrases;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        
-        // Read label
-        skipComments(&inStream);
-        string lType;
-        inStream >> lType;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-        if (lType == "INT") {
-            int intLab;
-            inStream >> intLab;
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-            this->defaultLabel.setInt(intLab);
-        } else {
-            string symLab;
-            inStream >> symLab;
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-            this->defaultLabel.setSym(symLab);
-        }
-        
-        // Get reference phrase
-        referencePhrase.read(inStream);
-        
-        // === Get Phrases
-        int index;
-        for (int p=0; p<nbPhrases; p++) {
-            // index
-            skipComments(&inStream);
-            inStream >> index;
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);
-            
-            // Content
-            phrases[index] = new phraseType(referencePhrase);
-            phrases[index]->read(inStream);
-            phraseLabels[index] = phrases[index]->label;
-        }
-    }
+    Label getPhraseLabel(int phraseIndex);
     
-#pragma mark -
-#pragma mark Debug
-    /*! @name Debug */
-    /*!
-     Dump training set information to stream
+    /**
+     * @brief get the pointer to the sub-training set containing all phrases with a given label
+     * @warning in order to protect the phrases in the current training set, the sub-training set
+     * returned is locked
+     * @param label target label
+     * @return pointer to the sub-training set containing all phrases with a given label
+     * @throws out_of_range if the label does not exist
      */
-    void dump(ostream& outStream)
-    {
-        outStream << "# Training Set\n";
-        outStream << "# ===========================\n";
-        outStream << "# Number of Phrases\n";
-        outStream << phrases.size() << endl;
-        outStream << "# Default Label\n";
-        if (defaultLabel.type == Label::INT)
-            outStream << "INT " << defaultLabel.getInt() << endl;
-        else
-            outStream << "SYM " << defaultLabel.getSym() << endl;
-        for (phrase_iterator it = phrases.begin(); it != phrases.end(); ++it) {
-            outStream << "# === Phrase " << it->first << ", Label ";
-            if (phraseLabels[it->first].type == Label::INT)
-                outStream << "INT " << phraseLabels[it->first].getInt() << endl;
-            else
-                outStream << "SYM " << phraseLabels[it->first].getSym() << endl;
-        }
-        outStream << endl;
-    }
+    TrainingSet* getSubTrainingSetForClass(Label const& label);
     
-#pragma mark -
-#pragma mark Python
-    /*! @name Python methods */
+#pragma mark > JSON I/O
+    /** @name File IO */
+    /**
+     * @brief Write to JSON Node
+     * @return JSON Node containing training set information and data
+     */
+    JSONNode to_json() const;
+    
+    /**
+     * @brief Read from JSON Node
+     * @param root JSON Node containing training set information and data
+     * @throws JSONException if the JSON Node has a wrong format
+     */
+    void from_json(JSONNode root);
+    
+#pragma mark > Debug
+    /** @name Debug */
+    /**
+     * @brief Dump training set information to stream
+     * @param outStream output stream
+     */
+    void dump(ostream& outStream);
+    
+#pragma mark > Python
+    /** @name Python methods */
 #ifdef SWIGPYTHON
-    /*!
-     special python "print" method to get information on the object
+    /**
+     * @brief special python "print" method to get information on the object
      */
     char *__str__() {
         stringstream ss;
@@ -623,11 +325,11 @@ public:
     }
     
     // TODO: Make class extension in Swig interface file using %extend ?
-    /*!
-     Append data to a phrase from a numpy array
-     @param dimension_total total dimension of the multimodal observation vector
-     @param observation multimodal observation vector
-     @todo Make class extension in Swig interface file using %extend ?
+    /**
+     * @brief Append data to a phrase from a numpy array
+     * @param dimension_total total dimension of the multimodal observation vector
+     * @param observation multimodal observation vector
+     * @todo Make class extension in Swig interface file using %extend ?
      */
     void recordPhrase(int phraseIndex, int dimension_total, double *observation)
     {
@@ -643,300 +345,105 @@ public:
 #endif
     
 #pragma mark -
-#pragma mark Protected Attributes
-    /*! @name Protected Attributes */
-protected:
-    Listener* parent;
-    phraseType referencePhrase; //<! Reference phrase: used to store Phrase Attributes
+#pragma mark === Public Attributes ===
+    /**
+     * @brief Training Phrases
+     * @details Phrases are stored in a map: allows the easy addition/deletion of phrases by index.
+     */
+    map<int, Phrase*> phrases;
     
-    Label defaultLabel;
-    bool changed;
-    bool locked;
-};
-
-
-
+    /**
+     * @brief Labels associated to each phrase
+     * @details As for phrases, labels are stored in a map for easy addition/deletion of phrases by index.
+     */
+    map<int, Label> phraseLabels;
+    
+    /**
+     * @brief Set containing all the labels present in the training set
+     */
+    set<Label> allLabels;
+    
+private:
 #pragma mark -
-#pragma mark Training Set: Class Definition and specializations
-/*!
- @class TrainingSet
- @brief Training set
- Adds partial specializations of _TrainingSetBase for specificic types of phrases
- @todo class description
- @tparam phraseType Data type of the phrases composing the training set
- */
-template <typename phraseType>
-class TrainingSet : public _TrainingSetBase<phraseType>
-{
-public:
-    TrainingSet(Listener* _parent=NULL) : _TrainingSetBase<phraseType>(_parent)
-    {}
-    
-    virtual ~TrainingSet() {}
-};
+#pragma mark === Private Methods ===
+#pragma mark > Copy
+    void _copy(TrainingSet *dst, TrainingSet const& src);
 
-#pragma mark Phrase specialization
-template <bool ownData, unsigned int nbModalities>
-class TrainingSet< Phrase<ownData, nbModalities> >
-: public _TrainingSetBase< Phrase<ownData, nbModalities> >
-{
-public:
-    typedef typename  map<int, Phrase<ownData, nbModalities>* >::iterator phrase_iterator;
-    
-    TrainingSet(Listener* _parent=NULL)
-    : _TrainingSetBase< Phrase<ownData, nbModalities> >(_parent) {}
-    
-    virtual ~TrainingSet() {}
-    
-    /*!
-     Connect a phrase to a shared data container
-     @param phraseIndex phrase index
-     @param _data array of pointers to shared data
-     @param _length length of the phrase
+#pragma mark > Lock
+    /**
+     * @brief Lock training set to keep the phrases from being deleted at destruction
      */
-    void connect(int phraseIndex, float *_data[nbModalities], unsigned int _length)
-    {
-        if (this->phrases.find(phraseIndex) == this->phrases.end()) {
-            this->phrases[phraseIndex] = new Phrase<ownData, nbModalities>(this->referencePhrase);
-            this->setPhraseLabelToDefault(phraseIndex);
-        }
-        this->phrases[phraseIndex]->connect(_data, _length);
-        this->changed = true;
-    }
+    void lock();
     
-    /*!
-     get dimension of a modality
-     @param modality index of the modality
+#pragma mark > Handle Labels
+    /**
+     * @brief update the sub-training set for a given label
      */
-    unsigned int get_dimension(unsigned int modality=0) const
-    {
-        return this->referencePhrase.get_dimension(modality);
-    }
+    void updateSubTrainingSet(Label const& label);
     
-    /*!
-     set dimension of a modality
-     @param _dimension new dimension
-     @param modality index of the modality
+    /**
+     * @brief create all the sub-training sets: one for each label
+     * @details each subset contains only the phrase for the given label
      */
-    void set_dimension(unsigned int _dimension, unsigned int modality=0)
-    {
-        this->referencePhrase.set_dimension(_dimension, modality);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension(_dimension, modality);
-        if (this->parent)
-            this->parent->notify("dimension");
-        this->changed = true;
-    }
-};
-
-#pragma mark GestureSoundPhrase specialization
-template <bool ownData>
-class TrainingSet< GestureSoundPhrase<ownData> >
-: public _TrainingSetBase< GestureSoundPhrase<ownData> >
-{
-public:
-    typedef typename  map<int, GestureSoundPhrase<ownData>* >::iterator phrase_iterator;
+    void updateSubTrainingSets();
     
-    TrainingSet(Listener* _parent=NULL)
-    : _TrainingSetBase< GestureSoundPhrase<ownData> >(_parent) {}
-    
-    virtual ~TrainingSet() {}
-    
-    /*!
-     Connect a phrase to a shared data container (gesture-sound)
-     @param phraseIndex phrase index
-     @param _data_gesture pointer to shared gesture data array
-     @param _data_sound pointer to shared sound data array
-     @param _length length of the phrase
+    /**
+     * @brief update the list of all existing labels of the training set
      */
-    void connect(int phraseIndex, float *_data_gesture, float *_data_sound, unsigned int _length)
-    {
-        if (this->phrases.find(phraseIndex) == this->phrases.end()) {
-            this->phrases[phraseIndex] = new GestureSoundPhrase<ownData>(this->referencePhrase);
-            this->setPhraseLabelToDefault(phraseIndex);
-        }
-        this->phrases[phraseIndex]->connect(_data_gesture, _data_sound, _length);
-        this->changed = true;
-    }
+    void updateLabelList();
     
-    /*!
-     get dimension of the gesture modality
-     */
-    unsigned int get_dimension_gesture() const
-    {
-        return this->referencePhrase.get_dimension_gesture();
-    }
-    
-    /*!
-     set dimension of the gesture modality
-     */
-    void set_dimension_gesture(unsigned int _dimension_gesture)
-    {
-        this->referencePhrase.set_dimension_gesture(_dimension_gesture);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension_gesture(_dimension_gesture);
-        if (this->parent)
-            this->parent->notify("dimension_gesture");
-        this->changed = true;
-    }
-    
-    /*!
-     get dimension of the sound modality
-     */
-    unsigned int get_dimension_sound() const
-    {
-        return this->referencePhrase.get_dimension_sound();
-    }
-    
-    /*!
-     set dimension of the sound modality
-     */
-    void set_dimension_sound(unsigned int _dimension_sound)
-    {
-        this->referencePhrase.set_dimension_sound(_dimension_sound);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension_sound(_dimension_sound);
-        if (this->parent)
-            this->parent->notify("dimension_sound");
-        this->changed = true;
-    }
-};
-
-
 #pragma mark -
-#pragma mark Python Specializations
-/*
- As swig doesn't support partial template specialization with arguments which are
- templates themselves, explicit specialization need to be defined.
- 3 templates are specialized here for 3 types of phrases: unimodal, bimodal and gesture-sound.
- */
-#ifdef SWIGPYTHON
-template<>
-class TrainingSet< Phrase<true, 1> >
-: public _TrainingSetBase< Phrase<true, 1> >
-{
-public:
-    typedef  map<int, Phrase<true, 1>* >::iterator phrase_iterator;
-    
-    TrainingSet(Listener* _parent=NULL)
-    : _TrainingSetBase< Phrase<true, 1> >(_parent) {}
-    
-    virtual ~TrainingSet() {}
-    
-    int get_dimension(int modality=0) const
-    {
-        return this->referencePhrase.get_dimension(modality);
-    }
-    
-    void set_dimension(int _dimension, int modality=0)
-    {
-        this->referencePhrase.set_dimension(_dimension, modality);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension(_dimension, modality);
-        if (this->parent)
-            this->parent->notify("dimension");
-        this->changed = true;
-    }
-};
+#pragma mark === Private Attributes ===
+    /**
+     * @brief Construction flags
+     * @see  Phrase
+     */
+    rtml_flags flags_;
 
-template<>
-class TrainingSet< Phrase<true, 2> >
-: public _TrainingSetBase< Phrase<true, 2> >
-{
-public:
-    typedef  map<int, Phrase<true, 2>* >::iterator phrase_iterator;
-    
-    TrainingSet(Listener* _parent=NULL)
-    : _TrainingSetBase< Phrase<true, 2> >(_parent) {}
-    
-    virtual ~TrainingSet() {}
-    
-    int get_dimension(int modality=0) const
-    {
-        return this->referencePhrase.get_dimension(modality);
-    }
-    
-    void set_dimension(int _dimension, int modality=0)
-    {
-        this->referencePhrase.set_dimension(_dimension, modality);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension(_dimension, modality);
-        if (this->parent)
-            this->parent->notify("dimension");
-        this->changed = true;
-    }
-};
+    /**
+     * @brief defines if the phrase has its own memory
+     */
+    bool owns_data;
 
-template<>
-class TrainingSet< GestureSoundPhrase<true> >
-: public _TrainingSetBase< GestureSoundPhrase<true> >
-{
-public:
-    typedef map<int, GestureSoundPhrase<true>* >::iterator phrase_iterator;
-    
-    TrainingSet(Listener* _parent=NULL)
-    : _TrainingSetBase< GestureSoundPhrase<true> >(_parent) {}
-    
-    virtual ~TrainingSet() {}
-    
-    int get_dimension_gesture() const
-    {
-        return this->referencePhrase.get_dimension_gesture();
-    }
-    
-    void set_dimension_gesture(int _dimension_gesture)
-    {
-        this->referencePhrase.set_dimension_gesture(_dimension_gesture);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension_gesture(_dimension_gesture);
-        if (this->parent)
-            this->parent->notify("dimension_gesture");
-        this->changed = true;
-    }
-    
-    int get_dimension_sound() const
-    {
-        return this->referencePhrase.get_dimension_sound();
-    }
-    
-    void set_dimension_sound(int _dimension_sound)
-    {
-        this->referencePhrase.set_dimension_sound(_dimension_sound);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension_sound(_dimension_sound);
-        if (this->parent)
-            this->parent->notify("dimension_sound");
-        this->changed = true;
-    }
-};
+    /**
+     * @brief defines if the phrase is bimodal
+     */
+    bool bimodal_;
 
-template<>
-class TrainingSet< GesturePhrase<true> >
-: public _TrainingSetBase< GesturePhrase<true> >
-{
-public:
-    typedef map<int, GesturePhrase<true>* >::iterator phrase_iterator;
+    /**
+     * @brief total dimension of the training data
+     */
+    unsigned int dimension_;
+
+    /**
+     * @brief dimension of the input modality in bimodal mode
+     */
+    unsigned int dimension_input_;
     
-    TrainingSet(Listener* _parent=NULL)
-    : _TrainingSetBase< GesturePhrase<true> >(_parent) {}
+    /**
+     * @brief Parent Object. The parent is notified when attributes of the training set are changed.
+     */
+    Listener* parent_;
     
-    virtual ~TrainingSet() {}
+    /**
+     * @brief Default label for new phrases
+     */
+    Label defaultLabel_;
+
+    /**
+     * @brief used to track changes in the training set
+     */
+    bool has_changed_;
+
+    /**
+     * @brief if true, the training set is locked, i.e. its memory cannot be released.
+     */
+    bool locked_;
     
-    int get_dimension() const
-    {
-        return this->referencePhrase.get_dimension();
-    }
-    
-    void set_dimension(int _dimension)
-    {
-        this->referencePhrase.set_dimension(_dimension);
-        for (phrase_iterator it=this->phrases.begin(); it != this->phrases.end(); ++it)
-            it->second->set_dimension(_dimension);
-        if (this->parent)
-            this->parent->notify("dimension");
-        this->changed = true;
-    }
+    /**
+     * @brief Sub-ensembles of the training set for specific classes
+     */
+    map<Label, TrainingSet> subTrainingSets_;
 };
-#endif
 
 #endif

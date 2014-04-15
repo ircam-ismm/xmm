@@ -1,682 +1,154 @@
 //
-//  gmm.h
-//  mhmm
+// gmm.h
 //
-//  Created by Jules Francoise on 08/08/13.
+// Gaussian Mixture Model
 //
+// Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+// author: Jules Francoise <jules.francoise@ircam.fr>
 //
 
 #ifndef mhmm_gmm_h
 #define mhmm_gmm_h
 
+#include "gaussian_distribution.h"
 #include "em_based_learning_model.h"
-#include "matrix.h"
 
 const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
-const double GMM_DEFAULT_COVARIANCE_OFFSET = 0.01;
 
-/*!
+/**
  * @class GMM
  * @brief Gaussian Mixture Model
- *
- * Can be either autonomous or a state of a HMM: defines observation probabilities for each state
- @todo detail documentation
- @tparam ownData defines if phrases has own data or shared memory
+ * @details Multivariate Gaussian Mixture Model. Supports Bimodal data and Gaussian Mixture Regression.
+ * Can be either autonomous or a state of a HMM: defines observation probabilities for each state.
  */
-template<bool ownData>
-class GMM : public EMBasedLearningModel< Phrase<ownData, 1> > {
+class GMM : public EMBasedLearningModel {
 public:
-    typedef typename map<int, Phrase<ownData, 1>* >::iterator phrase_iterator;
+    friend class HMM;
     
-    vector<float> mean;
-    vector<float> covariance;
-    vector<float> mixtureCoeffs;
+    /**
+     * @brief Iterator over the phrases of the training set.
+     */
+    typedef typename map<int, Phrase* >::iterator phrase_iterator;
+    
+    /**
+     * @brief Iterator over Gaussian Mixture Components
+     */
+    typedef vector<GaussianDistribution>::iterator mixture_iterator;
     
 #pragma mark -
-#pragma mark Constructors
-    /*! @name Constructors */
-    /*!
-     Constructor
-     @param \_trainingSet training set associated with the model
-     @param nbMixtureComponents\_ number of mixture components
-     @param covarianceOffset_ offset to add to the diagonal of covariances matrices (useful to guarantee convergence)
+#pragma mark === Public Interface ===
+#pragma mark > Constructors
+    /** @name Constructors */
+    /**
+     * @brief Constructor
+     * @param _trainingSet training set associated with the model
+     * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
+     * @param nbMixtureComponents number of mixture components
+     * @param covarianceOffset offset added to the diagonal of covariances matrices (useful to guarantee convergence)
      */
-    GMM(TrainingSet< Phrase<ownData, 1> > *_trainingSet=NULL,
-                  int nbMixtureComponents_ = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
-                  float covarianceOffset_= GMM_DEFAULT_COVARIANCE_OFFSET)
-    : EMBasedLearningModel< Phrase<ownData, 1> >(_trainingSet)
-    {
-        nbMixtureComponents  = nbMixtureComponents_;
-        covarianceOffset     = covarianceOffset_;
-        
-        if (this->trainingSet) {
-            dimension = this->trainingSet->get_dimension();
-        } else {
-            dimension = 1;
-        }
-        
-        reallocParameters();
-        initTraining();
-    }
+    GMM(rtml_flags flags = NONE,
+        TrainingSet *trainingSet=NULL,
+        int nbMixtureComponents = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
+        float covarianceOffset = GAUSSIAN_DEFAULT_COVARIANCE_OFFSET);
     
-    /*!
-     Copy constructor
+    /**
+     * @brief Copy constructor
+     * @param src Source GMM
      */
-    GMM(GMM const& src) : EMBasedLearningModel< Phrase<ownData, 1> >(src)
-    {
-        _copy(this, src);
-    }
+    GMM(GMM const& src);
     
-    /*!
-     Assignment
+    /**
+     * @brief Assignment
+     * @param src Source GMM
      */
-    GMM& operator=(GMM const& src)
-    {
-        if(this != &src)
-        {
-            _copy(this, src);
-        }
-        return *this;
-    };
+    GMM& operator=(GMM const& src);
     
-    /*!
-     Copy between 2 MultimodalGMM models
+    /**
+     * @brief Destructor
      */
-    using EMBasedLearningModel< Phrase<ownData, 1> >::_copy;
-    virtual void _copy(GMM *dst, GMM const& src)
-    {
-        EMBasedLearningModel< Phrase<ownData, 1> >::_copy(dst, src);
-        dst->nbMixtureComponents     = src.nbMixtureComponents;
-        dst->covarianceOffset        = src.covarianceOffset;
-        dst->covarianceDeterminant   = src.covarianceDeterminant;
-        
-        dst->dimension = src.dimension;
-        
-        dst->mixtureCoeffs = src.mixtureCoeffs;
-        dst->mean = src.mean;
-        dst->covariance = src.covariance;
-        dst->inverseCovariance = src.inverseCovariance;
-        dst->covarianceDeterminant = src.covarianceDeterminant;
-        
-        dst->reallocParameters();
-    }
+    virtual ~GMM();
     
-    /*!
-     Destructor
+#pragma mark > Accessors & Attributes
+    /** @name Accessors & Attributes */
+    /**
+     * @brief Get the number of Gaussian mixture Components
+     * @return number of Gaussian mixture components
      */
-    virtual ~GMM()
-    {
-        mean.clear();
-        covariance.clear();
-        inverseCovariance.clear();
-        covarianceDeterminant.clear();
-        mixtureCoeffs.clear();
-    }
+    int get_nbMixtureComponents() const;
     
-    /*!
-     handle notifications of the training set
-     
-     here only the dimensions attributes of the training set are considered
+    /**
+     * @brief Get Offset added to covariance matrices for convergence
+     * @return Offset added to covariance matrices for convergence
      */
-    void notify(string attribute)
-    {
-        if (!this->trainingSet) return;
-        if (attribute == "dimension") {
-            dimension = this->trainingSet->get_dimension();
-            reallocParameters();
-            return;
-        }
-    }
+    float get_covarianceOffset() const;
     
-    /*!
-     Set training set associated with the model
+    /**
+     * @brief Set the number of mixture components of the model
+     * @warning sets the model to be untrained.
+     * @todo : change this untrained behavior via mirror models for training?
+     * @param nbMixtureComponents number of Gaussian Mixture Components
+     * @throws invalid_argument if nbMixtureComponents is <= 0
      */
-    void set_trainingSet(TrainingSet< Phrase<ownData, 1> > *_trainingSet)
-    {
-        this->trainingSet = _trainingSet;
-        if (this->trainingSet) {
-            dimension = this->trainingSet->get_dimension();
-        } else {
-            dimension = 1;
-        }
-        reallocParameters();
-    }
+    void set_nbMixtureComponents(int nbMixtureComponents);
     
-#pragma mark -
-#pragma mark Parameters
-    /*! @name Parameters */
-    /*!
-     Re-allocate model parameters
+    /**
+     * @brief Set the offset to add to the covariance matrices
+     * @param covarianceOffset offset to add to the diagonal of covariance matrices
+     * @throws invalid_argument if the covariance offset is <= 0
      */
-    void reallocParameters()
-    {
-        mean.resize(nbMixtureComponents*dimension);
-        covariance.resize(nbMixtureComponents*dimension*dimension);
-        inverseCovariance.resize(nbMixtureComponents*dimension*dimension);
-        mixtureCoeffs.resize(nbMixtureComponents);
-        covarianceDeterminant.resize(nbMixtureComponents);
-        beta.resize(nbMixtureComponents);
-    }
+    void set_covarianceOffset(float covarianceOffset);
     
-    /*!
-     Initialize the means of the gaussian components with the first phrase of the training set
+#pragma mark > Performance
+    /** @name Performance */
+    /**
+     * @brief Initialize playing mode
      */
-    void initMeansWithFirstPhrase()
-    {
-        if (!this->trainingSet) return;
-        int nbPhrases = this->trainingSet->size();
-        
-        if (nbPhrases == 0) return;
-        int step = this->trainingSet->begin()->second->length() / nbMixtureComponents;
-		
-        int offset(0);
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++) {
-                meanOfComponent(c)[d] = 0.0;
-            }
-            for (int t=0; t<step; t++) {
-                for (int d=0; d<dimension; d++) {
-                    meanOfComponent(c)[d] += (*this->trainingSet->begin()->second)(offset+t, d) / float(step);
-                }
-            }
-            offset += step;
-        }
-    }
+    void initPlaying();
     
-    /*!
-     Set model parameters to zero, except means (sometimes means are not re-estimated in the training algorithm)
+    /**
+     * @brief Main Play function: performs recognition (unimodal mode) or regression (bimodal mode)
+     * @details The predicted output is stored in the observation vector in bimodal mode
+     * @param observation observation (must allocated to size 'dimension')
+     * @return instantaneous likelihood
      */
-    void setParametersToZero()
-    {
-        for (int c=0; c<nbMixtureComponents; c++) {
-            mixtureCoeffs[c] = 0.;
-            for (int d=0; d<dimension; d++) {
-                for (int d2=0; d2<dimension; d2++) {
-                    covariance[c*dimension*dimension+d*dimension+d2] = 0.;
-                }
-            }
-        }
-    }
+    double play(float *observation);
     
-    /*!
-     Normalize mixture coefficients
+#pragma mark > Training
+    /** @name Training */
+    /**
+     * @brief Initialize the EM Training Algorithm
+     * @details Initializes the Gaussian Components from the first phrase
+     * of the Training Set
      */
-    void normalizeMixtureCoeffs()
-    {
-        double norm_const(0.);
-        for (int c=0; c<nbMixtureComponents; c++) {
-            norm_const += mixtureCoeffs[c];
-        }
-        if (norm_const > 0) {
-            for (int c=0; c<nbMixtureComponents; c++) {
-                mixtureCoeffs[c] /= norm_const;
-            }
-        } else {
-            for (int c=0; c<nbMixtureComponents; c++) {
-                mixtureCoeffs[c] = 1/float(nbMixtureComponents);
-            }
-        }
-    }
+    virtual void initTraining();
     
-    /*!
-     add offset to the diagonal of the covariance matrices => guarantee convergence through covariance matrix invertibility
+    /**
+     * @brief Terminate EM Training
      */
-    void addCovarianceOffset()
-    {
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++)
-                covarianceOfComponent(c)[d*dimension+d] += covarianceOffset;
-        }
-    }
+    virtual void finishTraining();
     
-#pragma mark -
-#pragma mark Accessors
-    /*! @name Accessors */
-    int get_dimension() const
-    {
-        return dimension;
-    }
-    
-    int   get_nbMixtureComponents() const
-    {
-        return nbMixtureComponents;
-    }
-    
-    float get_covarianceOffset() const
-    {
-        return covarianceOffset;
-    }
-    
-    /*!
-     Set the number of mixture components of the model
+#pragma mark > JSON I/O
+    /** @name JSON I/O */
+    /**
+     * @brief Write to JSON Node
+     * @return JSON Node containing model information and parameters
      */
-    void set_nbMixtureComponents(int nbMixtureComponents_)
-    {
-        if (nbMixtureComponents_ < 1) throw RTMLException("Number of mixture components must be > 0", __FILE__, __FUNCTION__, __LINE__);
-        if (nbMixtureComponents_ == nbMixtureComponents) return;
-        
-        nbMixtureComponents = nbMixtureComponents_;
-        reallocParameters();
-        this->trained = false;
-    }
+    JSONNode to_json() const;
     
-    /*!
-     Set the offset to add to the covariance matrices
+    /**
+     * @brief Read from JSON Node
+     * @details allocate model parameters and updates inverse Covariances
+     * @param root JSON Node containing model information and parameters
+     * @throws JSONException if the JSONNode has a wrong format
      */
-    void set_covarianceOffset(float covarianceOffset_)
-    {
-        if (covarianceOffset_ <= 0.) throw RTMLException("Covariance offset must be > 0", __FILE__, __FUNCTION__, __LINE__);
-        
-        covarianceOffset = covarianceOffset_;
-    }
+    virtual void from_json(JSONNode root);
     
-    // Observation probabilities
-    // ================================
-#pragma mark -
-#pragma mark Observation probabilities
-    /*! @name Observation probabilities */
-    /*!
-     Observation probability
-     @param obs observation vector
-     @param mixtureComponent index of the mixture component. if unspecified or negative,
-     full mixture observation probability is computed
-     */
-    double obsProb(const float *obs, int mixtureComponent=-1)
-    {
-        double p(0.);
-        
-        if (mixtureComponent < 0) {
-            for (mixtureComponent=0; mixtureComponent<nbMixtureComponents; mixtureComponent++) {
-                p += obsProb(obs, mixtureComponent);
-            }
-        } else {
-            
-            p = mixtureCoeffs[mixtureComponent] * gaussianProbabilityFullCovariance(obs,
-                                                                                    meanOfComponent(mixtureComponent),
-                                                                                    covarianceDeterminant[mixtureComponent],
-                                                                                    inverseCovarianceOfComponent(mixtureComponent),
-                                                                                    dimension);
-        }
-        
-        return p;
-    }
-        
-    // Utility
-    // ================================
-#pragma mark -
-#pragma mark Utility
-    /*! @name Utility */
-    /*!
-     get mean of a particular gaussian component (multimodal)
-     */
-    vector<float>::iterator meanOfComponent(int component)
-    {
-        return mean.begin() + component * dimension;
-    }
-    
-    /*!
-     get covariance of a particular gaussian component (multimodal)
-     */
-    vector<float>::iterator covarianceOfComponent(int component)
-    {
-        return covariance.begin() + component * dimension * dimension;
-    }
-    
-    /*!
-     get inverse covariance of a particular gaussian component (multimodal)
-     */
-    vector<float>::iterator inverseCovarianceOfComponent(int component)
-    {
-        return inverseCovariance.begin() + component * dimension * dimension;
-    }
-        
-    /*!
-     get index of the likeliest component
-     */
-    int likeliestComponent()
-    {
-        int component(0);
-        double maxProb = mixtureCoeffs[component] / sqrt(covarianceDeterminant[component]);
-        double prob;
-        for (int c=1 ; c<nbMixtureComponents; c++) {
-            prob = mixtureCoeffs[c] / sqrt(covarianceDeterminant[c]);
-            if (prob > maxProb) {
-                component = c;
-                maxProb = prob;
-            }
-        }
-        return component;
-    }
-    
-    /*!
-     Compute likeliest component given an observation. The likelihood is computed using observation probabilities
-     and mixture coefficients
-     */
-    int likeliestComponent(const float *obs)
-    {
-        // !! here, the likeliest component is computed with the mixture coeffs => relevant ?
-        int component(0);
-        double maxProb = obsProb(obs, component);
-        double prob;
-        for (int c=1 ; c<nbMixtureComponents; c++) {
-            prob = obsProb(obs, c);
-            if (prob > maxProb) {
-                component = c;
-                maxProb = prob;
-            }
-        }
-        return component;
-    }
-    
-    /*!
-     update inverse covariances of each gaussian component
-     */
-    void updateInverseCovariances()
-    {
-        Matrix<float> cov_matrix(dimension, dimension, false);
-        
-        Matrix<float> *inverseMat;
-        double det;
-        
-        for (int c=0; c<nbMixtureComponents; c++)
-        {
-            // Update inverse covariance for gesture+sound
-            cov_matrix.data = covarianceOfComponent(c);
-            inverseMat = cov_matrix.pinv(&det);
-            covarianceDeterminant[c] = det;
-            copy(inverseMat->data, inverseMat->data + dimension*dimension, inverseCovarianceOfComponent(c));
-            // vectorCopy(inverseCovarianceOfComponent(c), inverseMat->data, dimension*dimension);
-            delete inverseMat;
-        }
-    }
-    
-#pragma mark -
-#pragma mark Gaussian Mixture Regression
-    /*! @name Gaussian Mixture Regression */
-    /*!
-     Compute gaussian mixture regression
-     @param obs multimodal gesture-sound observation vector, gesture part is used for prediction.
-     the estimated sound vector is stored in the sound part.
-     @return likelihood computed over the gesture part
-     */
-    double recognition(float *obs)
-    {
-        recognition_beta(obs);
-        
-        return obsProb(obs, -1);
-    }
-        
-    /*!
-     Compute likelihoods of each components given a gesture observation vector
-     @param obs multimodal gesture-sound observation vector, gesture part is used for prediction.
-     */
-    void recognition_beta(const float *obs)
-    {
-        double norm_const(0.);
-        for (int c=0; c<nbMixtureComponents; c++) {
-            beta[c] = obsProb(obs, c);
-            norm_const += beta[c];
-        }
-        for (int c=0; c<nbMixtureComponents; c++) {
-            beta[c] /= norm_const;
-        }
-    }
-        
-#pragma mark -
-#pragma mark Play!
-    /*! @name Playing */
-    /*!
-     initialize playing mode
-     */
-    void initPlaying()
-    {}
-    
-    /*!
-     play function: estimate sound parameters using gesture input and compute likelihood
-     */
-    double play(float *obs)
-    {
-        double prob = recognition(obs);
-        this->updateLikelihoodBuffer(prob);
-        return prob;
-    }
-    
-#pragma mark -
-#pragma mark File IO
-    /*! @name File IO */
-    /*!
-     Write to JSON Node
-     */
-    virtual JSONNode to_json() const
-    {
-        JSONNode json_hmodel(JSON_NODE);
-        json_hmodel.set_name("GMM");
-        
-        // Write Parent: EM Learning Model
-        JSONNode json_emmodel = EMBasedLearningModel< Phrase<ownData, 1> >::to_json();
-        json_emmodel.set_name("EMBasedLearningModel");
-        json_hmodel.push_back(json_emmodel);
-        
-        // Scalar Attributes
-        json_hmodel.push_back(JSONNode("dimension", dimension));
-        json_hmodel.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents));
-        json_hmodel.push_back(JSONNode("covarianceOffset", covarianceOffset));
-        
-        // Model Parameters
-        json_hmodel.push_back(vector2json(mixtureCoeffs, "mixtureCoefficients"));
-        json_hmodel.push_back(vector2json(mean, "mean"));
-        json_hmodel.push_back(vector2json(covariance, "covariance"));
-        
-        return json_hmodel;
-    }
-    
-    /*!
-     Read from JSON Node
-     */
-    virtual void from_json(JSONNode root)
-    {
-        try {
-            assert(root.type() == JSON_NODE);
-            JSONNode::iterator root_it = root.begin();
-            
-            // Get Parent: Concurrent models
-            assert(root_it != root.end());
-            assert(root_it->name() == "EMBasedLearningModel");
-            assert(root_it->type() == JSON_NODE);
-            EMBasedLearningModel< Phrase<ownData, 1> >::from_json(*root_it);
-            root_it++;
-            
-            // Get Dimension
-            assert(root_it != root.end());
-            assert(root_it->name() == "dimension");
-            assert(root_it->type() == JSON_NUMBER);
-            dimension = root_it->as_int();
-            root_it++;
-            
-            // Get Mixture Components
-            assert(root_it != root.end());
-            assert(root_it->name() == "nbMixtureComponents");
-            assert(root_it->type() == JSON_NUMBER);
-            nbMixtureComponents = root_it->as_int();
-            root_it++;
-            
-            // Get Covariance Offset
-            assert(root_it != root.end());
-            assert(root_it->name() == "covarianceOffset");
-            assert(root_it->type() == JSON_NUMBER);
-            covarianceOffset = root_it->as_float();
-            root_it++;
-            
-            reallocParameters();
-            
-            // Get Mixture Coefficients
-            assert(root_it != root.end());
-            assert(root_it->name() == "mixtureCoefficients");
-            assert(root_it->type() == JSON_ARRAY);
-            json2vector(*root_it, mixtureCoeffs, nbMixtureComponents);
-            root_it++;
-            
-            // Get Mean
-            assert(root_it != root.end());
-            assert(root_it->name() == "mean");
-            assert(root_it->type() == JSON_ARRAY);
-            json2vector(*root_it, mean, nbMixtureComponents*dimension);
-            root_it++;
-            
-            // Get Covariance
-            assert(root_it != root.end());
-            assert(root_it->name() == "covariance");
-            assert(root_it->type() == JSON_ARRAY);
-            json2vector(*root_it, covariance, nbMixtureComponents*dimension*dimension);
-            
-            updateInverseCovariances();
-            
-        } catch (exception &e) {
-            throw RTMLException("Error reading JSON, Node: " + root.name() + " >> " + e.what());
-        }
-    
-        this->trained = true;
-    }
-    
-    void write(ostream& outStream)
-    {
-        outStream << "# Multimodal GMM \n";
-        outStream << "# =========================================\n";
-        EMBasedLearningModel< Phrase<ownData, 1> >::write(outStream);
-        outStream << "# Dimension\n";
-        outStream << dimension << endl;
-        outStream << "# Number of mixture Components\n";
-        outStream << nbMixtureComponents << endl;
-        outStream << "# Covariance Offset\n";
-        outStream << covarianceOffset << endl;
-        outStream << "# Mixture Coefficients\n";
-        for (int c=0 ; c<nbMixtureComponents; c++) {
-            outStream << mixtureCoeffs[c] << " ";
-        }
-        outStream << endl;
-        outStream << "# Mean\n";
-        for (int c=0 ; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++) {
-                outStream << meanOfComponent(c)[d] << " ";
-            }
-            outStream << endl;
-        }
-        outStream << "# Covariance\n";
-        for (int c=0 ; c<nbMixtureComponents; c++) {
-            for (int d1=0; d1<dimension; d1++) {
-                for (int d2=0; d2<dimension; d2++) {
-                    outStream << covarianceOfComponent(c)[d1*dimension+d2] << " ";
-                }
-                outStream << endl;
-            }
-        }
-    }
-    
-    void read(istream& inStream)
-    {
-        EMBasedLearningModel< Phrase<ownData, 1> >::read(inStream);
-        
-        // Get Dimensions
-        skipComments(&inStream);
-        inStream >> dimension;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);;
-        
-        // Get Number of mixture components
-        skipComments(&inStream);
-        inStream >> nbMixtureComponents;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);;
-        
-        reallocParameters();
-        
-        // Get Covariance Offset
-        skipComments(&inStream);
-        inStream >> covarianceOffset;
-        if (!inStream.good())
-            throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);;
-        
-        // Get Mixture coefficients
-        skipComments(&inStream);
-        for (int c=0 ; c<nbMixtureComponents; c++) {
-            inStream >> mixtureCoeffs[c];
-            if (!inStream.good())
-                throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);;
-        }
-        
-        // Get Mean
-        skipComments(&inStream);
-        for (int c=0 ; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++) {
-                inStream >> meanOfComponent(c)[d];
-                if (!inStream.good())
-                    throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);;
-            }
-        }
-        
-        // Get Covariance
-        skipComments(&inStream);
-        for (int c=0 ; c<nbMixtureComponents; c++) {
-            for (int d1=0; d1<dimension; d1++) {
-                for (int d2=0; d2<dimension; d2++) {
-                    inStream >> covarianceOfComponent(c)[d1*dimension+d2];
-                    if (!inStream.good())
-                        throw RTMLException("Error reading file: wrong format", __FILE__, __FUNCTION__, __LINE__);;
-                }
-            }
-        }
-        
-        updateInverseCovariances();
-    }
-    
-#pragma mark -
-#pragma mark Debug
-    /*! @name Debug */
-    void dump()
-    {
-        if (this->trainingSet) {
-            int nbPhrases = this->trainingSet->size();
-            cout << "Number of phrases = " << nbPhrases << endl;
-            for (phrase_iterator it = this->trainingSet->begin() ; it != this->trainingSet->end() ; it++) {
-                cout << "size of phrase " << it->first << " = " << it->second->length() << endl;
-                // cout << "phrase " << it->first << ": data = \n";
-                // it->second->print();
-            }
-            cout << "\n\n";
-        }
-        
-        cout << "Dimension = " << dimension << endl;
-        cout << "number of mixture components = " << nbMixtureComponents << endl;
-        cout << "covariance offset = " << covarianceOffset << endl;
-        cout << "mixture mixtureCoeffs:\n";
-        for (int c=0; c<nbMixtureComponents; c++)
-            cout << mixtureCoeffs[c] << " ";
-        cout << "\n";
-        cout << "means:\n";
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++) {
-                cout << meanOfComponent(c)[d] << " ";
-            }
-            cout << "\n";
-        }
-        cout << "\n";
-        cout << "covariances:\n";
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d1=0; d1<dimension; d1++) {
-                for (int d2=0; d2<dimension; d2++) {
-                    cout << covarianceOfComponent(c)[d1*dimension+d2] << " ";
-                }
-                cout << "\n";
-            }
-            cout << "\n";
-        }
-        cout << "\n";
-    }
-    
-#pragma mark -
-#pragma mark Python
-    /*! @name Python methods */
+#pragma mark > Python
 #ifdef SWIGPYTHON
+    /** @name Python Bindings */
+    /**
+     * @brief Python bindings for play function.
+     */
     double play(int dimension_, double *observation,
                 int nbMixtureComponents_, double *beta_)
     {
@@ -698,138 +170,170 @@ public:
 #endif
     
 #pragma mark -
-#pragma mark Training algorithm
-    /*! @name Training Algorithm */
-    virtual void initTraining()
-    {
-        initParametersToDefault();
-        initMeansWithFirstPhrase();
-        updateInverseCovariances();
-    }
+#pragma mark === Public attributes ===
+    /**
+     * @brief Vector of Gaussian Mixture Components
+     */
+    vector<GaussianDistribution> components;
     
-    virtual void initParametersToDefault()
-    {
-        double norm_coeffs(0.);
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++) {
-                for (int d2=0; d2<dimension; d2++) {
-                    covariance[c*dimension*dimension+d*dimension+d2] = 1.;
-                }
-                covariance[c*dimension*dimension+d*dimension+d] += covarianceOffset;
-            }
-            mixtureCoeffs[c] = 1./float(nbMixtureComponents);
-            norm_coeffs += mixtureCoeffs[c];
-        }
-        for (int c=0; c<nbMixtureComponents; c++) {
-            mixtureCoeffs[c] /= norm_coeffs;
-        }
-    }
+    /**
+     * @brief Mixture Coefficients
+     */
+    vector<float> mixtureCoeffs;
     
-    virtual void finishTraining()
-    {
-        LearningModel< Phrase<ownData, 1> >::finishTraining();
-    }
-    
-    double train_EM_update()
-    {
-        double log_prob(0.);
-        
-        int totalLength(0);
-        for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++)
-            totalLength += it->second->length();
-        
-        vector< vector<double> > p(nbMixtureComponents);
-        vector<double> E(nbMixtureComponents, 0.0);
-        for (int c=0; c<nbMixtureComponents; c++) {
-            p[c].resize(totalLength);
-            E[c] = 0.;
-        }
-        
-        int tbase(0);
-        
-        for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-            int T = it->second->length();
-            for (int t=0; t<T; t++) {
-                double norm_const(0.);
-                for (int c=0; c<nbMixtureComponents; c++)
-                {
-                    p[c][tbase+t] = obsProb(it->second->get_dataPointer(t), c);
-                    
-                    if (p[c][tbase+t] == 0. || isnan(p[c][tbase+t]) || isinf(p[c][tbase+t])) {
-                        p[c][tbase+t] = 1e-100;
-                    }
-                    norm_const += p[c][tbase+t];
-                }
-                for (int c=0; c<nbMixtureComponents; c++) {
-                    p[c][tbase+t] /= norm_const;
-                    E[c] += p[c][tbase+t];
-                }
-                if (norm_const > 1.) cout << "Training Error: covarianceOffset is too small\n";//throw runtime_error("Training Error: covarianceOffset is too small");
-                log_prob += log(norm_const);
-            }
-            tbase += T;
-        }
-        
-        // Estimate Mixture coefficients
-        for (int c=0; c<nbMixtureComponents; c++) {
-            mixtureCoeffs[c] = E[c]/double(totalLength);
-        }
-        
-        // Estimate means
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d=0; d<dimension; d++) {
-                meanOfComponent(c)[d] = 0.;
-                tbase = 0;
-                for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-                    int T = it->second->length();
-                    for (int t=0; t<T; t++) {
-                        meanOfComponent(c)[d] += p[c][tbase+t] * (*it->second)(t, d);
-                    }
-                    tbase += T;
-                }
-                meanOfComponent(c)[d] /= E[c];
-            }
-        }
-        
-        //estimate covariances
-        for (int c=0; c<nbMixtureComponents; c++) {
-            for (int d1=0; d1<dimension; d1++) {
-                for (int d2=0; d2<dimension; d2++) {
-                    covarianceOfComponent(c)[d1*dimension+d2] = 0.;
-                    tbase = 0;
-                    for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
-                        int T = it->second->length();
-                        for (int t=0; t<T; t++) {
-                            covarianceOfComponent(c)[d1*dimension+d2] += p[c][tbase+t]
-                            * ((*it->second)(t, d1) - meanOfComponent(c)[d1])
-                            * ((*it->second)(t, d2) - meanOfComponent(c)[d2]);
-                        }
-                        tbase += T;
-                    }
-                    covarianceOfComponent(c)[d1*dimension+d2] /= E[c];
-                }
-            }
-        }
-        
-        addCovarianceOffset();
-        updateInverseCovariances();
-        
-        return log_prob;
-    }
-    
-#pragma mark -
-#pragma mark Protected attributes
-    /*! @name Protected attributes */
-protected:
-    int dimension;
-    
-    int nbMixtureComponents;
-    float covarianceOffset;
-    
-    vector<float> inverseCovariance;
-    vector<double> covarianceDeterminant;
-    
+    /**
+     * @brief Beta probabilities: estimated likelihoods of each component
+     */
     vector<double> beta;
+    
+protected:
+#pragma mark -
+#pragma mark === Protected Methods ===
+#pragma mark > Utilities
+    /** @name Utilities */
+    /**
+     * @brief Copy between 2 GMMs
+     * @param dst Destination GMM
+     * @param src Source GMM
+     */
+    using EMBasedLearningModel::_copy;
+    virtual void _copy(GMM *dst, GMM const& src);
+    
+    
+    /**
+     @brief Allocate model parameters
+     */
+    void allocate();
+    
+    /**
+     * @brief Observation probability
+     * @param observation observation vector (must be of size 'dimension')
+     * @param mixtureComponent index of the mixture component. if unspecified or negative,
+     * full mixture observation probability is computed
+     * @return likelihood of the observation given the model
+     * @throws out_of_range if the index of the Gaussian Mixture Component is out of bounds
+     * @throws runtime_error if the Covariance Matrix is not invertible
+     */
+    double obsProb(const float *observation, int mixtureComponent=-1);
+    
+    /**
+     * @brief Observation probability on the input modality
+     * @param obs observation vector of the input modality (must be of size 'dimension_input')
+     * @param mixtureComponent index of the mixture component. if unspecified or negative,
+     * full mixture observation probability is computed
+     * @return likelihood of the observation of the input modality given the model
+     * @throws runtime_error if the model is not bimodal
+     * @throws runtime_error if the Covariance Matrix of the input modality is not invertible
+     */
+    double obsProb_input(const float *observation_input, int mixtureComponent=-1);
+    
+    /**
+     * @brief Observation probability for bimodal mode
+     * @param observation_input observation vector of the input modality (must be of size 'dimension_input')
+     * @param observation_output observation vector of the input output (must be of size 'dimension - dimension_input')
+     * @param mixtureComponent index of the mixture component. if unspecified or negative,
+     * full mixture observation probability is computed
+     * @return likelihood of the observation of the input modality given the model
+     * @throws runtime_error if the model is not bimodal
+     * @throws runtime_error if the Covariance Matrix is not invertible
+     */
+    double obsProb_bimodal(const float *observation_input, const float *observation_output, int mixtureComponent=-1);
+    
+#pragma mark > Training
+    /** @name Training */
+    /**
+     * @brief Initialize the means of the Gaussian components with the first phrase of the training set
+     */
+    void initMeansWithFirstPhrase();
+    
+    /**
+     * @brief Set model parameters to zero, except means (sometimes means are not re-estimated in the training algorithm)
+     * @todo Add initMeans as a parameter? >> look in GMM training where it is done.
+     */
+    void setParametersToZero();
+    
+    /**
+     * @brief Update Function of the EM algorithm
+     * @return likelihood of the data given the current parameters (E-step)
+     */
+    double train_EM_update();
+    
+    /**
+     * @brief Initialize model parameters to default values.
+     * @details Mixture coefficients are then equiprobable
+     */
+    virtual void initParametersToDefault();
+    
+    /**
+     * @brief Normalize mixture coefficients
+     */
+    void normalizeMixtureCoeffs();
+    
+    /**
+     * @brief Add offset to the diagonal of the covariance matrices
+     * @details Guarantees convergence through covariance matrix invertibility
+     */
+    void addCovarianceOffset();
+    
+    /**
+     * @brief Update inverse covariances of each Gaussian component
+     * @throws runtime_error if one of the covariance matrices is not invertible
+     */
+    void updateInverseCovariances();
+    
+#pragma mark > Performance
+    /** @name Performance */
+    /**
+     * @brief Compute likelihood and estimate components probabilities
+     * @details If the model is bimodal, the likelihood is computed only on the input modality,
+     * except if 'observation_output' is specified.
+     * Updates the likelihood buffer used to smooth likelihoods.
+     * @param observation observation vector (full size for unimodal, input modality for bimodal)
+     * @param observation_output observation vector of the output modality
+     */
+    double likelihood(const float* observation, const float* observation_output = NULL);
+    
+    /**
+     * @brief Compute Gaussian Mixture Regression
+     * @details Estimates the output modality using covariance-based regression weighted by components' likelihood
+     * @warning the function does not estimates the likelihoods, use 'likelihood' before performing
+     * the regression.
+     * @param observation_input observation vector of the input modality
+     * @param predicted_output observation vector where the predicted observation for the output
+     * modality is stored.
+     */
+    void regression(float *observation_input, vector<float>& predicted_output);
+    
+#pragma mark > Deprecated
+    //    /** @name Deprecated */
+    //    /**
+    //     * @brief Get index of the likeliest component
+    //     * @details this is independent from observation
+    //     * @return index of the likeliest component
+    //     * @todo delete this method? > unused
+    //     */
+    //    int likeliestComponent();
+    //
+    //    /**
+    //     * @brief Compute the likeliest component given an observation.
+    //     * @details The likelihood is computed using observation probabilities and mixture coefficients
+    //     * @param obs observation (must be of size 'dimension')
+    //     * @todo delete this method? > unused
+    //     */
+    //    int likeliestComponent(const float *obs);
+
+#pragma mark -
+#pragma mark === Protected attributes ===
+    /** @name Protected attributes */
+    /**
+     * @brief Number of Gaussian Mixture Components
+     */
+    int nbMixtureComponents_;
+    
+    /**
+     * @brief Offset Added to the diagonal of covariance matrices for convergence
+     */
+    float covarianceOffset_;
 };
 
 
