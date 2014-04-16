@@ -44,12 +44,12 @@ public:
     /**
      * @brief Iterator over models
      */
-    typedef typename  map<Label, HMM>::iterator model_iterator;
+    typedef map<Label, HMM>::iterator model_iterator;
     
     /**
      * @brief Constant Iterator over models
      */
-    typedef typename  map<Label, HMM>::const_iterator const_model_iterator;
+    typedef map<Label, HMM>::const_iterator const_model_iterator;
     
 #pragma mark > Constructor
     /*@{*/
@@ -281,9 +281,8 @@ public:
      * @param observation observation vector. If the model is bimodal, this should be allocated for
      * both modalities, and should contain the observation on the input modality. The predicted
      * output will be appended to the input modality observation
-     * @param modelLikelihoods output: likelihood of each model
      */
-    virtual void play(float *observation, double *modelLikelihoods);
+    virtual void play(vector<float> const& observation);
     
     /**
      * @brief Get the Results of a specific model
@@ -312,59 +311,6 @@ public:
     virtual void from_json(JSONNode root);
     
     /*@}*/
-
-
-#ifdef SWIGPYTHON
-#pragma mark > Python
-    /*@{*/
-    /** @name Python */
-    void play(int dimension_, double *observation,
-              int nbModels_, double *likelihoods,
-              int nbModels__, double *cumulativelikelihoods)
-    {
-        int dimension = this->referenceModel.get_dimension();
-        
-        float *obs = new float[dimension];
-        for (int d=0; d<dimension; d++) {
-            obs[d] = float(observation[d]);
-        }
-        
-        this->play(obs, likelihoods);
-        
-        int m(0);
-        for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
-            cumulativelikelihoods[m++] = it->second.cumulativeloglikelihood;
-        
-        delete[] obs;
-    }
-    
-    /**
-     * @brief set high-level prior probabilities vector
-     * @param nbPrimitives number of models
-     * @param prior high-level probability vector (size nbPrimitives)
-     * @throws invalid_argument if the array has a wrong format (not enough values)
-     * @warning the models are ordered in ascending order by label
-     */
-    void set_prior(int nbPrimitives, double *prior_) {
-        if (nbPrimitives != this->size())
-            throw RTMLException("Prior vector: wrong size");
-        this->set_prior(prior_);
-    }
-    
-    /**
-     * @brief set the high-level  transition matrix
-     * @param nbPrimitivesSquared square of the number of models
-     * @param trans high-level transition matrix
-     * @throws invalid_argument if the array has a wrong format (not enough values)
-     * @warning the models are ordered in ascending order by label
-     */
-    void set_transition(int nbPrimitivesSquared, double *trans_) {
-        if (nbPrimitivesSquared != this->size()*this->size())
-            throw RTMLException("Transition matrix: wrong size");
-        this->set_transition(trans_);
-    }
-    /*@}*/
-#endif
     
 #pragma mark -
 #pragma mark === Public attributes ===
@@ -438,13 +384,13 @@ protected:
      * @brief TODO
      * @todo doc this
      */
-    model_iterator forward_init(const float* observation, double* modelLikelihoods);
+    model_iterator forward_init(const float* observation);
     
     /**
      * @brief TODO
      * @todo doc this
      */
-    model_iterator forward_update(const float* observation, double* modelLikelihoods);
+    model_iterator forward_update(const float* observation);
     
     /**
      * @brief get instantaneous likelihood

@@ -24,6 +24,9 @@ Phrase::Phrase(rtml_flags flags,
   dimension_input_(bimodal_ ? dimension_input : 0)
 {
     data = new float*[bimodal_ ? 2 : 1];
+    data[0] = NULL;
+    if (bimodal_)
+        data[1] = NULL;
 }
 
 Phrase::Phrase(Phrase const& src)
@@ -284,53 +287,61 @@ void Phrase::disconnect()
 }
 
 #pragma mark Record (Own Data)
-void Phrase::record(float *observation)
+void Phrase::record(vector<float> const& observation)
 {
     if (!owns_data_) throw runtime_error("Cannot record in shared data phrase");
-    if (length_input_ != length_output_) throw runtime_error("Cannot record bimodal_ phrase in synchronous mode: modalities have different length");
+    if (bimodal_ && length_input_ != length_output_)
+        throw runtime_error("Cannot record bimodal_ phrase in synchronous mode: modalities have different length");
+    if (observation.size() != dimension_)
+        throw invalid_argument("Observation has wrong dimension");
     
     if (length_ >= max_length_ || max_length_ == 0) {
         reallocate_length();
     }
     
     if (bimodal_) {
-        copy(observation, observation + dimension_input_, data[0]);
-        copy(observation + dimension_input_, observation + dimension_, data[1]);
+        copy(observation.begin(), observation.begin() + dimension_input_, data[0] + length_input_);
+        copy(observation.begin() + dimension_input_, observation.begin() + dimension_, data[1] + length_output_);
         length_input_++;
         length_output_++;
     } else {
-        copy(observation, observation + dimension_, data[0]);
+        copy(observation.begin(), observation.end(), data[0] + length_);
     }
     
     length_++;
     is_empty_ = false;
 }
 
-void Phrase::record_input(float *observation)
+void Phrase::record_input(vector<float> const& observation)
 {
     if (!owns_data_) throw runtime_error("Cannot record in shared data phrase");
     if (!bimodal_) throw runtime_error("this phrase is unimodal, use 'record'");
-    
+    if (observation.size() != dimension_input_)
+        throw invalid_argument("Observation has wrong dimension");
+
     if (length_input_ >= max_length_ || max_length_ == 0) {
         reallocate_length();
     }
     
-    copy(observation, observation + dimension_input_, data[0]);
+    copy(observation.begin(), observation.end(), data[0] + length_input_);
     length_input_++;
     trim();
     is_empty_ = false;
 }
 
-void Phrase::record_output(float *observation)
+void Phrase::record_output(vector<float> const& observation)
 {
     if (!owns_data_) throw runtime_error("Cannot record in shared data phrase");
     if (!bimodal_) throw runtime_error("this phrase is unimodal, use 'record'");
     
+    if (observation.size() != dimension_ - dimension_input_)
+        throw invalid_argument("Observation has wrong dimension");
+
     if (length_output_ >= max_length_ || max_length_ == 0) {
         reallocate_length();
     }
     
-    copy(observation + dimension_ - dimension_input_, observation + dimension_, data[1]);
+    copy(observation.begin(), observation.end(), data[1] + length_output_);
     length_output_++;
     trim();
     is_empty_ = false;

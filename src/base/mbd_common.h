@@ -14,6 +14,9 @@
 
 using namespace std;
 
+const vector<float> NULLVEC_FLOAT;
+const vector<double> NULLVEC_DOUBLE;
+
 typedef unsigned char rtml_flags;
 
 /**
@@ -64,6 +67,19 @@ public:
      */
     virtual void notify(string attribute) = 0;
     
+    /**
+     * @brief Write to JSON Node
+     * @return JSON Node containing phrase information
+     */
+    virtual JSONNode to_json() const = 0;
+    
+    /**
+     * @brief Read from JSON Node
+     * @param root JSON Node containing phrase information
+     * @throws JSONException if the JSON Node has a wrong format
+     */
+    virtual void from_json(JSONNode root) = 0;
+
 #ifdef SWIGPYTHON
     /**
      * @brief write method for python wrapping ('write' keyword forbidden, name has to be different)
@@ -101,7 +117,8 @@ public:
      */
     char *__str__() {
         stringstream ss;
-        write(ss);
+        JSONNode jsonfile = this->to_json();
+        ss << jsonfile.write_formatted();
         string tmp = ss.str();
         char* cstr = strdup(tmp.c_str());
         return cstr;

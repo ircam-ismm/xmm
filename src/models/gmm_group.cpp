@@ -28,7 +28,7 @@ int GMMGroup::get_nbMixtureComponents() const
 void GMMGroup::set_nbMixtureComponents(int nbMixtureComponents_)
 {
     this->referenceModel_.set_nbMixtureComponents(nbMixtureComponents_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_nbMixtureComponents(nbMixtureComponents_);
     }
 }
@@ -41,7 +41,7 @@ float GMMGroup::get_covarianceOffset() const
 void GMMGroup::set_covarianceOffset(float covarianceOffset_)
 {
     this->referenceModel_.set_covarianceOffset(covarianceOffset_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_covarianceOffset(covarianceOffset_);
     }
 }
@@ -64,7 +64,7 @@ double GMMGroup::get_EM_percentChange() const
 void GMMGroup::set_EM_minSteps(int steps)
 {
     this->referenceModel_.set_EM_minSteps(steps);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_EM_minSteps(steps);
     }
 }
@@ -72,7 +72,7 @@ void GMMGroup::set_EM_minSteps(int steps)
 void GMMGroup::set_EM_maxSteps(int steps)
 {
     this->referenceModel_.set_EM_maxSteps(steps);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_EM_maxSteps(steps);
     }
 }
@@ -80,7 +80,7 @@ void GMMGroup::set_EM_maxSteps(int steps)
 void GMMGroup::set_EM_percentChange(double logLikPercentChg_)
 {
     this->referenceModel_.set_EM_percentChange(logLikPercentChg_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_EM_percentChange(logLikPercentChg_);
     }
 }
@@ -93,7 +93,7 @@ unsigned int GMMGroup::get_likelihoodBufferSize() const
 void GMMGroup::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
 {
     this->referenceModel_.set_likelihoodBufferSize(likelihoodBufferSize_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_likelihoodBufferSize(likelihoodBufferSize_);
     }
 }
@@ -102,18 +102,18 @@ void GMMGroup::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
 #pragma mark Playing
 void GMMGroup::initPlaying()
 {
-    for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
         it->second.initPlaying();
     }
 }
 
-void GMMGroup::play(float *observation, double *modelLikelihoods)
+void GMMGroup::play(vector<float> const& observation)
 {
     double norm_const(0.0);
     int i(0);
     model_iterator likeliestModel;
     double currentMaxLikelihood(0.);
-    for (model_iterator it = this->models.begin(); it != this->models.end(); it++) {
+    for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
         modelLikelihoods[i] = it->second.play(observation);
         if (modelLikelihoods[i] > currentMaxLikelihood) {
             currentMaxLikelihood = modelLikelihoods[i];
@@ -133,16 +133,14 @@ void GMMGroup::play(float *observation, double *modelLikelihoods)
         if (this->playMode_ == this->LIKELIEST) {
             copy(likeliestModel->second.results.predicted_output.begin(),
                  likeliestModel->second.results.predicted_output.end(),
-                 observation + dimension_input);
+                 predicted_output.begin());
         } else {
-            for (int d=0; d<dimension_output; d++) {
-                observation[dimension_input + d] = 0.0;
-            }
+            predicted_output.assign(dimension_output, 0.0);
             
             int i(0);
-            for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
                 for (int d=0; d<dimension_output; d++) {
-                    observation[dimension_input+d] += modelLikelihoods[i] * it->second.results.predicted_output[d];
+                    predicted_output[d] += modelLikelihoods[i] * it->second.results.predicted_output[d];
                 }
                 i++;
             }

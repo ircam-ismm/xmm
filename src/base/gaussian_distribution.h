@@ -152,7 +152,7 @@ public:
      * @param predicted_output predicted output vector (size: dimension-dimension_input)
      * @throws runtime_error if the model is not bimodal
      */
-    void regression(const float *observation_input, vector<float>& predicted_output) const;
+    void regression(vector<float> const& observation_input, vector<float>& predicted_output) const;
     
     /*@}*/
 

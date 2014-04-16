@@ -32,25 +32,25 @@ public:
      * @brief Phrase iterator: allows to iterate over the phrases of the training set
      * @details phrases are stored as a map, the iterator is therefore equivalent to: map<int, Phrase*>::iterator
      */
-    typedef typename  map<int, Phrase*>::iterator phrase_iterator;
+    typedef map<int, Phrase*>::iterator phrase_iterator;
 
     /**
      * @brief constant Phrase iterator: allows to iterate over the phrases of the training set
      * @details phrases are stored as a map, the iterator is therefore equivalent to: map<int, Phrase*>::const_iterator
      */
-    typedef typename  map<int, Phrase*>::const_iterator const_phrase_iterator;
+    typedef map<int, Phrase*>::const_iterator const_phrase_iterator;
 
     /**
      * @brief label iterator: allows to iterate over the labels of the training set
      * @details labels are stored as a map, the iterator is therefore equivalent to: map<int, Label>::iterator
      */
-    typedef typename  map<int, Label>::iterator label_iterator;
+    typedef map<int, Label>::iterator label_iterator;
     
     /**
      * @brief constant label iterator: allows to iterate over the labels of the training set
      * @details labels are stored as a map, the iterator is therefore equivalent to: map<int, Label>::const_iterator
      */
-    typedef typename  map<int, Label>::const_iterator const_label_iterator;
+    typedef map<int, Label>::const_iterator const_label_iterator;
     
 #pragma mark > Constructors
     /*@{*/
@@ -228,8 +228,28 @@ public:
      * @throws runtime_errpr if phrase has shared memory (construction with SHARED_MEMORY flag)
      * @todo: Add input/output methods
      */
-    void recordPhrase(int phraseIndex, float *observation);
+    void recordPhrase(int phraseIndex, vector<float> const& observation);
     
+    /**
+     * @brief Record training data on the input modality
+     * @details The method appends an observation on the input modality to the data phrase.
+     * size "dimension_input"
+     * @param observation observation vector (C-like array which must have the size of the total
+     * dimension of the data across all modalities)
+     * @throws runtime_error if data is shared (ownData == false)
+     */
+    void recordPhrase_input(int phraseIndex, vector<float> const& observation);
+    
+    /**
+     * @brief Record training data on the output modality
+     * Appends the observation vector observation to the data array\n
+     * This method is only usable in Own Memory (no SHARED_MEMORY flag)
+     * @param observation observation vector (C-like array which must have the size of the total
+     * dimension of the data across all modalities)
+     * @throws runtime_error if data is shared (construction with SHARED_MEMORY flag)
+     */
+    void recordPhrase_output(int phraseIndex, vector<float> const& observation);
+
     /**
      * @brief reset phrase to default
      * @details The phrase is set to an empty phrase with the current attributes (dimensions, etc).
@@ -341,42 +361,6 @@ public:
     void dump(ostream& outStream);
     
     /*@}*/
-
-#ifdef SWIGPYTHON
-#pragma mark > Python
-    /*@{*/
-    /** @name Python methods */
-    /**
-     * @brief special python "print" method to get information on the object
-     */
-    char *__str__() {
-        stringstream ss;
-        dump(ss);
-        string tmp = ss.str();
-        char* cstr = strdup(tmp.c_str());
-        return cstr;
-    }
-    
-    // TODO: Make class extension in Swig interface file using %extend ?
-    /**
-     * @brief Append data to a phrase from a numpy array
-     * @param dimension_total total dimension of the multimodal observation vector
-     * @param observation multimodal observation vector
-     * @todo Make class extension in Swig interface file using %extend ?
-     */
-    void recordPhrase(int phraseIndex, int dimension_total, double *observation)
-    {
-        float *observation_float = new float[dimension_total];
-        for (int d=0; d<dimension_total; d++) {
-            observation_float[d] = float(observation[d]);
-        }
-        
-        recordPhrase(phraseIndex, observation_float);
-        
-        delete[] observation_float;
-    }
-    /*@}*/
-#endif
     
 #pragma mark -
 #pragma mark === Public Attributes ===

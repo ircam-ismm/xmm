@@ -159,7 +159,7 @@ public:
     {
         if (models.find(label) == models.end())
             throw out_of_range("Class Label Does not exist");
-        return models[label].trained;
+        return models.at(label).trained;
     }
     
     /**
@@ -348,35 +348,8 @@ public:
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             it->second.initPlaying();
         }
+        modelLikelihoods.resize(size());
     }
-
-    /**
-     * @brief Main Performance method for multiple models (pure virtual method)
-     * @param observation observation vector (must be of size 'dimension' or 'dimension_input' 
-     * depending on the mode [unimodal/bimodal])
-     * @param modelLikelihoods array to contain the likelihood of each model
-     */
-    virtual void play(float *observation, double *modelLikelihoods) = 0;
-    
-    /*@}*/
-
-#ifdef SWIGPYTHON
-#pragma mark > Python
-    /*@{*/
-    /** @name Python */
-    void printLabels() {
-        cout << "Order of Labels: ";
-        for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
-            if (it->first.type == Label::INT) {
-                cout << it->first.getInt() << " ";
-            }
-            else {
-                cout << it->first.getSym() << " ";
-            }
-        cout << endl;
-    }
-    /*@}*/
-#endif
     
 #pragma mark -
 #pragma mark === Public attributes ===
@@ -481,6 +454,9 @@ protected:
      * @brief reference model, Used to store shared model attributes
      */
     ModelType referenceModel_;
+
+    vector<float> modelLikelihoods;
+    vector<float> predicted_output;
 };
 
 #endif

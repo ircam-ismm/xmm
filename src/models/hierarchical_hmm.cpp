@@ -403,7 +403,7 @@ void HierarchicalHMM::updateTrainingSet(Label const& label)
 
 #pragma mark -
 #pragma mark Forward Algorithm
-HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* observation, double* modelLikelihoods)
+HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* observation)
 {
     double norm_const(0.0) ;
     
@@ -418,9 +418,9 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
         // Compute Emission probability and initialize on the first state of the primitive
         it->second.alpha_h[0][0] = this->prior[it->first];
         if (bimodal_) {
-            it->second.alpha_h[0][0] *= it->second.obsProb_input(observation, 0);
+            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb_input(observation);
         } else {
-            it->second.alpha_h[0][0] *= it->second.obsProb(observation, 0);
+            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb(observation);
         }
         it->second.results.instant_likelihood = it->second.alpha_h[0][0] ;
         norm_const += it->second.alpha_h[0][0] ;
@@ -460,7 +460,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
     return likeliestModel;
 }
 
-HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* observation, double* modelLikelihoods)
+HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* observation)
 {
     double norm_const(0.0) ;
     
@@ -515,9 +515,9 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* obs
         for (int k=0 ; k<N ; ++k)
         {
             if (bimodal_)
-                tmp = dstit->second.obsProb_input(observation, k) * front[k];
+                tmp = dstit->second.states_[k].obsProb_input(observation) * front[k];
             else
-                tmp = dstit->second.obsProb(observation, k) * front[k];
+                tmp = dstit->second.states_[k].obsProb(observation) * front[k];
             
             dstit->second.alpha_h[2][k] = this->exitTransition[dstit->first] * dstit->second.exitProbabilities_[k] * tmp ;
             dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities_[k] * tmp ;
@@ -609,13 +609,13 @@ void HierarchicalHMM::initPlaying()
     forwardInitialized_ = false;
 }
 
-void HierarchicalHMM::play(float *observation, double *modelLikelihoods)
+void HierarchicalHMM::play(vector<float> const& observation)
 {
     model_iterator likeliestModel;
     if (forwardInitialized_) {
-        likeliestModel = this->forward_update(observation, modelLikelihoods);
+        likeliestModel = this->forward_update(&observation[0]);
     } else {
-        likeliestModel = this->forward_init(observation, modelLikelihoods);
+        likeliestModel = this->forward_init(&observation[0]);
     }
     
     if (bimodal_) {
@@ -630,16 +630,14 @@ void HierarchicalHMM::play(float *observation, double *modelLikelihoods)
         if (this->playMode_ == this->LIKELIEST) {
             copy(likeliestModel->second.results.predicted_output.begin(),
                  likeliestModel->second.results.predicted_output.end(),
-                 observation + dimension_input);
+                 predicted_output.begin());
         } else {
-            for (int d=0; d<dimension_output; d++) {
-                observation[dimension_input + d] = 0.0;
-            }
+            predicted_output.assign(dimension_output, 0.0);
             
             int i(0);
             for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
                 for (int d=0; d<dimension_output; d++) {
-                    observation[dimension_input+d] += modelLikelihoods[i] * it->second.results.predicted_output[d];
+                    predicted_output[d] += modelLikelihoods[i] * it->second.results.predicted_output[d];
                 }
                 i++;
             }

@@ -25,12 +25,12 @@ public:
     /**
      * @brief Iterator over models
      */
-    typedef typename  map<Label, GMM>::iterator model_iterator;
+    typedef map<Label, GMM>::iterator model_iterator;
     
     /**
      * @brief Constant Iterator over models
      */
-    typedef typename  map<Label, GMM>::const_iterator const_model_iterator;
+    typedef map<Label, GMM>::const_iterator const_model_iterator;
     
 #pragma mark > Constructors
     /*@{*/
@@ -143,10 +143,9 @@ public:
     /**
      * @brief Main Play function: performs recognition (unimodal mode) and regression (bimodal mode)
      * @details The predicted output is stored in the observation vector in bimodal mode
-     * @param observation observation (must allocated to size 'dimension')
-     * @param modelLikelihoods output: instantaneous likelihood of each model
+     * @param observation observation vector
      */
-    void play(float *observation, double *modelLikelihoods);
+    void play(vector<float> const& observation);
     
     /*@}*/
 
@@ -167,31 +166,6 @@ public:
     virtual void from_json(JSONNode root);
     
     /*@}*/
-
-#ifdef SWIGPYTHON
-#pragma mark > Python
-    /*@{*/
-    /** @name Python */
-    void play(int dimension_, double *observation,
-              int nbModels_, double *likelihoods,
-              int nbModels__, double *cumulativelikelihoods)
-    {
-        int dimension = this->referenceModel.get_dimension();
-        
-        float *obs_float = new float[dimension];
-        for (int i=0 ; i<dimension ; i++)
-            obs_float[i] = float(observation[i]);
-        
-        play(obs_float, likelihoods);
-        
-        int m(0);
-        for (model_iterator it = this->models.begin(); it != this->models.end() ; it++)
-            cumulativelikelihoods[m++] = it->second.cumulativeloglikelihood;
-        
-        delete[] obs_float;
-    }
-    /*@}*/
-#endif
 };
 
 

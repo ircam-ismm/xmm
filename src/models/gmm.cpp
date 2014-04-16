@@ -84,13 +84,12 @@ void GMM::initPlaying()
         results.predicted_output.resize(dimension_ - dimension_input_);
 }
 
-double GMM::play(float *observation)
+double GMM::play(vector<float> const& observation)
 {
     double instantaneous_likelihood = likelihood(observation);
     if (bimodal_)
     {
         regression(observation, results.predicted_output);
-        copy(results.predicted_output.begin(), results.predicted_output.end(), observation + dimension_input_);
     }
     return instantaneous_likelihood;
 }
@@ -212,7 +211,7 @@ void GMM::allocate()
     components.assign(nbMixtureComponents_, GaussianDistribution(flags_, dimension_, dimension_input_, covarianceOffset_));
 }
 
-double GMM::obsProb(const float *observation, int mixtureComponent)
+double GMM::obsProb(const float* observation, int mixtureComponent)
 {
     double p(0.);
     
@@ -229,7 +228,8 @@ double GMM::obsProb(const float *observation, int mixtureComponent)
     return p;
 }
 
-double GMM::obsProb_input(const float *observation_input, int mixtureComponent)
+double GMM::obsProb_input(const float* observation_input,
+                          int mixtureComponent)
 {
     if (!bimodal_)
         throw runtime_error("Model is not bimodal. Use the function 'obsProb'");
@@ -247,7 +247,9 @@ double GMM::obsProb_input(const float *observation_input, int mixtureComponent)
     return p;
 }
 
-double GMM::obsProb_bimodal(const float *observation_input, const float *observation_output, int mixtureComponent)
+double GMM::obsProb_bimodal(const float* observation_input,
+                            const float* observation_output,
+                            int mixtureComponent)
 {
     if (!bimodal_)
         throw runtime_error("Model is not bimodal. Use the function 'obsProb'");
@@ -437,7 +439,7 @@ void GMM::updateInverseCovariances()
 }
 
 #pragma mark > Performance
-void GMM::regression(float *observation_input, vector<float>& predicted_output)
+void GMM::regression(vector<float> const& observation_input, vector<float>& predicted_output)
 {
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.assign(dimension_output, 0.0);
@@ -452,17 +454,17 @@ void GMM::regression(float *observation_input, vector<float>& predicted_output)
     }
 }
 
-double GMM::likelihood(const float* observation, const float* observation_output)
+double GMM::likelihood(vector<float> const& observation, vector<float> const& observation_output)
 {
     double likelihood(0.);
     for (int c=0; c<nbMixtureComponents_; c++) {
         if (bimodal_) {
-            if (observation_output)
-                beta[c] = obsProb_bimodal(observation, observation_output, c);
+            if (observation_output.empty())
+                beta[c] = obsProb_bimodal(&observation[0], &observation_output[0], c);
             else
-                beta[c] = obsProb_input(observation, c);
+                beta[c] = obsProb_input(&observation[0], c);
         } else {
-            beta[c] = obsProb(observation, c);
+            beta[c] = obsProb(&observation[0], c);
         }
         likelihood += beta[c];
     }
@@ -473,35 +475,3 @@ double GMM::likelihood(const float* observation, const float* observation_output
     this->updateLikelihoodBuffer(likelihood);
     return likelihood;
 }
-
-#pragma mark > Deprecated: likeliestComponent
-/*
-int GMM::likeliestComponent()
-{
-    int component(0);
-    double maxProb = mixtureCoeffs[component] / sqrt(components[component].covarianceDeterminant);
-    for (int c=1 ; c<nbMixtureComponents; c++) {
-        double prob = mixtureCoeffs[c] / sqrt(components[c].covarianceDeterminant);
-        if (prob > maxProb) {
-            component = c;
-            maxProb = prob;
-        }
-    }
-    return component;
-}
-
-int GMM::likeliestComponent(const float *obs)
-{
-    // !! here, the likeliest component is computed with the mixture coeffs => relevant ?
-    int component(0);
-    double maxProb = obsProb(obs, component);
-    for (int c=1 ; c<nbMixtureComponents; c++) {
-        double prob = obsProb(obs, c);
-        if (prob > maxProb) {
-            component = c;
-            maxProb = prob;
-        }
-    }
-    return component;
-}
-*/

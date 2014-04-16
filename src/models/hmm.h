@@ -82,7 +82,7 @@ public:
     /**
      * @brief Iterator over the phrases of the associated training set
      */
-    typedef typename map<int, Phrase* >::iterator phrase_iterator;
+    typedef map<int, Phrase* >::iterator phrase_iterator;
     
 #pragma mark -
 #pragma mark === Public Interface ===
@@ -179,53 +179,6 @@ public:
     
     /*@}*/
 
-#pragma mark > Observation probabilities
-    /*@{*/
-    /** @name Observation probabilities */
-    /**
-     * @brief Gaussian observation probability of a given state
-     * @param observation observation vector
-     * @param stateIndex index of the state
-     * @param mixtureComponent index of the Gaussian mixture component (full mixture observation probability if unspecified)
-     * @return likelihood of the observation for state stateIndex given the model parameters
-     * @throws out_of_range if the index of the state is out of range
-     * @throws out_of_range if the index of the Gaussian Mixture Component is out of bounds
-     * @throws runtime_error if a Covariance Matrix is not invertible
-     */
-    double obsProb(const float *observation, unsigned int stateIndex, int mixtureComponent=-1);
-    
-    /**
-     * @brief Gaussian observation probability of a given state for the input modality
-     * @param observation_input observation vector of the input modality
-     * @param stateIndex index of the state
-     * @param mixtureComponent index of the Gaussian mixture component (full mixture observation probability if unspecified)
-     * @return likelihood of the observation for state stateIndex given the model parameters
-     * @throws runtime_error if the model is not bimodal
-     * @throws out_of_range if the index of the state is out of range
-     * @throws out_of_range if the index of the Gaussian Mixture Component is out of bounds
-     * @throws runtime_error if a Covariance Matrix of the input modality is not invertible
-     */
-    double obsProb_input(const float *observation_input, unsigned int stateIndex, int mixtureComponent=-1);
-    
-    /**
-     * @brief Gaussian observation probability of a given state (bimodal model)
-     * @param observation_input observation vector of the input modality
-     * @param observation_output observation vector of the output modality
-     * @param stateIndex index of the state
-     * @param mixtureComponent index of the Gaussian mixture component (full mixture observation probability if unspecified)
-     * @return likelihood of the observation for state stateIndex given the model parameters
-     * @throws runtime_error if the model is not bimodal
-     * @throws out_of_range if the index of the state is out of range
-     * @throws out_of_range if the index of the Gaussian Mixture Component is out of bounds
-     * @throws runtime_error if a Covariance Matrix of the input modality is not invertible
-     */
-    double obsProb_bimodal(const float *observation_input,
-                           const float *observation_output,
-                           unsigned int stateIndex,
-                           int mixtureComponent=-1);
-    
-    /*@}*/
-
 #pragma mark > Play!
     /*@{*/
     /** @name Playing */
@@ -240,8 +193,8 @@ public:
      * @param observation pointer to current observation vector. Must be of size 'dimension' (input + output dimension).
      * @return likelihood computed on the gesture modality by a forward algorithm
      */
-    double play(float *observation);
-    
+    double play(vector<float> const& observation);
+
     /**
      * @brief Get the results structure
      * @return Results structure
@@ -283,23 +236,6 @@ public:
     void addExitPoint(int stateIndex, float proba);
     
     /*@}*/
-
-#pragma mark > Python
-#ifdef SWIGPYTHON
-    /*@{*/
-    /** @name Python methods */
-    /**
-     * @brief Python Binding for the play function (to use with SWIG)
-     * @param dimension_ dimension of the observation vector (both modalities if BIMODAL)
-     * @param observation observation vector
-     * @param nbStates_ number of hidden states
-     * @param alpha_ used to store state probabilities after forward update
-     * @return lieklihood of the observation vector given the model and past observations.
-     */
-    double play(int dimension_, double *observation,
-                int nbStates_, double *alpha_);
-    /*@}*/
-#endif
     
 #pragma mark -
 #pragma mark === Public Attributes ===
@@ -406,7 +342,7 @@ public:
      * If unspecified, the update is performed on the input modality only.
      * @return instantaneous likelihood
      */
-    double forward_init(const float *observation, const float *observation_output=NULL);
+    double forward_init(const float* observation, const float* observation_output=NULL);
     
     /**
      * @brief Update of the forward algorithm
@@ -416,7 +352,7 @@ public:
      * If unspecified, the update is performed on the input modality only.
      * @return instantaneous likelihood
      */
-    double forward_update(const float *observation, const float *observation_output=NULL);
+    double forward_update(const float* observation, const float* observation_output=NULL);
     
     /**
      @brief Forward update with the estimated output observation
@@ -425,7 +361,7 @@ public:
      * @param observation_output observation on the output modality
      * @return instantaneous likelihood computed with the output observation. 
      */
-    double forward_update_withNewObservation(const float *observation, const float *observation_output);
+    double forward_update_withNewObservation(const float* observation, const float* observation_output);
     
     /**
      * @brief Initialization Backward algorithm
@@ -443,7 +379,7 @@ public:
      * @param observation_output observation on the output modality (only used if the model is bimodal). 
      * If unspecified, the update is performed on the input modality only.
      */
-    void backward_update(double ct, const float *observation, const float *observation_output = NULL);
+    void backward_update(double ct, const float* observation, const float* observation_output=NULL);
     
     /*@}*/
 
@@ -525,7 +461,7 @@ public:
      * @param observation_input observation on the input modality
      * @param predicted_output output predicted by non-linear regression.
      */
-    void regression(float *observation_input, vector<float>& predicted_output);
+    void regression(vector<float> const& observation_input, vector<float>& predicted_output);
     
     /**
      * @brief Updates the normalized time progression in the results.

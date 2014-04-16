@@ -196,7 +196,7 @@ public:
      * depending on the mode [unimodal/bimodal])
      * @return likelihood of the observation
      */
-    virtual double play(float *observation) = 0;
+    virtual double play(vector<float> const& observation) = 0;
     
     /*@}*/
     

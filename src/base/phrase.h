@@ -10,6 +10,7 @@
 #ifndef __rtml__phrase__
 #define __rtml__phrase__
 
+#include <cmath>
 #include "json_utilities.h"
 #include "mbd_common.h"
 
@@ -203,7 +204,8 @@ public:
      * dimension of the data across all modalities)
      * @throws runtime_error if data is shared (construction with SHARED_MEMORY flag)
      */
-    void record(float *observation);
+    void record(vector<float> const& observation);
+    
     /**
      * @brief Record observation on input modality
      * Appends the observation vector observation to the data array\n
@@ -212,7 +214,7 @@ public:
      * dimension of the data across all modalities)
      * @throws runtime_error if data is shared (ownData == false)
      */
-    void record_input(float *observation);
+    void record_input(vector<float> const& observation);
     
     /**
      * @brief Record observation on output modality
@@ -222,7 +224,7 @@ public:
      * dimension of the data across all modalities)
      * @throws runtime_error if data is shared (construction with SHARED_MEMORY flag)
      */
-    void record_output(float *observation);
+    void record_output(vector<float> const& observation);
     
     /**
      * @brief Reset length of the phrase to 0 ==> empty phrase\n
@@ -310,34 +312,6 @@ public:
     vector<float> variance() const;
     
     /*@}*/
-
-#ifdef SWIGPYTHON
-#pragma mark > Python
-    /*@{*/
-    /**@name Python utility */
-    /**
-     * @brief Record observation
-     * @details Appends the observation vector observation to the data array\n
-     * This method is only usable in Own Memory (no SHARED_MEMORY flag)
-     * @param observation observation vector (C-like array which must have the size of the total
-     * dimension of the data across all modalities)
-     * @throws RTMLException if data is shared (construction with SHARED_MEMORY flag)
-     * @todo check if can use float* in swig
-     * @todo maybe can be integrated in swig interface file
-     */
-    void record(int dimension_total, double *observation)
-    {
-        float *observation_float = new float[dimension_total];
-        for (int d=0; d<dimension_total; d++) {
-            observation_float[d] = float(observation[d]);
-        }
-        
-        record(observation_float);
-        
-        delete[] observation_float;
-    }
-    /*@}*/
-#endif
 
 private:
 #pragma mark -

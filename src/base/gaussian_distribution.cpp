@@ -146,7 +146,8 @@ double GaussianDistribution::likelihood_input(const float* observation_input) co
     return p;
 }
 
-double GaussianDistribution::likelihood_bimodal(const float* observation_input, const float* observation_output) const
+double GaussianDistribution::likelihood_bimodal(const float* observation_input,
+                                                const float* observation_output) const
 {
     if (!bimodal_)
         throw runtime_error("'likelihood_bimodal' can't be used when 'useRegression' is off.");
@@ -175,7 +176,7 @@ double GaussianDistribution::likelihood_bimodal(const float* observation_input, 
     return p;
 }
 
-void GaussianDistribution::regression(const float *observation_input, vector<float>& predicted_output) const
+void GaussianDistribution::regression(vector<float> const& observation_input, vector<float>& predicted_output) const
 {
     if (!bimodal_)
         throw runtime_error("'regression' can't be used when 'useRegression' is off.");

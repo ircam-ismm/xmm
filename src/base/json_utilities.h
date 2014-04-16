@@ -10,6 +10,7 @@
 #ifndef mhmm_json_utilities_h
 #define mhmm_json_utilities_h
 
+#include <cassert>
 #include <iostream>
 #include <string>
 #include <exception>

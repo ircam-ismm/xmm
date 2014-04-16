@@ -15,15 +15,20 @@ endif
 
 DOC_DIR=../doc/
 LIB_DIR=../src/models/
-RTML_DIR = ../src/base/
+RTML_DIR=../src/base/
+JSON_XCODE_DIR=../components/libjson/build/xcode
 
 SWIGOPT=#-debug-template
 
 compile: mhmm.i setup.py $(LIB_DIR)*.h $(RTML_DIR)*.h $(RTML_DIR)*.cpp #$(LIB_DIR)*.cpp
+	@echo "\nCompiling JSON Library\n"
+	@(cd $(JSON_XCODE_DIR) && xcodebuild)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild install)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild clean)
 	# @echo "\ngenerating doc\n"
 	# @(cd ../doc/ && $(DOXYGEN))
-	# @echo "\nCompiling Library\n"
 	# python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
+	@echo "\nCompiling MHMM Library\n"
 	$(SWIG) -c++ $(SWIGOPT) -I$(LIB_DIR) -I$(RTML_DIR) -python mhmm.i
 	python setup.py build_ext --inplace
 

@@ -42,7 +42,8 @@ HMM::HMM(rtml_flags flags,
     initTraining();
 }
 
-HMM::HMM(HMM const& src) : EMBasedModel(src)
+HMM::HMM(HMM const& src)
+: EMBasedModel(src)
 {
     _copy(this, src);
 }
@@ -56,7 +57,8 @@ HMM& HMM::operator=(HMM const& src)
     return *this;
 }
 
-void HMM::_copy(HMM *dst, HMM const& src)
+void HMM::_copy(HMM *dst,
+                HMM const& src)
 {
     EMBasedModel::_copy(dst, src);
     dst->nbMixtureComponents_     = src.nbMixtureComponents_;
@@ -389,51 +391,21 @@ void HMM::set_transitionMode(string transMode_str)
 }
 
 #pragma mark -
-#pragma mark Observation probabilities
-
-
-double HMM::obsProb(const float *observation, unsigned int stateIndex, int mixtureComponent)
-{
-    if (stateIndex >= nbStates_)
-        throw out_of_range("State index is out of bounds");
-    return states_[stateIndex].obsProb(observation, mixtureComponent);
-}
-
-
-double HMM::obsProb_input(const float *observation_input, unsigned int stateIndex, int mixtureComponent)
-{
-    if (!bimodal_)
-        throw runtime_error("Model is not bimodal. Use the function 'obsProb'");
-    if (stateIndex >= nbStates_)
-        throw out_of_range("State index is out of bounds");
-    return states_[stateIndex].obsProb_input(observation_input, mixtureComponent);
-}
-
-
-double HMM::obsProb_bimodal(const float *observation_input, const float *observation_output, unsigned int stateIndex, int mixtureComponent)
-{
-    if (!bimodal_)
-        throw runtime_error("Model is not bimodal. Use the function 'obsProb'");
-    if (stateIndex >= nbStates_)
-        throw out_of_range("State index is out of bounds");
-    return states_[stateIndex].obsProb_bimodal(observation_input, observation_output, mixtureComponent);
-}
-
-#pragma mark -
 #pragma mark Forward-Backward algorithm
 
 
-double HMM::forward_init(const float *observation, const float *observation_output)
+double HMM::forward_init(const float* observation,
+                         const float* observation_output)
 {
     double norm_const(0.);
     for (int i=0 ; i<nbStates_ ; i++) {
         if (bimodal_) {
             if (observation_output)
-                alpha[i] = prior_[i] * obsProb_bimodal(observation, observation_output, i);
+                alpha[i] = prior_[i] * states_[i].obsProb_bimodal(observation, observation_output);
             else
-                alpha[i] = prior_[i] * obsProb_input(observation, i);
+                alpha[i] = prior_[i] * states_[i].obsProb_input(observation);
         } else {
-            alpha[i] = prior_[i] * obsProb(observation, i);
+            alpha[i] = prior_[i] * states_[i].obsProb(observation);
         }
         norm_const += alpha[i];
     }
@@ -451,7 +423,8 @@ double HMM::forward_init(const float *observation, const float *observation_outp
 }
 
 
-double HMM::forward_update(const float *observation, const float *observation_output)
+double HMM::forward_update(const float* observation,
+                           const float* observation_output)
 {
     double norm_const(0.);
     previousAlpha_ = alpha;
@@ -462,11 +435,11 @@ double HMM::forward_update(const float *observation, const float *observation_ou
         }
         if (bimodal_) {
             if (observation_output)
-                alpha[j] *= obsProb_bimodal(observation, observation_output, j);
+                alpha[j] *= states_[j].obsProb_bimodal(observation, observation_output);
             else
-                alpha[j] *= obsProb_input(observation, j);
+                alpha[j] *= states_[j].obsProb_input(observation);
         } else {
-            alpha[j] *= obsProb(observation, j);
+            alpha[j] *= states_[j].obsProb(observation);
         }
         norm_const += alpha[j];
     }
@@ -484,7 +457,8 @@ double HMM::forward_update(const float *observation, const float *observation_ou
 }
 
 
-double HMM::forward_update_withNewObservation(const float *observation, const float *observation_output)
+double HMM::forward_update_withNewObservation(const float* observation,
+                                              const float* observation_output)
 {
     if (forwardInitialized_) {
         double norm_const(0.);
@@ -493,7 +467,7 @@ double HMM::forward_update_withNewObservation(const float *observation, const fl
             for (int i=0; i<nbStates_; i++) {
                 alpha[j] += previousAlpha_[i] * transition_[i*nbStates_+j];
             }
-            alpha[j] *= obsProb_bimodal(observation, observation_output, j);
+            alpha[j] *= states_[j].obsProb_bimodal(observation, observation_output);
             norm_const += alpha[j];
         }
         if (norm_const > 0) {
@@ -520,7 +494,9 @@ void HMM::backward_init(double ct)
 }
 
 
-void HMM::backward_update(double ct, const float *observation, const float *observation_output)
+void HMM::backward_update(double ct,
+                          const float* observation,
+                          const float* observation_output)
 {
     previousBeta_ = beta_;
     for (int i=0 ; i<nbStates_; i++) {
@@ -528,11 +504,11 @@ void HMM::backward_update(double ct, const float *observation, const float *obse
         for (int j=0; j<nbStates_; j++) {
             if (bimodal_) {
                 if (observation_output)
-                    beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * obsProb_bimodal(observation, observation_output, j);
+                    beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * states_[j].obsProb_bimodal(observation, observation_output);
                 else
-                    beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * obsProb_input(observation, j);
+                    beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * states_[j].obsProb_input(observation);
             } else {
-                beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * obsProb(observation, j);
+                beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * states_[j].obsProb(observation);
             }
             
         }
@@ -716,14 +692,12 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
             norm_const = 0.;
             for (int c=0; c<nbMixtureComponents_; c++) {
                 if (bimodal_) {
-                    oo = obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
-                                         currentPhrase->get_dataPointer_output(t),
-                                         i,
-                                         c);
+                    oo = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
+                                                   currentPhrase->get_dataPointer_output(t),
+                                                   c);
                 } else {
-                    oo = obsProb(currentPhrase->get_dataPointer(t),
-                                 i,
-                                 c);
+                    oo = states_[i].obsProb(currentPhrase->get_dataPointer(t),
+                                           c);
                 }
                 gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] = gammaSequence_[phraseIndex][t*nbStates_+i] * oo;
                 norm_const += oo;
@@ -742,11 +716,10 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
                 * transition_[i*nbStates_+j]
                 * beta_seq_[(t+1)*nbStates_+j];
                 if (bimodal_) {
-                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= obsProb_bimodal(currentPhrase->get_dataPointer_input(t+1),
-                                                                                                      currentPhrase->get_dataPointer_output(t+1),
-                                                                                                      j);
+                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= states_[j].obsProb_bimodal(currentPhrase->get_dataPointer_input(t+1),
+                                                                                                      currentPhrase->get_dataPointer_output(t+1));
                 } else {
-                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= obsProb(currentPhrase->get_dataPointer(t+1), j);
+                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= states_[j].obsProb(currentPhrase->get_dataPointer(t+1));
                 }
             }
         }
@@ -970,22 +943,21 @@ void HMM::addCyclicTransition(double proba)
 }
 
 
-double HMM::play(float *observation)
+double HMM::play(vector<float> const& observation)
 {
     double ct;
     
     if (forwardInitialized_) {
-        ct = forward_update(observation);
+        ct = forward_update(&observation[0]);
     } else {
         this->likelihoodBuffer_.clear();
-        ct = forward_init(observation);
+        ct = forward_init(&observation[0]);
     }
     
     forwardInitialized_ = true;
 
     if (bimodal_) {
         regression(observation, results.predicted_output);
-        copy(results.predicted_output.begin(), results.predicted_output.end(), observation + dimension_input_);
 
         // Em-like estimation of the output sequence: deprecated now but need to be tested.
         // ========================================================================================
@@ -998,10 +970,6 @@ double HMM::play(float *observation)
         //     regression(observation);
         //     ++n;
         // } while (!play_EM_stop(n, obs_prob, old_obs_prob));
-        
-        copy(observation + dimension_input_,
-             observation + dimension_,
-             results.predicted_output.begin());
     }
     
     this->updateLikelihoodBuffer(1./ct);
@@ -1011,7 +979,8 @@ double HMM::play(float *observation)
     return results.instant_likelihood;
 }
 
-void HMM::regression(float *observation_input, vector<float>& predicted_output)
+void HMM::regression(vector<float> const& observation_input,
+                     vector<float>& predicted_output)
 {
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.assign(dimension_output, 0.0);

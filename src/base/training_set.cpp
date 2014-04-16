@@ -240,13 +240,33 @@ void TrainingSet::connect(int phraseIndex,
 
 #pragma mark -
 #pragma mark Record training Data
-void TrainingSet::recordPhrase(int phraseIndex, float *observation)
+void TrainingSet::recordPhrase(int phraseIndex, vector<float> const& observation)
 {
     if (this->phrases.find(phraseIndex) == this->phrases.end()) {
         resetPhrase(phraseIndex);
         setPhraseLabelToDefault(phraseIndex);
     }
     phrases[phraseIndex]->record(observation);
+    has_changed_ = true;
+}
+
+void TrainingSet::recordPhrase_input(int phraseIndex, vector<float> const& observation)
+{
+    if (this->phrases.find(phraseIndex) == this->phrases.end()) {
+        resetPhrase(phraseIndex);
+        setPhraseLabelToDefault(phraseIndex);
+    }
+    phrases[phraseIndex]->record_input(observation);
+    has_changed_ = true;
+}
+
+void TrainingSet::recordPhrase_output(int phraseIndex, vector<float> const& observation)
+{
+    if (this->phrases.find(phraseIndex) == this->phrases.end()) {
+        resetPhrase(phraseIndex);
+        setPhraseLabelToDefault(phraseIndex);
+    }
+    phrases[phraseIndex]->record_output(observation);
     has_changed_ = true;
 }
 

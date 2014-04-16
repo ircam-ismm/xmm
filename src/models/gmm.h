@@ -29,11 +29,12 @@ const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
 class GMM : public EMBasedModel {
 public:
     friend class HMM;
+    friend class HierarchicalHMM;
     
     /**
      * @brief Iterator over the phrases of the training set.
      */
-    typedef typename map<int, Phrase* >::iterator phrase_iterator;
+    typedef map<int, Phrase* >::iterator phrase_iterator;
     
     /**
      * @brief Iterator over Gaussian Mixture Components
@@ -123,7 +124,7 @@ public:
      * @param observation observation (must allocated to size 'dimension')
      * @return instantaneous likelihood
      */
-    double play(float *observation);
+    double play(vector<float> const& observation);
 
     /*@}*/
     
@@ -162,34 +163,6 @@ public:
     virtual void from_json(JSONNode root);
     
     /*@}*/
-
-
-#ifdef SWIGPYTHON
-#pragma mark > Python
-    /*@{*/
-    /** @name Python Bindings */
-    /**
-     * @brief Python bindings for play function.
-     */
-    double play(int dimension_, double *observation,
-                int nbMixtureComponents_, double *beta_)
-    {
-        float *obs_float = new float[dimension_];
-        for (int i=0 ; i < dimension_ ; i++)
-            obs_float[i] = float(observation[i]);
-        
-        double likelihood = play(obs_float);
-        
-        for (int i=0; i<nbMixtureComponents_; i++) {
-            beta_[i] = beta[i];
-        }
-        
-        delete[] obs_float;
-        
-        return likelihood;
-    }
-    /*@}*/
-#endif
     
 #pragma mark -
 #pragma mark === Public attributes ===
@@ -240,7 +213,7 @@ protected:
      * @throws out_of_range if the index of the Gaussian Mixture Component is out of bounds
      * @throws runtime_error if the Covariance Matrix is not invertible
      */
-    double obsProb(const float *observation, int mixtureComponent=-1);
+    double obsProb(const float* observation, int mixtureComponent=-1);
     
     /**
      * @brief Observation probability on the input modality
@@ -251,7 +224,7 @@ protected:
      * @throws runtime_error if the model is not bimodal
      * @throws runtime_error if the Covariance Matrix of the input modality is not invertible
      */
-    double obsProb_input(const float *observation_input, int mixtureComponent=-1);
+    double obsProb_input(const float*_input, int mixtureComponent=-1);
     
     /**
      * @brief Observation probability for bimodal mode
@@ -263,7 +236,7 @@ protected:
      * @throws runtime_error if the model is not bimodal
      * @throws runtime_error if the Covariance Matrix is not invertible
      */
-    double obsProb_bimodal(const float *observation_input, const float *observation_output, int mixtureComponent=-1);
+    double obsProb_bimodal(const float*_input, const float*_output, int mixtureComponent=-1);
     
     /*@}*/
 
@@ -323,7 +296,7 @@ protected:
      * @param observation observation vector (full size for unimodal, input modality for bimodal)
      * @param observation_output observation vector of the output modality
      */
-    double likelihood(const float* observation, const float* observation_output = NULL);
+    double likelihood(vector<float> const& observation, vector<float> const& observation_output = NULLVEC_FLOAT);
     
     /**
      * @brief Compute Gaussian Mixture Regression
@@ -334,7 +307,7 @@ protected:
      * @param predicted_output observation vector where the predicted observation for the output
      * modality is stored.
      */
-    void regression(float *observation_input, vector<float>& predicted_output);
+    void regression(vector<float> const& observation_input, vector<float>& predicted_output);
     
     /*@}*/
 
