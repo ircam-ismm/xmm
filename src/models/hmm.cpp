@@ -18,9 +18,9 @@ HMM::HMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbStates,
          int nbMixtureComponents)
-: EMBasedModel(flags, trainingSet)
+: ProbabilisticModel(flags, trainingSet)
 {
-    is_hierarchical_ = !(flags & HIERARCHICAL);
+    is_hierarchical_ = (flags & HIERARCHICAL);
     
     nbStates_ = nbStates;
     nbMixtureComponents_ = nbMixtureComponents;
@@ -39,11 +39,10 @@ HMM::HMM(rtml_flags flags,
     transitionMode_ = LEFT_RIGHT;
     estimateMeans_ = HMM_DEFAULT_ESTIMATEMEANS;
     
-    initTraining();
+    train_EM_init();
 }
 
 HMM::HMM(HMM const& src)
-: EMBasedModel(src)
 {
     _copy(this, src);
 }
@@ -60,9 +59,10 @@ HMM& HMM::operator=(HMM const& src)
 void HMM::_copy(HMM *dst,
                 HMM const& src)
 {
-    EMBasedModel::_copy(dst, src);
-    dst->nbMixtureComponents_     = src.nbMixtureComponents_;
-    dst->covarianceOffset_        = src.covarianceOffset_;
+    ProbabilisticModel::_copy(dst, src);
+    dst->is_hierarchical_ = src.is_hierarchical_;
+    dst->nbMixtureComponents_ = src.nbMixtureComponents_;
+    dst->covarianceOffset_ = src.covarianceOffset_;
     dst->nbStates_ = src.nbStates_;
     dst->estimateMeans_ = src.estimateMeans_;
     
@@ -523,7 +523,7 @@ void HMM::backward_update(double ct,
 #pragma mark Training algorithm
 
 
-void HMM::initTraining()
+void HMM::train_EM_init()
 {
     // Initialize Model Parameters
     // ---------------------------------------
@@ -533,7 +533,7 @@ void HMM::initTraining()
         setLeftRight();
     }
     for (int i=0; i<nbStates_; i++) {
-        states_[i].initTraining();
+        states_[i].train_EM_init();
     }
     
     if (!this->trainingSet) return;
@@ -579,20 +579,14 @@ void HMM::initTraining()
 }
 
 
-void HMM::finishTraining()
+void HMM::train_EM_terminate()
 {
     normalizeTransitions();
-    BaseModel::finishTraining();
+    ProbabilisticModel::train_EM_terminate();
 }
 
 
 double HMM::train_EM_update()
-{
-    return baumWelch_update();
-}
-
-
-double HMM::baumWelch_update()
 {
     double log_prob(0.);
     
@@ -916,12 +910,12 @@ void HMM::baumWelch_estimateTransitions()
 }
 
 #pragma mark -
-#pragma mark Play!
+#pragma mark Performance
 
 
-void HMM::initPlaying()
+void HMM::performance_init()
 {
-    EMBasedModel::initPlaying();
+    ProbabilisticModel::performance_init();
     forwardInitialized_ = false;
     if (is_hierarchical_) {
         for (int i=0 ; i<3 ; i++)
@@ -932,7 +926,7 @@ void HMM::initPlaying()
         previousBeta_.clear();
     }
     if (bimodal_)
-        results.predicted_output.resize(dimension_ - dimension_input_);
+        results_predicted_output.resize(dimension_ - dimension_input_);
 }
 
 
@@ -943,7 +937,7 @@ void HMM::addCyclicTransition(double proba)
 }
 
 
-double HMM::play(vector<float> const& observation)
+double HMM::performance_update(vector<float> const& observation)
 {
     double ct;
     
@@ -957,7 +951,7 @@ double HMM::play(vector<float> const& observation)
     forwardInitialized_ = true;
 
     if (bimodal_) {
-        regression(observation, results.predicted_output);
+        regression(observation, results_predicted_output);
 
         // Em-like estimation of the output sequence: deprecated now but need to be tested.
         // ========================================================================================
@@ -976,7 +970,7 @@ double HMM::play(vector<float> const& observation)
     // TODO: Put this in forward algorithm
     updateTimeProgression();
     
-    return results.instant_likelihood;
+    return results_instant_likelihood;
 }
 
 void HMM::regression(vector<float> const& observation_input,
@@ -1001,20 +995,14 @@ void HMM::regression(vector<float> const& observation_input,
 
 void HMM::updateTimeProgression()
 {
-    results_hmm.progress = 0.0;
+    results_progress = 0.0;
     for (unsigned int i=0 ; i<nbStates_; i++) {
         if (is_hierarchical_)
-            results_hmm.progress += alpha_h[0][i] * static_cast<double>(i);
+            results_progress += alpha_h[0][i] * static_cast<double>(i);
         else
-            results_hmm.progress += alpha[i] * static_cast<double>(i);
+            results_progress += alpha[i] * static_cast<double>(i);
     }
-    results_hmm.progress /= static_cast<double>(nbStates_-1);
-}
-
-
-HMM::Results HMM::getResults() const
-{
-    return results_hmm;
+    results_progress /= static_cast<double>(nbStates_-1);
 }
 
 #pragma mark -
@@ -1027,8 +1015,8 @@ JSONNode HMM::to_json() const
     json_hmm.set_name("HMM");
     
     // Write Parent: EM Learning Model
-    JSONNode json_emmodel = EMBasedModel::to_json();
-    json_emmodel.set_name("EMBasedModel");
+    JSONNode json_emmodel = ProbabilisticModel::to_json();
+    json_emmodel.set_name("ProbabilisticModel");
     json_hmm.push_back(json_emmodel);
     
     // Scalar Attributes
@@ -1065,11 +1053,11 @@ void HMM::from_json(JSONNode root)
         assert(root.type() == JSON_NODE);
         JSONNode::iterator root_it = root.begin();
         
-        // Get Parent: EMBasedModel
+        // Get Parent: ProbabilisticModel
         assert(root_it != root.end());
-        assert(root_it->name() == "EMBasedModel");
+        assert(root_it->name() == "ProbabilisticModel");
         assert(root_it->type() == JSON_NODE);
-        EMBasedModel::from_json(*root_it);
+        ProbabilisticModel::from_json(*root_it);
         ++root_it;
         
         // Get If Hierarchical

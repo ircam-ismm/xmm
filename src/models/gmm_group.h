@@ -136,16 +136,11 @@ public:
     /*@{*/
     /** @name Performance */
     /**
-     * @brief Initialize playing mode
-     */
-    void initPlaying();
-    
-    /**
      * @brief Main Play function: performs recognition (unimodal mode) and regression (bimodal mode)
      * @details The predicted output is stored in the observation vector in bimodal mode
      * @param observation observation vector
      */
-    void play(vector<float> const& observation);
+    void performance_update(vector<float> const& observation);
     
     /*@}*/
 

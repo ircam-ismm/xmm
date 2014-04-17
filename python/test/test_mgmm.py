@@ -1,6 +1,19 @@
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+test_mgmm.py
+
+Test File for Gaussian Mixture Regression
+
+Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
+author: Jules Francoise <jules.francoise@ircam.fr>
+"""
+
 import numpy as np
-from mhmm import *
 import matplotlib.pyplot as plt
+from mpltools import style
+style.use('ggplot')
+from ../built-lib/mhmm import *
 
 gdim = 1
 sdim = 1
@@ -12,7 +25,7 @@ ref = np.transpose(np.vstack((np.linspace(0,np.pi,T_ref), np.sin(np.linspace(0,n
 test = np.linspace(0, np.pi,T_ref)
 test.shape = (T_ref, 1)
 
-trainingSet = mTrainingSet()
+trainingSet = TrainingSet(BIMODAL)
 
 model = MGMM(trainingSet)
 trainingSet.setParent(model)

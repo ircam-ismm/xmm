@@ -9,6 +9,12 @@
 #ifndef mhmm_ringbuffer_h
 #define mhmm_ringbuffer_h
 
+#include <vector>
+#include <exception>
+#include <stdexcept>
+
+using namespace std;
+
 /**
  * @ingroup Utility
  * @class RingBuffer

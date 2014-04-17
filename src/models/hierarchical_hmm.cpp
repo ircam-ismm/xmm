@@ -13,7 +13,7 @@
 #pragma mark Constructors
 HierarchicalHMM::HierarchicalHMM(rtml_flags flags,
                                  TrainingSet *_globalTrainingSet)
-: ModelGroup< HMM >(flags, _globalTrainingSet)
+: ModelGroup< HMM >(flags|HIERARCHICAL, _globalTrainingSet)
 {
     incrementalLearning_ = HHMM_DEFAULT_INCREMENTALLEARNING;
     forwardInitialized_ = false;
@@ -179,18 +179,18 @@ void HierarchicalHMM::set_learningMode(string learningMode)
 }
 
 
-double* HierarchicalHMM::get_prior() const
+void HierarchicalHMM::get_prior(vector<double>& prior) const
 {
-    double *prior_ = new double[this->size()];
+    prior.resize(this->size());
     int l(0);
     for (const_model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
-        prior_[l++] = this->prior.at(it->first);
+        prior[l++] = this->prior.at(it->first);
     }
-    return prior_;
 }
 
 
-void HierarchicalHMM::set_prior(double *prior){
+void HierarchicalHMM::set_prior(vector<double> const& prior)
+{
     try {
         int l(0);
         for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it) {
@@ -203,22 +203,21 @@ void HierarchicalHMM::set_prior(double *prior){
 }
 
 
-double* HierarchicalHMM::get_transition() const
+void HierarchicalHMM::get_transition(vector<double>& trans) const
 {
     unsigned int nbPrimitives = this->size();
-    double *trans_ = new double[nbPrimitives*nbPrimitives];
+    trans.resize(nbPrimitives*nbPrimitives);
     int l(0);
     
     for (const_model_iterator srcit = this->models.begin(); srcit != this->models.end(); ++srcit) {
         for (const_model_iterator dstit = this->models.begin(); dstit != this->models.end(); ++dstit) {
-            trans_[l++] = this->transition.at(srcit->first).at(dstit->first);
+            trans[l++] = this->transition.at(srcit->first).at(dstit->first);
         }
-    }
-    return trans_;
+    };
 }
 
 
-void HierarchicalHMM::set_transition(double *trans) {
+void HierarchicalHMM::set_transition(vector<double> const& trans) {
     try {
         int l(0);
         for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); ++srcit) {
@@ -233,20 +232,19 @@ void HierarchicalHMM::set_transition(double *trans) {
 }
 
 
-double* HierarchicalHMM::get_exitTransition() const
+void HierarchicalHMM::get_exitTransition(vector<double>& exittrans) const
 {
-    double *exittrans_ = new double[this->size()];
+    exittrans.resize(this->size());
     int l(0);
     
     for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
     {
-        exittrans_[l++] = this->exitTransition.at(it->first);
+        exittrans[l++] = this->exitTransition.at(it->first);
     }
-    return exittrans_;
 }
 
 
-void HierarchicalHMM::set_exitTransition(double *exittrans)
+void HierarchicalHMM::set_exitTransition(vector<double> const& exittrans)
 {
     try {
         int l(0);
@@ -422,7 +420,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
         } else {
             it->second.alpha_h[0][0] *= it->second.states_[0].obsProb(observation);
         }
-        it->second.results.instant_likelihood = it->second.alpha_h[0][0] ;
+        it->second.results_instant_likelihood = it->second.alpha_h[0][0] ;
         norm_const += it->second.alpha_h[0][0] ;
     }
     
@@ -440,20 +438,20 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
     
     norm_const = 0.0;
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        if (it->second.results.instant_likelihood > maxLikelihood) {
+        if (it->second.results_instant_likelihood > maxLikelihood) {
             likeliestModel = it;
-            maxLikelihood = it->second.results.instant_likelihood;
+            maxLikelihood = it->second.results_instant_likelihood;
         }
         
-        it->second.updateLikelihoodBuffer(it->second.results.instant_likelihood);
-        norm_const += it->second.results.instant_likelihood;
-        modelLikelihoods[l++] = it->second.results.instant_likelihood;
+        it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
+        norm_const += it->second.results_instant_likelihood;
+        results_instant_likelihoods[l++] = it->second.results_instant_likelihood;
     }
     
     l = 0;
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.results_hmm.likelihoodnorm = it->second.results.instant_likelihood / norm_const;
-        modelLikelihoods[l++] = it->second.results_hmm.likelihoodnorm;
+        it->second.results_likelihoodnorm = it->second.results_instant_likelihood / norm_const;
+        results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
     }
     
     forwardInitialized_ = true;
@@ -508,8 +506,8 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* obs
         // 2) UPDATE FORWARD VARIABLE
         //    --------------------------------------
         
-        dstit->second.results_hmm.exitLikelihood = 0.0;
-        dstit->second.results.instant_likelihood = 0.0;
+        dstit->second.results_exitLikelihood = 0.0;
+        dstit->second.results_instant_likelihood = 0.0;
         
         // end of the primitive: handle exit states
         for (int k=0 ; k<N ; ++k)
@@ -523,8 +521,8 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* obs
             dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities_[k] * tmp ;
             dstit->second.alpha_h[0][k] = (1 - dstit->second.exitProbabilities_[k]) * tmp;
             
-            dstit->second.results_hmm.exitLikelihood += dstit->second.alpha_h[1][k];
-            dstit->second.results.instant_likelihood += dstit->second.alpha_h[0][k] + dstit->second.alpha_h[2][k] + dstit->second.results_hmm.exitLikelihood;
+            dstit->second.results_exitLikelihood += dstit->second.alpha_h[1][k];
+            dstit->second.results_instant_likelihood += dstit->second.alpha_h[0][k] + dstit->second.alpha_h[2][k] + dstit->second.results_exitLikelihood;
             
             norm_const += tmp;
         }
@@ -546,20 +544,20 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* obs
     
     norm_const = 0.0;
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        if (it->second.results.instant_likelihood > maxLikelihood) {
+        if (it->second.results_instant_likelihood > maxLikelihood) {
             likeliestModel = it;
-            maxLikelihood = it->second.results.instant_likelihood;
+            maxLikelihood = it->second.results_instant_likelihood;
         }
         
-        it->second.updateLikelihoodBuffer(it->second.results.instant_likelihood);
-        norm_const += it->second.results.instant_likelihood;
-        modelLikelihoods[l++] = it->second.results.instant_likelihood;
+        it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
+        norm_const += it->second.results_instant_likelihood;
+        results_instant_likelihoods[l++] = it->second.results_instant_likelihood;
     }
     
     l = 0;
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.results_hmm.likelihoodnorm = it->second.results.instant_likelihood / norm_const;
-        modelLikelihoods[l++] = it->second.results_hmm.likelihoodnorm;
+        it->second.results_likelihoodnorm = it->second.results_instant_likelihood / norm_const;
+        results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
     }
     
     return likeliestModel;
@@ -601,15 +599,15 @@ void HierarchicalHMM::remove(Label const& label)
 
 #pragma mark -
 #pragma mark Playing
-void HierarchicalHMM::initPlaying()
+void HierarchicalHMM::performance_init()
 {
-    ModelGroup<HMM>::initPlaying();
+    ModelGroup<HMM>::performance_init();
     V1_.resize(this->size()) ;
     V2_.resize(this->size()) ;
     forwardInitialized_ = false;
 }
 
-void HierarchicalHMM::play(vector<float> const& observation)
+void HierarchicalHMM::performance_update(vector<float> const& observation)
 {
     model_iterator likeliestModel;
     if (forwardInitialized_) {
@@ -624,20 +622,20 @@ void HierarchicalHMM::play(vector<float> const& observation)
         unsigned int dimension_output = dimension - dimension_input;
         
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-            it->second.regression(observation, it->second.results.predicted_output);
+            it->second.regression(observation, it->second.results_predicted_output);
         }
         
-        if (this->playMode_ == this->LIKELIEST) {
-            copy(likeliestModel->second.results.predicted_output.begin(),
-                 likeliestModel->second.results.predicted_output.end(),
-                 predicted_output.begin());
+        if (this->performanceMode_ == this->LIKELIEST) {
+            copy(likeliestModel->second.results_predicted_output.begin(),
+                 likeliestModel->second.results_predicted_output.end(),
+                 results_predicted_output.begin());
         } else {
-            predicted_output.assign(dimension_output, 0.0);
+            results_predicted_output.assign(dimension_output, 0.0);
             
             int i(0);
             for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
                 for (int d=0; d<dimension_output; d++) {
-                    predicted_output[d] += modelLikelihoods[i] * it->second.results.predicted_output[d];
+                    results_predicted_output[d] += results_instant_likelihoods[i] * it->second.results_predicted_output[d];
                 }
                 i++;
             }
@@ -649,13 +647,6 @@ void HierarchicalHMM::play(vector<float> const& observation)
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.updateTimeProgression();
     }
-}
-
-HMM::Results HierarchicalHMM::getResults(Label const& label) const
-{
-    if (this->models.find(label) == this->models.end())
-        throw out_of_range("Class Label Does not exist");
-    return this->models.at(label).results_hmm;
 }
 
 #pragma mark -
@@ -675,12 +666,12 @@ JSONNode HierarchicalHMM::to_json() const
     json_stopcriterion.push_back(JSONNode("percentchg", get_EM_percentChange()));
     json_hhmm.push_back(json_stopcriterion);
     json_hhmm.push_back(JSONNode("likelihoodwindow", get_likelihoodBufferSize()));
-    json_hhmm.push_back(JSONNode("estimateMeans", get_estimateMeans()));
+    json_hhmm.push_back(JSONNode("estimatemeans", get_estimateMeans()));
     json_hhmm.push_back(JSONNode("size", models.size()));
-    json_hhmm.push_back(JSONNode("playmode", int(playMode_)));
-    json_hhmm.push_back(JSONNode("nbStates", get_nbStates()));
-    json_hhmm.push_back(JSONNode("nbMixtureComponents", get_nbMixtureComponents()));
-    json_hhmm.push_back(JSONNode("covarianceOffset", get_covarianceOffset()));
+    json_hhmm.push_back(JSONNode("performancemode", int(performanceMode_)));
+    json_hhmm.push_back(JSONNode("nbstates", get_nbStates()));
+    json_hhmm.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
+    json_hhmm.push_back(JSONNode("covarianceoffset", get_covarianceOffset()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -695,7 +686,7 @@ JSONNode HierarchicalHMM::to_json() const
     json_hhmm.push_back(json_models);
     
     // High Level transition parameters
-    json_hhmm.push_back(JSONNode("incrementalLearning", incrementalLearning_));
+    json_hhmm.push_back(JSONNode("incrementallearning", incrementalLearning_));
     // Prior
     JSONNode json_prior(JSON_ARRAY);
     json_prior.set_name("prior");
@@ -790,7 +781,7 @@ void HierarchicalHMM::from_json(JSONNode root)
 
         // Get likelihood window size
         assert(root_it != root.end());
-        assert(root_it->name() == "estimateMeans");
+        assert(root_it->name() == "estimatemeans");
         assert(root_it->type() == JSON_BOOL);
         this->set_estimateMeans(root_it->as_bool());
         root_it++;
@@ -804,28 +795,28 @@ void HierarchicalHMM::from_json(JSONNode root)
         
         // Get Play Mode
         assert(root_it != root.end());
-        assert(root_it->name() == "playmode");
+        assert(root_it->name() == "performancemode");
         assert(root_it->type() == JSON_NUMBER);
-        playMode_ = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
+        performanceMode_ = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
         ++root_it;
         
         // Get Number of States
         assert(root_it != root.end());
-        assert(root_it->name() == "nbStates");
+        assert(root_it->name() == "nbstates");
         assert(root_it->type() == JSON_NUMBER);
         set_nbStates(root_it->as_int());
         ++root_it;
 
         // Get Number of Mixture Components
         assert(root_it != root.end());
-        assert(root_it->name() == "nbMixtureComponents");
+        assert(root_it->name() == "nbmixturecomponents");
         assert(root_it->type() == JSON_NUMBER);
         set_nbMixtureComponents(root_it->as_int());
         ++root_it;
         
         // Get Covariance Offset
         assert(root_it != root.end());
-        assert(root_it->name() == "covarianceOffset");
+        assert(root_it->name() == "covarianceoffset");
         assert(root_it->type() == JSON_NUMBER);
         set_covarianceOffset(root_it->as_float());
         ++root_it;
@@ -858,7 +849,7 @@ void HierarchicalHMM::from_json(JSONNode root)
         
         // Get Learning Mode
         assert(root_it != root.end());
-        assert(root_it->name() == "incrementalLearning");
+        assert(root_it->name() == "incrementallearning");
         assert(root_it->type() == JSON_BOOL);
         incrementalLearning_ = root_it->as_bool();
         ++root_it;

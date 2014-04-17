@@ -14,18 +14,18 @@ GMM::GMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbMixtureComponents,
          float covarianceOffset)
-: EMBasedModel(flags, trainingSet)
+: ProbabilisticModel(flags, trainingSet)
 {
     nbMixtureComponents_  = nbMixtureComponents;
     covarianceOffset_     = covarianceOffset;
     
     set_trainingSet(trainingSet);
     
-    initTraining();
+    train_EM_init();
 }
 
 
-GMM::GMM(GMM const& src) : EMBasedModel(src)
+GMM::GMM(GMM const& src) : ProbabilisticModel(src)
 {
     _copy(this, src);
 }
@@ -78,33 +78,28 @@ void GMM::set_covarianceOffset(float covarianceOffset)
 }
 
 #pragma mark > Performance
-void GMM::initPlaying()
+void GMM::performance_init()
 {
     if (bimodal_)
-        results.predicted_output.resize(dimension_ - dimension_input_);
+        results_predicted_output.resize(dimension_ - dimension_input_);
 }
 
-double GMM::play(vector<float> const& observation)
+double GMM::performance_update(vector<float> const& observation)
 {
     double instantaneous_likelihood = likelihood(observation);
     if (bimodal_)
     {
-        regression(observation, results.predicted_output);
+        regression(observation, results_predicted_output);
     }
     return instantaneous_likelihood;
 }
 
 #pragma mark > Training
-void GMM::initTraining()
+void GMM::train_EM_init()
 {
     initParametersToDefault();
     initMeansWithFirstPhrase();
     updateInverseCovariances();
-}
-
-void GMM::finishTraining()
-{
-    BaseModel::finishTraining();
 }
 
 #pragma mark > JSON I/O
@@ -114,8 +109,8 @@ JSONNode GMM::to_json() const
     json_gmm.set_name("GMM");
     
     // Write Parent: EM Learning Model
-    JSONNode json_emmodel = EMBasedModel::to_json();
-    json_emmodel.set_name("EMBasedModel");
+    JSONNode json_emmodel = ProbabilisticModel::to_json();
+    json_emmodel.set_name("ProbabilisticModel");
     json_gmm.push_back(json_emmodel);
     
     // Scalar Attributes
@@ -143,11 +138,11 @@ void GMM::from_json(JSONNode root)
         assert(root.type() == JSON_NODE);
         JSONNode::iterator root_it = root.begin();
         
-        // Get Parent: EMBasedModel
+        // Get Parent: ProbabilisticModel
         assert(root_it != root.end());
-        assert(root_it->name() == "EMBasedModel");
+        assert(root_it->name() == "ProbabilisticModel");
         assert(root_it->type() == JSON_NODE);
-        EMBasedModel::from_json(*root_it);
+        ProbabilisticModel::from_json(*root_it);
         ++root_it;
         
         // Get Mixture Components
@@ -195,7 +190,7 @@ void GMM::from_json(JSONNode root)
 #pragma mark > Utilities
 void GMM::_copy(GMM *dst, GMM const& src)
 {
-    EMBasedModel::_copy(dst, src);
+    ProbabilisticModel::_copy(dst, src);
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->covarianceOffset_ = src.covarianceOffset_;
     dst->mixtureCoeffs = src.mixtureCoeffs;
@@ -460,9 +455,9 @@ double GMM::likelihood(vector<float> const& observation, vector<float> const& ob
     for (int c=0; c<nbMixtureComponents_; c++) {
         if (bimodal_) {
             if (observation_output.empty())
-                beta[c] = obsProb_bimodal(&observation[0], &observation_output[0], c);
-            else
                 beta[c] = obsProb_input(&observation[0], c);
+            else
+                beta[c] = obsProb_bimodal(&observation[0], &observation_output[0], c);
         } else {
             beta[c] = obsProb(&observation[0], c);
         }

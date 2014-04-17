@@ -99,48 +99,41 @@ void GMMGroup::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
 }
 
 #pragma mark -
-#pragma mark Playing
-void GMMGroup::initPlaying()
-{
-    for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
-        it->second.initPlaying();
-    }
-}
-
-void GMMGroup::play(vector<float> const& observation)
+#pragma mark Performance
+void GMMGroup::performance_update(vector<float> const& observation)
 {
     double norm_const(0.0);
     int i(0);
     model_iterator likeliestModel;
-    double currentMaxLikelihood(0.);
+    double currentMaxLikelihood(-100000.);
     for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
-        modelLikelihoods[i] = it->second.play(observation);
-        if (modelLikelihoods[i] > currentMaxLikelihood) {
-            currentMaxLikelihood = modelLikelihoods[i];
+        results_instant_likelihoods[i] = it->second.performance_update(observation);
+        if (results_instant_likelihoods[i] > currentMaxLikelihood) {
+            currentMaxLikelihood = results_instant_likelihoods[i];
             likeliestModel = it;
         }
-        norm_const += modelLikelihoods[i++];
+        norm_const += results_instant_likelihoods[i++];
     }
     
     for (unsigned int i=0; i<this->models.size(); i++)
-        modelLikelihoods[i] /= norm_const;
+        results_instant_likelihoods[i] /= norm_const;
     
     if (bimodal_) {
         unsigned int dimension = this->referenceModel_.get_dimension();
         unsigned int dimension_input = this->referenceModel_.get_dimension_input();
         unsigned int dimension_output = dimension - dimension_input;
         
-        if (this->playMode_ == this->LIKELIEST) {
-            copy(likeliestModel->second.results.predicted_output.begin(),
-                 likeliestModel->second.results.predicted_output.end(),
-                 predicted_output.begin());
+        if (this->performanceMode_ == this->LIKELIEST) {
+            copy(likeliestModel->second.results_predicted_output.begin(),
+                 likeliestModel->second.results_predicted_output.end(),
+                 results_predicted_output.begin());
         } else {
-            predicted_output.assign(dimension_output, 0.0);
+            results_predicted_output.assign(dimension_output, 0.0);
             
             int i(0);
             for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
                 for (int d=0; d<dimension_output; d++) {
-                    predicted_output[d] += modelLikelihoods[i] * it->second.results.predicted_output[d];
+                    results_predicted_output[d] += results_predicted_output[i] * it->second.results_predicted_output[d];
                 }
                 i++;
             }
@@ -164,9 +157,9 @@ JSONNode GMMGroup::to_json() const
     if (bimodal_)
         json_ccmodels.push_back(JSONNode("dimension_input", get_dimension_input()));
     json_ccmodels.push_back(JSONNode("size", models.size()));
-    json_ccmodels.push_back(JSONNode("playmode", int(playMode_)));
-    json_ccmodels.push_back(JSONNode("nbMixtureComponents", get_nbMixtureComponents()));
-    json_ccmodels.push_back(JSONNode("covarianceOffset", get_covarianceOffset()));
+    json_ccmodels.push_back(JSONNode("performancemode", int(performanceMode_)));
+    json_ccmodels.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
+    json_ccmodels.push_back(JSONNode("covarianceoffset", get_covarianceOffset()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -231,21 +224,21 @@ void GMMGroup::from_json(JSONNode root)
         
         // Get Play Mode
         assert(root_it != root.end());
-        assert(root_it->name() == "playmode");
+        assert(root_it->name() == "performancemode");
         assert(root_it->type() == JSON_NUMBER);
-        playMode_ = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
+        performanceMode_ = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
         ++root_it;
         
         // Get Mixture Components
         assert(root_it != root.end());
-        assert(root_it->name() == "nbMixtureComponents");
+        assert(root_it->name() == "nbMixturecomponents");
         assert(root_it->type() == JSON_NUMBER);
         set_nbMixtureComponents(root_it->as_int());
         ++root_it;
         
         // Get Covariance Offset
         assert(root_it != root.end());
-        assert(root_it->name() == "covarianceOffset");
+        assert(root_it->name() == "covarianceoffset");
         assert(root_it->type() == JSON_NUMBER);
         set_covarianceOffset(root_it->as_float());
         ++root_it;

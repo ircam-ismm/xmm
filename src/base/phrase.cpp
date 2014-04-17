@@ -151,6 +151,8 @@ void Phrase::trim(unsigned int phraseLength)
 {
     if (length_ > phraseLength) {
         length_ = phraseLength;
+        length_input_ = phraseLength;
+        length_output_ = phraseLength;
     }
 }
 
@@ -300,12 +302,18 @@ void Phrase::record(vector<float> const& observation)
     }
     
     if (bimodal_) {
-        copy(observation.begin(), observation.begin() + dimension_input_, data[0] + length_input_);
-        copy(observation.begin() + dimension_input_, observation.begin() + dimension_, data[1] + length_output_);
+        copy(observation.begin(),
+             observation.begin() + dimension_input_,
+             data[0] + length_input_ * dimension_input_);
+        copy(observation.begin() + dimension_input_,
+             observation.begin() + dimension_,
+             data[1] + length_output_ * (dimension_ - dimension_input_));
         length_input_++;
         length_output_++;
     } else {
-        copy(observation.begin(), observation.end(), data[0] + length_);
+        copy(observation.begin(),
+             observation.end(),
+             data[0] + length_ * dimension_);
     }
     
     length_++;
@@ -323,7 +331,9 @@ void Phrase::record_input(vector<float> const& observation)
         reallocate_length();
     }
     
-    copy(observation.begin(), observation.end(), data[0] + length_input_);
+    copy(observation.begin(),
+         observation.end(),
+         data[0] + length_input_ * dimension_input_);
     length_input_++;
     trim();
     is_empty_ = false;
@@ -341,7 +351,9 @@ void Phrase::record_output(vector<float> const& observation)
         reallocate_length();
     }
     
-    copy(observation.begin(), observation.end(), data[1] + length_output_);
+    copy(observation.begin(),
+         observation.end(),
+         data[1] + length_output_ * (dimension_ - dimension_input_));
     length_output_++;
     trim();
     is_empty_ = false;

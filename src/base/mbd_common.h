@@ -17,7 +17,7 @@ using namespace std;
 const vector<float> NULLVEC_FLOAT;
 const vector<double> NULLVEC_DOUBLE;
 
-typedef unsigned char rtml_flags;
+typedef unsigned int rtml_flags;
 
 /**
  * @brief Flags for the construction of data phrases
@@ -61,6 +61,8 @@ enum FLAGS {
  */
 class Listener {
 public:
+    friend class TrainingSet;
+    
     /**
      * @brief pure virtual method for handling training set notifications.
      * @param attribute name of the modified attribute of the training set

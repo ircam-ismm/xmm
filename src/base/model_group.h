@@ -11,7 +11,7 @@
 #ifndef rtml_concurrent_models_h
 #define rtml_concurrent_models_h
 
-#include "base_model.h"
+#include "probabilistic_model.h"
 #if __cplusplus > 199711L
 #include <thread>
 #endif
@@ -34,17 +34,17 @@ public:
 #pragma mark === Public Interface ===
 #pragma mark > Iterators
     /**
-     * @enum POLYPLAYMODE
-     * Type of playing mode for concurrent models
+     * @enum GROUP_ESTIMATION_MODE
+     * Type of performance mode for concurrent models
      */
-    enum POLYPLAYMODE {
+    enum GROUP_ESTIMATION_MODE {
         /**
-         * @brief the play method returns the results of the likeliest model
+         * @brief the performance_update method returns the results of the likeliest model
          */
         LIKELIEST = 0,
-
+        
         /**
-         * @brief the play method returns a weighted sum of the results of each model
+         * @brief the performance_update method returns a weighted sum of the results of each model
          */
         MIXTURE = 1
     };
@@ -53,12 +53,12 @@ public:
      * @brief Iterator over models
      */
     typedef typename  map<Label, ModelType>::iterator model_iterator;
-
+    
     /**
      * @brief Constant Iterator over models
      */
     typedef typename  map<Label, ModelType>::const_iterator const_model_iterator;
-
+    
     /**
      * @brief Iterator over labels
      */
@@ -75,14 +75,14 @@ public:
      * in a hierarchical structure
      */
     ModelGroup(rtml_flags flags = NONE,
-                     TrainingSet *globalTrainingSet=NULL)
+               TrainingSet *globalTrainingSet=NULL)
     {
         bimodal_ = (flags & BIMODAL);
         this->globalTrainingSet = globalTrainingSet;
         if (this->globalTrainingSet)
             this->globalTrainingSet->set_parent(this);
         referenceModel_ = ModelType(flags, this->globalTrainingSet);
-        playMode_ = LIKELIEST;
+        performanceMode_ = LIKELIEST;
     }
     
     /**
@@ -92,62 +92,12 @@ public:
     {
         models.clear();
     }
-
-    /*@}*/
-    
-#pragma mark > Notifications
-    /*@{*/
-    /** @name Notifications */
-    /**
-     * @brief Receives notifications from the global training set and dispatches to models
-     */
-    virtual void notify(string attribute)
-    {
-        referenceModel_.notify(attribute);
-        for (model_iterator it=models.begin(); it != models.end(); ++it) {
-            it->second.notify(attribute);
-        }
-    }
     
     /*@}*/
     
-#pragma mark > Accessors
+#pragma mark Tests & Utilies
     /*@{*/
-    /** @name Accessors */
-    /**
-     * @brief Get Total Dimension of the model (sum of dimension of modalities)
-     * @return total dimension of Gaussian Distributions
-     */
-    int get_dimension() const
-    {
-        return this->referenceModel_.get_dimension();
-    }
-    
-    /**
-     * @brief Get the dimension of the input modality
-     * @warning This can only be used in bimodal mode (construction with 'BIMODAL' flag)
-     * @return dimension of the input modality
-     * @throws runtime_error if not in bimodal mode
-     */
-    int get_dimension_input() const
-    {
-        if (!bimodal_)
-            throw runtime_error("Model is not bimodal");
-        return this->referenceModel_.get_dimension_input();
-    }
-    
-    /**
-     * @brief Set pointer to the global training set
-     * @param globalTrainingSet pointer to the global training set
-     */
-    void set_trainingSet(TrainingSet *globalTrainingSet)
-    {
-        this->globalTrainingSet = globalTrainingSet;
-        if (this->globalTrainingSet)
-            this->globalTrainingSet->set_parent(this);
-        referenceModel_.set_trainingSet(this->globalTrainingSet);
-    }
-    
+    /** @name Tests & Utilies */
     /**
      * @brief Check if a model has been trained
      * @param label class label of the model
@@ -186,12 +136,7 @@ public:
     {
         return (unsigned int)(models.size());
     }
-
-    /*@}*/
     
-#pragma mark > Utilities
-    /*@{*/
-    /** @name Utilities */
     /**
      * @brief Remove All models
      */
@@ -213,6 +158,78 @@ public:
         models.erase(it);
     }
 
+    
+    /*@}*/
+    
+#pragma mark > Accessors
+    /*@{*/
+    /** @name Accessors */
+    /**
+     * @brief Set pointer to the global training set
+     * @param globalTrainingSet pointer to the global training set
+     */
+    void set_trainingSet(TrainingSet *globalTrainingSet)
+    {
+        this->globalTrainingSet = globalTrainingSet;
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->set_parent(this);
+        referenceModel_.set_trainingSet(this->globalTrainingSet);
+    }
+    
+    /**
+     * @brief Get Total Dimension of the model (sum of dimension of modalities)
+     * @return total dimension of Gaussian Distributions
+     */
+    int get_dimension() const
+    {
+        return this->referenceModel_.get_dimension();
+    }
+    
+    /**
+     * @brief Get the dimension of the input modality
+     * @warning This can only be used in bimodal mode (construction with 'BIMODAL' flag)
+     * @return dimension of the input modality
+     * @throws runtime_error if not in bimodal mode
+     */
+    int get_dimension_input() const
+    {
+        if (!bimodal_)
+            throw runtime_error("Model is not bimodal");
+        return this->referenceModel_.get_dimension_input();
+    }
+    
+    /**
+     * @brief Sets the performance mode (likeliest vs mixture)
+     * @param performanceMode_str performance mode: if "likeliest", the performance_update function estimates
+     * the output modality with the likeliest model. If "mixture",  the performance_update function estimates
+     * the output modality as a weighted sum of all models' predictions.
+     * @throws invalid_argument if the argument is not "likeliest" or "mixture"
+     */
+    void set_performanceMode(string performanceMode_str)
+    {
+        if (!performanceMode_str.compare("likeliest")) {
+            performanceMode_ = LIKELIEST;
+        } else if (!performanceMode_str.compare("mixture")) {
+            performanceMode_ = MIXTURE;
+        } else {
+            throw invalid_argument("Unknown performance mode for multiple models");
+        }
+    }
+    
+    /**
+     * @brief Get the performance mode (likeliest vs mixture)
+     * @return performance mode: if "likeliest", the performance_update function estimates
+     * the output modality with the likeliest model. If "mixture",  the performance_update function estimates
+     * the output modality as a weighted sum of all models' predictions.
+     */
+    string get_performanceMode()
+    {
+        if (performanceMode_ == LIKELIEST)
+            return "likeliest";
+        else
+            return "mixture";
+    }
+    
     /*@}*/
     
 #pragma mark > Training
@@ -234,6 +251,31 @@ public:
 #else
         return models[label].train();
 #endif
+    }
+    
+    /**
+     * @brief Train All model even if their data have not changed.
+     * @warning if compiled with c++11, each model is trained in a separate thread. Once trained,
+     * the model calls the trainingCallback function defined in LearningModel.
+     * @return number of iterations for each model if sequential training (not c++11).
+     * @throws runtime_error if an error occurs during training and no callback function is defined
+     */
+    virtual map<Label, int> train()
+    {
+        updateAllTrainingSets();
+        map<Label, int> nbIterations;
+        
+#if __cplusplus > 199711L
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            thread (&ModelType::train, &it->second).detach();
+        }
+#else
+        // Sequential training
+        for (model_iterator it=models.begin(); it != models.end(); ++it) {
+            nbIterations[it->first] = it->second.train();
+        }
+#endif
+        return nbIterations;
     }
     
     /**
@@ -268,87 +310,34 @@ public:
         
         return nbIterations;
     }
-    
+
     /**
-     * @brief Train All model even if their data have not changed.
-     * @warning if compiled with c++11, each model is trained in a separate thread. Once trained, 
-     * the model calls the trainingCallback function defined in LearningModel.
-     * @return number of iterations for each model if sequential training (not c++11).
-     * @throws runtime_error if an error occurs during training and no callback function is defined
+     * @brief set the callback function associated with the training algorithm
+     * @details the function is called whenever the training is over or an error happened during training
      */
-    virtual map<Label, int> train()
-    {
-        updateAllTrainingSets();
-        map<Label, int> nbIterations;
-        
-#if __cplusplus > 199711L
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-            thread (&ModelType::train, &it->second).detach();
-        }
-#else
-        // Sequential training
-        for (model_iterator it=models.begin(); it != models.end(); ++it) {
-            nbIterations[it->first] = it->second.train();
-        }
-#endif
-        return nbIterations;
-    }
-    
     void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
         this->referenceModel_.set_trainingCallback(callback, extradata);
         for (model_iterator it=models.begin(); it != models.end(); ++it) {
             it->second.set_trainingCallback(callback, extradata);
         }
     }
-
+    
     /*@}*/
-
+    
 #pragma mark > Performance
     /*@{*/
     /** @name Performance */
     /**
-     * @brief Sets the playing mode (likeliest vs mixture)
-     * @see playMode
-     * @param playMode_str playing mode: if "likeliest", the play function estimates
-     * the output modality with the likeliest model. If "mixture",  the play function estimates
-     * the output modality as a weighted sum of all models' predictions.
-     * @throws invalid_argument if the argument is not "likeliest" or "mixture"
-     */
-    void set_playMode(string playMode_str)
-    {
-        if (!playMode_str.compare("likeliest")) {
-            playMode_ = LIKELIEST;
-        } else if (!playMode_str.compare("mixture")) {
-            playMode_ = MIXTURE;
-        } else {
-            throw invalid_argument("Unknown playing mode for multiple models");
-        }
-    }
-    
-    /**
-     * @brief Get the playing mode (likeliest vs mixture)
-     * @see playMode
-     * @return playing mode: if "likeliest", the play function estimates
-     * the output modality with the likeliest model. If "mixture",  the play function estimates
-     * the output modality as a weighted sum of all models' predictions.
-     */
-    string get_playMode()
-    {
-        if (playMode_ == LIKELIEST)
-            return "likeliest";
-        else
-            return "mixture";
-    }
-    
-    /**
      * @brief Initialize Performance
      */
-    virtual void initPlaying()
+    virtual void performance_init()
     {
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-            it->second.initPlaying();
+            it->second.performance_init();
         }
-        modelLikelihoods.resize(size());
+        results_instant_likelihoods.resize(size());
+        if (bimodal_)
+            results_predicted_output.resize(size());
     }
     
 #pragma mark -
@@ -363,12 +352,33 @@ public:
      */
     TrainingSet *globalTrainingSet;
     
+    /**
+     * @brief Result: Likelihood of each model
+     */
+    vector<float> results_instant_likelihoods;
+    
+    /**
+     * Result: Predicted output modality observation
+     */
+    vector<float> results_predicted_output;
+    
 protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Training Set
     /*@{*/
-    /** @name Training set: Protected Methods */
+    /** @name Training set: internal methods */
+    /**
+     * @brief Receives notifications from the global training set and dispatches to models
+     */
+    virtual void notify(string attribute)
+    {
+        referenceModel_.notify(attribute);
+        for (model_iterator it=models.begin(); it != models.end(); ++it) {
+            it->second.notify(attribute);
+        }
+    }
+    
     /**
      * @brief Remove models which label is not in the training set anymore
      */
@@ -412,6 +422,8 @@ protected:
         models[label].set_trainingSet(new_ts);
         new_ts->set_parent(&models[label]);
         models[label].trained = false;
+        cout << "reference model, flags = " << referenceModel_.flags_ << endl;
+        cout << "label = " << label << ", flags = " << models[label].flags_ << endl;
     }
     
     /**
@@ -448,15 +460,12 @@ protected:
      * @brief Playing mode
      * @see POLYPLAYMODE
      */
-    POLYPLAYMODE playMode_;
-
+    GROUP_ESTIMATION_MODE performanceMode_;
+    
     /**
      * @brief reference model, Used to store shared model attributes
      */
     ModelType referenceModel_;
-
-    vector<float> modelLikelihoods;
-    vector<float> predicted_output;
 };
 
 #endif

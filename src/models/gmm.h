@@ -11,7 +11,7 @@
 #define mhmm_gmm_h
 
 #include "gaussian_distribution.h"
-#include "em_based_model.h"
+#include "probabilistic_model.h"
 
 const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
 
@@ -26,7 +26,7 @@ const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
  * @details Multivariate Gaussian Mixture Model. Supports Bimodal data and Gaussian Mixture Regression.
  * Can be either autonomous or a state of a HMM: defines observation probabilities for each state.
  */
-class GMM : public EMBasedModel {
+class GMM : public ProbabilisticModel {
 public:
     friend class HMM;
     friend class HierarchicalHMM;
@@ -114,9 +114,9 @@ public:
     /*@{*/
     /** @name Performance */
     /**
-     * @brief Initialize playing mode
+     * @brief Initialize performance mode
      */
-    void initPlaying();
+    void performance_init();
     
     /**
      * @brief Main Play function: performs recognition (unimodal mode) or regression (bimodal mode)
@@ -124,25 +124,8 @@ public:
      * @param observation observation (must allocated to size 'dimension')
      * @return instantaneous likelihood
      */
-    double play(vector<float> const& observation);
+    double performance_update(vector<float> const& observation);
 
-    /*@}*/
-    
-#pragma mark > Training
-    /*@{*/
-    /** @name Training */
-    /**
-     * @brief Initialize the EM Training Algorithm
-     * @details Initializes the Gaussian Components from the first phrase
-     * of the Training Set
-     */
-    virtual void initTraining();
-    
-    /**
-     * @brief Terminate EM Training
-     */
-    virtual void finishTraining();
-    
     /*@}*/
 
 #pragma mark > JSON I/O
@@ -192,7 +175,7 @@ protected:
      * @param dst Destination GMM
      * @param src Source GMM
      */
-    using EMBasedModel::_copy;
+    using ProbabilisticModel::_copy;
     virtual void _copy(GMM *dst, GMM const& src);
     
     /*@}*/
@@ -242,7 +225,7 @@ protected:
 
 #pragma mark > Training
     /*@{*/
-    /** @name Training: protected methods */
+    /** @name Training: internal methods */
     /**
      * @brief Initialize the means of the Gaussian components with the first phrase of the training set
      */
@@ -253,6 +236,13 @@ protected:
      * @todo Add initMeans as a parameter? >> look in GMM training where it is done.
      */
     void setParametersToZero();
+    
+    /**
+     * @brief Initialize the EM Training Algorithm
+     * @details Initializes the Gaussian Components from the first phrase
+     * of the Training Set
+     */
+    virtual void train_EM_init();
     
     /**
      * @brief Update Function of the EM algorithm

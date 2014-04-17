@@ -199,7 +199,7 @@ public:
      * @return High-level prior probability vector
      * @warning memory is allocated for the returned array (need to be freed)
      */
-    double* get_prior() const;
+    void get_prior(vector<double>& prior) const;
     
     /**
      * @brief set high-level prior probabilities vector
@@ -207,14 +207,14 @@ public:
      * @throws invalid_argument if the array has a wrong format (not enough values)
      * @warning the models are ordered in ascending order by label
      */
-    void set_prior(double *prior);
+    void set_prior(vector<double> const& prior);
     
     /**
      * @brief get a copy of the high-level transition matrix
      * @return High-level transition matrix
      * @warning memory is allocated for the returned array (need to be freed)
      */
-    double* get_transition() const;
+    void get_transition(vector<double>& trans) const;
     
     /**
      * @brief set the high-level  transition matrix
@@ -222,7 +222,7 @@ public:
      * @throws invalid_argument if the array has a wrong format (not enough values)
      * @warning the models are ordered in ascending order by label
      */
-    void set_transition(double *trans);
+    void set_transition(vector<double> const& trans);
     
     /**
      * @brief get a copy of the high-level exit probabilities
@@ -231,7 +231,7 @@ public:
      * @return a copy of the exit transition vector of the high level
      * @warning memory is allocated for the returned array (need to be freed)
      */
-    double* get_exitTransition() const;
+    void get_exitTransition(vector<double>& trans) const;
     
     /**
      * @brief set the exit transition vector of the high level
@@ -239,7 +239,7 @@ public:
      * @throws invalid_argument if the array has a wrong format (not enough values)
      * @warning the models are ordered in ascending order by label
      */
-    void set_exitTransition(double *exittrans);
+    void set_exitTransition(vector<double> const& exittrans);
     
     /**
      * @brief set a particular value of the transition matrix
@@ -273,7 +273,7 @@ public:
     /**
      * @brief Initialize performance mode
      */
-    virtual void initPlaying();
+    virtual void performance_init();
     
     /**
      * @brief Main performance Function: perform joint recognition and mapping 
@@ -282,15 +282,7 @@ public:
      * both modalities, and should contain the observation on the input modality. The predicted
      * output will be appended to the input modality observation
      */
-    virtual void play(vector<float> const& observation);
-    
-    /**
-     * @brief Get the Results of a specific model
-     * @param label label of the model
-     * @return Results estimated by the model by the latest call at the play function
-     * @todo this results stuff is crappy
-     */
-    HMM::Results getResults(Label const& label) const;
+    virtual void performance_update(vector<float> const& observation);
     
     /*@}*/
 
