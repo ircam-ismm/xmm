@@ -1021,18 +1021,18 @@ JSONNode HMM::to_json() const
     
     // Scalar Attributes
     json_hmm.push_back(JSONNode("is_hierarchical", is_hierarchical_));
-    json_hmm.push_back(JSONNode("estimateMeans", estimateMeans_));
+    json_hmm.push_back(JSONNode("estimatemeans", estimateMeans_));
     json_hmm.push_back(JSONNode("dimension", dimension_));
-    json_hmm.push_back(JSONNode("nbStates", nbStates_));
-    json_hmm.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents_));
-    json_hmm.push_back(JSONNode("covarianceOffset", covarianceOffset_));
-    json_hmm.push_back(JSONNode("transitionMode", int(transitionMode_)));
+    json_hmm.push_back(JSONNode("nbstates", nbStates_));
+    json_hmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
+    json_hmm.push_back(JSONNode("covarianceoffset", covarianceOffset_));
+    json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
     // Model Parameters
     json_hmm.push_back(vector2json(prior_, "prior"));
     json_hmm.push_back(vector2json(transition_, "transition"));
     if (is_hierarchical_)
-        json_hmm.push_back(vector2json(exitProbabilities_, "exitProbabilities"));
+        json_hmm.push_back(vector2json(exitProbabilities_, "exitprobabilities"));
     
     // States
     JSONNode json_states(JSON_ARRAY);
@@ -1050,20 +1050,27 @@ JSONNode HMM::to_json() const
 void HMM::from_json(JSONNode root)
 {
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
         JSONNode::iterator root_it = root.begin();
         
         // Get Parent: ProbabilisticModel
-        assert(root_it != root.end());
-        assert(root_it->name() == "ProbabilisticModel");
-        assert(root_it->type() == JSON_NODE);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "ProbabilisticModel")
+            throw JSONException("Wrong name: was expecting 'ProbabilisticModel'", root_it->name());
+        if (root_it->type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root_it->name());
         ProbabilisticModel::from_json(*root_it);
         ++root_it;
         
         // Get If Hierarchical
-        assert(root_it != root.end());
-        assert(root_it->name() == "is_hierarchical");
-        assert(root_it->type() == JSON_BOOL);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "is_hierarchical")
+            throw JSONException("Wrong name: was expecting 'is_hierarchical'", root_it->name());
+        if (root_it->type() != JSON_BOOL)
+            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
         if(is_hierarchical_ != root_it->as_bool()) {
             if (is_hierarchical_)
                 throw JSONException("Trying to read a non-hierarchical model in a hierarchical model.", root.name());
@@ -1073,44 +1080,62 @@ void HMM::from_json(JSONNode root)
         ++root_it;
 
         // Get If estimate means
-        assert(root_it != root.end());
-        assert(root_it->name() == "estimateMeans");
-        assert(root_it->type() == JSON_BOOL);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "estimatemeans")
+            throw JSONException("Wrong name: was expecting 'estimatemeans'", root_it->name());
+        if (root_it->type() != JSON_BOOL)
+            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
         estimateMeans_ = root_it->as_bool();
         ++root_it;
         
         // Get Dimension
-        assert(root_it != root.end());
-        assert(root_it->name() == "dimension");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "dimension")
+            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         dimension_ = root_it->as_int();
         ++root_it;
         
         // Get Number of states
-        assert(root_it != root.end());
-        assert(root_it->name() == "nbStates");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "nbstates")
+            throw JSONException("Wrong name: was expecting 'nbstates'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         nbStates_ = root_it->as_int();
         ++root_it;
         
         // Get Number of Mixture Components
-        assert(root_it != root.end());
-        assert(root_it->name() == "nbMixtureComponents");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "nbmixturecomponents")
+            throw JSONException("Wrong name: was expecting 'nbmixturecomponents'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         nbMixtureComponents_ = root_it->as_int();
         ++root_it;
         
         // Get Covariance Offset
-        assert(root_it != root.end());
-        assert(root_it->name() == "covarianceOffset");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "covarianceoffset")
+            throw JSONException("Wrong name: was expecting 'covarianceoffset'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         covarianceOffset_ = root_it->as_float();
         ++root_it;
         
         // Get Transition Mode
-        assert(root_it != root.end());
-        assert(root_it->name() == "transitionMode");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "transitionmode")
+            throw JSONException("Wrong name: was expecting 'transitionmode'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         transitionMode_ = TRANSITION_MODE(root_it->as_int());
         ++root_it;
         
@@ -1118,36 +1143,48 @@ void HMM::from_json(JSONNode root)
         allocate();
         
         // Get Prior Probabilities
-        assert(root_it != root.end());
-        assert(root_it->name() == "prior");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "prior")
+            throw JSONException("Wrong name: was expecting 'prior'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, prior_, nbStates_);
         ++root_it;
         
         // Get Transition Matrix
-        assert(root_it != root.end());
-        assert(root_it->name() == "transition");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "transition")
+            throw JSONException("Wrong name: was expecting 'transition'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, transition_, nbStates_*nbStates_);
         ++root_it;
 
         // Get Exit probabilities
-        assert(root_it != root.end());
-        assert(root_it->name() == "exitProbabilities");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "exitprobabilities")
+            throw JSONException("Wrong name: was expecting 'exitprobabilities'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, exitProbabilities_, nbStates_);
         ++root_it;
         
         // Get States
-        assert(root_it != root.end());
-        assert(root_it->name() == "states");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "states")
+            throw JSONException("Wrong name: was expecting 'states'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         for (int i=0 ; i<nbStates_ ; i++) {
             states_[i].from_json((*root_it)[i]);
         }
         
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }

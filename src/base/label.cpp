@@ -155,27 +155,36 @@ JSONNode Label::to_json() const
 void Label::from_json(JSONNode root)
 {
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
         JSONNode::const_iterator root_it = root.begin();
-        assert(root_it != root.end());
-        assert(root_it->name() == "type");
-        assert(root_it->type() == JSON_STRING);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "type")
+            throw JSONException("Wrong name: was expecting 'type'", root_it->name());
+        if (root_it->type() != JSON_STRING)
+            throw JSONException("Wrong type: was expecting 'JSON_STRING'", root_it->name());
         if (root_it->as_string() == "INT")
             type = INT;
         else
             type = SYM;
         ++root_it;
-        assert(root_it != root.end());
-        assert(root_it->name() == "value");
+        
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "value")
+            throw JSONException("Wrong name: was expecting 'value'", root_it->name());
         if (type == INT) {
-            assert(root_it->type() == JSON_NUMBER);
+            if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             intLabel_ = root_it->as_int();
         } else {
-            assert(root_it->type() == JSON_STRING);
+            if (root_it->type() != JSON_STRING)
+                throw JSONException("Wrong type: was expecting 'JSON_STRING'", root_it->name());
             symLabel_ = root_it->as_string();
         }
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }

@@ -114,11 +114,11 @@ JSONNode GMM::to_json() const
     json_gmm.push_back(json_emmodel);
     
     // Scalar Attributes
-    json_gmm.push_back(JSONNode("nbMixtureComponents", nbMixtureComponents_));
-    json_gmm.push_back(JSONNode("covarianceOffset", covarianceOffset_));
+    json_gmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
+    json_gmm.push_back(JSONNode("covarianceoffset", covarianceOffset_));
     
     // Model Parameters
-    json_gmm.push_back(vector2json(mixtureCoeffs, "mixtureCoefficients"));
+    json_gmm.push_back(vector2json(mixtureCoeffs, "mixturecoefficients"));
     
     // Mixture Components
     JSONNode json_components(JSON_ARRAY);
@@ -135,43 +135,59 @@ JSONNode GMM::to_json() const
 void GMM::from_json(JSONNode root)
 {
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
         JSONNode::iterator root_it = root.begin();
         
         // Get Parent: ProbabilisticModel
-        assert(root_it != root.end());
-        assert(root_it->name() == "ProbabilisticModel");
-        assert(root_it->type() == JSON_NODE);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "ProbabilisticModel")
+            throw JSONException("Wrong name: was expecting 'ProbabilisticModel'", root_it->name());
+        if (root_it->type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root_it->name());
         ProbabilisticModel::from_json(*root_it);
         ++root_it;
         
         // Get Mixture Components
-        assert(root_it != root.end());
-        assert(root_it->name() == "nbMixtureComponents");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "nbmixturecomponents")
+            throw JSONException("Wrong name: was expecting 'nbmixturecomponents'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         nbMixtureComponents_ = root_it->as_int();
         ++root_it;
         
         // Get Covariance Offset
-        assert(root_it != root.end());
-        assert(root_it->name() == "covarianceOffset");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "covarianceoffset")
+            throw JSONException("Wrong name: was expecting 'covarianceoffset'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         covarianceOffset_ = root_it->as_float();
         ++root_it;
         
         allocate();
         
         // Get Mixture Coefficients
-        assert(root_it != root.end());
-        assert(root_it->name() == "mixtureCoefficients");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "mixturecoefficients")
+            throw JSONException("Wrong name: was expecting 'mixturecoefficients'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, mixtureCoeffs, nbMixtureComponents_);
         ++root_it;
         
         // Get Gaussian Mixture Components
-        assert(root_it != root.end());
-        assert(root_it->name() == "components");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "components")
+            throw JSONException("Wrong name: was expecting 'components'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         for (int i=0 ; i<nbMixtureComponents_ ; i++) {
             components[i].from_json((*root_it)[i]);
         }
@@ -179,7 +195,7 @@ void GMM::from_json(JSONNode root)
         updateInverseCovariances();
         
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }

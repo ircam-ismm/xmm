@@ -297,22 +297,29 @@ JSONNode ProbabilisticModel::to_json() const
 void ProbabilisticModel::from_json(JSONNode root)
 {
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
         JSONNode::const_iterator root_it = root.begin();
         
         // Get Flags
-        assert(root_it != root.end());
-        assert(root_it->name() == "flags");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "flags")
+            throw JSONException("Wrong name: was expecting 'flags'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         if(this->flags_ != static_cast<rtml_flags>(root_it->as_int())) {
             throw JSONException("The flags of the model to read does not match the flags the current instance.", root.name());
         }
         ++root_it;
         
         // Get Number of modalities
-        assert(root_it != root.end());
-        assert(root_it->name() == "bimodal");
-        assert(root_it->type() == JSON_BOOL);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "bimodal")
+            throw JSONException("Wrong name: was expecting 'bimodal'", root_it->name());
+        if (root_it->type() != JSON_BOOL)
+            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
         if(bimodal_ != root_it->as_bool()) {
             if (bimodal_)
                 throw JSONException("Trying to read an unimodal model in a bimodal model.", root.name());
@@ -322,17 +329,23 @@ void ProbabilisticModel::from_json(JSONNode root)
         ++root_it;
         
         // Get Dimension
-        assert(root_it != root.end());
-        assert(root_it->name() == "dimension");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "dimension")
+            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         dimension_ = static_cast<unsigned int>(root_it->as_int());
         ++root_it;
         
         // Get Input Dimension if bimodal
         if (bimodal_){
-            assert(root_it != root.end());
-            assert(root_it->name() == "dimension_input");
-            assert(root_it->type() == JSON_NUMBER);
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "dimension_input")
+                throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
+            if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             dimension_input_ = static_cast<unsigned int>(root_it->as_int());
             ++root_it;
         }
@@ -340,39 +353,54 @@ void ProbabilisticModel::from_json(JSONNode root)
         this->allocate();
         
         // Get EM Algorithm stop criterion
-        assert(root_it != root.end());
-        assert(root_it->name() == "EMStopCriterion");
-        assert(root_it->type() == JSON_NODE);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "EMStopCriterion")
+            throw JSONException("Wrong name: was expecting 'EMStopCriterion'", root_it->name());
+        if (root_it->type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root_it->name());
         JSONNode json_stopcriterion = *root_it;
         JSONNode::const_iterator crit_it = json_stopcriterion.begin();
-        assert(crit_it != json_stopcriterion.end());
-        assert(crit_it->name() == "minsteps");
-        assert(crit_it->type() == JSON_NUMBER);
+        if (crit_it == root.end())
+            throw JSONException("JSON Node is incomplete", crit_it->name());
+        if (crit_it->name() != "minsteps")
+            throw JSONException("Wrong name: was expecting 'minsteps'", crit_it->name());
+        if (crit_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", crit_it->name());
         stopcriterion_.minSteps = static_cast<unsigned int>(crit_it->as_int());
         crit_it++;
         
-        assert(crit_it != json_stopcriterion.end());
-        assert(crit_it->name() == "maxsteps");
-        assert(crit_it->type() == JSON_NUMBER);
+        if (crit_it == root.end())
+            throw JSONException("JSON Node is incomplete", crit_it->name());
+        if (crit_it->name() != "maxsteps")
+            throw JSONException("Wrong name: was expecting 'maxsteps'", crit_it->name());
+        if (crit_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", crit_it->name());
         stopcriterion_.maxSteps = static_cast<unsigned int>(crit_it->as_int());
         crit_it++;
         
-        assert(crit_it != json_stopcriterion.end());
-        assert(crit_it->name() == "percentchg");
-        assert(crit_it->type() == JSON_NUMBER);
+        if (crit_it == root.end())
+            throw JSONException("JSON Node is incomplete", crit_it->name());
+        if (crit_it->name() != "percentchg")
+            throw JSONException("Wrong name: was expecting 'percentchg'", crit_it->name());
+        if (crit_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", crit_it->name());
         stopcriterion_.percentChg = static_cast<double>(crit_it->as_float());
         
         root_it++;
         
         // Get likelihood window size
-        assert(root_it != root.end());
-        assert(root_it->name() == "likelihoodwindow");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "likelihoodwindow")
+            throw JSONException("Wrong name: was expecting 'likelihoodwindow'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         this->set_likelihoodBufferSize(static_cast<unsigned int>(root_it->as_int()));
         root_it++;
         
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }

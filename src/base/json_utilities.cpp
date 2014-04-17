@@ -12,7 +12,8 @@
 template <>
 void json2array(JSONNode root, float* a, int n)
 {
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -27,7 +28,8 @@ void json2array(JSONNode root, float* a, int n)
 template <>
 void json2array(JSONNode root, double* a, int n)
 {
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -42,7 +44,8 @@ void json2array(JSONNode root, double* a, int n)
 template <>
 void json2array(JSONNode root, bool* a, int n)
 {
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -58,7 +61,8 @@ template <>
 void json2array(JSONNode root, string* a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -74,7 +78,8 @@ template <>
 void json2vector(JSONNode root, vector<float>& a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -90,7 +95,8 @@ template <>
 void json2vector(JSONNode root, vector<double>& a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -106,7 +112,8 @@ template <>
 void json2vector(JSONNode root, vector<bool>& a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -122,7 +129,8 @@ template <>
 void json2vector(JSONNode root, vector<string>& a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {

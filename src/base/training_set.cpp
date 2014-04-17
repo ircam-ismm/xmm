@@ -398,14 +398,14 @@ void TrainingSet::updateLabelList()
 JSONNode TrainingSet::to_json() const
 {
     JSONNode json_ts(JSON_NODE);
-    json_ts.set_name("Training Set");
-    json_ts.push_back(JSONNode("bimodal_", bimodal_));
+    json_ts.set_name("TrainingSet");
+    json_ts.push_back(JSONNode("bimodal", bimodal_));
     json_ts.push_back(JSONNode("dimension", dimension_));
     if (bimodal_)
-        json_ts.push_back(JSONNode("dimension_input_", dimension_input_));
+        json_ts.push_back(JSONNode("dimension_input", dimension_input_));
     json_ts.push_back(JSONNode("size", phrases.size()));
     JSONNode json_deflabel = defaultLabel_.to_json();
-    json_deflabel.set_name("default label");
+    json_deflabel.set_name("defaultlabel");
     json_ts.push_back(json_deflabel);
     
     // Add phrases
@@ -430,13 +430,17 @@ void TrainingSet::from_json(JSONNode root)
         throw runtime_error("Cannot read Training Set with Shared memory");
     
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
         JSONNode::const_iterator root_it = root.begin();
         
         // Get Number of modalities
-        assert(root_it != root.end());
-        assert(root_it->name() == "bimodal_");
-        assert(root_it->type() == JSON_BOOL);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "bimodal")
+            throw JSONException("Wrong name: was expecting 'bimodal'", root_it->name());
+        if (root_it->type() != JSON_BOOL)
+            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
         if(bimodal_ != root_it->as_bool()) {
             if (bimodal_)
                 throw JSONException("Trying to read an unimodal model in a bimodal_ model.", root.name());
@@ -446,32 +450,44 @@ void TrainingSet::from_json(JSONNode root)
         ++root_it;
         
         // Get Dimension
-        assert(root_it != root.end());
-        assert(root_it->name() == "dimension");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "dimension")
+            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         dimension_ = root_it->as_int();
         ++root_it;
         
         // Get Input Dimension if bimodal_
         if (bimodal_){
-            assert(root_it != root.end());
-            assert(root_it->name() == "dimension_input_");
-            assert(root_it->type() == JSON_NUMBER);
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "dimension_input")
+                throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
+            if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             dimension_input_ = root_it->as_int();
             ++root_it;
         }
         
         // Get Size: Number of Phrases
-        assert(root_it != root.end());
-        assert(root_it->name() == "size");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "size")
+            throw JSONException("Wrong name: was expecting 'size'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         int ts_size = root_it->as_int();
         ++root_it;
         
         // Get Default label
-        assert(root_it != root.end());
-        assert(root_it->name() == "default label");
-        assert(root_it->type() == JSON_NODE);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "defaultlabel")
+            throw JSONException("Wrong name: was expecting 'defaultlabel'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         defaultLabel_.from_json(*root_it);
         ++root_it;
         
@@ -480,40 +496,53 @@ void TrainingSet::from_json(JSONNode root)
         // Get Phrases
         phrases.clear();
         phraseLabels.clear();
-        assert(root_it != root.end());
-        assert(root_it->name() == "phrases");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "phrases")
+            throw JSONException("Wrong name: was expecting 'phrases'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         for (int i=0 ; i<ts_size ; i++)
         {
             JSONNode::const_iterator array_it = (*root_it)[i].begin();
             // Get Index
-            assert(array_it != root.end());
-            assert(array_it->name() == "index");
-            assert(array_it->type() == JSON_NUMBER);
+            if (array_it == root.end())
+                throw JSONException("JSON Node is incomplete", array_it->name());
+            if (array_it->name() != "index")
+                throw JSONException("Wrong name: was expecting 'index'", root_it->name());
+            if (array_it->type() != JSON_NUMBER)
+                throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             int phraseIndex = array_it->as_int();
             ++array_it;
             
             // Get Label
-            assert(array_it != root.end());
-            assert(array_it->name() == "label");
-            assert(array_it->type() == JSON_NODE);
+            if (array_it == root.end())
+                throw JSONException("JSON Node is incomplete", array_it->name());
+            if (array_it->name() != "label")
+                throw JSONException("Wrong name: was expecting 'label'", root_it->name());
+            if (array_it->type() != JSON_NODE)
+                throw JSONException("Wrong type: was expecting 'JSON_NODE'", root_it->name());
             phraseLabels[phraseIndex].from_json(*array_it);
             updateLabelList();
             ++array_it;
             
             // Get Phrase Content
-            assert(array_it != root.end());
-            assert(array_it->name() == "Phrase");
-            assert(array_it->type() == JSON_NODE);
+            if (array_it == root.end())
+                throw JSONException("JSON Node is incomplete", array_it->name());
+            if (array_it->name() != "Phrase")
+                throw JSONException("Wrong name: was expecting 'Phrase'", root_it->name());
+            if (array_it->type() != JSON_NODE)
+                throw JSONException("Wrong type: was expecting 'JSON_NODE'", array_it->name());
             phrases[phraseIndex] = new Phrase(flags_, dimension_, dimension_input_);
             phraseLabels[phraseIndex].from_json(*array_it);
         }
         
-        assert(ts_size == phrases.size());
+        if (ts_size != phrases.size())
+            throw JSONException("Number of phrases does not match", root_it->name());
         has_changed_ = true;
         
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }

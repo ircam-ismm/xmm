@@ -10,8 +10,8 @@
 #ifndef mhmm_json_utilities_h
 #define mhmm_json_utilities_h
 
-#include <cassert>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <exception>
 #include <vector>
@@ -32,18 +32,33 @@ public:
      * @param message error message
      * @param nodename name of the JSON node where the error occurred
      */
-    JSONException(string message="", string nodename="")
-    : message_(message), nodename_(nodename)
-    {}
+    JSONException(string message, string nodename="")
+    : message_(message)
+    {
+        nodename_.push_back(nodename);
+    }
     
     /**
      * @brief Constructor From exception message
      * @param src Source Exception
      * @param nodename name of the
      */
-    explicit JSONException(exception const& src, string nodename = "")
-    : message_(src.what()), nodename_(nodename)
-    {}
+    explicit JSONException(exception const& src, string nodename)
+    : message_(src.what())
+    {
+        nodename_.push_back(nodename);
+    }
+    
+    /**
+     * @brief Constructor From exception message
+     * @param src Source Exception
+     * @param nodename name of the
+     */
+    explicit JSONException(JSONException const& src, string nodename)
+    {
+        this->_copy(this, src);
+        nodename_.push_back(nodename);
+    }
     
     /**
      * @brief Copy Constructor
@@ -92,13 +107,18 @@ public:
      */
     virtual const char * what() const throw()
     {
-        string fullmsg = "Error reading JSON, Node '" + nodename_ + "': " + message_;
-        return fullmsg.c_str();
+        stringstream fullmsg;
+        fullmsg << "Error reading JSON, Message: " + message_ + " // (Node List: ";
+        for (unsigned int i=nodename_.size()-1 ; i>0 ; --i)
+            fullmsg << nodename_[i] << " > ";
+        fullmsg << nodename_[0];
+        fullmsg << ")";
+        return strdup(fullmsg.str().c_str());
     }
     
 private:
     string message_;
-    string nodename_;
+    vector<string> nodename_;
 };
 
 /*@{*/
@@ -120,7 +140,8 @@ template <typename T>
 void json2array(JSONNode root, T* a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {
@@ -152,7 +173,8 @@ template <typename T>
 void json2vector(JSONNode root, vector<T>& a, int n)
 {
     // Get Dimensions
-    assert(root.type() == JSON_ARRAY);
+    if (root.type() != JSON_ARRAY)
+        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
     unsigned int i = 0;
     for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
     {

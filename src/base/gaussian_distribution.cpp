@@ -218,49 +218,65 @@ JSONNode GaussianDistribution::to_json() const
  void GaussianDistribution::from_json(JSONNode root)
 {
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong Node Type", root.name());
         JSONNode::iterator root_it = root.begin();
         
         // Get Dimension
-        assert(root_it != root.end());
-        assert(root_it->name() == "dimension");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "dimension")
+            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         dimension_ = root_it->as_int();
         ++root_it;
 
         // Get Dimension of the input modality
-        assert(root_it != root.end());
-        assert(root_it->name() == "dimension_input");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "dimension_input")
+            throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         dimension_input_ = root_it->as_int();
         ++root_it;
         
         // Get Covariance Offset
-        assert(root_it != root.end());
-        assert(root_it->name() == "offset");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "offset")
+            throw JSONException("Wrong name: was expecting 'offset'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         offset_ = root_it->as_float();
         ++root_it;
         
         allocate();
         
         // Get Mean
-        assert(root_it != root.end());
-        assert(root_it->name() == "mean");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "mean")
+            throw JSONException("Wrong name: was expecting 'mean'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, mean, dimension_);
         ++root_it;
         
         // Get Covariance
-        assert(root_it != root.end());
-        assert(root_it->name() == "covariance");
-        assert(root_it->type() == JSON_ARRAY);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "covariance")
+            throw JSONException("Wrong name: was expecting 'covariance'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, covariance, dimension_ * dimension_);
         
         updateInverseCovariance();
         
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }

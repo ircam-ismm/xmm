@@ -446,13 +446,17 @@ void Phrase::from_json(JSONNode root)
         throw runtime_error("Cannot read Phrase with Shared memory");
     
     try {
-        assert(root.type() == JSON_NODE);
+        if (root.type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
         JSONNode::const_iterator root_it = root.begin();
         
         // Get Number of modalities
-        assert(root_it != root.end());
-        assert(root_it->name() == "bimodal_");
-        assert(root_it->type() == JSON_BOOL);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "bimodal_")
+            throw JSONException("Wrong name: was expecting 'bimodal_'", root_it->name());
+        if (root_it->type() != JSON_BOOL)
+            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
         if(bimodal_ != root_it->as_bool()) {
             if (bimodal_)
                 throw JSONException("Trying to read an unimodal model in a bimodal_ model.", root.name());
@@ -462,16 +466,22 @@ void Phrase::from_json(JSONNode root)
         ++root_it;
         
         // Get Dimension
-        assert(root_it != root.end());
-        assert(root_it->name() == "dimension");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "dimension")
+            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         dimension_ = root_it->as_int();
         ++root_it;
         
         // Get Length
-        assert(root_it != root.end());
-        assert(root_it->name() == "length");
-        assert(root_it->type() == JSON_NUMBER);
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "length")
+            throw JSONException("Wrong name: was expecting 'length'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         length_ = root_it->as_int();
         length_input_ = length_;
         length_output_ = length_;
@@ -479,9 +489,12 @@ void Phrase::from_json(JSONNode root)
         
         // Get Input Dimension if bimodal_
         if (bimodal_){
-            assert(root_it != root.end());
-            assert(root_it->name() == "dimension_input_");
-            assert(root_it->type() == JSON_NUMBER);
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "dimension_input")
+                throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
+            if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             dimension_input_ = root_it->as_int();
             ++root_it;
         }
@@ -494,29 +507,38 @@ void Phrase::from_json(JSONNode root)
             data[1] = reallocate<float>(data[1],
                                         max_length_ * (dimension_ - dimension_input_),
                                         length_ * (dimension_ - dimension_input_));
-            assert(root_it != root.end());
-            assert(root_it->name() == "data_input");
-            assert(root_it->type() == JSON_ARRAY);
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "data_input")
+                throw JSONException("Wrong name: was expecting 'data_input'", root_it->name());
+            if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
             json2array(*root_it, data[0], length_ * dimension_input_);
             ++root_it;
-            assert(root_it != root.end());
-            assert(root_it->name() == "data_output");
-            assert(root_it->type() == JSON_ARRAY);
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "data_output")
+                throw JSONException("Wrong name: was expecting 'data_output'", root_it->name());
+            if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
             json2array(*root_it, data[1], length_ * (dimension_ - dimension_input_));
         } else {
             data[0] = reallocate<float>(data[0],
                                         max_length_ * dimension_,
                                         length_ * dimension_);
-            assert(root_it != root.end());
-            assert(root_it->name() == "data");
-            assert(root_it->type() == JSON_ARRAY);
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "data")
+                throw JSONException("Wrong name: was expecting 'data'", root_it->name());
+            if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
             json2array(*root_it, data[0], length_ * dimension_);
         }
         
         max_length_ = length_;
         
     } catch (JSONException &e) {
-        throw JSONException(e);
+        throw JSONException(e, root.name());
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }
