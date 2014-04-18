@@ -144,7 +144,7 @@ public:
      * @brief Get Total Dimension of the model (sum of dimension of modalities)
      * @return total dimension of Gaussian Distributions
      */
-    unsigned int get_dimension() const;
+    unsigned int dimension() const;
     
     /**
      * @brief Get the dimension of the input modality
@@ -152,61 +152,20 @@ public:
      * @return dimension of the input modality
      * @throws runtime_error if not in bimodal mode
      */
-    unsigned int get_dimension_input() const;
-    
-    /**
-     * @brief Get minimum number of EM steps
-     * @return minimum number of steps of the EM algorithm
-     */
-    unsigned int get_EM_minSteps() const;
-    
-    /**
-     * @brief Get maximum number of EM steps
-     * @return maximum number of steps of the EM algorithm
-     * @see EMStopCriterion
-     */
-    unsigned int get_EM_maxSteps() const;
-    
-    /**
-     * @brief Get EM convergence threshold in percent-change of the likelihood
-     * @return loglikelihood percent-change convergence threshold
-     * @see EMStopCriterion
-     */
-    double get_EM_percentChange() const;
-    
-    /**
-     * @brief Set minimum number of steps of the EM algorithm
-     * @param steps minimum number of steps of the EM algorithm
-     * @throws invalid_argument if steps < 1
-     */
-    void set_EM_minSteps(unsigned int steps);
-    
-    /**
-     * @brief Set maximum number of steps of the EM algorithm
-     * @param steps maximum number of steps of the EM algorithm
-     * @throws invalid_argument if steps < 1
-     */
-    void set_EM_maxSteps(unsigned int steps);
-    
-    /**
-     * @brief Set convergence threshold in percent-change of the likelihood
-     * @param logLikelihoodPercentChg log-likelihood percent-change convergence threshold
-     * @throws invalid_argument if logLikelihoodPercentChg <= 0
-     */
-    void set_EM_percentChange(double logLikelihoodPercentChg);
+    unsigned int dimension_input() const;
     
     /**
      * @brief get size of the likelihood smoothing buffer (number of frames)
      * @return size of the likelihood smoothing buffer
      */
-    unsigned int get_likelihoodBufferSize() const;
+    unsigned int get_likelihoodwindow() const;
     
     /**
      * @brief set size of the likelihood smoothing buffer (number of frames)
-     * @param likelihoodBufferSize size of the likelihood smoothing buffer
-     * @throws invalid_argument if likelihoodBufferSize is < 1
+     * @param likelihoodwindow size of the likelihood smoothing buffer
+     * @throws invalid_argument if likelihoodwindow is < 1
      */
-    void set_likelihoodBufferSize(unsigned int likelihoodBufferSize);
+    void set_likelihoodwindow(unsigned int likelihoodwindow);
     
     /*@}*/
 #pragma mark > Training
@@ -276,6 +235,12 @@ public:
      * defines if the model is trained
      */
     bool trained;
+    
+    /**
+     * @brief Stop criterion of the EM algorithm
+     * @see EMStopCriterion
+     */
+    EMStopCriterion stopcriterion;
     
     /**
      * progression within the training algorithm
@@ -363,7 +328,7 @@ protected:
      * @param log_prob log-likelihood returned by the EM update
      * @param old_log_prob log-likelihood returned by the EM update at the previous step
      */
-    bool train_EM_stop(int step, double log_prob, double old_log_prob) const;
+    bool train_EM_hasConverged(int step, double log_prob, double old_log_prob) const;
     
     /*@}*/
 
@@ -403,12 +368,6 @@ protected:
      * @brief Likelihood buffer used for smoothing
      */
     RingBuffer<double, 1> likelihoodBuffer_;
-
-    /**
-     * @brief Stop criterion of the EM algorithm
-     * @see EMStopCriterion
-     */
-    EMStopCriterion stopcriterion_;
     
 #if __cplusplus > 199711L
     /**

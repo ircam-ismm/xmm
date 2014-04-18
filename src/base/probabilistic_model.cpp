@@ -26,18 +26,18 @@ trainingCallback_(NULL)
             throw runtime_error("This model is bimodal but the training set is not. Can't Connect.");
         if (!bimodal_ && trainingSet->is_bimodal())
             throw runtime_error("This model is not bimodal but the training set is. Can't Connect.");
-        dimension_ = this->trainingSet->get_dimension();
+        dimension_ = this->trainingSet->dimension();
         if (bimodal_)
-            dimension_input_ = this->trainingSet->get_dimension_input();
+            dimension_input_ = this->trainingSet->dimension_input();
     } else {
         dimension_ = 1;
         dimension_input_ = 0;
     }
     results_instant_likelihood = 0.0;
     results_log_likelihood = 0.0;
-    stopcriterion_.minSteps = EM_MODEL_DEFAULT_EMSTOP_MINSTEPS;
-    stopcriterion_.maxSteps = EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS;
-    stopcriterion_.percentChg = EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG;
+    stopcriterion.minSteps = EM_MODEL_DEFAULT_EMSTOP_MINSTEPS;
+    stopcriterion.maxSteps = EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS;
+    stopcriterion.percentChg = EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG;
     likelihoodBuffer_.resize(EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW);
 }
 
@@ -68,9 +68,9 @@ void ProbabilisticModel::_copy(ProbabilisticModel *dst,
     if (dst->bimodal_)
         dst->dimension_input_ = src.dimension_input_;
     dst->dimension_ = src.dimension_;
-    dst->stopcriterion_.minSteps = src.stopcriterion_.minSteps;
-    dst->stopcriterion_.maxSteps = src.stopcriterion_.maxSteps;
-    dst->stopcriterion_.percentChg = src.stopcriterion_.percentChg;
+    dst->stopcriterion.minSteps = src.stopcriterion.minSteps;
+    dst->stopcriterion.maxSteps = src.stopcriterion.maxSteps;
+    dst->stopcriterion.percentChg = src.stopcriterion.percentChg;
     dst->likelihoodBuffer_.resize(src.likelihoodBuffer_.size());
     dst->likelihoodBuffer_.clear();
 }
@@ -88,9 +88,9 @@ void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
             throw runtime_error("This model is bimodal but the training set is not. Can't Connect.");
         if (!bimodal_ && trainingSet->is_bimodal())
             throw runtime_error("This model is not bimodal but the training set is. Can't Connect.");
-        dimension_ = this->trainingSet->get_dimension();
+        dimension_ = this->trainingSet->dimension();
         if (bimodal_)
-            dimension_input_ = this->trainingSet->get_dimension_input();
+            dimension_input_ = this->trainingSet->dimension_input();
     } else {
         dimension_ = 1;
         dimension_input_ = 0;
@@ -102,84 +102,46 @@ void ProbabilisticModel::notify(string attribute)
 {
     if (!trainingSet) return;
     if (attribute == "dimension") {
-        dimension_ = trainingSet->get_dimension();
+        dimension_ = trainingSet->dimension();
         this->allocate();
         return;
     }
     if (bimodal_ && attribute == "dimension_input") {
-        dimension_input_ = trainingSet->get_dimension_input();
+        dimension_input_ = trainingSet->dimension_input();
         this->allocate();
         return;
     }
 }
 
-unsigned int ProbabilisticModel::get_dimension() const
+unsigned int ProbabilisticModel::dimension() const
 {
     return dimension_;
 }
 
-unsigned int ProbabilisticModel::get_dimension_input() const
+unsigned int ProbabilisticModel::dimension_input() const
 {
     if (!bimodal_)
         throw runtime_error("The model is not bimodal");
     return dimension_input_;
 }
 
-unsigned int ProbabilisticModel::get_EM_minSteps() const
+bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
 {
-    return stopcriterion_.minSteps;
-}
-
-unsigned int ProbabilisticModel::get_EM_maxSteps() const
-{
-    return stopcriterion_.maxSteps;
-}
-
-double ProbabilisticModel::get_EM_percentChange() const
-{
-    return stopcriterion_.percentChg;
-}
-
-void ProbabilisticModel::set_EM_minSteps(unsigned int steps)
-{
-    if (steps < 1) throw invalid_argument("Minimum number of EM steps must be > 0");
-    
-    stopcriterion_.minSteps = steps;
-}
-
-void ProbabilisticModel::set_EM_maxSteps(unsigned int steps)
-{
-    if (steps < 0) throw invalid_argument("Maximum number of EM steps must be >= 0");
-    
-    stopcriterion_.maxSteps = steps;
-}
-
-void ProbabilisticModel::set_EM_percentChange(double logLikelihoodPercentChg)
-{
-    if (logLikelihoodPercentChg > 0) {
-        stopcriterion_.percentChg = logLikelihoodPercentChg;
-    } else {
-        throw invalid_argument("Max loglikelihood difference for EM stop criterion must be > 0");
-    }
-}
-
-bool ProbabilisticModel::train_EM_stop(int step, double log_prob, double old_log_prob) const
-{
-    if (stopcriterion_.maxSteps > stopcriterion_.minSteps)
-        return (step >= stopcriterion_.maxSteps);
+    if (stopcriterion.maxSteps > stopcriterion.minSteps)
+        return (step >= stopcriterion.maxSteps);
     else
-        return (step >= stopcriterion_.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) < stopcriterion_.percentChg);
+        return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) < stopcriterion.percentChg);
 }
 
-unsigned int ProbabilisticModel::get_likelihoodBufferSize() const
+unsigned int ProbabilisticModel::get_likelihoodwindow() const
 {
     return likelihoodBuffer_.size();
 }
 
-void ProbabilisticModel::set_likelihoodBufferSize(unsigned int likelihoodBufferSize)
+void ProbabilisticModel::set_likelihoodwindow(unsigned int likelihoodwindow)
 {
-    if (likelihoodBufferSize < 1) throw invalid_argument("Likelihood Buffer size must be > 1");
-    likelihoodBuffer_.resize(likelihoodBufferSize);
+    if (likelihoodwindow < 1) throw invalid_argument("Likelihood Buffer size must be > 1");
+    likelihoodBuffer_.resize(likelihoodwindow);
 }
 
 #pragma mark -
@@ -206,10 +168,10 @@ int ProbabilisticModel::train()
         log_prob = this->train_EM_update();
         ++nbIterations;
         
-        if (stopcriterion_.maxSteps > stopcriterion_.minSteps)
-            this->trainingProgression = float(nbIterations) / float(stopcriterion_.maxSteps);
+        if (stopcriterion.maxSteps > stopcriterion.minSteps)
+            this->trainingProgression = float(nbIterations) / float(stopcriterion.maxSteps);
         else
-            this->trainingProgression = float(nbIterations) / float(stopcriterion_.minSteps);
+            this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
         
         if (isnan(100.*fabs((log_prob-old_log_prob)/old_log_prob)) && (nbIterations > 1)) {
 #if __cplusplus > 199711L
@@ -223,7 +185,7 @@ int ProbabilisticModel::train()
             else
                 throw runtime_error("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)");
         }
-    } while (!train_EM_stop(nbIterations, log_prob, old_log_prob));
+    } while (!train_EM_hasConverged(nbIterations, log_prob, old_log_prob));
     
     this->train_EM_terminate();
     this->trained = true;
@@ -285,9 +247,9 @@ JSONNode ProbabilisticModel::to_json() const
     
     JSONNode json_stopcriterion(JSON_NODE);
     json_stopcriterion.set_name("EMStopCriterion");
-    json_stopcriterion.push_back(JSONNode("minsteps", stopcriterion_.minSteps));
-    json_stopcriterion.push_back(JSONNode("maxsteps", stopcriterion_.maxSteps));
-    json_stopcriterion.push_back(JSONNode("percentchg", stopcriterion_.percentChg));
+    json_stopcriterion.push_back(JSONNode("minsteps", stopcriterion.minSteps));
+    json_stopcriterion.push_back(JSONNode("maxsteps", stopcriterion.maxSteps));
+    json_stopcriterion.push_back(JSONNode("percentchg", stopcriterion.percentChg));
     json_model.push_back(json_stopcriterion);
     json_model.push_back(JSONNode("likelihoodwindow", likelihoodBuffer_.size()));
     
@@ -367,7 +329,7 @@ void ProbabilisticModel::from_json(JSONNode root)
             throw JSONException("Wrong name: was expecting 'minsteps'", crit_it->name());
         if (crit_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", crit_it->name());
-        stopcriterion_.minSteps = static_cast<unsigned int>(crit_it->as_int());
+        stopcriterion.minSteps = static_cast<unsigned int>(crit_it->as_int());
         crit_it++;
         
         if (crit_it == root.end())
@@ -376,7 +338,7 @@ void ProbabilisticModel::from_json(JSONNode root)
             throw JSONException("Wrong name: was expecting 'maxsteps'", crit_it->name());
         if (crit_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", crit_it->name());
-        stopcriterion_.maxSteps = static_cast<unsigned int>(crit_it->as_int());
+        stopcriterion.maxSteps = static_cast<unsigned int>(crit_it->as_int());
         crit_it++;
         
         if (crit_it == root.end())
@@ -385,7 +347,7 @@ void ProbabilisticModel::from_json(JSONNode root)
             throw JSONException("Wrong name: was expecting 'percentchg'", crit_it->name());
         if (crit_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", crit_it->name());
-        stopcriterion_.percentChg = static_cast<double>(crit_it->as_float());
+        stopcriterion.percentChg = static_cast<double>(crit_it->as_float());
         
         root_it++;
         
@@ -396,7 +358,7 @@ void ProbabilisticModel::from_json(JSONNode root)
             throw JSONException("Wrong name: was expecting 'likelihoodwindow'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        this->set_likelihoodBufferSize(static_cast<unsigned int>(root_it->as_int()));
+        this->set_likelihoodwindow(static_cast<unsigned int>(root_it->as_int()));
         root_it++;
         
     } catch (JSONException &e) {

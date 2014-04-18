@@ -604,7 +604,10 @@ double HMM::train_EM_update()
     
     // set covariance and mixture coefficients to zero for each state
     for (int i=0; i<nbStates_; i++) {
-        states_[i].setParametersToZero();
+        for (int c=0; c<nbMixtureComponents_; c++) {
+            states_[i].mixtureCoeffs[c] = 0.;
+            states_[i].components[c].covariance.assign(dimension_ * dimension_, 0.0);
+        }
     }
     
     baumWelch_estimateMixtureCoefficients();
@@ -782,9 +785,7 @@ void HMM::baumWelch_estimateMeans()
         phraseLength = it->second->length();
         for (int i=0; i<nbStates_; i++) {
             for (int c=0; c<nbMixtureComponents_; c++) {
-                for (int d=0; d<dimension_; d++) {
-                    states_[i].components[c].mean[d] = 0.0;
-                }
+                states_[i].components[c].mean.assign(dimension_, 0.0);
             }
             for (int t=0; t<phraseLength; t++) {
                 for (int c=0; c<nbMixtureComponents_; c++) {

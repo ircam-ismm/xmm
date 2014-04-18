@@ -100,17 +100,6 @@ public:
      */
     void set_dimension_input(unsigned int dimension_input);
     
-    /**
-     * @brief Get offset added to diagonal covariance
-     * @return offset
-     */
-    double offset() const;
-    
-    /**
-     * @brief Set offset added to diagonal covariance
-     */
-    void set_offset(double offset);
-    
     /*@}*/
 
 #pragma mark > Likelihood & Regression
@@ -182,12 +171,6 @@ public:
     void allocate();
     
     /**
-     * @brief Set Mean and Covariance to 0
-     * @param initMeans if false, means are not initialized (useful when no re-estimation for HMMs)
-     */
-    void setParametersToZero(bool initMeans = true);
-    
-    /**
      * @brief Add @a offset to the diagonal of the covariance matrix
      * @details Ensures convergence + generalization on few examples
      */
@@ -215,6 +198,11 @@ public:
      */
     vector<double> covariance;
     
+    /**
+     * @brief Offset added to diagonal covariance
+     */
+    double offset;
+    
 #pragma mark -
 #pragma mark === Private Attributes ===
 private:
@@ -232,11 +220,6 @@ private:
      * @brief Dimension of the input modality
      */
     unsigned int dimension_input_;
-    
-    /**
-     * @brief Offset added to diagonal covariance
-     */
-    double offset_;
     
     /**
      * @brief Determinant of the covariance matrix

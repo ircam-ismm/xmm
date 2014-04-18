@@ -46,58 +46,6 @@ void GMMGroup::set_covarianceOffset(float covarianceOffset_)
     }
 }
 
-int GMMGroup::get_EM_minSteps() const
-{
-    return this->referenceModel_.get_EM_minSteps();
-}
-
-int GMMGroup::get_EM_maxSteps() const
-{
-    return this->referenceModel_.get_EM_maxSteps();
-}
-
-double GMMGroup::get_EM_percentChange() const
-{
-    return this->referenceModel_.get_EM_percentChange();
-}
-
-void GMMGroup::set_EM_minSteps(int steps)
-{
-    this->referenceModel_.set_EM_minSteps(steps);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-        it->second.set_EM_minSteps(steps);
-    }
-}
-
-void GMMGroup::set_EM_maxSteps(int steps)
-{
-    this->referenceModel_.set_EM_maxSteps(steps);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-        it->second.set_EM_maxSteps(steps);
-    }
-}
-
-void GMMGroup::set_EM_percentChange(double logLikPercentChg_)
-{
-    this->referenceModel_.set_EM_percentChange(logLikPercentChg_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-        it->second.set_EM_percentChange(logLikPercentChg_);
-    }
-}
-
-unsigned int GMMGroup::get_likelihoodBufferSize() const
-{
-    return this->referenceModel_.get_likelihoodBufferSize();
-}
-
-void GMMGroup::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
-{
-    this->referenceModel_.set_likelihoodBufferSize(likelihoodBufferSize_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-        it->second.set_likelihoodBufferSize(likelihoodBufferSize_);
-    }
-}
-
 #pragma mark -
 #pragma mark Performance
 void GMMGroup::performance_update(vector<float> const& observation)
@@ -119,8 +67,8 @@ void GMMGroup::performance_update(vector<float> const& observation)
         results_instant_likelihoods[i] /= norm_const;
     
     if (bimodal_) {
-        unsigned int dimension = this->referenceModel_.get_dimension();
-        unsigned int dimension_input = this->referenceModel_.get_dimension_input();
+        unsigned int dimension = this->referenceModel_.dimension();
+        unsigned int dimension_input = this->referenceModel_.dimension_input();
         unsigned int dimension_output = dimension - dimension_input;
         
         if (this->performanceMode_ == this->LIKELIEST) {
@@ -153,9 +101,9 @@ JSONNode GMMGroup::to_json() const
     JSONNode json_ccmodels(JSON_NODE);
     json_ccmodels.set_name("GMMGroup");
     json_ccmodels.push_back(JSONNode("bimodal", bimodal_));
-    json_ccmodels.push_back(JSONNode("dimension", get_dimension()));
+    json_ccmodels.push_back(JSONNode("dimension", dimension()));
     if (bimodal_)
-        json_ccmodels.push_back(JSONNode("dimension_input", get_dimension_input()));
+        json_ccmodels.push_back(JSONNode("dimension_input", dimension_input()));
     json_ccmodels.push_back(JSONNode("size", models.size()));
     json_ccmodels.push_back(JSONNode("performancemode", int(performanceMode_)));
     json_ccmodels.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));

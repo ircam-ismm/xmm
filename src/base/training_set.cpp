@@ -125,12 +125,12 @@ void TrainingSet::set_parent(Listener* parent)
     parent_ = parent;
 }
 
-unsigned int TrainingSet::get_dimension()
+unsigned int TrainingSet::dimension()
 {
     return dimension_;
 }
 
-unsigned int TrainingSet::get_dimension_input()
+unsigned int TrainingSet::dimension_input()
 {
     return dimension_input_;
 }

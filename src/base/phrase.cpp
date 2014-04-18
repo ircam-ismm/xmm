@@ -162,19 +162,19 @@ void Phrase::trim()
         length_ = (length_output_ > length_input_) ? length_input_ : length_output_;
 }
 
-unsigned int Phrase::get_dimension() const
+unsigned int Phrase::dimension() const
 {
     return dimension_;
 }
 
-unsigned int Phrase::get_dimension_input() const
+unsigned int Phrase::dimension_input() const
 {
     if (!bimodal_)
         throw runtime_error("Phrase is not Bimodal");
     return dimension_input_;
 }
 
-unsigned int Phrase::get_dimension_output() const
+unsigned int Phrase::dimension_output() const
 {
     if (!bimodal_)
         throw runtime_error("Phrase is not Bimodal");

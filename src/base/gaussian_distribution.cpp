@@ -18,7 +18,7 @@ GaussianDistribution::GaussianDistribution(rtml_flags flags,
 : bimodal_(flags & BIMODAL),
   dimension_(dimension),
   dimension_input_(dimension_input),
-  offset_(offset),
+  offset(offset),
   covarianceDeterminant(0.),
   covarianceDeterminant_input_(0.)
 {
@@ -42,7 +42,7 @@ GaussianDistribution& GaussianDistribution::operator=(GaussianDistribution const
 void GaussianDistribution::_copy(GaussianDistribution *dst, GaussianDistribution const& src)
 {
     dst->dimension_ = src.dimension_;
-    dst->offset_ = src.offset_;
+    dst->offset = src.offset;
     dst->bimodal_ = src.bimodal_;
     dst->dimension_input_ = src.dimension_input_;
     dst->mean = src.mean;
@@ -88,16 +88,6 @@ void GaussianDistribution::set_dimension_input(unsigned int dimension_input)
     if (dimension_input > dimension_ - 1)
         throw out_of_range("Input dimension is out of bounds.");
     dimension_input_ = dimension_input;
-}
-
-double GaussianDistribution::offset() const
-{
-    return offset_;
-}
-
-void GaussianDistribution::set_offset(double offset)
-{
-    offset_ = offset;
 }
 
 #pragma mark Likelihood & Regression
@@ -206,7 +196,7 @@ JSONNode GaussianDistribution::to_json() const
     // Scalar Attributes
     json_gaussDist.push_back(JSONNode("dimension", dimension_));
     json_gaussDist.push_back(JSONNode("dimension_input", dimension_input_));
-    json_gaussDist.push_back(JSONNode("offset", offset_));
+    json_gaussDist.push_back(JSONNode("offset", offset));
     
     // Model Parameters
     json_gaussDist.push_back(vector2json(mean, "mean"));
@@ -249,7 +239,7 @@ JSONNode GaussianDistribution::to_json() const
             throw JSONException("Wrong name: was expecting 'offset'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        offset_ = root_it->as_float();
+        offset = root_it->as_float();
         ++root_it;
         
         allocate();
@@ -292,19 +282,11 @@ void GaussianDistribution::allocate()
         inverseCovariance_input_.resize(dimension_input_ * dimension_input_);
 }
 
-void GaussianDistribution::setParametersToZero(bool initMeans)
-{
-    if (initMeans)
-        fill(mean.begin(), mean.end(), 0.);
-    fill(covariance.begin(), covariance.end(), 0.);
-    fill(inverseCovariance_.begin(), inverseCovariance_.end(), 0.);
-}
-
 void GaussianDistribution::addOffset()
 {
     for (int d = 0; d < dimension_; ++d)
     {
-        covariance[d * dimension_ + d] += offset_;
+        covariance[d * dimension_ + d] += offset;
     }
 }
 

@@ -69,58 +69,6 @@ void   HierarchicalHMM::set_covarianceOffset(float covarianceOffset_)
     }
 }
 
-int HierarchicalHMM::get_EM_minSteps() const
-{
-    return this->referenceModel_.get_EM_minSteps();
-}
-
-int HierarchicalHMM::get_EM_maxSteps() const
-{
-    return this->referenceModel_.get_EM_maxSteps();
-}
-
-double HierarchicalHMM::get_EM_percentChange() const
-{
-    return this->referenceModel_.get_EM_percentChange();
-}
-
-void HierarchicalHMM::set_EM_minSteps(int steps)
-{
-    this->referenceModel_.set_EM_minSteps(steps);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.set_EM_minSteps(steps);
-    }
-}
-
-void HierarchicalHMM::set_EM_maxSteps(int steps)
-{
-    this->referenceModel_.set_EM_maxSteps(steps);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.set_EM_maxSteps(steps);
-    }
-}
-
-void HierarchicalHMM::set_EM_percentChange(double logLikPercentChg_)
-{
-    this->referenceModel_.set_EM_percentChange(logLikPercentChg_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.set_EM_percentChange(logLikPercentChg_);
-    }
-}
-
-unsigned int HierarchicalHMM::get_likelihoodBufferSize() const
-{
-    return this->referenceModel_.get_likelihoodBufferSize();
-}
-
-void HierarchicalHMM::set_likelihoodBufferSize(unsigned int likelihoodBufferSize_)
-{
-    this->referenceModel_.set_likelihoodBufferSize(likelihoodBufferSize_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.set_likelihoodBufferSize(likelihoodBufferSize_);
-    }
-}
-
 bool HierarchicalHMM::get_estimateMeans() const
 {
     return this->referenceModel_.estimateMeans_;
@@ -617,8 +565,8 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
     }
     
     if (bimodal_) {
-        unsigned int dimension = this->referenceModel_.get_dimension();
-        unsigned int dimension_input = this->referenceModel_.get_dimension_input();
+        unsigned int dimension = this->referenceModel_.dimension();
+        unsigned int dimension_input = this->referenceModel_.dimension_input();
         unsigned int dimension_output = dimension - dimension_input;
         
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -656,16 +604,16 @@ JSONNode HierarchicalHMM::to_json() const
     JSONNode json_hhmm(JSON_NODE);
     json_hhmm.set_name("HierarchicalHMM");
     json_hhmm.push_back(JSONNode("bimodal", bimodal_));
-    json_hhmm.push_back(JSONNode("dimension", get_dimension()));
+    json_hhmm.push_back(JSONNode("dimension", dimension()));
     if (bimodal_)
-        json_hhmm.push_back(JSONNode("dimension_input", get_dimension_input()));
+        json_hhmm.push_back(JSONNode("dimension_input", dimension_input()));
     JSONNode json_stopcriterion(JSON_NODE);
     json_stopcriterion.set_name("EMStopCriterion");
     json_stopcriterion.push_back(JSONNode("minsteps", get_EM_minSteps()));
     json_stopcriterion.push_back(JSONNode("maxsteps", get_EM_maxSteps()));
     json_stopcriterion.push_back(JSONNode("percentchg", get_EM_percentChange()));
     json_hhmm.push_back(json_stopcriterion);
-    json_hhmm.push_back(JSONNode("likelihoodwindow", get_likelihoodBufferSize()));
+    json_hhmm.push_back(JSONNode("likelihoodwindow", get_likelihoodwindow()));
     json_hhmm.push_back(JSONNode("estimatemeans", get_estimateMeans()));
     json_hhmm.push_back(JSONNode("size", models.size()));
     json_hhmm.push_back(JSONNode("performancemode", int(performanceMode_)));
@@ -801,7 +749,7 @@ void HierarchicalHMM::from_json(JSONNode root)
             throw JSONException("Wrong name: was expecting 'likelihoodwindow'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        this->set_likelihoodBufferSize((unsigned int)(root_it->as_int()));
+        this->set_likelihoodwindow((unsigned int)(root_it->as_int()));
         root_it++;
 
         // Get likelihood window size

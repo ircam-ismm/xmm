@@ -232,12 +232,6 @@ protected:
     void initMeansWithFirstPhrase();
     
     /**
-     * @brief Set model parameters to zero, except means (sometimes means are not re-estimated in the training algorithm)
-     * @todo Add initMeans as a parameter? >> look in GMM training where it is done.
-     */
-    void setParametersToZero();
-    
-    /**
      * @brief Initialize the EM Training Algorithm
      * @details Initializes the Gaussian Components from the first phrase
      * of the Training Set

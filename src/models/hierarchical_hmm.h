@@ -117,60 +117,6 @@ public:
      */
     void set_transitionMode(string transMode_str);
     
-    /**
-     * @brief Get minimum number of EM steps
-     * @return minimum number of steps of the EM algorithm
-     */
-    int get_EM_minSteps() const;
-    
-    /**
-     * @brief Get maximum number of EM steps
-     * @return maximum number of steps of the EM algorithm
-     * @see EMStopCriterion
-     */
-    int get_EM_maxSteps() const;
-    
-    /**
-     * @brief Get EM convergence threshold in percent-change of the likelihood
-     * @return loglikelihood percent-change convergence threshold
-     * @see EMStopCriterion
-     */
-    double get_EM_percentChange() const;
-    
-    /**
-     * @brief Set minimum number of steps of the EM algorithm
-     * @param steps minimum number of steps of the EM algorithm
-     * @throws invalid_argument if steps < 1
-     */
-    void set_EM_minSteps(int steps);
-    
-    /**
-     * @brief Set maximum number of steps of the EM algorithm
-     * @param steps maximum number of steps of the EM algorithm
-     * @throws invalid_argument if steps < 1
-     */
-    void set_EM_maxSteps(int steps);
-    
-    /**
-     * @brief Set convergence threshold in percent-change of the likelihood
-     * @param logLikelihoodPercentChg log-likelihood percent-change convergence threshold
-     * @throws invalid_argument if logLikelihoodPercentChg <= 0
-     */
-    void set_EM_percentChange(double logLikelihoodPercentChg);
-    
-    /**
-     * @brief get size of the likelihood smoothing buffer (number of frames)
-     * @return size of the likelihood smoothing buffer
-     */
-    unsigned int get_likelihoodBufferSize() const;
-    
-    /**
-     * @brief set size of the likelihood smoothing buffer (number of frames)
-     * @param likelihoodBufferSize size of the likelihood smoothing buffer
-     * @throws invalid_argument if likelihoodBufferSize is < 1
-     */
-    void set_likelihoodBufferSize(unsigned int likelihoodBufferSize);
-    
     bool get_estimateMeans() const;
     
     void set_estimateMeans(bool _estimateMeans);

@@ -123,14 +123,14 @@ public:
      * @brief Get total dimension of the training data
      * @return dimension of the training data
      */
-    unsigned int get_dimension();
+    unsigned int dimension();
     
     /**
      * @brief Get dimension of the input modality in bimodal mode
      * @return dimension of the input modality
      * @throws runtime_error if the phrase is unimodal (no BIMODAL construction flag)
      */
-    unsigned int get_dimension_input();
+    unsigned int dimension_input();
     
     /**
      * @brief Set total dimension of the training data

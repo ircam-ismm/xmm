@@ -115,17 +115,17 @@ public:
     /**
      * @return total dimension of the data
      */
-    unsigned int get_dimension() const;
+    unsigned int dimension() const;
     
     /**
      * @return dimension of the input modality
      */
-    unsigned int get_dimension_input() const;
+    unsigned int dimension_input() const;
     
     /**
      * @return dimension of the output modality
      */
-    unsigned int get_dimension_output() const;
+    unsigned int dimension_output() const;
     
     /**
      * Set total dimension

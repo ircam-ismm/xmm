@@ -73,7 +73,7 @@ void GMM::set_covarianceOffset(float covarianceOffset)
     
     covarianceOffset_ = covarianceOffset;
     for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
-        component->set_offset(covarianceOffset_);
+        component->offset = covarianceOffset_;
     }
 }
 
@@ -296,14 +296,6 @@ void GMM::initMeansWithFirstPhrase()
             }
         }
         offset += step;
-    }
-}
-
-void GMM::setParametersToZero()
-{
-    for (int c=0; c<nbMixtureComponents_; c++) {
-        mixtureCoeffs[c] = 0.;
-        components[c].setParametersToZero(false);
     }
 }
 

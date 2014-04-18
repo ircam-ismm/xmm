@@ -180,9 +180,9 @@ public:
      * @brief Get Total Dimension of the model (sum of dimension of modalities)
      * @return total dimension of Gaussian Distributions
      */
-    int get_dimension() const
+    int dimension() const
     {
-        return this->referenceModel_.get_dimension();
+        return this->referenceModel_.dimension();
     }
     
     /**
@@ -191,11 +191,11 @@ public:
      * @return dimension of the input modality
      * @throws runtime_error if not in bimodal mode
      */
-    int get_dimension_input() const
+    int dimension_input() const
     {
         if (!bimodal_)
             throw runtime_error("Model is not bimodal");
-        return this->referenceModel_.get_dimension_input();
+        return this->referenceModel_.dimension_input();
     }
     
     /**
@@ -228,6 +228,98 @@ public:
             return "likeliest";
         else
             return "mixture";
+    }
+    
+    /**
+     * @brief Get minimum number of EM steps
+     * @return minimum number of steps of the EM algorithm
+     */
+    int get_EM_minSteps() const
+    {
+        return this->referenceModel_.stopcriterion.minSteps;
+    }
+    
+    /**
+     * @brief Get maximum number of EM steps
+     * @return maximum number of steps of the EM algorithm
+     * @see EMStopCriterion
+     */
+    int get_EM_maxSteps() const
+    {
+        return this->referenceModel_.stopcriterion.maxSteps;
+    }
+    
+    /**
+     * @brief Get EM convergence threshold in percent-change of the likelihood
+     * @return loglikelihood percent-change convergence threshold
+     * @see EMStopCriterion
+     */
+    double get_EM_percentChange() const
+    {
+        return this->referenceModel_.stopcriterion.percentChg;
+    }
+    
+    /**
+     * @brief Set minimum number of steps of the EM algorithm
+     * @param steps minimum number of steps of the EM algorithm
+     * @throws invalid_argument if steps < 1
+     */
+    void set_EM_minSteps(int steps)
+    {
+        this->referenceModel_.stopcriterion.minSteps = steps;
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            it->second.stopcriterion.minSteps = steps;
+        }
+    }
+    
+    /**
+     * @brief Set maximum number of steps of the EM algorithm
+     * @param steps maximum number of steps of the EM algorithm
+     * @throws invalid_argument if steps < 1
+     */
+    void set_EM_maxSteps(int steps)
+    {
+        this->referenceModel_.stopcriterion.maxSteps = steps;
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            it->second.stopcriterion.maxSteps = steps;
+        }
+    }
+    
+    /**
+     * @brief Set convergence threshold in percent-change of the likelihood
+     * @param logLikelihoodPercentChg log-likelihood percent-change convergence threshold
+     * @throws invalid_argument if logLikelihoodPercentChg <= 0
+     */
+    void set_EM_percentChange(double logLikPercentChg_)
+    {
+        this->referenceModel_.stopcriterion.percentChg = logLikPercentChg_;
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            it->second.stopcriterion.percentChg = logLikPercentChg_;
+        }
+    }
+    
+    /**
+     * @brief get size of the likelihood smoothing buffer (number of frames)
+     * @return size of the likelihood smoothing buffer
+     */
+    
+    unsigned int get_likelihoodwindow() const
+    {
+        return this->referenceModel_.get_likelihoodwindow();
+    }
+    
+    /**
+     * @brief set size of the likelihood smoothing buffer (number of frames)
+     * @param likelihoodwindow size of the likelihood smoothing buffer
+     * @throws invalid_argument if likelihoodwindow is < 1
+     */
+    
+    void set_likelihoodwindow(unsigned int likelihoodwindow)
+    {
+        this->referenceModel_.set_likelihoodwindow(likelihoodwindow);
+        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+            it->second.set_likelihoodwindow(likelihoodwindow);
+        }
     }
     
     /*@}*/
