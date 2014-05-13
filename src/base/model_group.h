@@ -437,7 +437,7 @@ public:
         }
         results_instant_likelihoods.resize(size());
         if (bimodal_)
-            results_predicted_output.resize(size());
+            results_predicted_output.resize(dimension() - dimension_input());
     }
     
 #pragma mark -
