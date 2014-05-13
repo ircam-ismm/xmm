@@ -5,7 +5,7 @@
 //
 // Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
 // author: Jules Francoise <jules.francoise@ircam.fr>
-// 
+//
 
 #include <cmath>
 #include "probabilistic_model.h"
@@ -13,7 +13,7 @@
 #pragma mark -
 #pragma mark Constructors
 ProbabilisticModel::ProbabilisticModel(rtml_flags flags,
-                                           TrainingSet *trainingSet)
+                                       TrainingSet *trainingSet)
 : trainingSet(trainingSet),
 trained(false),
 trainingProgression(0),
@@ -57,7 +57,7 @@ ProbabilisticModel& ProbabilisticModel::operator=(ProbabilisticModel const& src)
 };
 
 void ProbabilisticModel::_copy(ProbabilisticModel *dst,
-                   ProbabilisticModel const& src)
+                               ProbabilisticModel const& src)
 {
     dst->flags_ = src.flags_;
     dst->trained = src.trained;
@@ -180,10 +180,12 @@ int ProbabilisticModel::train()
             // TODO: Integrate exception pointer???
             if (this->trainingCallback_) {
                 this->trainingCallback_(this, TRAINING_ERROR, this->trainingExtradata_);
-                return -1;
             }
-            else
-                throw runtime_error("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)");
+#if __cplusplus > 199711L
+            return -1;
+#else
+            throw runtime_error("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)");
+#endif
         }
     } while (!train_EM_hasConverged(nbIterations, log_prob, old_log_prob));
     
@@ -307,7 +309,7 @@ void ProbabilisticModel::from_json(JSONNode root)
             if (root_it->name() != "dimension_input")
                 throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
             if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+                throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             dimension_input_ = static_cast<unsigned int>(root_it->as_int());
             ++root_it;
         }

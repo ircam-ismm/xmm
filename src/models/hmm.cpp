@@ -443,12 +443,13 @@ double HMM::forward_update(const float* observation,
         }
         norm_const += alpha[j];
     }
-    if (norm_const > 0) {
+    if (norm_const > 1e-300) {
         for (int j=0; j<nbStates_; j++) {
             alpha[j] /= norm_const;
         }
         return 1./norm_const;
     } else {
+        return 0.;
         for (int j=0; j<nbStates_; j++) {
             alpha[j] = 1./double(nbStates_);
         }

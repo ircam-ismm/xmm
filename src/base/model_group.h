@@ -358,13 +358,21 @@ public:
         map<Label, int> nbIterations;
         
 #if __cplusplus > 199711L
-        for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             thread (&ModelType::train, &it->second).detach();
         }
 #else
         // Sequential training
-        for (model_iterator it=models.begin(); it != models.end(); ++it) {
-            nbIterations[it->first] = it->second.train();
+        vector<Label> notConvergenced;
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+            try {
+                nbIterations[it->first] = it->second.train();
+            } catch (exception &e) {
+                notConvergenced.push_back(it->first);
+            }
+        }
+        for (vector<Label>::iterator it = notConvergenced.begin(); it != notConvergenced.end(); ++it) {
+            remove(*it);
         }
 #endif
         return nbIterations;
