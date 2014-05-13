@@ -203,6 +203,8 @@ public:
      */
     double offset;
     
+    vector<float> scale;
+    
 #pragma mark -
 #pragma mark === Private Attributes ===
 private:

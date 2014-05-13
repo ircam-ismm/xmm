@@ -522,8 +522,6 @@ protected:
         models[label].set_trainingSet(new_ts);
         new_ts->set_parent(&models[label]);
         models[label].trained = false;
-        cout << "reference model, flags = " << referenceModel_.flags_ << endl;
-        cout << "label = " << label << ", flags = " << models[label].flags_ << endl;
     }
     
     /**

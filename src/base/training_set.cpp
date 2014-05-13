@@ -19,6 +19,16 @@ TrainingSet::phrase_iterator TrainingSet::end()
     return phrases.end();
 }
 
+TrainingSet::const_phrase_iterator TrainingSet::cbegin() const
+{
+    return phrases.begin();
+}
+
+TrainingSet::const_phrase_iterator TrainingSet::cend() const
+{
+    return phrases.end();
+}
+
 TrainingSet::phrase_iterator TrainingSet::operator()(int n)
 {
     phrase_iterator pp = phrases.begin();
@@ -391,6 +401,48 @@ void TrainingSet::updateLabelList()
     for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
         allLabels.insert(it->second);
     }
+}
+
+#pragma mark Moments
+vector<float> TrainingSet::mean() const
+{
+    vector<float> mean(dimension_, 0.0);
+    unsigned int total_length(0);
+    for (const_phrase_iterator it = this->cbegin(); it != this->cend(); ++it)
+    {
+        for (unsigned int d=0; d<dimension_; d++) {
+            for (unsigned int t=0 ; t<it->second->length() ; t++) {
+                mean[d] += (*it->second)(t, d);
+            }
+        }
+        total_length += it->second->length();
+    }
+    
+    for (unsigned int d=0; d<dimension_; d++)
+        mean[d] /= float(total_length);
+    
+    return mean;
+}
+
+vector<float> TrainingSet::variance() const
+{
+    vector<float> variance(dimension_);
+    vector<float> _mean = mean();
+    unsigned int total_length(0);
+    for (const_phrase_iterator it = this->cbegin(); it != this->cend(); ++it)
+    {
+        for (unsigned int d=0; d<dimension_; d++) {
+            for (unsigned int t=0 ; t<it->second->length() ; t++) {
+                variance[d] += pow((*it->second)(t, d) - _mean[d], 2);
+            }
+        }
+        total_length += it->second->length();
+    }
+    
+    for (unsigned int d=0; d<dimension_; d++)
+        variance[d] /= float(total_length);
+    
+    return variance;
 }
 
 #pragma mark -

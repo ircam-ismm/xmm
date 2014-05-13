@@ -339,6 +339,7 @@ double GMM::train_EM_update()
                 p[c][tbase+t] /= norm_const;
                 E[c] += p[c][tbase+t];
             }
+            // TODO: re-introduce Exception?
             if (norm_const > 1.)
                 cout << "Training Error: covarianceOffset is too small\n";//throw runtime_error("Training Error: covarianceOffset is too small");
             log_prob += log(norm_const);
@@ -395,8 +396,14 @@ double GMM::train_EM_update()
 
 void GMM::initParametersToDefault()
 {
+    // TODO: move this in another method?
+    vector<float> global_trainingdata_var(dimension_, 1.0);
+    if (this->trainingSet)
+        global_trainingdata_var = this->trainingSet->variance();
+    
     double norm_coeffs(0.);
     for (int c=0; c<nbMixtureComponents_; c++) {
+        components[c].scale.assign(global_trainingdata_var.begin(), global_trainingdata_var.end());
         for (int d=0; d<dimension_; d++) {
             for (int d2=0; d2<dimension_; d2++) {
                 components[c].covariance[d * dimension_ + d2] = 1.;

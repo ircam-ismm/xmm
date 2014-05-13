@@ -176,6 +176,16 @@ public:
     phrase_iterator end();
     
     /**
+     * @brief constant iterator to the beginning of phrases
+     */
+    const_phrase_iterator cbegin() const;
+    
+    /**
+     * @brief constant iterator to the end of phrases
+     */
+    const_phrase_iterator cend() const;
+    
+    /**
      * @brief Access Phrase by index
      * @param n index of the phrase
      * @return iterator to the phrase of index n
@@ -330,6 +340,23 @@ public:
      * @throws out_of_range if the label does not exist
      */
     TrainingSet* getSubTrainingSetForClass(Label const& label);
+    
+    /*@}*/
+    
+#pragma mark > Moments
+    /*@{*/
+    /** @name Moments */
+    /**
+     * @brief Compute the global mean of all data phrases along the time axis
+     * @return global mean of all phrases (along time axis, full-size)
+     */
+    vector<float> mean() const;
+    
+    /**
+     * @brief Compute the global variance of all data phrases along the time axis
+     * @return global variance of all phrases (along time axis, full-size)
+     */
+    vector<float> variance() const;
     
     /*@}*/
 

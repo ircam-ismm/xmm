@@ -280,13 +280,14 @@ void GaussianDistribution::allocate()
     inverseCovariance_.resize(dimension_ * dimension_);
     if (bimodal_)
         inverseCovariance_input_.resize(dimension_input_ * dimension_input_);
+    scale.assign(dimension_, 1.0);
 }
 
 void GaussianDistribution::addOffset()
 {
     for (int d = 0; d < dimension_; ++d)
     {
-        covariance[d * dimension_ + d] += offset;
+        covariance[d * dimension_ + d] += offset * scale[d];
     }
 }
 
