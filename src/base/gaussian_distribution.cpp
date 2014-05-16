@@ -288,6 +288,8 @@ void GaussianDistribution::addOffset()
     for (int d = 0; d < dimension_; ++d)
     {
         covariance[d * dimension_ + d] += offset * scale[d];
+        if (covariance[d * dimension_ + d] == 0.)
+            covariance[d * dimension_ + d] = 0.001;
     }
 }
 

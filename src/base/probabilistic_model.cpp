@@ -164,16 +164,18 @@ int ProbabilisticModel::train()
     int nbIterations(0);
     
     do {
+        bool trainingError(false);
         old_log_prob = log_prob;
-        log_prob = this->train_EM_update();
-        ++nbIterations;
+        try {
+            log_prob = this->train_EM_update();
+        } catch (exception &e) {
+            trainingError = true;
+        }
         
-        if (stopcriterion.maxSteps > stopcriterion.minSteps)
-            this->trainingProgression = float(nbIterations) / float(stopcriterion.maxSteps);
-        else
-            this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
+        if (isnan(100.*fabs((log_prob-old_log_prob)/old_log_prob)) && (nbIterations > 1))
+            trainingError = true;
         
-        if (isnan(100.*fabs((log_prob-old_log_prob)/old_log_prob)) && (nbIterations > 1)) {
+        if (trainingError) {
 #if __cplusplus > 199711L
             this->trainingMutex.unlock();
 #endif
@@ -186,6 +188,17 @@ int ProbabilisticModel::train()
 #else
             throw runtime_error("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)");
 #endif
+        }
+        
+        ++nbIterations;
+        
+        if (stopcriterion.maxSteps > stopcriterion.minSteps)
+            this->trainingProgression = float(nbIterations) / float(stopcriterion.maxSteps);
+        else
+            this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
+        
+        if (this->trainingCallback_) {
+            this->trainingCallback_(this, TRAINING_RUN, this->trainingExtradata_);
         }
     } while (!train_EM_hasConverged(nbIterations, log_prob, old_log_prob));
     
