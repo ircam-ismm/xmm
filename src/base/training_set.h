@@ -341,6 +341,12 @@ public:
      */
     TrainingSet* getSubTrainingSetForClass(Label const& label);
     
+    /**
+     * @brief create all the sub-training sets: one for each label
+     * @details each subset contains only the phrase for the given label
+     */
+    void updateSubTrainingSets();
+    
     /*@}*/
     
 #pragma mark > Moments
@@ -440,12 +446,6 @@ private:
      * @brief update the sub-training set for a given label
      */
     void updateSubTrainingSet(Label const& label);
-    
-    /**
-     * @brief create all the sub-training sets: one for each label
-     * @details each subset contains only the phrase for the given label
-     */
-    void updateSubTrainingSets();
     
     /**
      * @brief update the list of all existing labels of the training set

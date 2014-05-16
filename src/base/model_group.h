@@ -8,8 +8,8 @@
 // contact: jules.francoise@ircam.fr
 //
 
-#ifndef rtml_concurrent_models_h
-#define rtml_concurrent_models_h
+#ifndef rtml_model_group_h
+#define rtml_model_group_h
 
 #include "probabilistic_model.h"
 #if __cplusplus > 199711L
@@ -486,6 +486,8 @@ protected:
     {
         if (globalTrainingSet->is_empty()) return;
         
+        globalTrainingSet->updateSubTrainingSets();
+        
         // Look for deleted classes
         bool contLoop(true);
         while (contLoop) {
@@ -493,7 +495,6 @@ protected:
             for (model_iterator it = models.begin(); it != models.end(); ++it) {
                 if (globalTrainingSet->allLabels.find(it->first) == globalTrainingSet->allLabels.end())
                 {
-                    delete models[it->first].trainingSet;
                     models.erase(it->first);
                     contLoop = true;
                     break;

@@ -374,7 +374,6 @@ TrainingSet* TrainingSet::getSubTrainingSetForClass(Label const& label)
 
 void TrainingSet::updateSubTrainingSet(Label const& label)
 {
-    TrainingSet defts(flags_, NULL, dimension_, dimension_input_);
     subTrainingSets_[label] = TrainingSet(flags_, NULL, dimension_, dimension_input_);
     subTrainingSets_[label].setDefaultLabel(label);
     subTrainingSets_[label].lock();
@@ -390,6 +389,7 @@ void TrainingSet::updateSubTrainingSet(Label const& label)
 
 void TrainingSet::updateSubTrainingSets()
 {
+    subTrainingSets_.clear();
     for (set<Label>::iterator label_it = allLabels.begin(); label_it != allLabels.end(); ++label_it) {
         updateSubTrainingSet(*label_it);
     }
