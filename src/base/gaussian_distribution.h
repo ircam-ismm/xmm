@@ -22,7 +22,7 @@ const double GAUSSIAN_DEFAULT_COVARIANCE_OFFSET = 0.01;
  * Should avoid probabilities > 1 in most cases
  * @todo Weird stuff, to check.
  */
-const double EPSILON_GAUSSIAN = 1.0e-40;
+const double EPSILON_GAUSSIAN = 1.0e-20;
 
 /**
  * @ingroup ModelBase
