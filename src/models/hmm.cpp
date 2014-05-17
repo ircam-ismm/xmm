@@ -779,15 +779,19 @@ void HMM::baumWelch_estimateMixtureCoefficients()
 void HMM::baumWelch_estimateMeans()
 {
     int phraseLength;
+    
+    for (int i=0; i<nbStates_; i++) {
+        for (int c=0; c<nbMixtureComponents_; c++) {
+            states_[i].components[c].mean.assign(dimension_, 0.0);
+        }
+    }
+    
     // Re-estimate Mean
     int phraseIndex(0);
     for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++)
     {
         phraseLength = it->second->length();
         for (int i=0; i<nbStates_; i++) {
-            for (int c=0; c<nbMixtureComponents_; c++) {
-                states_[i].components[c].mean.assign(dimension_, 0.0);
-            }
             for (int t=0; t<phraseLength; t++) {
                 for (int c=0; c<nbMixtureComponents_; c++) {
                     for (int d=0; d<dimension_; d++) {
