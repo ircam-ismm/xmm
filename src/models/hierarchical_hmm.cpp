@@ -399,7 +399,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
     l = 0;
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.results_likelihoodnorm = it->second.results_instant_likelihood / norm_const;
-        results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
+        //results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
     }
     
     forwardInitialized_ = true;
@@ -505,7 +505,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* obs
     l = 0;
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.results_likelihoodnorm = it->second.results_instant_likelihood / norm_const;
-        results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
+        //results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
     }
     
     return likeliestModel;

@@ -63,8 +63,8 @@ void GMMGroup::performance_update(vector<float> const& observation)
         norm_const += results_instant_likelihoods[i++];
     }
     
-    for (unsigned int i=0; i<this->models.size(); i++)
-        results_instant_likelihoods[i] /= norm_const;
+    //    for (unsigned int i=0; i<this->models.size(); i++)
+    //        results_instant_likelihoods[i] /= norm_const;
     
     if (bimodal_) {
         unsigned int dimension = this->referenceModel_.dimension();
