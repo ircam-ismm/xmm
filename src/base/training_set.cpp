@@ -158,6 +158,9 @@ void TrainingSet::set_dimension(unsigned int dimension)
         p->second->set_dimension(dimension_);
     }
     
+    for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
+        it->second.set_dimension(dimension_);
+    
     if (this->parent_)
         this->parent_->notify("dimension");
 }
@@ -177,6 +180,9 @@ void TrainingSet::set_dimension_input(unsigned int dimension_input)
     for (phrase_iterator p = phrases.begin(); p != phrases.end(); p++) {
         p->second->set_dimension_input(dimension_input_);
     }
+    
+    for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
+        it->second.set_dimension_input(dimension_input_);
     
     if (this->parent_)
         this->parent_->notify("dimension_input");
