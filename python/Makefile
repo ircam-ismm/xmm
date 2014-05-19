@@ -22,9 +22,9 @@ SWIGOPT=#-debug-template
 
 compile: mhmm.i setup.py $(LIB_DIR)*.h $(RTML_DIR)*.h $(RTML_DIR)*.cpp #$(LIB_DIR)*.cpp
 	@echo "\nCompiling JSON Library\n"
-	@(cd $(JSON_XCODE_DIR) && xcodebuild)
-	@(cd $(JSON_XCODE_DIR) && xcodebuild install)
-	@(cd $(JSON_XCODE_DIR) && xcodebuild clean)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig install)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig clean)
 	# @echo "\ngenerating doc\n"
 	# @(cd ../doc/ && $(DOXYGEN))
 	# python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
