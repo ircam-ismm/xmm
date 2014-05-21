@@ -54,7 +54,7 @@ namespace std {
 //     memcpy(PyArray_DATA($result),&amp;((*(&amp;$1))[0]),sizeof(double)*length);
 // }
 
-// %include mhmm_doc.i
+%include mhmm_doc.i
 %include "mbd_common.h"
 %include "phrase.h"
 %include "label.h"

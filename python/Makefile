@@ -25,9 +25,9 @@ compile: mhmm.i setup.py $(LIB_DIR)*.h $(RTML_DIR)*.h $(RTML_DIR)*.cpp #$(LIB_DI
 	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig)
 	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig install)
 	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig clean)
-	# @echo "\ngenerating doc\n"
-	# @(cd ../doc/ && $(DOXYGEN))
-	# python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
+	@echo "\ngenerating doc\n"
+	@(cd ../doc/ && $(DOXYGEN))
+	python doxy2swig.py $(DOC_DIR)xml/index.xml mhmm_doc.i
 	@echo "\nCompiling MHMM Library\n"
 	$(SWIG) -c++ $(SWIGOPT) -I$(LIB_DIR) -I$(RTML_DIR) -python mhmm.i
 	python setup.py build_ext --inplace
