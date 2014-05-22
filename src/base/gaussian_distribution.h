@@ -16,7 +16,7 @@
 /**
  * default offset for covariance matrix
  */
-const double GAUSSIAN_DEFAULT_COVARIANCE_OFFSET = 0.01;
+const double GAUSSIAN_DEFAULT_COVARIANCE_OFFSET = 1.;
 
 /**
  * Should avoid probabilities > 1 in most cases

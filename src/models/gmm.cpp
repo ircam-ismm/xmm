@@ -13,7 +13,7 @@
 GMM::GMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbMixtureComponents,
-         float covarianceOffset)
+         double covarianceOffset)
 : ProbabilisticModel(flags, trainingSet)
 {
     nbMixtureComponents_  = nbMixtureComponents;
@@ -52,7 +52,7 @@ int GMM::get_nbMixtureComponents() const
     return nbMixtureComponents_;
 }
 
-float GMM::get_covarianceOffset() const
+double GMM::get_covarianceOffset() const
 {
     return covarianceOffset_;
 }
@@ -67,7 +67,7 @@ void GMM::set_nbMixtureComponents(int nbMixtureComponents)
     this->trained = false;
 }
 
-void GMM::set_covarianceOffset(float covarianceOffset)
+void GMM::set_covarianceOffset(double covarianceOffset)
 {
     if (covarianceOffset <= 0.) throw invalid_argument("Covariance offset must be > 0");
     

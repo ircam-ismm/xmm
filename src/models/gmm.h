@@ -56,7 +56,7 @@ public:
     GMM(rtml_flags flags = NONE,
         TrainingSet *trainingSet=NULL,
         int nbMixtureComponents = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
-        float covarianceOffset = GAUSSIAN_DEFAULT_COVARIANCE_OFFSET);
+        double covarianceOffset = GAUSSIAN_DEFAULT_COVARIANCE_OFFSET);
     
     /**
      * @brief Copy constructor
@@ -90,7 +90,7 @@ public:
      * @brief Get Offset added to covariance matrices for convergence
      * @return Offset added to covariance matrices for convergence
      */
-    float get_covarianceOffset() const;
+    double get_covarianceOffset() const;
     
     /**
      * @brief Set the number of mixture components of the model
@@ -106,7 +106,7 @@ public:
      * @param covarianceOffset offset to add to the diagonal of covariance matrices
      * @throws invalid_argument if the covariance offset is <= 0
      */
-    void set_covarianceOffset(float covarianceOffset);
+    void set_covarianceOffset(double covarianceOffset);
     
     /*@}*/
 
@@ -305,7 +305,7 @@ protected:
     /**
      * @brief Offset Added to the diagonal of covariance matrices for convergence
      */
-    float covarianceOffset_;
+    double covarianceOffset_;
 };
 
 

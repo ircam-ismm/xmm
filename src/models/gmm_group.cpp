@@ -33,12 +33,12 @@ void GMMGroup::set_nbMixtureComponents(int nbMixtureComponents_)
     }
 }
 
-float GMMGroup::get_covarianceOffset() const
+double GMMGroup::get_covarianceOffset() const
 {
     return this->referenceModel_.get_covarianceOffset();
 }
 
-void GMMGroup::set_covarianceOffset(float covarianceOffset_)
+void GMMGroup::set_covarianceOffset(double covarianceOffset_)
 {
     this->referenceModel_.set_covarianceOffset(covarianceOffset_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {

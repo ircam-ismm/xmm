@@ -132,13 +132,13 @@ public:
      * @brief Get the offset added to the diagonal of covariance matrices for convergence
      * @return offset added to the diagonal of covariance matrices
      */
-    float  get_covarianceOffset() const;
+    double  get_covarianceOffset() const;
     
     /**
      * @brief Get the offset added to the diagonal of covariance matrices for convergence
      * @param covarianceOffset offset added to the diagonal of covariance matrices
      */
-    void set_covarianceOffset(float covarianceOffset);
+    void set_covarianceOffset(double covarianceOffset);
     
     /**
      * @brief get transition mode of the hidden Markov Chain
@@ -476,7 +476,7 @@ protected:
     /**
      * @brief Offset added to the diagonal of covariance matrices for convergence
      */
-    float  covarianceOffset_;
+    double  covarianceOffset_;
     
     /**
      * @brief Transition mode of the model (left-right vs ergodic)

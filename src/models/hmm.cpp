@@ -352,13 +352,13 @@ void HMM::set_nbMixtureComponents(int nbMixtureComponents)
 }
 
 
-float  HMM::get_covarianceOffset() const
+double  HMM::get_covarianceOffset() const
 {
     return covarianceOffset_;
 }
 
 
-void HMM::set_covarianceOffset(float covarianceOffset)
+void HMM::set_covarianceOffset(double covarianceOffset)
 {
     if (covarianceOffset == covarianceOffset_) return;
     

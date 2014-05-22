@@ -56,12 +56,12 @@ void HierarchicalHMM::set_nbMixtureComponents(int nbMixtureComponents_)
     }
 }
 
-float  HierarchicalHMM::get_covarianceOffset() const
+double  HierarchicalHMM::get_covarianceOffset() const
 {
     return this->referenceModel_.get_covarianceOffset();
 }
 
-void   HierarchicalHMM::set_covarianceOffset(float covarianceOffset_)
+void   HierarchicalHMM::set_covarianceOffset(double covarianceOffset_)
 {
     this->referenceModel_.set_covarianceOffset(covarianceOffset_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
