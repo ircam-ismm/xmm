@@ -75,10 +75,13 @@ bool Label::operator!=(Label const& src) const
 
 bool Label::operator<(Label const& src) const
 {
-    if (type == INT)
-        return intLabel_ < src.intLabel_;
-    else
+    if (src.type == type) {
+        if (type == INT)
+            return intLabel_ < src.intLabel_;
         return symLabel_ < src.symLabel_;
+    } else {
+        return (type == INT);
+    }
 }
 
 bool Label::operator<=(Label const& src) const
