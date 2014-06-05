@@ -16,7 +16,8 @@
 /**
  * default offset for covariance matrix
  */
-const double GAUSSIAN_DEFAULT_COVARIANCE_OFFSET = 1.;
+const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.;
+const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.;
 
 /**
  * Should avoid probabilities > 1 in most cases
@@ -47,7 +48,8 @@ public:
     GaussianDistribution(rtml_flags flags = NONE,
                          unsigned int dimension=1,
                          unsigned int dimension_input = 0,
-                         double offset = GAUSSIAN_DEFAULT_COVARIANCE_OFFSET);
+                         double offset_relative = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE,
+                         double offset_absolute = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE);
     
     /**
      * @brief Copy constructor
@@ -199,10 +201,18 @@ public:
     vector<double> covariance;
     
     /**
-     * @brief Offset added to diagonal covariance
+     * @brief Offset added to diagonal covariance (proportional to variance)
      */
-    double offset;
+    double offset_relative;
     
+    /**
+     * @brief Offset added to diagonal covariance (minimum value)
+     */
+    double offset_absolute;
+    
+    /**
+     * @brief Scaling of each dimension of the Gaussian Distribution (used of variance offsets)
+     */
     vector<float> scale;
     
 #pragma mark -

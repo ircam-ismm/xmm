@@ -14,11 +14,13 @@
 GaussianDistribution::GaussianDistribution(rtml_flags flags,
                                            unsigned int dimension,
                                            unsigned int dimension_input,
-                                           double offset)
+                                           double offset_relative,
+                                           double offset_absolute)
 : bimodal_(flags & BIMODAL),
   dimension_(dimension),
+  offset_relative(offset_relative),
+  offset_absolute(offset_absolute),
   dimension_input_(dimension_input),
-  offset(offset),
   covarianceDeterminant(0.),
   covarianceDeterminant_input_(0.)
 {
@@ -42,7 +44,8 @@ GaussianDistribution& GaussianDistribution::operator=(GaussianDistribution const
 void GaussianDistribution::_copy(GaussianDistribution *dst, GaussianDistribution const& src)
 {
     dst->dimension_ = src.dimension_;
-    dst->offset = src.offset;
+    dst->offset_relative = src.offset_relative;
+    dst->offset_absolute = src.offset_absolute;
     dst->bimodal_ = src.bimodal_;
     dst->dimension_input_ = src.dimension_input_;
     dst->mean = src.mean;
@@ -196,7 +199,8 @@ JSONNode GaussianDistribution::to_json() const
     // Scalar Attributes
     json_gaussDist.push_back(JSONNode("dimension", dimension_));
     json_gaussDist.push_back(JSONNode("dimension_input", dimension_input_));
-    json_gaussDist.push_back(JSONNode("offset", offset));
+    json_gaussDist.push_back(JSONNode("offset_relative", offset_relative));
+    json_gaussDist.push_back(JSONNode("offset_absolute", offset_absolute));
     
     // Model Parameters
     json_gaussDist.push_back(vector2json(mean, "mean"));
@@ -232,14 +236,24 @@ JSONNode GaussianDistribution::to_json() const
         dimension_input_ = root_it->as_int();
         ++root_it;
         
-        // Get Covariance Offset
+        // Get Covariance Offset (Relative)
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "offset")
-            throw JSONException("Wrong name: was expecting 'offset'", root_it->name());
+        if (root_it->name() != "offset_relative")
+            throw JSONException("Wrong name: was expecting 'offset_relative'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        offset = root_it->as_float();
+        offset_relative = root_it->as_float();
+        ++root_it;
+        
+        // Get Covariance Offset (Absolute)
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "offset_absolute")
+            throw JSONException("Wrong name: was expecting 'offset_absolute'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        offset_absolute = root_it->as_float();
         ++root_it;
         
         allocate();
@@ -287,9 +301,9 @@ void GaussianDistribution::addOffset()
 {
     for (int d = 0; d < dimension_; ++d)
     {
-        covariance[d * dimension_ + d] += offset * scale[d];
-        if (covariance[d * dimension_ + d] == 0.)
-            covariance[d * dimension_ + d] = 0.001;
+        covariance[d * dimension_ + d] += offset_relative * scale[d];
+        if (covariance[d * dimension_ + d] < offset_absolute)
+            covariance[d * dimension_ + d] = offset_absolute;
     }
 }
 

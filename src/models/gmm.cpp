@@ -13,11 +13,13 @@
 GMM::GMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbMixtureComponents,
-         double covarianceOffset)
+         double varianceOffset_relative,
+         double varianceOffset_absolute)
 : ProbabilisticModel(flags, trainingSet)
 {
-    nbMixtureComponents_  = nbMixtureComponents;
-    covarianceOffset_     = covarianceOffset;
+    nbMixtureComponents_ = nbMixtureComponents;
+    varianceOffset_relative_ = varianceOffset_relative;
+    varianceOffset_absolute_ = varianceOffset_absolute;
     
     set_trainingSet(trainingSet);
     
@@ -52,9 +54,14 @@ int GMM::get_nbMixtureComponents() const
     return nbMixtureComponents_;
 }
 
-double GMM::get_covarianceOffset() const
+double GMM::get_varianceOffset_relative() const
 {
-    return covarianceOffset_;
+    return varianceOffset_relative_;
+}
+
+double GMM::get_varianceOffset_absolute() const
+{
+    return varianceOffset_absolute_;
 }
 
 void GMM::set_nbMixtureComponents(int nbMixtureComponents)
@@ -67,13 +74,16 @@ void GMM::set_nbMixtureComponents(int nbMixtureComponents)
     this->trained = false;
 }
 
-void GMM::set_covarianceOffset(double covarianceOffset)
+void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
-    if (covarianceOffset <= 0.) throw invalid_argument("Covariance offset must be > 0");
+    if (varianceOffset_relative <= 0. || varianceOffset_absolute <= 0.)
+        throw invalid_argument("Variance offsets must be > 0");
     
-    covarianceOffset_ = covarianceOffset;
+    varianceOffset_relative_ = varianceOffset_relative;
+    varianceOffset_absolute_ = varianceOffset_absolute;
     for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
-        component->offset = covarianceOffset_;
+        component->offset_relative = varianceOffset_relative_;
+        component->offset_absolute = varianceOffset_absolute_;
     }
 }
 
@@ -115,7 +125,8 @@ JSONNode GMM::to_json() const
     
     // Scalar Attributes
     json_gmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
-    json_gmm.push_back(JSONNode("covarianceoffset", covarianceOffset_));
+    json_gmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
+    json_gmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
     
     // Model Parameters
     json_gmm.push_back(vector2json(mixtureCoeffs, "mixturecoefficients"));
@@ -159,14 +170,24 @@ void GMM::from_json(JSONNode root)
         nbMixtureComponents_ = root_it->as_int();
         ++root_it;
         
-        // Get Covariance Offset
+        // Get Covariance Offset (Relative)
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "covarianceoffset")
-            throw JSONException("Wrong name: was expecting 'covarianceoffset'", root_it->name());
+        if (root_it->name() != "varianceoffset_relative")
+            throw JSONException("Wrong name: was expecting 'varianceoffset_relative'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        covarianceOffset_ = root_it->as_float();
+        varianceOffset_relative_ = root_it->as_float();
+        ++root_it;
+        
+        // Get Covariance Offset (Absolute)
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "varianceoffset_absolute")
+            throw JSONException("Wrong name: was expecting 'varianceoffset_absolute'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        varianceOffset_absolute_ = root_it->as_float();
         ++root_it;
         
         allocate();
@@ -208,7 +229,8 @@ void GMM::_copy(GMM *dst, GMM const& src)
 {
     ProbabilisticModel::_copy(dst, src);
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
-    dst->covarianceOffset_ = src.covarianceOffset_;
+    dst->varianceOffset_relative_ = src.varianceOffset_relative_;
+    dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
     dst->mixtureCoeffs = src.mixtureCoeffs;
     dst->components = src.components;
     
@@ -219,7 +241,7 @@ void GMM::allocate()
 {
     mixtureCoeffs.resize(nbMixtureComponents_);
     beta.resize(nbMixtureComponents_);
-    components.assign(nbMixtureComponents_, GaussianDistribution(flags_, dimension_, dimension_input_, covarianceOffset_));
+    components.assign(nbMixtureComponents_, GaussianDistribution(flags_, dimension_, dimension_input_, varianceOffset_relative_, varianceOffset_absolute_));
 }
 
 double GMM::obsProb(const float* observation, int mixtureComponent)
@@ -341,7 +363,7 @@ double GMM::train_EM_update()
             }
             // TODO: re-introduce Exception?
             if (norm_const > 1.)
-                cout << "Training Error: covarianceOffset is too small\n";//throw runtime_error("Training Error: covarianceOffset is too small");
+                cout << "Training Error: varianceOffset might be too small\n";//throw runtime_error("Training Error: varianceOffset is too small");
             log_prob += log(norm_const);
         }
         tbase += T;

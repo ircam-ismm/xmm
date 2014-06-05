@@ -130,15 +130,21 @@ public:
     
     /**
      * @brief Get the offset added to the diagonal of covariance matrices for convergence
-     * @return offset added to the diagonal of covariance matrices
+     * @return offset added to the diagonal of covariance matrices (relative to data variance)
      */
-    double  get_covarianceOffset() const;
+    double  get_varianceOffset_relative() const;
+    
+    /**
+     * @brief Get the offset added to the diagonal of covariance matrices for convergence
+     * @return offset added to the diagonal of covariance matrices (minimum value)
+     */
+    double  get_varianceOffset_absolute() const;
     
     /**
      * @brief Get the offset added to the diagonal of covariance matrices for convergence
      * @param covarianceOffset offset added to the diagonal of covariance matrices
      */
-    void set_covarianceOffset(double covarianceOffset);
+    void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
     /**
      * @brief get transition mode of the hidden Markov Chain
@@ -474,9 +480,14 @@ protected:
     int nbMixtureComponents_;
     
     /**
-     * @brief Offset added to the diagonal of covariance matrices for convergence
+     * @brief Offset added to the diagonal of covariance matrices for convergence (relative to data variance)
      */
-    double  covarianceOffset_;
+    double  varianceOffset_relative_;
+    
+    /**
+     * @brief Offset added to the diagonal of covariance matrices for convergence (minimum value)
+     */
+    double  varianceOffset_absolute_;
     
     /**
      * @brief Transition mode of the model (left-right vs ergodic)

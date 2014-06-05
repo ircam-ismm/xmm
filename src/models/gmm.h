@@ -51,12 +51,14 @@ public:
      * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
      * @param trainingSet training set associated with the model
      * @param nbMixtureComponents number of mixture components
-     * @param covarianceOffset offset added to the diagonal of covariances matrices (useful to guarantee convergence)
+     * @param varianceOffset_relative offset added to the diagonal of covariances matrices (relative to data variance)
+     * @param varianceOffset_absolute offset added to the diagonal of covariances matrices (minimum value)
      */
     GMM(rtml_flags flags = NONE,
         TrainingSet *trainingSet=NULL,
         int nbMixtureComponents = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
-        double covarianceOffset = GAUSSIAN_DEFAULT_COVARIANCE_OFFSET);
+        double varianceOffset_relative = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE,
+        double varianceOffset_absolute = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE);
     
     /**
      * @brief Copy constructor
@@ -88,9 +90,15 @@ public:
     
     /**
      * @brief Get Offset added to covariance matrices for convergence
-     * @return Offset added to covariance matrices for convergence
+     * @return Offset added to covariance matrices for convergence (relative to data variance)
      */
-    double get_covarianceOffset() const;
+    double get_varianceOffset_relative() const;
+    
+    /**
+     * @brief Get Offset added to covariance matrices for convergence
+     * @return Offset added to covariance matrices for convergence (minimum value)
+     */
+    double get_varianceOffset_absolute() const;
     
     /**
      * @brief Set the number of mixture components of the model
@@ -103,10 +111,11 @@ public:
     
     /**
      * @brief Set the offset to add to the covariance matrices
-     * @param covarianceOffset offset to add to the diagonal of covariance matrices
+     * @param varianceOffset_relative offset to add to the diagonal of covariance matrices (relative to data variance)
+     * @param varianceOffset_absolute offset to add to the diagonal of covariance matrices (minimum value)
      * @throws invalid_argument if the covariance offset is <= 0
      */
-    void set_covarianceOffset(double covarianceOffset);
+    void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
     /*@}*/
 
@@ -303,9 +312,14 @@ protected:
     int nbMixtureComponents_;
     
     /**
-     * @brief Offset Added to the diagonal of covariance matrices for convergence
+     * @brief Offset Added to the diagonal of covariance matrices for convergence (Relative to Data Variance)
      */
-    double covarianceOffset_;
+    double varianceOffset_relative_;
+    
+    /**
+     * @brief Offset Added to the diagonal of covariance matrices for convergence (minimum value)
+     */
+    double varianceOffset_absolute_;
 };
 
 

@@ -24,7 +24,8 @@ HMM::HMM(rtml_flags flags,
     
     nbStates_ = nbStates;
     nbMixtureComponents_ = nbMixtureComponents;
-    covarianceOffset_ = GAUSSIAN_DEFAULT_COVARIANCE_OFFSET;
+    varianceOffset_relative_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE;
+    varianceOffset_absolute_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE;
     
     allocate();
     
@@ -62,7 +63,8 @@ void HMM::_copy(HMM *dst,
     ProbabilisticModel::_copy(dst, src);
     dst->is_hierarchical_ = src.is_hierarchical_;
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
-    dst->covarianceOffset_ = src.covarianceOffset_;
+    dst->varianceOffset_relative_ = src.varianceOffset_relative_;
+    dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
     dst->nbStates_ = src.nbStates_;
     dst->estimateMeans_ = src.estimateMeans_;
     
@@ -108,7 +110,7 @@ void HMM::allocate()
     previousAlpha_.resize(nbStates_);
     beta_.resize(nbStates_);
     previousBeta_.resize(nbStates_);
-    states_.assign(nbStates_, GMM(flags_, this->trainingSet, nbMixtureComponents_, covarianceOffset_));
+    states_.assign(nbStates_, GMM(flags_, this->trainingSet, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_));
     if (is_hierarchical_)
         updateExitProbabilities(NULL);
 }
@@ -352,20 +354,25 @@ void HMM::set_nbMixtureComponents(int nbMixtureComponents)
 }
 
 
-double  HMM::get_covarianceOffset() const
+double HMM::get_varianceOffset_relative() const
 {
-    return covarianceOffset_;
+    return varianceOffset_relative_;
 }
 
 
-void HMM::set_covarianceOffset(double covarianceOffset)
+double HMM::get_varianceOffset_absolute() const
 {
-    if (covarianceOffset == covarianceOffset_) return;
-    
+    return varianceOffset_absolute_;
+}
+
+
+void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
+{
     for (int i=0; i<nbStates_; i++) {
-        states_[i].set_covarianceOffset(covarianceOffset);
+        states_[i].set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
-    covarianceOffset_ = covarianceOffset;
+    varianceOffset_relative_ = varianceOffset_relative;
+    varianceOffset_absolute_ = varianceOffset_absolute;
 }
 
 
@@ -979,6 +986,21 @@ double HMM::performance_update(vector<float> const& observation)
     return results_instant_likelihood;
 }
 
+unsigned int argmax(vector<double> const& v)
+{
+    unsigned int amax(-1);
+    if (v.size() == 0)
+        return amax;
+    double current_max(v[0]);
+    for (unsigned int i=1 ; i<v.size() ; ++i) {
+        if (v[i] > current_max) {
+            current_max = v[i];
+            amax = i;
+        }
+    }
+    return amax;
+}
+
 void HMM::regression(vector<float> const& observation_input,
                      vector<float>& predicted_output)
 {
@@ -988,6 +1010,7 @@ void HMM::regression(vector<float> const& observation_input,
     
     for (int i=0; i<nbStates_; i++) {
         states_[i].likelihood(observation_input);
+        //*
         states_[i].regression(observation_input, tmp_predicted_output);
         for (int d = 0; d < dimension_output; ++d)
         {
@@ -996,7 +1019,11 @@ void HMM::regression(vector<float> const& observation_input,
             else
                 predicted_output[d] += alpha[i] * tmp_predicted_output[d];
         }
+        //*/
     }
+    
+    // unsigned int likeliest_state = argmax(is_hierarchical_ ? alpha_h[0] : alpha);
+    // states_[likeliest_state].regression(observation_input, predicted_output);
 }
 
 void HMM::updateTimeProgression()
@@ -1031,7 +1058,8 @@ JSONNode HMM::to_json() const
     json_hmm.push_back(JSONNode("dimension", dimension_));
     json_hmm.push_back(JSONNode("nbstates", nbStates_));
     json_hmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
-    json_hmm.push_back(JSONNode("covarianceoffset", covarianceOffset_));
+    json_hmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
+    json_hmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
     json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
     // Model Parameters
@@ -1125,14 +1153,24 @@ void HMM::from_json(JSONNode root)
         nbMixtureComponents_ = root_it->as_int();
         ++root_it;
         
-        // Get Covariance Offset
+        // Get Covariance Offset (Relative to data variance)
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "covarianceoffset")
-            throw JSONException("Wrong name: was expecting 'covarianceoffset'", root_it->name());
+        if (root_it->name() != "varianceoffset_relative")
+            throw JSONException("Wrong name: was expecting 'varianceoffset_relative'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        covarianceOffset_ = root_it->as_float();
+        varianceOffset_relative_ = root_it->as_float();
+        ++root_it;
+        
+        // Get Covariance Offset (Minimum value)
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "varianceoffset_absolute")
+            throw JSONException("Wrong name: was expecting 'varianceoffset_absolute'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        varianceOffset_absolute_ = root_it->as_float();
         ++root_it;
         
         // Get Transition Mode

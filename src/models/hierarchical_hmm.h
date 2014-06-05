@@ -92,16 +92,24 @@ public:
     void set_nbMixtureComponents(int nbMixtureComponents);
     
     /**
-     * @brief Get the offset added to the diagonal of covariance matrices for convergence
-     * @return offset added to the diagonal of covariance matrices
+     * @brief Get Offset added to covariance matrices for convergence (Relative to data variance)
+     * @return Offset added to covariance matrices for convergence
      */
-    double  get_covarianceOffset() const;
+    double get_varianceOffset_relative() const;
     
     /**
-     * @brief Get the offset added to the diagonal of covariance matrices for convergence
-     * @param covarianceOffset offset added to the diagonal of covariance matrices
+     * @brief Get Offset added to covariance matrices for convergence (Minimum value)
+     * @return Offset added to covariance matrices for convergence
      */
-    void set_covarianceOffset(double covarianceOffset);
+    double get_varianceOffset_absolute() const;
+    
+    /**
+     * @brief Set the offset to add to the covariance matrices
+     * @param varianceOffset_relative offset to add to the diagonal of covariance matrices (relative to data variance)
+     * @param varianceOffset_absolute offset to add to the diagonal of covariance matrices (minimum value)
+     * @throws invalid_argument if the covariance offset is <= 0
+     */
+    void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
     /**
      * @brief get transition mode of the hidden Markov Chain

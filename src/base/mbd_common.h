@@ -20,7 +20,7 @@ const vector<double> NULLVEC_DOUBLE;
 typedef unsigned int rtml_flags;
 
 /**
- * @brief Flags for the construction of data phrases
+ * @brief Flags for the construction of data phrases and models
  */
 enum FLAGS {
     /**

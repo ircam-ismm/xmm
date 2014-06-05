@@ -56,16 +56,21 @@ void HierarchicalHMM::set_nbMixtureComponents(int nbMixtureComponents_)
     }
 }
 
-double  HierarchicalHMM::get_covarianceOffset() const
+double HierarchicalHMM::get_varianceOffset_relative() const
 {
-    return this->referenceModel_.get_covarianceOffset();
+    return this->referenceModel_.get_varianceOffset_relative();
 }
 
-void   HierarchicalHMM::set_covarianceOffset(double covarianceOffset_)
+double HierarchicalHMM::get_varianceOffset_absolute() const
 {
-    this->referenceModel_.set_covarianceOffset(covarianceOffset_);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.set_covarianceOffset(covarianceOffset_);
+    return this->referenceModel_.get_varianceOffset_absolute();
+}
+
+void HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
+{
+    this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
 }
 
@@ -619,7 +624,8 @@ JSONNode HierarchicalHMM::to_json() const
     json_hhmm.push_back(JSONNode("performancemode", int(performanceMode_)));
     json_hhmm.push_back(JSONNode("nbstates", get_nbStates()));
     json_hhmm.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
-    json_hhmm.push_back(JSONNode("covarianceoffset", get_covarianceOffset()));
+    json_hhmm.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
+    json_hhmm.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -805,11 +811,21 @@ void HierarchicalHMM::from_json(JSONNode root)
         // Get Covariance Offset
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "covarianceoffset")
-            throw JSONException("Wrong name: was expecting 'covariance'", root_it->name());
+        if (root_it->name() != "varianceoffset_relative")
+            throw JSONException("Wrong name: was expecting 'varianceoffset_relative'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        set_covarianceOffset(root_it->as_float());
+        double relvar = root_it->as_float();
+        ++root_it;
+        
+        // Get Covariance Offset
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "varianceoffset_absolute")
+            throw JSONException("Wrong name: was expecting 'varianceoffset_absolute'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        set_varianceOffset(relvar, root_it->as_float());
         ++root_it;
         
         // Get Models
