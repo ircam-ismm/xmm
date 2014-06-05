@@ -182,8 +182,10 @@ void GaussianDistribution::regression(vector<float> const& observation_input, ve
         for (int e=0; e<dimension_input_; e++) {
             float tmp = 0.;
             for (int f=0; f<dimension_input_; f++) {
-                tmp += inverseCovariance_input_[e * dimension_input_ + f]
-                       * (observation_input[f] - mean[f]);
+                if (e == f)
+                    tmp += inverseCovariance_input_[e * dimension_input_ + e] * (covariance[e * dimension_ + e] / (covariance[e * dimension_ + e] - scale[e] * offset_relative)) * (observation_input[f] - mean[f]);
+                else
+                    tmp += inverseCovariance_input_[e * dimension_input_ + f] * (observation_input[f] - mean[f]);
             }
             predicted_output[d] += covariance[(d + dimension_input_) * dimension_ + e]* tmp;
         }
