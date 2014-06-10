@@ -74,6 +74,19 @@ void HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double 
     }
 }
 
+double HierarchicalHMM::get_weight_regression() const
+{
+    return this->referenceModel_.get_weight_regression();
+}
+
+void HierarchicalHMM::set_weight_regression(double weight_regression)
+{
+    this->referenceModel_.set_weight_regression(weight_regression);
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.set_weight_regression(weight_regression);
+    }
+}
+
 bool HierarchicalHMM::get_estimateMeans() const
 {
     return this->referenceModel_.estimateMeans_;
@@ -354,7 +367,7 @@ void HierarchicalHMM::updateTrainingSet(Label const& label)
 
 #pragma mark -
 #pragma mark Forward Algorithm
-HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* observation)
+HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(vector<float> const& observation)
 {
     double norm_const(0.0) ;
     
@@ -369,9 +382,9 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
         // Compute Emission probability and initialize on the first state of the primitive
         it->second.alpha_h[0][0] = this->prior[it->first];
         if (bimodal_) {
-            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb_input(observation);
+            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb_input(&observation[0]);
         } else {
-            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb(observation);
+            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb(&observation[0]);
         }
         it->second.results_instant_likelihood = it->second.alpha_h[0][0] ;
         norm_const += it->second.alpha_h[0][0] ;
@@ -411,7 +424,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(const float* obser
     return likeliestModel;
 }
 
-HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* observation)
+HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(vector<float> const& observation)
 {
     double norm_const(0.0) ;
     
@@ -466,9 +479,9 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(const float* obs
         for (int k=0 ; k<N ; ++k)
         {
             if (bimodal_)
-                tmp = dstit->second.states_[k].obsProb_input(observation) * front[k];
+                tmp = dstit->second.states_[k].obsProb_input(&observation[0]) * front[k];
             else
-                tmp = dstit->second.states_[k].obsProb(observation) * front[k];
+                tmp = dstit->second.states_[k].obsProb(&observation[0]) * front[k];
             
             dstit->second.alpha_h[2][k] = this->exitTransition[dstit->first] * dstit->second.exitProbabilities_[k] * tmp ;
             dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities_[k] * tmp ;
@@ -564,9 +577,9 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
 {
     model_iterator likeliestModel;
     if (forwardInitialized_) {
-        likeliestModel = this->forward_update(&observation[0]);
+        likeliestModel = this->forward_update(observation);
     } else {
-        likeliestModel = this->forward_init(&observation[0]);
+        likeliestModel = this->forward_init(observation);
     }
     
     if (bimodal_) {

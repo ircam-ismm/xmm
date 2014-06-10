@@ -233,7 +233,7 @@ public:
      * @details The method appends an observation to the data phrase. The observation need to have a 
      * size "dimension". In bimodal mode, the observation must concatenate input and output observations.
      * A phrase is created if it does not exists at the given index
-     * @param phraseIndex index of the phrase
+     * @param phraseIndex index of the data phrase in the trainingSet
      * @param observation observation vector to append to the phrase
      * @throws runtime_errpr if phrase has shared memory (construction with SHARED_MEMORY flag)
      * @todo: Add input/output methods
@@ -244,6 +244,7 @@ public:
      * @brief Record training data on the input modality
      * @details The method appends an observation on the input modality to the data phrase.
      * size "dimension_input"
+     * @param phraseIndex index of the data phrase in the trainingSet
      * @param observation observation vector (C-like array which must have the size of the total
      * dimension of the data across all modalities)
      * @throws runtime_error if data is shared (ownData == false)
@@ -254,6 +255,7 @@ public:
      * @brief Record training data on the output modality
      * Appends the observation vector observation to the data array\n
      * This method is only usable in Own Memory (no SHARED_MEMORY flag)
+     * @param phraseIndex index of the data phrase in the trainingSet
      * @param observation observation vector (C-like array which must have the size of the total
      * dimension of the data across all modalities)
      * @throws runtime_error if data is shared (construction with SHARED_MEMORY flag)
@@ -264,7 +266,7 @@ public:
      * @brief reset phrase to default
      * @details The phrase is set to an empty phrase with the current attributes (dimensions, etc).
      * The phrase is created if it does not exists at the given index.
-     * @param phraseIndex index of the phrase
+     * @param phraseIndex index of the data phrase in the trainingSet
      */
     void resetPhrase(int phraseIndex);
     

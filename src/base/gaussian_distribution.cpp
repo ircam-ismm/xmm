@@ -22,7 +22,8 @@ GaussianDistribution::GaussianDistribution(rtml_flags flags,
   offset_absolute(offset_absolute),
   dimension_input_(dimension_input),
   covarianceDeterminant(0.),
-  covarianceDeterminant_input_(0.)
+  covarianceDeterminant_input_(0.),
+  weight_regression(1.)
 {
     allocate();
 }
@@ -46,6 +47,7 @@ void GaussianDistribution::_copy(GaussianDistribution *dst, GaussianDistribution
     dst->dimension_ = src.dimension_;
     dst->offset_relative = src.offset_relative;
     dst->offset_absolute = src.offset_absolute;
+    dst->weight_regression = src.weight_regression;
     dst->bimodal_ = src.bimodal_;
     dst->dimension_input_ = src.dimension_input_;
     dst->mean = src.mean;
@@ -182,12 +184,12 @@ void GaussianDistribution::regression(vector<float> const& observation_input, ve
         for (int e=0; e<dimension_input_; e++) {
             float tmp = 0.;
             for (int f=0; f<dimension_input_; f++) {
-                if (e == f)
-                    tmp += inverseCovariance_input_[e * dimension_input_ + e] * (covariance[e * dimension_ + e] / (covariance[e * dimension_ + e] - scale[e] * offset_relative)) * (observation_input[f] - mean[f]);
-                else
+                if (e == f && covariance[e * dimension_ + e] > offset_absolute) {
+                    tmp += inverseCovariance_input_[e * dimension_input_ + e] * (covariance[e * dimension_ + e] / (covariance[e * dimension_ + e] - max(scale[e] * offset_relative, offset_absolute))) * (observation_input[f] - mean[f]);
+                } else
                     tmp += inverseCovariance_input_[e * dimension_input_ + f] * (observation_input[f] - mean[f]);
             }
-            predicted_output[d] += covariance[(d + dimension_input_) * dimension_ + e]* tmp;
+            predicted_output[d] += weight_regression * covariance[(d + dimension_input_) * dimension_ + e] * tmp;
         }
     }
 }

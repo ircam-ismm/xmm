@@ -26,6 +26,7 @@ HMM::HMM(rtml_flags flags,
     nbMixtureComponents_ = nbMixtureComponents;
     varianceOffset_relative_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE;
     varianceOffset_absolute_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE;
+    weight_regression_ = 1.;
     
     allocate();
     
@@ -65,6 +66,7 @@ void HMM::_copy(HMM *dst,
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
+    dst->weight_regression_ = src.weight_regression_;
     dst->nbStates_ = src.nbStates_;
     dst->estimateMeans_ = src.estimateMeans_;
     
@@ -375,6 +377,19 @@ void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     varianceOffset_absolute_ = varianceOffset_absolute;
 }
 
+double HMM::get_weight_regression() const
+{
+    return weight_regression_;
+}
+
+
+void HMM::set_weight_regression(double weight_regression)
+{
+    weight_regression_ = weight_regression;
+    for (int i=0; i<nbStates_; i++) {
+        states_[i].set_weight_regression(weight_regression_);
+    }
+}
 
 string HMM::get_transitionMode() const
 {
@@ -945,8 +960,7 @@ void HMM::performance_init()
 
 void HMM::addCyclicTransition(double proba)
 {
-    if (!is_hierarchical_)
-        transition_[(nbStates_-1)*nbStates_] = proba; // Add Cyclic Transition probability
+    transition_[(nbStates_-1)*nbStates_] = proba; // Add Cyclic Transition probability
 }
 
 
@@ -1010,7 +1024,6 @@ void HMM::regression(vector<float> const& observation_input,
     
     for (int i=0; i<nbStates_; i++) {
         states_[i].likelihood(observation_input);
-        //*
         states_[i].regression(observation_input, tmp_predicted_output);
         for (int d = 0; d < dimension_output; ++d)
         {
@@ -1019,11 +1032,7 @@ void HMM::regression(vector<float> const& observation_input,
             else
                 predicted_output[d] += alpha[i] * tmp_predicted_output[d];
         }
-        //*/
     }
-    
-    // unsigned int likeliest_state = argmax(is_hierarchical_ ? alpha_h[0] : alpha);
-    // states_[likeliest_state].regression(observation_input, predicted_output);
 }
 
 void HMM::updateTimeProgression()

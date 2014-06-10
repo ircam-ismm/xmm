@@ -117,6 +117,18 @@ public:
      */
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
+    /**
+     * @brief Get Regression Weight
+     * @return Weight of the regresion part for synthesis
+     */
+    double get_weight_regression() const;
+    
+    /**
+     * @brief Get Regression Weight
+     * @param weight_regression Weight of the regresion part for synthesis
+     */
+    void set_weight_regression(double weight_regression);
+    
     /*@}*/
 
 #pragma mark > Performance
@@ -216,7 +228,7 @@ protected:
      * @throws runtime_error if the model is not bimodal
      * @throws runtime_error if the Covariance Matrix of the input modality is not invertible
      */
-    double obsProb_input(const float*_input, int mixtureComponent=-1);
+    double obsProb_input(const float* observation_input, int mixtureComponent=-1);
     
     /**
      * @brief Observation probability for bimodal mode
@@ -228,7 +240,7 @@ protected:
      * @throws runtime_error if the model is not bimodal
      * @throws runtime_error if the Covariance Matrix is not invertible
      */
-    double obsProb_bimodal(const float*_input, const float*_output, int mixtureComponent=-1);
+    double obsProb_bimodal(const float* observation_input, const float* observation_output, int mixtureComponent=-1);
     
     /*@}*/
 
@@ -320,6 +332,12 @@ protected:
      * @brief Offset Added to the diagonal of covariance matrices for convergence (minimum value)
      */
     double varianceOffset_absolute_;
+    
+    /**
+     * @brief specifies the weight of the regression part in output modality estimation.
+     * A zero weight correspond to estimation using the means only.
+     */
+    double weight_regression_;
 };
 
 

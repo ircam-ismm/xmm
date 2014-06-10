@@ -142,9 +142,22 @@ public:
     
     /**
      * @brief Get the offset added to the diagonal of covariance matrices for convergence
-     * @param covarianceOffset offset added to the diagonal of covariance matrices
+     * @param varianceOffset_relative offset added to the diagonal of covariances matrices (relative to data variance)
+     * @param varianceOffset_absolute offset added to the diagonal of covariances matrices (minimum value)
      */
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
+    
+    /**
+     * @brief Get Regression Weight
+     * @return Weight of the regresion part for synthesis
+     */
+    double get_weight_regression() const;
+    
+    /**
+     * @brief Get Regression Weight
+     * @param weight_regression Weight of the regresion part for synthesis
+     */
+    void set_weight_regression(double weight_regression);
     
     /**
      * @brief get transition mode of the hidden Markov Chain
@@ -587,6 +600,12 @@ protected:
      * @brief Exit probabilities for a hierarchical model.
      */
     vector<float> exitProbabilities_;
+    
+    /**
+     * @brief specifies the weight of the regression part in output modality estimation.
+     * A zero weight correspond to estimation using the means only.
+     */
+    double weight_regression_;
 };
 
 

@@ -51,6 +51,19 @@ void GMMGroup::set_varianceOffset(double varianceOffset_relative, double varianc
     }
 }
 
+double GMMGroup::get_weight_regression() const
+{
+    return this->referenceModel_.get_weight_regression();
+}
+
+void GMMGroup::set_weight_regression(double weight_regression)
+{
+    this->referenceModel_.set_weight_regression(weight_regression);
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.set_weight_regression(weight_regression);
+    }
+}
+
 #pragma mark -
 #pragma mark Performance
 void GMMGroup::performance_update(vector<float> const& observation)
@@ -96,11 +109,6 @@ void GMMGroup::performance_update(vector<float> const& observation)
 
 #pragma mark -
 #pragma mark File IO
-/** @name File IO */
-/**
- * @brief Write to JSON Node
- * @return JSON Node containing training set information and data
- */
 JSONNode GMMGroup::to_json() const
 {
     JSONNode json_ccmodels(JSON_NODE);
@@ -130,11 +138,6 @@ JSONNode GMMGroup::to_json() const
     return json_ccmodels;
 }
 
-/**
- * @brief Read from JSON Node
- * @param root JSON Node containing training set information and data
- * @throws JSONException if the JSON Node has a wrong format
- */
 void GMMGroup::from_json(JSONNode root)
 {
     try {

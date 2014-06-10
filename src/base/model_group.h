@@ -287,7 +287,7 @@ public:
     
     /**
      * @brief Set convergence threshold in percent-change of the likelihood
-     * @param logLikelihoodPercentChg log-likelihood percent-change convergence threshold
+     * @param logLikPercentChg_ log-likelihood percent-change convergence threshold
      * @throws invalid_argument if logLikelihoodPercentChg <= 0
      */
     void set_EM_percentChange(double logLikPercentChg_)

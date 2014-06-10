@@ -112,6 +112,18 @@ public:
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
     /**
+     * @brief Get Regression Weight
+     * @return Weight of the regresion part for synthesis
+     */
+    double get_weight_regression() const;
+    
+    /**
+     * @brief Get Regression Weight
+     * @param weight_regression Weight of the regresion part for synthesis
+     */
+    void set_weight_regression(double weight_regression);
+    
+    /**
      * @brief get transition mode of the hidden Markov Chain
      * @return string corresponding to the transition mode (left-right / ergodic)
      * @todo: remove transitionMode to simplify forward complexity
@@ -330,13 +342,13 @@ protected:
      * @brief TODO
      * @todo doc this
      */
-    model_iterator forward_init(const float* observation);
+    model_iterator forward_init(vector<float> const& observation);
     
     /**
      * @brief TODO
      * @todo doc this
      */
-    model_iterator forward_update(const float* observation);
+    model_iterator forward_update(vector<float> const& observation);
     
     /**
      * @brief get instantaneous likelihood

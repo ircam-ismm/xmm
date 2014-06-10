@@ -17,7 +17,7 @@
  * default offset for covariance matrix
  */
 const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.;
-const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.;
+const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 0.01;
 
 /**
  * Should avoid probabilities > 1 in most cases
@@ -41,7 +41,8 @@ public:
      * @brief Default Constructor
      * @param flags construction flags. Use the flag 'BIMODAL' for use with regression.
      * @param dimension dimension of the distribution
-     * @param offset offset added to the covariances to ensure convergence / avoid numeric errors
+     * @param offset_relative Offset added to diagonal covariance (proportional to variance)
+     * @param offset_absolute Offset added to diagonal covariance (minimum value)
      * @param dimension_input dimension of the input modality in bimodal mode.
      * @todo change useRegression boolean to BIMODAL flag
      */
@@ -214,6 +215,12 @@ public:
      * @brief Scaling of each dimension of the Gaussian Distribution (used of variance offsets)
      */
     vector<float> scale;
+    
+    /**
+     * @brief specifies the weight of the regression part in output modality estimation.
+     * A zero weight correspond to estimation using the means only.
+     */
+    double weight_regression;
     
 #pragma mark -
 #pragma mark === Private Attributes ===

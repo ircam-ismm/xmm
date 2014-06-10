@@ -20,6 +20,7 @@ GMM::GMM(rtml_flags flags,
     nbMixtureComponents_ = nbMixtureComponents;
     varianceOffset_relative_ = varianceOffset_relative;
     varianceOffset_absolute_ = varianceOffset_absolute;
+    weight_regression_ = 1.;
     
     set_trainingSet(trainingSet);
     
@@ -84,6 +85,19 @@ void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
         component->offset_relative = varianceOffset_relative_;
         component->offset_absolute = varianceOffset_absolute_;
+    }
+}
+
+double GMM::get_weight_regression() const
+{
+    return weight_regression_;
+}
+
+void GMM::set_weight_regression(double weight_regression)
+{
+    weight_regression_ = weight_regression;
+    for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
+        component->weight_regression = weight_regression_;
     }
 }
 
@@ -231,6 +245,7 @@ void GMM::_copy(GMM *dst, GMM const& src)
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
+    dst->weight_regression_ = src.weight_regression_;
     dst->mixtureCoeffs = src.mixtureCoeffs;
     dst->components = src.components;
     
