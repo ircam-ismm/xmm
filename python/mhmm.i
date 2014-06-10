@@ -42,6 +42,8 @@ namespace std {
    %template(vectorgauss) vector<GaussianDistribution>;
    %template(vectorgmm) vector<GMM>;
    %template(vectorhmm) vector<HMM>;
+   %template(mapgmm) map<Label, GMM>;
+   %template(maphmm) map<Label, HMM>;
 };
 
 %init %{
