@@ -376,9 +376,6 @@ double GMM::train_EM_update()
                 p[c][tbase+t] /= norm_const;
                 E[c] += p[c][tbase+t];
             }
-            // TODO: re-introduce Exception?
-            if (norm_const > 1.)
-                cout << "Training Error: varianceOffset might be too small\n";//throw runtime_error("Training Error: varianceOffset is too small");
             log_prob += log(norm_const);
         }
         tbase += T;
@@ -441,11 +438,7 @@ void GMM::initParametersToDefault()
     double norm_coeffs(0.);
     for (int c=0; c<nbMixtureComponents_; c++) {
         components[c].scale.assign(global_trainingdata_var.begin(), global_trainingdata_var.end());
-        for (int d=0; d<dimension_; d++) {
-            for (int d2=0; d2<dimension_; d2++) {
-                components[c].covariance[d * dimension_ + d2] = 1.;
-            }
-        }
+        components[c].covariance.assign(dimension_*dimension_, varianceOffset_absolute_);
         components[c].addOffset();
         mixtureCoeffs[c] = 1./float(nbMixtureComponents_);
         norm_coeffs += mixtureCoeffs[c];

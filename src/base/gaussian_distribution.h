@@ -17,7 +17,7 @@
  * default offset for covariance matrix
  */
 const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.;
-const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 0.01;
+const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.e-5;
 
 /**
  * Should avoid probabilities > 1 in most cases
