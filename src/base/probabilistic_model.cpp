@@ -76,7 +76,10 @@ void ProbabilisticModel::_copy(ProbabilisticModel *dst,
 }
 
 ProbabilisticModel::~ProbabilisticModel()
-{}
+{
+    if (trainingSet)
+        trainingSet->set_parent(NULL);
+}
 
 #pragma mark -
 #pragma mark Accessors
