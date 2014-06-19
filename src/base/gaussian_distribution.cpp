@@ -184,10 +184,11 @@ void GaussianDistribution::regression(vector<float> const& observation_input, ve
         for (int e=0; e<dimension_input_; e++) {
             float tmp = 0.;
             for (int f=0; f<dimension_input_; f++) {
-                if (e == f && covariance[e * dimension_ + e] > offset_absolute) {
+                if (e == f && covariance[e * dimension_ + e] > max(scale[e] * offset_relative, offset_absolute)) {
                     tmp += inverseCovariance_input_[e * dimension_input_ + e] * (covariance[e * dimension_ + e] / (covariance[e * dimension_ + e] - max(scale[e] * offset_relative, offset_absolute))) * (observation_input[f] - mean[f]);
-                } else
+                } else {
                     tmp += inverseCovariance_input_[e * dimension_input_ + f] * (observation_input[f] - mean[f]);
+                }
             }
             predicted_output[d] += weight_regression * covariance[(d + dimension_input_) * dimension_ + e] * tmp;
         }
@@ -205,6 +206,8 @@ JSONNode GaussianDistribution::to_json() const
     json_gaussDist.push_back(JSONNode("dimension_input", dimension_input_));
     json_gaussDist.push_back(JSONNode("offset_relative", offset_relative));
     json_gaussDist.push_back(JSONNode("offset_absolute", offset_absolute));
+    json_gaussDist.push_back(JSONNode("weight_regression", weight_regression));
+    json_gaussDist.push_back(vector2json(scale, "scale"));
     
     // Model Parameters
     json_gaussDist.push_back(vector2json(mean, "mean"));
@@ -261,6 +264,26 @@ JSONNode GaussianDistribution::to_json() const
         ++root_it;
         
         allocate();
+        
+        // Get Weight of Regression
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "weight_regression")
+            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        weight_regression = root_it->as_float();
+        ++root_it;
+        
+        // Get Scale
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "scale")
+            throw JSONException("Wrong name: was expecting 'scale'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+        json2vector(*root_it, scale, dimension_);
+        ++root_it;
         
         // Get Mean
         if (root_it == root.end())

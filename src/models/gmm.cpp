@@ -141,6 +141,7 @@ JSONNode GMM::to_json() const
     json_gmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_gmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_gmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
+    json_gmm.push_back(JSONNode("weight_regression", weight_regression_));
     
     // Model Parameters
     json_gmm.push_back(vector2json(mixtureCoeffs, "mixturecoefficients"));
@@ -205,6 +206,16 @@ void GMM::from_json(JSONNode root)
         ++root_it;
         
         allocate();
+        
+        // Get Regresion Weight
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "weight_regression")
+            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        weight_regression_ = root_it->as_float();
+        ++root_it;
         
         // Get Mixture Coefficients
         if (root_it == root.end())

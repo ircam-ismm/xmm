@@ -1069,6 +1069,7 @@ JSONNode HMM::to_json() const
     json_hmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_hmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_hmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
+    json_hmm.push_back(JSONNode("weight_regression", weight_regression_));
     json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
     // Model Parameters
@@ -1180,6 +1181,16 @@ void HMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         varianceOffset_absolute_ = root_it->as_float();
+        ++root_it;
+        
+        // Get Covariance Offset (Minimum value)
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "weight_regression")
+            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        weight_regression_ = root_it->as_float();
         ++root_it;
         
         // Get Transition Mode

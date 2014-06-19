@@ -639,6 +639,7 @@ JSONNode HierarchicalHMM::to_json() const
     json_hhmm.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
     json_hhmm.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
     json_hhmm.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
+    json_hhmm.push_back(JSONNode("weight_regression", get_weight_regression()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -839,6 +840,16 @@ void HierarchicalHMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         set_varianceOffset(relvar, root_it->as_float());
+        ++root_it;
+        
+        // Get Covariance Offset
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "weight_regression")
+            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        set_weight_regression(root_it->as_float());
         ++root_it;
         
         // Get Models
