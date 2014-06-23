@@ -10,6 +10,11 @@
 #include "gaussian_distribution.h"
 #include "matrix.h"
 
+#ifdef WIN32
+#define M_PI 3.14159265358979323846264338328 /**< pi */
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
 #pragma mark Constructors
 GaussianDistribution::GaussianDistribution(rtml_flags flags,
                                            unsigned int dimension,
