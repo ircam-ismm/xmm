@@ -5,7 +5,7 @@
 //
 // Copyright (C) 2014 Ircam - Jules Francoise. All Rights Reserved.
 // author: Jules Francoise <jules.francoise@ircam.fr>
-// 
+//
 
 #include <cmath>
 #include "hmm.h"
@@ -713,11 +713,11 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
             for (int c=0; c<nbMixtureComponents_; c++) {
                 if (bimodal_) {
                     oo = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
-                                                   currentPhrase->get_dataPointer_output(t),
-                                                   c);
+                                                    currentPhrase->get_dataPointer_output(t),
+                                                    c);
                 } else {
                     oo = states_[i].obsProb(currentPhrase->get_dataPointer(t),
-                                           c);
+                                            c);
                 }
                 gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] = gammaSequence_[phraseIndex][t*nbStates_+i] * oo;
                 norm_const += oo;
@@ -737,7 +737,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
                 * beta_seq_[(t+1)*nbStates_+j];
                 if (bimodal_) {
                     epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= states_[j].obsProb_bimodal(currentPhrase->get_dataPointer_input(t+1),
-                                                                                                      currentPhrase->get_dataPointer_output(t+1));
+                                                                                                                     currentPhrase->get_dataPointer_output(t+1));
                 } else {
                     epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= states_[j].obsProb(currentPhrase->get_dataPointer(t+1));
                 }
@@ -828,10 +828,12 @@ void HMM::baumWelch_estimateMeans()
     // Normalize mean
     for (int i=0; i<nbStates_; i++) {
         for (int c=0; c<nbMixtureComponents_; c++) {
-            if (gammaSumPerMixture_[i*nbMixtureComponents_+c] > 0) {
-                for (int d=0; d<dimension_; d++) {
+            for (int d=0; d<dimension_; d++) {
+                if (gammaSumPerMixture_[i*nbMixtureComponents_+c] > 0) {
                     states_[i].components[c].mean[d] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
                 }
+                if (isnan(states_[i].components[c].mean[d]))
+                    throw runtime_error("Convergence Error");
             }
         }
     }
@@ -931,9 +933,12 @@ void HMM::baumWelch_estimateTransitions()
     
     // Scale transition matrix
     for (int i=0; i<nbStates_; i++) {
-        if (gammaSum_[i] > 0)
-            for (int j=0; j<nbStates_; j++)
+        for (int j=0; j<nbStates_; j++) {
+            if (gammaSum_[i] > 0)
                 transition_[i*nbStates_+j] /= gammaSum_[i];
+            if (isnan(transition_[i*nbStates_+j]))
+                throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+        }
     }
 }
 
@@ -976,10 +981,10 @@ double HMM::performance_update(vector<float> const& observation)
     }
     
     forwardInitialized_ = true;
-
+    
     if (bimodal_) {
         regression(observation, results_predicted_output);
-
+        
         // Em-like estimation of the output sequence: deprecated now but need to be tested.
         // ========================================================================================
         // double obs_prob(log(ct)), old_obs_prob;
@@ -1122,7 +1127,7 @@ void HMM::from_json(JSONNode root)
                 throw JSONException("Trying to read a hierarchical model in a non-hierarchical model.", root.name());
         }
         ++root_it;
-
+        
         // Get If estimate means
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
@@ -1225,7 +1230,7 @@ void HMM::from_json(JSONNode root)
             throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, transition_, nbStates_*nbStates_);
         ++root_it;
-
+        
         // Get Exit probabilities
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());

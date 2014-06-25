@@ -189,7 +189,7 @@ int ProbabilisticModel::train()
 #if __cplusplus > 199711L
             return -1;
 #else
-            throw runtime_error("Training Error: No convergence! Try again... (maybe change nb of states or increase covarianceOffset)");
+            throw runtime_error("Training Error: No convergence! (maybe change nb of states or increase covarianceOffset)");
 #endif
         }
         
