@@ -189,11 +189,11 @@ void GaussianDistribution::regression(vector<float> const& observation_input, ve
         for (int e=0; e<dimension_input_; e++) {
             float tmp = 0.;
             for (int f=0; f<dimension_input_; f++) {
-                if (e == f && covariance[e * dimension_ + e] > max(scale[e] * offset_relative, offset_absolute)) {
-                    tmp += inverseCovariance_input_[e * dimension_input_ + e] * (covariance[e * dimension_ + e] / (covariance[e * dimension_ + e] - max(scale[e] * offset_relative, offset_absolute))) * (observation_input[f] - mean[f]);
-                } else {
+//                if (e == f && covariance[e * dimension_ + e] > max(scale[e] * offset_relative, offset_absolute)) {
+//                    tmp += inverseCovariance_input_[e * dimension_input_ + e] * (covariance[e * dimension_ + e] / (covariance[e * dimension_ + e] - max(scale[e] * offset_relative, offset_absolute))) * (observation_input[f] - mean[f]);
+//                } else {
                     tmp += inverseCovariance_input_[e * dimension_input_ + f] * (observation_input[f] - mean[f]);
-                }
+//                }
             }
             predicted_output[d] += weight_regression * covariance[(d + dimension_input_) * dimension_ + e] * tmp;
         }
