@@ -24,6 +24,7 @@ GMM::GMM(rtml_flags flags,
     
     set_trainingSet(trainingSet);
     
+    allocate();
     train_EM_init();
 }
 
@@ -485,8 +486,12 @@ void GMM::addCovarianceOffset()
 
 void GMM::updateInverseCovariances()
 {
-    for (mixture_iterator component = components.begin() ; component != components.end() ; ++component)
-        component->updateInverseCovariance();
+    try {
+        for (mixture_iterator component = components.begin() ; component != components.end() ; ++component)
+            component->updateInverseCovariance();
+    } catch (exception& e) {
+        throw runtime_error("Matrix inversion error: varianceoffset must be too small");
+    }
 }
 
 #pragma mark > Performance

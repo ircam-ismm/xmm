@@ -161,7 +161,22 @@ int ProbabilisticModel::train()
     this->trainingMutex.lock();
 #endif
     
-    this->train_EM_init();
+    try {
+        this->train_EM_init();
+    } catch (exception &e) {
+#if __cplusplus > 199711L
+        this->trainingMutex.unlock();
+#endif
+        // TODO: Integrate exception pointer???
+        if (this->trainingCallback_) {
+            this->trainingCallback_(this, TRAINING_ERROR, this->trainingExtradata_);
+        }
+#if __cplusplus > 199711L
+        return -1;
+#else
+        throw runtime_error("Training Error: No convergence! (maybe change nb of states or increase covarianceOffset)");
+#endif
+    }
     
     double log_prob(log(0.)), old_log_prob;
     int nbIterations(0);
