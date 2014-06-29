@@ -11,6 +11,7 @@
 #define mhmm_listener_object_h
 
 #include "json_utilities.h"
+#include <fstream>
 
 using namespace std;
 
@@ -109,7 +110,8 @@ public:
         
         jsonstring.assign((istreambuf_iterator<char>(inStream)),
                           istreambuf_iterator<char>());
-        cout << jsonstring << endl;
+        JSONNode jsonfile = libjson::parse(jsonstring);
+        this->from_json(jsonfile);
         
         inStream.close();
     }
