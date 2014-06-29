@@ -1045,9 +1045,9 @@ void HMM::updateTimeProgression()
     results_progress = 0.0;
     for (unsigned int i=0 ; i<nbStates_; i++) {
         if (is_hierarchical_)
-            results_progress += alpha_h[0][i] * (i+1);
+            results_progress += (alpha_h[0][i] + alpha_h[1][i] + alpha_h[2][i]) * i;
         else
-            results_progress += alpha[i] * (i+1);
+            results_progress += alpha[i] * i;
     }
     results_progress /= double(nbStates_-1);
 }
