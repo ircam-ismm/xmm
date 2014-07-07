@@ -334,25 +334,25 @@ Matrix<numType>* Matrix<numType>::gauss_jordan_inverse(double *det) const
     Matrix<numType> mat(nrows, ncols*2);
     Matrix<numType> new_mat(nrows, ncols*2);
     
-    int n = nrows;
+    int n = nrows; 
     
     // Create matrix
     for (int i=0 ; i<n ; i++) {
         for (int j=0; j<n; j++) {
-            mat.data[i*2*n+j] = data[i*n+j];
+            mat._data[i*2*n+j] = data[i*n+j];
         }
-        mat.data[i*2*n+n+i] = 1;
+        mat._data[i*2*n+n+i] = 1;
     }
     
     for (int k=0; k<n; k++) {
         int i(k);
-        while (abs(mat.data[i*2*n+k]) < EPS) {
+        while (abs(mat._data[i*2*n+k]) < EPS) {
             i++;
             if (i==n) {
                 throw runtime_error("Non-invertible matrix");
             }
         }
-        *det *= mat.data[i*2*n+k];
+        *det *= mat._data[i*2*n+k];
         
         // if found > Exchange lines
         if (i != k) {
@@ -362,12 +362,12 @@ Matrix<numType>* Matrix<numType>::gauss_jordan_inverse(double *det) const
         new_mat._data = mat._data;
         
         for (int j=0; j<2*n; j++) {
-            new_mat.data[k*2*n+j] /= mat.data[k*2*n+k];
+            new_mat._data[k*2*n+j] /= mat._data[k*2*n+k];
         }
         for (i=0; i<n; i++) {
             if (i != k) {
                 for (int j=0; j<2*n; j++) {
-                    new_mat.data[i*2*n+j] -= mat.data[i*2*n+k] * new_mat.data[k*2*n+j];
+                    new_mat._data[i*2*n+j] -= mat._data[i*2*n+k] * new_mat._data[k*2*n+j];
                 }
             }
         }
@@ -377,7 +377,7 @@ Matrix<numType>* Matrix<numType>::gauss_jordan_inverse(double *det) const
     Matrix<numType> *dst = new Matrix<numType>(nrows, ncols);
     for (int i=0 ; i<n ; i++)
         for (int j=0; j<n; j++)
-            dst->data[i*n+j] = mat.data[i*2*n+n+j];
+            dst->_data[i*n+j] = mat._data[i*2*n+n+j];
     return dst;
 }
 

@@ -680,9 +680,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     
     // Backward algorithm
     backward_init(ct[T-1]);
-    vector<double>::iterator beta_seq_it = beta_seq_.begin()+(T-1)*nbStates_;
-    copy(beta_.begin(), beta_.end(), beta_seq_it);
-    beta_seq_it -= nbStates_;
+	copy(beta_.begin(), beta_.end(), beta_seq_.begin() + (T - 1)*nbStates_);
     
     for (int t=T-2; t>=0; t--) {
         if (bimodal_) {
@@ -692,8 +690,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
         } else {
             backward_update(ct[t], currentPhrase->get_dataPointer(t+1));
         }
-        copy(beta_.begin(), beta_.end(), beta_seq_it);
-        beta_seq_it -= nbStates_;
+        copy(beta_.begin(), beta_.end(), beta_seq_.begin() + t * nbStates_);
     }
     
     // Compute Gamma Variable
