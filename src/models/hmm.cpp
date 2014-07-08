@@ -132,7 +132,6 @@ void HMM::initParametersToDefault()
     }
 }
 
-
 void HMM::initMeansWithFirstPhrase()
 {
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
@@ -1229,14 +1228,16 @@ void HMM::from_json(JSONNode root)
         ++root_it;
         
         // Get Exit probabilities
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "exitprobabilities")
-            throw JSONException("Wrong name: was expecting 'exitprobabilities'", root_it->name());
-        if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
-        json2vector(*root_it, exitProbabilities_, nbStates_);
-        ++root_it;
+        if (is_hierarchical_) {
+            if (root_it == root.end())
+                throw JSONException("JSON Node is incomplete", root_it->name());
+            if (root_it->name() != "exitprobabilities")
+                throw JSONException("Wrong name: was expecting 'exitprobabilities'", root_it->name());
+            if (root_it->type() != JSON_ARRAY)
+                throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            json2vector(*root_it, exitProbabilities_, nbStates_);
+            ++root_it;
+        }
         
         // Get States
         if (root_it == root.end())
