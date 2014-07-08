@@ -367,7 +367,7 @@ void HierarchicalHMM::updateTrainingSet(Label const& label)
 
 #pragma mark -
 #pragma mark Forward Algorithm
-HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(vector<float> const& observation)
+void HierarchicalHMM::forward_init(vector<float> const& observation)
 {
     double norm_const(0.0) ;
     
@@ -387,6 +387,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(vector<float> cons
             it->second.alpha_h[0][0] *= it->second.states_[0].obsProb(&observation[0]);
         }
         it->second.results_instant_likelihood = it->second.alpha_h[0][0] ;
+        it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
         norm_const += it->second.alpha_h[0][0] ;
     }
     
@@ -398,33 +399,10 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_init(vector<float> cons
                 it->second.alpha_h[e][k] /= norm_const;
     }
     
-    model_iterator likeliestModel(this->models.begin());
-    double maxLikelihood(0.0);
-    int l(0);
-    
-    norm_const = 0.0;
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        if (it->second.results_instant_likelihood > maxLikelihood) {
-            likeliestModel = it;
-            maxLikelihood = it->second.results_instant_likelihood;
-        }
-        
-        it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
-        norm_const += it->second.results_instant_likelihood;
-        results_instant_likelihoods[l++] = it->second.results_instant_likelihood;
-    }
-    
-    l = 0;
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.results_likelihoodnorm = it->second.results_instant_likelihood / norm_const;
-        //results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
-    }
-    
     forwardInitialized_ = true;
-    return likeliestModel;
 }
 
-HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(vector<float> const& observation)
+void HierarchicalHMM::forward_update(vector<float> const& observation)
 {
     double norm_const(0.0) ;
     
@@ -472,7 +450,7 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(vector<float> co
         // 2) UPDATE FORWARD VARIABLE
         //    --------------------------------------
         
-        dstit->second.results_exitLikelihood = 0.0;
+        dstit->second.results_exit_likelihood = 0.0;
         dstit->second.results_instant_likelihood = 0.0;
         
         // end of the primitive: handle exit states
@@ -487,13 +465,13 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(vector<float> co
             dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities_[k] * tmp ;
             dstit->second.alpha_h[0][k] = (1 - dstit->second.exitProbabilities_[k]) * tmp;
             
-            dstit->second.results_exitLikelihood += dstit->second.alpha_h[1][k];
-            dstit->second.results_instant_likelihood += dstit->second.alpha_h[0][k] + dstit->second.alpha_h[2][k] + dstit->second.results_exitLikelihood;
+            dstit->second.results_exit_likelihood += dstit->second.alpha_h[1][k];
+            dstit->second.results_instant_likelihood += dstit->second.alpha_h[0][k] + dstit->second.alpha_h[1][k] + dstit->second.alpha_h[2][k];
             
             norm_const += tmp;
         }
         
-        // TODO: update cumulative + likelihood in circularBuffer
+        dstit->second.updateLikelihoodBuffer(dstit->second.results_instant_likelihood);
     }
     
     // Normalize Alpha variables
@@ -503,30 +481,6 @@ HierarchicalHMM::model_iterator HierarchicalHMM::forward_update(vector<float> co
             for (int k=0 ; k<N ; k++)
                 it->second.alpha_h[e][k] /= norm_const;
     }
-    
-    model_iterator likeliestModel(this->models.begin());
-    double maxLikelihood(0.0);
-    int l(0.0);
-    
-    norm_const = 0.0;
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        if (it->second.results_instant_likelihood > maxLikelihood) {
-            likeliestModel = it;
-            maxLikelihood = it->second.results_instant_likelihood;
-        }
-        
-        it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
-        norm_const += it->second.results_instant_likelihood;
-        results_instant_likelihoods[l++] = it->second.results_instant_likelihood;
-    }
-    
-    l = 0;
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.results_likelihoodnorm = it->second.results_instant_likelihood / norm_const;
-        //results_instant_likelihoods[l++] = it->second.results_likelihoodnorm;
-    }
-    
-    return likeliestModel;
 }
 
 
@@ -575,12 +529,13 @@ void HierarchicalHMM::performance_init()
 
 void HierarchicalHMM::performance_update(vector<float> const& observation)
 {
-    model_iterator likeliestModel;
     if (forwardInitialized_) {
-        likeliestModel = this->forward_update(observation);
+        this->forward_update(observation);
     } else {
-        likeliestModel = this->forward_init(observation);
+        this->forward_init(observation);
     }
+    
+    update_likelihood_results();
     
     if (bimodal_) {
         unsigned int dimension = this->referenceModel_.dimension();
@@ -592,8 +547,8 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
         }
         
         if (this->performanceMode_ == this->LIKELIEST) {
-            copy(likeliestModel->second.results_predicted_output.begin(),
-                 likeliestModel->second.results_predicted_output.end(),
+            copy(this->models[results_likeliest].results_predicted_output.begin(),
+                 this->models[results_likeliest].results_predicted_output.end(),
                  results_predicted_output.begin());
         } else {
             results_predicted_output.assign(dimension_output, 0.0);
@@ -601,7 +556,7 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
             int i(0);
             for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
                 for (int d=0; d<dimension_output; d++) {
-                    results_predicted_output[d] += results_instant_likelihoods[i] * it->second.results_predicted_output[d];
+                    results_predicted_output[d] += results_normalized_likelihoods[i] * it->second.results_predicted_output[d];
                 }
                 i++;
             }

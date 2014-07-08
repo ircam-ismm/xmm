@@ -342,13 +342,13 @@ protected:
      * @brief TODO
      * @todo doc this
      */
-    model_iterator forward_init(vector<float> const& observation);
+    void forward_init(vector<float> const& observation);
     
     /**
      * @brief TODO
      * @todo doc this
      */
-    model_iterator forward_update(vector<float> const& observation);
+    void forward_update(vector<float> const& observation);
     
     /**
      * @brief get instantaneous likelihood

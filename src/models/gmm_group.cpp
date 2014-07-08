@@ -68,21 +68,12 @@ void GMMGroup::set_weight_regression(double weight_regression)
 #pragma mark Performance
 void GMMGroup::performance_update(vector<float> const& observation)
 {
-    double norm_const(0.0);
     int i(0);
-    model_iterator likeliestModel;
-    double currentMaxLikelihood(-100000.);
     for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
         results_instant_likelihoods[i] = it->second.performance_update(observation);
-        if (results_instant_likelihoods[i] > currentMaxLikelihood) {
-            currentMaxLikelihood = results_instant_likelihoods[i];
-            likeliestModel = it;
-        }
-        norm_const += results_instant_likelihoods[i++];
     }
     
-    //    for (unsigned int i=0; i<this->models.size(); i++)
-    //        results_instant_likelihoods[i] /= norm_const;
+    update_likelihood_results();
     
     if (bimodal_) {
         unsigned int dimension = this->referenceModel_.dimension();
@@ -90,8 +81,8 @@ void GMMGroup::performance_update(vector<float> const& observation)
         unsigned int dimension_output = dimension - dimension_input;
         
         if (this->performanceMode_ == this->LIKELIEST) {
-            copy(likeliestModel->second.results_predicted_output.begin(),
-                 likeliestModel->second.results_predicted_output.end(),
+            copy(this->models[results_likeliest].results_predicted_output.begin(),
+                 this->models[results_likeliest].results_predicted_output.end(),
                  results_predicted_output.begin());
         } else {
             results_predicted_output.assign(dimension_output, 0.0);
@@ -99,7 +90,7 @@ void GMMGroup::performance_update(vector<float> const& observation)
             int i(0);
             for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
                 for (int d=0; d<dimension_output; d++) {
-                    results_predicted_output[d] += results_predicted_output[i] * it->second.results_predicted_output[d];
+                    results_predicted_output[d] += results_normalized_likelihoods[i] * it->second.results_predicted_output[d];
                 }
                 i++;
             }

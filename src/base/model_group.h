@@ -436,8 +436,41 @@ public:
             it->second.performance_init();
         }
         results_instant_likelihoods.resize(size());
+        results_normalized_instant_likelihoods.resize(size());
+        results_normalized_likelihoods.resize(size());
+        results_log_likelihoods.resize(size());
         if (bimodal_)
             results_predicted_output.resize(dimension() - dimension_input());
+    }
+    
+    /**
+     * @brief Update the results (Likelihoods)
+     */
+    virtual void update_likelihood_results()
+    {
+        double maxLogLikelihood;
+        double normconst_instant(0.0);
+        double normconst_smoothed(0.0);
+        int i(0);
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it, ++i) {
+            results_instant_likelihoods[i] = it->second.results_instant_likelihood;
+            results_log_likelihoods[i] = it->second.results_log_likelihood;
+            results_normalized_likelihoods[i] = exp(results_log_likelihoods[i]);
+            
+            normconst_instant += results_instant_likelihoods[i];
+            normconst_smoothed += results_normalized_likelihoods[i];
+            
+            if (i == 0 || results_log_likelihoods[i] > maxLogLikelihood) {
+                maxLogLikelihood = results_log_likelihoods[i];
+                results_likeliest = it->first;
+            }
+        }
+        
+        i = 0;
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it, ++i) {
+            results_normalized_likelihoods[i] /= normconst_smoothed;
+            results_normalized_instant_likelihoods[i] = results_instant_likelihoods[i] / normconst_instant;
+        }
     }
     
 #pragma mark -
@@ -456,6 +489,26 @@ public:
      * @brief Result: Likelihood of each model
      */
     vector<float> results_instant_likelihoods;
+    
+    /**
+     * @brief Result: Normalized Instantaneous Likelihood of each model
+     */
+    vector<float> results_normalized_instant_likelihoods;
+    
+    /**
+     * @brief Result: Normalized Likelihood of each model
+     */
+    vector<float> results_normalized_likelihoods;
+    
+    /**
+     * @brief Result: Windowed Cumulative Log-Likelihood of each model
+     */
+    vector<float> results_log_likelihoods;
+    
+    /**
+     * @brief Result: Label of the likeliest model
+     */
+    Label results_likeliest;
     
     /**
      * Result: Predicted output modality observation
