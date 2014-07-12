@@ -27,6 +27,7 @@ int GMMGroup::get_nbMixtureComponents() const
 
 void GMMGroup::set_nbMixtureComponents(int nbMixtureComponents_)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.set_nbMixtureComponents(nbMixtureComponents_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_nbMixtureComponents(nbMixtureComponents_);
@@ -45,6 +46,7 @@ double GMMGroup::get_varianceOffset_absolute() const
 
 void GMMGroup::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);

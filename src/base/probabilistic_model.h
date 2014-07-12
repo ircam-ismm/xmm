@@ -16,6 +16,8 @@
 #include <mutex>
 #endif
 
+#define PREVENT_ATTR_CHANGE() if (is_training()) throw runtime_error("Cannot set attributes during Training");
+
 using namespace std;
 
 /**

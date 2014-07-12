@@ -37,6 +37,7 @@ int HierarchicalHMM::get_nbStates() const
 
 void HierarchicalHMM::set_nbStates(int nbStates_)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.set_nbStates(nbStates_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.set_nbStates(nbStates_);
@@ -50,6 +51,7 @@ int HierarchicalHMM::get_nbMixtureComponents() const
 
 void HierarchicalHMM::set_nbMixtureComponents(int nbMixtureComponents_)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.set_nbMixtureComponents(nbMixtureComponents_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.set_nbMixtureComponents(nbMixtureComponents_);
@@ -68,6 +70,7 @@ double HierarchicalHMM::get_varianceOffset_absolute() const
 
 void HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
@@ -94,6 +97,7 @@ bool HierarchicalHMM::get_estimateMeans() const
 
 void HierarchicalHMM::set_estimateMeans(bool _estimateMeans)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.estimateMeans_ = _estimateMeans;
     for (model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
         it->second.estimateMeans_ = _estimateMeans;
@@ -106,6 +110,7 @@ string HierarchicalHMM::get_transitionMode() const
 
 void HierarchicalHMM::set_transitionMode(string transMode_str)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.set_transitionMode(transMode_str);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.set_transitionMode(transMode_str);
@@ -114,6 +119,7 @@ void HierarchicalHMM::set_transitionMode(string transMode_str)
 
 void HierarchicalHMM::addExitPoint(int state, float proba)
 {
+    PREVENT_ATTR_CHANGE();
     this->referenceModel_.addExitPoint(state, proba);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.addExitPoint(state, proba);
@@ -135,6 +141,7 @@ string HierarchicalHMM::get_learningMode() const
 
 void HierarchicalHMM::set_learningMode(string learningMode)
 {
+    PREVENT_ATTR_CHANGE();
     if (learningMode == "incremental") {
         incrementalLearning_ = true;
     } else if (learningMode == "ergodic") {
@@ -157,6 +164,7 @@ void HierarchicalHMM::get_prior(vector<double>& prior) const
 
 void HierarchicalHMM::set_prior(vector<double> const& prior)
 {
+    PREVENT_ATTR_CHANGE();
     try {
         int l(0);
         for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it) {
@@ -183,7 +191,9 @@ void HierarchicalHMM::get_transition(vector<double>& trans) const
 }
 
 
-void HierarchicalHMM::set_transition(vector<double> const& trans) {
+void HierarchicalHMM::set_transition(vector<double> const& trans)
+{
+    PREVENT_ATTR_CHANGE();
     try {
         int l(0);
         for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); ++srcit) {
@@ -212,6 +222,7 @@ void HierarchicalHMM::get_exitTransition(vector<double>& exittrans) const
 
 void HierarchicalHMM::set_exitTransition(vector<double> const& exittrans)
 {
+    PREVENT_ATTR_CHANGE();
     try {
         int l(0);
         for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it) {
@@ -243,6 +254,7 @@ void HierarchicalHMM::normalizeTransitions()
 
 void HierarchicalHMM::setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba)
 {
+    PREVENT_ATTR_CHANGE();
     transition[srcSegmentLabel][dstSegmentLabel] = min(proba, 1.);
     normalizeTransitions();
     // TODO: absolute/relative mode?

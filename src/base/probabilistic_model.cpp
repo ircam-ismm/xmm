@@ -251,6 +251,7 @@ void ProbabilisticModel::train_EM_terminate()
 
 void ProbabilisticModel::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata)
 {
+    PREVENT_ATTR_CHANGE();
     trainingExtradata_ = extradata;
     trainingCallback_ = callback;
 }
