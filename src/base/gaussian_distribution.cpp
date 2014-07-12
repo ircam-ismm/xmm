@@ -21,14 +21,14 @@ GaussianDistribution::GaussianDistribution(rtml_flags flags,
                                            unsigned int dimension_input,
                                            double offset_relative,
                                            double offset_absolute)
-: bimodal_(flags & BIMODAL),
-  dimension_(dimension),
-  offset_relative(offset_relative),
+: offset_relative(offset_relative),
   offset_absolute(offset_absolute),
+  weight_regression(1.),
+  bimodal_(flags & BIMODAL),
+  dimension_(dimension),
   dimension_input_(dimension_input),
   covarianceDeterminant(0.),
-  covarianceDeterminant_input_(0.),
-  weight_regression(1.)
+  covarianceDeterminant_input_(0.)
 {
     allocate();
 }

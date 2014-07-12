@@ -15,11 +15,12 @@
 ProbabilisticModel::ProbabilisticModel(rtml_flags flags,
                                        TrainingSet *trainingSet)
 : trainingSet(trainingSet),
-trained(false),
-trainingProgression(0),
-flags_(flags),
-bimodal_(flags & BIMODAL),
-trainingCallback_(NULL)
+  trained(false),
+  trainingProgression(0),
+  flags_(flags),
+  bimodal_(flags & BIMODAL),
+  trainingCallbackFunction_(NULL),
+  is_training_(false)
 {
     if (this->trainingSet) {
         this->trainingSet->add_listener(this);
@@ -40,6 +41,9 @@ trainingCallback_(NULL)
     stopcriterion.maxSteps = EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS;
     stopcriterion.percentChg = EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG;
     likelihoodBuffer_.resize(EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW);
+#ifdef USE_PTHREAD
+    pthread_mutex_init(&trainingMutex, NULL);
+#endif
 }
 
 ProbabilisticModel::ProbabilisticModel(ProbabilisticModel const& src)
@@ -61,10 +65,12 @@ ProbabilisticModel& ProbabilisticModel::operator=(ProbabilisticModel const& src)
 void ProbabilisticModel::_copy(ProbabilisticModel *dst,
                                ProbabilisticModel const& src)
 {
+    if (src.is_training())
+        throw runtime_error("Cannot copy model during Training");
+    dst->is_training_ = false;
     dst->flags_ = src.flags_;
     dst->trained = src.trained;
-    dst->trainingSet = src.trainingSet;
-    dst->trainingCallback_ = src.trainingCallback_;
+    dst->trainingCallbackFunction_ = src.trainingCallbackFunction_;
     dst->trainingExtradata_ = src.trainingExtradata_;
     dst->bimodal_ = src.bimodal_;
     if (dst->bimodal_)
@@ -88,6 +94,11 @@ ProbabilisticModel::~ProbabilisticModel()
 
 #pragma mark -
 #pragma mark Accessors
+bool ProbabilisticModel::is_training() const
+{
+    return is_training_;
+}
+
 void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
 {
     PREVENT_ATTR_CHANGE();
@@ -154,40 +165,34 @@ void ProbabilisticModel::set_likelihoodwindow(unsigned int likelihoodwindow)
 
 #pragma mark -
 #pragma mark Training
+void* ProbabilisticModel::train_func(void *context)
+{
+    ((ProbabilisticModel *)context)->train();
+    return NULL;
+}
+
 int ProbabilisticModel::train()
 {
-    if (!this->trainingSet)
-        throw runtime_error("No training Set is Connected");
-    
-    if (this->trainingSet->is_empty())
-        throw runtime_error("No training data");
-    
-#if __cplusplus > 199711L
-    this->trainingMutex.lock();
+#ifdef USE_PTHREAD
+    pthread_mutex_lock(&trainingMutex);
 #endif
+    bool trainingError(false);
+    
+    if (!this->trainingSet || this->trainingSet->is_empty())
+        trainingError = true;
+    
+    is_training_ = true;
     
     try {
         this->train_EM_init();
     } catch (exception &e) {
-#if __cplusplus > 199711L
-        this->trainingMutex.unlock();
-#endif
-        // TODO: Integrate exception pointer???
-        if (this->trainingCallback_) {
-            this->trainingCallback_(this, TRAINING_ERROR, this->trainingExtradata_);
-        }
-#if __cplusplus > 199711L
-        return -1;
-#else
-        throw runtime_error("Training Error: No convergence! (maybe change nb of states or increase covarianceOffset)");
-#endif
+        trainingError = true;
     }
     
     double log_prob(log(0.)), old_log_prob;
     int nbIterations(0);
     
     do {
-        bool trainingError(false);
         old_log_prob = log_prob;
         try {
             log_prob = this->train_EM_update();
@@ -199,18 +204,20 @@ int ProbabilisticModel::train()
             trainingError = true;
         
         if (trainingError) {
-#if __cplusplus > 199711L
-            this->trainingMutex.unlock();
-#endif
-            // TODO: Integrate exception pointer???
-            if (this->trainingCallback_) {
-                this->trainingCallback_(this, TRAINING_ERROR, this->trainingExtradata_);
+#ifdef USE_PTHREAD
+            pthread_mutex_unlock(&trainingMutex);
+            if (this->trainingCallbackFunction_) {
+                pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+                this->trainingCallbackFunction_(this, TRAINING_ERROR, this->trainingExtradata_);
+                pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+                pthread_testcancel();
             }
-#if __cplusplus > 199711L
-            return -1;
 #else
-            throw runtime_error("Training Error: No convergence! (maybe change nb of states or increase covarianceOffset)");
+            if (this->trainingCallbackFunction_) {
+                this->trainingCallbackFunction_(this, TRAINING_ERROR, this->trainingExtradata_);
+            }
 #endif
+            return -1;
         }
         
         ++nbIterations;
@@ -220,18 +227,30 @@ int ProbabilisticModel::train()
         else
             this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
         
-        if (this->trainingCallback_) {
-            this->trainingCallback_(this, TRAINING_RUN, this->trainingExtradata_);
+#ifdef USE_PTHREAD
+        if (this->trainingCallbackFunction_) {
+            pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+            this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
+            pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+            pthread_testcancel();
         }
+#else
+        if (this->trainingCallbackFunction_) {
+            this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
+        }
+#endif
     } while (!train_EM_hasConverged(nbIterations, log_prob, old_log_prob));
     
     this->train_EM_terminate();
     this->trained = true;
     this->trainingSet->set_unchanged();
     
-#if __cplusplus > 199711L
-    this->trainingMutex.unlock();
+    is_training_ = false;
+    
+#ifdef USE_PTHREAD
+    pthread_mutex_unlock(&trainingMutex);
 #endif
+    
     return nbIterations;
 }
 
@@ -245,15 +264,41 @@ bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double
 
 void ProbabilisticModel::train_EM_terminate()
 {
-    if (trainingCallback_)
-        trainingCallback_(this, TRAINING_DONE, trainingExtradata_);
+#ifdef USE_PTHREAD
+    if (trainingCallbackFunction_) {
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+        trainingCallbackFunction_(this, TRAINING_DONE, trainingExtradata_);
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+    }
+#else
+    if (trainingCallbackFunction_) {
+        trainingCallbackFunction_(this, TRAINING_DONE, trainingExtradata_);
+    }
+#endif
 }
+
+#ifdef USE_PTHREAD
+void ProbabilisticModel::abortTraining(pthread_t this_thread)
+{
+    if (!is_training_)
+        return;
+    pthread_cancel(this_thread);
+    void *status;
+    pthread_join(this_thread, &status);
+    pthread_mutex_unlock(&trainingMutex);
+    is_training_ = false;
+    if (trainingCallbackFunction_) {
+        trainingCallbackFunction_(this, TRAINING_ABORT, trainingExtradata_);
+    }
+}
+#endif
 
 void ProbabilisticModel::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata)
 {
     PREVENT_ATTR_CHANGE();
     trainingExtradata_ = extradata;
-    trainingCallback_ = callback;
+    trainingCallbackFunction_ = callback;
 }
 
 #pragma mark -

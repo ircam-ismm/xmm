@@ -12,8 +12,9 @@
 #define rtml_model_group_h
 
 #include "probabilistic_model.h"
-#if __cplusplus > 199711L
-#include <thread>
+
+#ifdef USE_PTHREAD
+#include <pthread.h>
 #endif
 
 using namespace std;
@@ -76,6 +77,7 @@ public:
      */
     ModelGroup(rtml_flags flags = NONE,
                TrainingSet *globalTrainingSet=NULL)
+    : trainingCallbackFunction_(NULL)
     {
         bimodal_ = (flags & BIMODAL);
         this->globalTrainingSet = globalTrainingSet;
@@ -83,6 +85,7 @@ public:
             this->globalTrainingSet->add_listener(this);
         referenceModel_ = ModelType(flags, this->globalTrainingSet);
         performanceMode_ = LIKELIEST;
+        models_to_train_ = 0;
     }
     
     /**
@@ -100,6 +103,14 @@ public:
 #pragma mark Tests & Utilies
     /*@{*/
     /** @name Tests & Utilies */
+    /**
+     * @brief Check if at least 1 model is still training
+     * @return true if at least 1 model is still training
+     */
+    bool is_training() const {
+        return (models_to_train_ > 0);
+    }
+    
     /**
      * @brief Check if a model has been trained
      * @param label class label of the model
@@ -336,13 +347,21 @@ public:
      * @details  The model is trained even if the dataset has not changed
      * @param label label of the model
      * @throw out_of_range if the label does not exist
-     * @warning the training is done in a separate thread if compiled with c++11
      */
     virtual int train(Label const& label)
     {
+#ifdef USE_PTHREAD
+        stopTraining(label);
+#endif
         updateTrainingSet(label);
-#if __cplusplus > 199711L
-        thread (&ModelType::train, &models[label]).detach();
+        
+#ifdef USE_PTHREAD
+        pthread_create(&(training_threads[label]), NULL, &ModelType::train_func, &(this->models[label]));
+        if (trainingCallbackFunction_) {
+            models_to_train_++;
+        } else {
+            pthread_join(training_threads[label], NULL);
+        }
         return 0;
 #else
         return models[label].train();
@@ -351,31 +370,43 @@ public:
     
     /**
      * @brief Train All model even if their data have not changed.
-     * @warning if compiled with c++11, each model is trained in a separate thread. Once trained,
-     * the model calls the trainingCallback function defined in LearningModel.
-     * @return number of iterations for each model if sequential training (not c++11).
+     * @return number of iterations for each model if sequential training (not pthread).
      * @throws runtime_error if an error occurs during training and no callback function is defined
+     * @todo create a TrainingException Class to handle training errors
      */
     virtual map<Label, int> train()
     {
+        // TODO: create a TrainingException Class to handle training errors
+#ifdef USE_PTHREAD
+        stopTraining();
+#endif
+        
         updateAllTrainingSets();
         map<Label, int> nbIterations;
         
-#if __cplusplus > 199711L
+#ifdef USE_PTHREAD
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-            thread (&ModelType::train, &it->second).detach();
+            pthread_create(&(training_threads[it->first]), NULL, &ModelType::train_func, &(it->second));
+            if (trainingCallbackFunction_) {
+                models_to_train_++;
+            }
+        }
+        if (!trainingCallbackFunction_) {
+            for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+                pthread_join(training_threads[it->first], NULL);
+            }
         }
 #else
         // Sequential training
-        vector<Label> notConvergenced;
+        vector<Label> notConverged;
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             try {
                 nbIterations[it->first] = it->second.train();
             } catch (exception &e) {
-                notConvergenced.push_back(it->first);
+                notConverged.push_back(it->first);
             }
         }
-        for (vector<Label>::iterator it = notConvergenced.begin(); it != notConvergenced.end(); ++it) {
+        for (vector<Label>::iterator it = notConverged.begin(); it != notConverged.end(); ++it) {
             remove(*it);
         }
 #endif
@@ -386,44 +417,91 @@ public:
      * @brief Train all model which data has changed.
      * @deprecated function unused now, need checking
      * @throws exception if an error occurs during Training
-     * @todo create a TrainingException Class to handle training errors
      */
     virtual map<Label, int> retrain()
     {
+#ifdef USE_PTHREAD
+        stopTraining();
+#endif
         updateAllTrainingSets();
         map<Label, int> nbIterations;
         
-        exception trainingException;
-        bool trainingFailed(false);
-        
-        for (model_iterator it=models.begin(); it != models.end(); ++it) {
-            nbIterations[it->first] = 0;
+#ifdef USE_PTHREAD
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+            if (!it->second.trained || it->second.trainingSet->has_changed()) {
+                pthread_create(&(training_threads[it->first]), NULL, &ModelType::train_func, &(it->second));
+                if (trainingCallbackFunction_)
+                    models_to_train_++;
+            }
+        }
+        if (!trainingCallbackFunction_) {
+            for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+                if (!it->second.trained || it->second.trainingSet->has_changed()) {
+                    pthread_join(training_threads[it->first], NULL);
+                }
+            }
+        }
+#else
+        // Sequential training
+        vector<Label> notConverged;
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             if (!it->second.trained || it->second.trainingSet->has_changed()) {
                 try {
                     nbIterations[it->first] = it->second.train();
                 } catch (exception &e) {
-                    trainingException = e;
-                    trainingFailed = true;
+                    notConverged.push_back(it->first);
                 }
             }
         }
-        
-        if (trainingFailed) {
-            throw trainingException;
+        for (vector<Label>::iterator it = notConverged.begin(); it != notConverged.end(); ++it) {
+            remove(*it);
         }
-        
+#endif
         return nbIterations;
     }
-
+    
+#ifdef USE_PTHREAD
+    void stopTraining(Label const& label) {
+        if (this->models.find(label) != this->models.end())
+            models[label].abortTraining(training_threads[label]);
+    }
+    
+    void stopTraining() {
+        for (set<Label>::iterator label_it = globalTrainingSet->allLabels.begin(); label_it != globalTrainingSet->allLabels.end(); label_it++) {
+            stopTraining(*label_it);
+        }
+    }
+#endif
+    
+    /**
+     * @brief Monitors the training of each model of the group.
+     */
+    static void monitor_training(void *model, CALLBACK_FLAG state, void *extradata)
+    {
+        ModelGroup<ModelType> *thismodelgroup = (ModelGroup<ModelType> *)extradata;
+        if (state != TRAINING_RUN) {
+            Label label = ((ModelType *)model)->trainingSet->getPhraseLabel(0);
+            thismodelgroup->models_to_train_--;
+            thismodelgroup->training_threads.erase(label);
+            if (state == TRAINING_ERROR || state == TRAINING_ABORT) {
+                thismodelgroup->remove(label);
+            }
+        }
+        if (thismodelgroup->trainingCallbackFunction_)
+            thismodelgroup->trainingCallbackFunction_(model, state, thismodelgroup->trainingExtradata_);
+    }
+    
     /**
      * @brief set the callback function associated with the training algorithm
      * @details the function is called whenever the training is over or an error happened during training
      */
     void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata) {
-        this->referenceModel_.set_trainingCallback(callback, extradata);
+        this->referenceModel_.set_trainingCallback(monitor_training, this);
         for (model_iterator it=models.begin(); it != models.end(); ++it) {
-            it->second.set_trainingCallback(callback, extradata);
+            it->second.set_trainingCallback(monitor_training, this);
         }
+        trainingExtradata_ = extradata;
+        trainingCallbackFunction_ = callback;
     }
     
     /*@}*/

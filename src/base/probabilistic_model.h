@@ -12,8 +12,9 @@
 
 #include "ringbuffer.h"
 #include "training_set.h"
-#if __cplusplus > 199711L
-#include <mutex>
+
+#ifdef USE_PTHREAD
+#include <pthread.h>
 #endif
 
 #define PREVENT_ATTR_CHANGE() if (is_training()) throw runtime_error("Cannot set attributes during Training");
@@ -39,7 +40,12 @@ enum CALLBACK_FLAG
     /**
      * An error occured during training (probably convergence issue)
      */
-    TRAINING_ERROR
+    TRAINING_ERROR,
+    
+    /**
+     * The training has been cancelled.
+     */
+    TRAINING_ABORT
 };
 
 /**
@@ -135,6 +141,12 @@ public:
     /*@{*/
     /** @name Accessors */
     /**
+     * @brief Checks if the model is training
+     * @return true if the model is training
+     */
+    bool is_training() const;
+    
+    /**
      * @brief set the training set associated with the model
      * @details updates the dimensions of the model
      * @param trainingSet pointer to the training set.
@@ -174,12 +186,26 @@ public:
     /*@{*/
     /** @name Training */
     /**
+     * @brief Function POinter for Parallel Training
+     * @param context pointer to the object to train
+     */
+    static void* train_func(void *context);
+    
+    /**
      * @brief Main training method based on the EM algorithm
      * @details the method performs a loop over the pure virtual method train_EM_update() until convergence.
      * The @a train_EM_update method computes both E and M steps of the EM algorithm.
      * @see train_EM_update
      */
     int train();
+    
+#ifdef USE_PTHREAD
+    /**
+     * @brief Interrupt the current training function
+     * @param this_thread pointer to the training thread
+     */
+    void abortTraining(pthread_t this_thread);
+#endif
     
     /**
      * @brief set the callback function associated with the training algorithm
@@ -359,7 +385,7 @@ protected:
     /**
      * @brief Callback function for the training algorithm
      */
-    void (*trainingCallback_)(void *srcModel, CALLBACK_FLAG state, void* extradata);
+    void (*trainingCallbackFunction_)(void *srcModel, CALLBACK_FLAG state, void* extradata);
     
     /**
      * @brief Extra data to pass in argument to the callback function
@@ -371,11 +397,16 @@ protected:
      */
     RingBuffer<double, 1> likelihoodBuffer_;
     
-#if __cplusplus > 199711L
+    /**
+     * @brief defines if the model is being trained.
+     */
+    bool is_training_;
+    
+#ifdef USE_PTHREAD
     /**
      * @brief Mutex used in Concurrent Mode
      */
-    mutex trainingMutex;
+    pthread_mutex_t trainingMutex;
 #endif
 };
 
