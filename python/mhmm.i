@@ -3,15 +3,15 @@
 %{
 	#define SWIG_FILE_WITH_INIT
 	// #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-    #include <fstream>
-    #include <sstream>
+  #include <fstream>
+  #include <sstream>
 	#include "mbd_common.h"
-    #include "phrase.h"
-    #include "label.h"
+  #include "phrase.h"
+  #include "label.h"
 	#include "training_set.h"
 	#include "probabilistic_model.h"
 	#include "model_group.h"
-    #include "gaussian_distribution.h"
+  #include "gaussian_distribution.h"
 	#include "gmm.h"
 	#include "gmm_group.h"
 	#include "hmm.h"

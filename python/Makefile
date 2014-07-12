@@ -23,9 +23,9 @@ SWIGOPT=#-debug-template
 
 json:
 	@echo "\n==> Compiling JSON Library\n"
-	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig)
-	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig install)
-	@(cd $(JSON_XCODE_DIR) && xcodebuild -xcconfig Config_c++03.xcconfig clean)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild install)
+	@(cd $(JSON_XCODE_DIR) && xcodebuild clean)
 
 compile: json mhmm.i setup.py $(RTML_DIR)*.cpp #$(LIB_DIR)*.cpp
 	@echo "\n==> Generating doc\n"
