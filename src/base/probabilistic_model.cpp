@@ -22,6 +22,7 @@ bimodal_(flags & BIMODAL),
 trainingCallback_(NULL)
 {
     if (this->trainingSet) {
+        this->trainingSet->add_listener(this);
         if (bimodal_ && !trainingSet->is_bimodal())
             throw runtime_error("This model is bimodal but the training set is not. Can't Connect.");
         if (!bimodal_ && trainingSet->is_bimodal())
@@ -50,7 +51,8 @@ ProbabilisticModel& ProbabilisticModel::operator=(ProbabilisticModel const& src)
 {
     if(this != &src)
     {
-        cout << "ProbabilisticModel::operator=" << endl;
+        if (this->trainingSet)
+            this->trainingSet->remove_listener(this);
         _copy(this, src);
     }
     return *this;
@@ -73,20 +75,27 @@ void ProbabilisticModel::_copy(ProbabilisticModel *dst,
     dst->stopcriterion.percentChg = src.stopcriterion.percentChg;
     dst->likelihoodBuffer_.resize(src.likelihoodBuffer_.size());
     dst->likelihoodBuffer_.clear();
+    dst->trainingSet = src.trainingSet;
+    if (dst->trainingSet)
+        dst->trainingSet->add_listener(dst);
 }
 
 ProbabilisticModel::~ProbabilisticModel()
 {
-    if (trainingSet)
-        trainingSet->set_parent(NULL);
+    if (this->trainingSet)
+        this->trainingSet->remove_listener(this);
 }
 
 #pragma mark -
 #pragma mark Accessors
 void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
 {
+    PREVENT_ATTR_CHANGE();
+    if (this->trainingSet)
+        this->trainingSet->remove_listener(this);
     this->trainingSet = trainingSet;
     if (this->trainingSet) {
+        this->trainingSet->add_listener(this);
         if (bimodal_ && !trainingSet->is_bimodal())
             throw runtime_error("This model is bimodal but the training set is not. Can't Connect.");
         if (!bimodal_ && trainingSet->is_bimodal())
@@ -114,6 +123,10 @@ void ProbabilisticModel::notify(string attribute)
         this->allocate();
         return;
     }
+    if (attribute == "destruction") {
+        trainingSet = NULL;
+        return;
+    }
 }
 
 unsigned int ProbabilisticModel::dimension() const
@@ -126,14 +139,6 @@ unsigned int ProbabilisticModel::dimension_input() const
     if (!bimodal_)
         throw runtime_error("The model is not bimodal");
     return dimension_input_;
-}
-
-bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
-{
-    if (stopcriterion.maxSteps > stopcriterion.minSteps)
-        return (step >= stopcriterion.maxSteps);
-    else
-        return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) < stopcriterion.percentChg);
 }
 
 unsigned int ProbabilisticModel::get_likelihoodwindow() const
@@ -228,6 +233,14 @@ int ProbabilisticModel::train()
     this->trainingMutex.unlock();
 #endif
     return nbIterations;
+}
+
+bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
+{
+    if (stopcriterion.maxSteps > stopcriterion.minSteps)
+        return (step >= stopcriterion.maxSteps);
+    else
+        return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) < stopcriterion.percentChg);
 }
 
 void ProbabilisticModel::train_EM_terminate()

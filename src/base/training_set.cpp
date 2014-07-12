@@ -9,45 +9,14 @@
 
 #include "training_set.h"
 
-TrainingSet::phrase_iterator TrainingSet::begin()
-{
-    return phrases.begin();
-}
-
-TrainingSet::phrase_iterator TrainingSet::end()
-{
-    return phrases.end();
-}
-
-TrainingSet::const_phrase_iterator TrainingSet::cbegin() const
-{
-    return phrases.begin();
-}
-
-TrainingSet::const_phrase_iterator TrainingSet::cend() const
-{
-    return phrases.end();
-}
-
-TrainingSet::phrase_iterator TrainingSet::operator()(int n)
-{
-    phrase_iterator pp = phrases.begin();
-    for (int i=0; i<n; i++) {
-        ++pp;
-    }
-    return pp;
-}
-
 #pragma mark -
 #pragma mark Constructors
 TrainingSet::TrainingSet(rtml_flags flags,
-                         Listener* parent,
                          unsigned int dimension,
                          unsigned int dimension_input)
 {
     flags_ = flags;
     locked_ = false;
-    parent_ = parent;
     has_changed_ = false;
     
     owns_data = !(flags_ & SHARED_MEMORY);
@@ -76,7 +45,7 @@ void TrainingSet::_copy(TrainingSet *dst, TrainingSet const& src)
     dst->bimodal_ = src.bimodal_;
     dst->dimension_ = src.dimension_;
     dst->dimension_input_ = src.dimension_input_;
-    dst->parent_ = src.parent_;
+    dst->listeners_ = src.listeners_;
     dst->defaultLabel_ = src.defaultLabel_;
     dst->has_changed_ = true;
     dst->locked_ = src.locked_;
@@ -92,6 +61,10 @@ TrainingSet::~TrainingSet()
         for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it)
             delete it->second;
     }
+    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+        (*listen_it)->notify("destruction");
+    }
+    listeners_.clear();
     subTrainingSets_.clear();
     phrases.clear();
     phraseLabels.clear();
@@ -130,9 +103,15 @@ void TrainingSet::set_unchanged()
     has_changed_ = false;
 }
 
-void TrainingSet::set_parent(Listener* parent)
+void TrainingSet::add_listener(Listener* listener)
 {
-    parent_ = parent;
+    listeners_.insert(listener);
+}
+
+void TrainingSet::remove_listener(Listener* listener)
+{
+    if (int numerase = listeners_.erase(listener) > 1)
+        cout << numerase << endl;
 }
 
 unsigned int TrainingSet::dimension()
@@ -161,8 +140,9 @@ void TrainingSet::set_dimension(unsigned int dimension)
     for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
         it->second.set_dimension(dimension_);
     
-    if (this->parent_)
-        this->parent_->notify("dimension");
+    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+        (*listen_it)->notify("dimension");
+    }
 }
 
 void TrainingSet::set_dimension_input(unsigned int dimension_input)
@@ -184,8 +164,9 @@ void TrainingSet::set_dimension_input(unsigned int dimension_input)
     for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
         it->second.set_dimension_input(dimension_input_);
     
-    if (this->parent_)
-        this->parent_->notify("dimension_input");
+    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+        (*listen_it)->notify("dimension_input");
+    }
 }
 
 bool TrainingSet::operator==(TrainingSet const &src)
@@ -227,6 +208,37 @@ bool TrainingSet::operator==(TrainingSet const &src)
 bool TrainingSet::operator!=(TrainingSet const &src)
 {
     return !operator==(src);
+}
+
+#pragma mark -
+#pragma mark Access Phrases
+TrainingSet::phrase_iterator TrainingSet::begin()
+{
+    return phrases.begin();
+}
+
+TrainingSet::phrase_iterator TrainingSet::end()
+{
+    return phrases.end();
+}
+
+TrainingSet::const_phrase_iterator TrainingSet::cbegin() const
+{
+    return phrases.begin();
+}
+
+TrainingSet::const_phrase_iterator TrainingSet::cend() const
+{
+    return phrases.end();
+}
+
+TrainingSet::phrase_iterator TrainingSet::operator()(int n)
+{
+    phrase_iterator pp = phrases.begin();
+    for (int i=0; i<n; i++) {
+        ++pp;
+    }
+    return pp;
 }
 
 #pragma mark -
@@ -380,7 +392,7 @@ TrainingSet* TrainingSet::getSubTrainingSetForClass(Label const& label)
 
 void TrainingSet::updateSubTrainingSet(Label const& label)
 {
-    subTrainingSets_[label] = TrainingSet(flags_, NULL, dimension_, dimension_input_);
+    subTrainingSets_[label] = TrainingSet(flags_, dimension_, dimension_input_);
     subTrainingSets_[label].setDefaultLabel(label);
     subTrainingSets_[label].lock();
     int newPhraseIndex(0);
@@ -409,6 +421,7 @@ void TrainingSet::updateLabelList()
     }
 }
 
+#pragma mark -
 #pragma mark Moments
 vector<float> TrainingSet::mean() const
 {
@@ -549,8 +562,6 @@ void TrainingSet::from_json(JSONNode root)
         defaultLabel_.from_json(*root_it);
         ++root_it;
         
-        // TODO: write flags_, dimensions...
-        
         // Get Phrases
         phrases.clear();
         phraseLabels.clear();
@@ -604,27 +615,4 @@ void TrainingSet::from_json(JSONNode root)
     } catch (exception &e) {
         throw JSONException(e, root.name());
     }
-}
-
-#pragma mark -
-#pragma mark Debug
-void TrainingSet::dump(ostream& outStream)
-{
-    outStream << "# Training Set\n";
-    outStream << "# ===========================\n";
-    outStream << "# Number of Phrases\n";
-    outStream << phrases.size() << endl;
-    outStream << "# Default Label\n";
-    if (defaultLabel_.type == Label::INT)
-        outStream << "INT " << defaultLabel_.getInt() << endl;
-    else
-        outStream << "SYM " << defaultLabel_.getSym() << endl;
-    for (phrase_iterator it = phrases.begin(); it != phrases.end(); ++it) {
-        outStream << "# === Phrase " << it->first << ", Label ";
-        if (phraseLabels[it->first].type == Label::INT)
-            outStream << "INT " << phraseLabels[it->first].getInt() << endl;
-        else
-            outStream << "SYM " << phraseLabels[it->first].getSym() << endl;
-    }
-    outStream << endl;
 }

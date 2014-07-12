@@ -57,14 +57,11 @@ public:
     /** @name Constructors */
     /**
      * @brief Constructor
-     * @param _parent parent learning model => the parent is notified each time the training set
-     * attributes are modified.
      * @param dimension total dimension of the training data.
      * @param flags construction flags (@see Phrase).
      * @param dimension_input dimension of the input modality in bimodal mode.
      */
     TrainingSet(rtml_flags flags=0,
-                Listener* _parent=NULL,
                 unsigned int dimension=PHRASE_DEFAULT_DIMENSION,
                 unsigned int dimension_input = 0);
     
@@ -114,10 +111,17 @@ public:
     void set_unchanged();
     
     /**
-     * @brief Set parent model (to be notified when attributes are modified)
-     * @param _parent parent model
+     * @brief Add a listener to the training set. The listeners are notified when an attribute (e.g. dimension)
+     * of the training set is modified.
+     * @param listener listener model
      */
-    void set_parent(Listener* _parent);
+    void add_listener(Listener* listener);
+    
+    /**
+     * @brief Remove a listener form the training set.
+     * @param listener listener model
+     */
+    void remove_listener(Listener* listener);
     
     /**
      * @brief Get total dimension of the training data
@@ -385,17 +389,6 @@ public:
     void from_json(JSONNode root);
     
     /*@}*/
-
-#pragma mark > Debug
-    /*@{*/
-    /** @name Debug */
-    /**
-     * @brief Dump training set information to stream
-     * @param outStream output stream
-     */
-    void dump(ostream& outStream);
-    
-    /*@}*/
     
 #pragma mark -
 #pragma mark === Public Attributes ===
@@ -485,9 +478,9 @@ private:
     unsigned int dimension_input_;
     
     /**
-     * @brief Parent Object. The parent is notified when attributes of the training set are changed.
+     * @brief Set of listener objects. The listeners are notified when attributes of the training set are changed.
      */
-    Listener* parent_;
+    set<Listener*> listeners_;
     
     /**
      * @brief Default label for new phrases

@@ -80,7 +80,7 @@ public:
         bimodal_ = (flags & BIMODAL);
         this->globalTrainingSet = globalTrainingSet;
         if (this->globalTrainingSet)
-            this->globalTrainingSet->set_parent(this);
+            this->globalTrainingSet->add_listener(this);
         referenceModel_ = ModelType(flags, this->globalTrainingSet);
         performanceMode_ = LIKELIEST;
     }
@@ -91,6 +91,8 @@ public:
     virtual ~ModelGroup()
     {
         models.clear();
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->remove_listener(this);
     }
     
     /*@}*/
@@ -157,7 +159,7 @@ public:
             throw out_of_range("Class Label Does not exist");
         models.erase(it);
     }
-
+    
     
     /*@}*/
     
@@ -170,9 +172,11 @@ public:
      */
     void set_trainingSet(TrainingSet *globalTrainingSet)
     {
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->remove_listener(this);
         this->globalTrainingSet = globalTrainingSet;
         if (this->globalTrainingSet)
-            this->globalTrainingSet->set_parent(this);
+            this->globalTrainingSet->add_listener(this);
         referenceModel_.set_trainingSet(this->globalTrainingSet);
     }
     
@@ -530,6 +534,10 @@ protected:
         for (model_iterator it=models.begin(); it != models.end(); ++it) {
             it->second.notify(attribute);
         }
+        if (attribute == "destruction") {
+            globalTrainingSet = NULL;
+            return;
+        }
     }
     
     /**
@@ -569,12 +577,10 @@ protected:
         
         if (models.find(label) == models.end()) {
             models[label] = referenceModel_;
-            models[label].trainingSet = NULL;
         }
         
         TrainingSet* new_ts = globalTrainingSet->getSubTrainingSetForClass(label);
         models[label].set_trainingSet(new_ts);
-        new_ts->set_parent(&models[label]);
         models[label].trained = false;
     }
     
@@ -618,6 +624,28 @@ protected:
      * @brief reference model, Used to store shared model attributes
      */
     ModelType referenceModel_;
+    
+    /**
+     * @brief Callback function for the training algorithm
+     */
+    void (*trainingCallbackFunction_)(void *srcModel, CALLBACK_FLAG state, void* extradata);
+    
+    /**
+     * @brief Extra data to pass in argument to the callback function
+     */
+    void *trainingExtradata_;
+    
+    /**
+     * @brief Number of Models that are still training
+     */
+    unsigned int models_to_train_;
+    
+#ifdef USE_PTHREAD
+    /**
+     * @brief Training Threads
+     */
+    map<Label, pthread_t> training_threads;
+#endif
 };
 
 #endif
