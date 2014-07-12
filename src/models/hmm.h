@@ -243,6 +243,7 @@ public:
      * @brief Results: Likelihood to exit the gesture on the next time step
      */
     double results_exit_likelihood;
+    double results_exit_ratio;
     
     /**
      * @brief State probabilities estimated by the forward algorithm.

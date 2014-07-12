@@ -477,13 +477,14 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
             dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities_[k] * tmp ;
             dstit->second.alpha_h[0][k] = (1 - dstit->second.exitProbabilities_[k]) * tmp;
             
-            dstit->second.results_exit_likelihood += dstit->second.alpha_h[1][k];
+            dstit->second.results_exit_likelihood += dstit->second.alpha_h[1][k] +dstit->second.alpha_h[2][k];
             dstit->second.results_instant_likelihood += dstit->second.alpha_h[0][k] + dstit->second.alpha_h[1][k] + dstit->second.alpha_h[2][k];
             
             norm_const += tmp;
         }
         
         dstit->second.updateLikelihoodBuffer(dstit->second.results_instant_likelihood);
+        dstit->second.results_exit_ratio = dstit->second.results_exit_likelihood / dstit->second.results_instant_likelihood;
     }
     
     // Normalize Alpha variables
