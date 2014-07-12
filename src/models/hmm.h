@@ -102,6 +102,14 @@ public:
     /*@{*/
     /** @name Accessors */
     /**
+     * @brief set the training set associated with the model
+     * @details updates the training sets of each GMM
+     * @param trainingSet pointer to the training set.
+     * @throws runtime_error if the training set has not the same number of modalities
+     */
+    void set_trainingSet(TrainingSet *trainingSet);
+    
+    /**
      * @brief Get the Number of hidden states of the model
      * @return number of hidden states
      */

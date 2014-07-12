@@ -262,7 +262,6 @@ void GMMGroup::from_json(JSONNode root)
             if (array_it->type() != JSON_NODE)
                 throw JSONException("Wrong type: was expecting 'JSON_NODE'", array_it->name());
             models[l] = this->referenceModel_;
-            models[l].trainingSet = NULL;
             models[l].from_json(*array_it);
         }
         

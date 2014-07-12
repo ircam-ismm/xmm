@@ -564,7 +564,6 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
     }
     
     // Compute time progression
-    // TODO: Put this in forward algorithm
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.updateTimeProgression();
     }
@@ -835,7 +834,6 @@ void HierarchicalHMM::from_json(JSONNode root)
             if (array_it->type() != JSON_NODE)
                 throw JSONException("Wrong type: was expecting 'JSON_NODE'", array_it->name());
             models[l] = this->referenceModel_;
-            models[l].trainingSet = NULL;
             models[l].from_json(*array_it);
         }
         if (numModels != models.size())

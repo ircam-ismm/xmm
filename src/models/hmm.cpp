@@ -30,10 +30,6 @@ HMM::HMM(rtml_flags flags,
     
     allocate();
     
-    for (int i=0; i<nbStates; i++) {
-        states_[i].set_trainingSet(trainingSet);
-    }
-    
     play_EM_stopCriterion_.minSteps = PLAY_EM_STEPS;
     play_EM_stopCriterion_.maxSteps = 0;
     play_EM_stopCriterion_.percentChg = PLAY_EM_MAX_LOG_LIK_PERCENT_CHG;
@@ -314,7 +310,13 @@ void HMM::normalizeTransitions()
 
 #pragma mark -
 #pragma mark Accessors
-
+void HMM::set_trainingSet(TrainingSet *trainingSet)
+{
+    for (int i=0; i<nbStates_; i++) {
+        states_[i].set_trainingSet(trainingSet);
+    }
+    ProbabilisticModel::set_trainingSet(trainingSet);
+}
 
 int HMM::get_nbStates() const
 {
@@ -995,7 +997,7 @@ double HMM::performance_update(vector<float> const& observation)
     }
     
     this->updateLikelihoodBuffer(1./ct);
-    // TODO: Put this in forward algorithm
+    
     updateTimeProgression();
     
     return results_instant_likelihood;
