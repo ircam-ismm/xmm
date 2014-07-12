@@ -84,6 +84,7 @@ public:
         if (this->globalTrainingSet)
             this->globalTrainingSet->add_listener(this);
         referenceModel_ = ModelType(flags, this->globalTrainingSet);
+        referenceModel_.set_trainingCallback(monitor_training, this);
         performanceMode_ = LIKELIEST;
         models_to_train_ = 0;
     }
@@ -400,11 +401,9 @@ public:
         // Sequential training
         vector<Label> notConverged;
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-            try {
-                nbIterations[it->first] = it->second.train();
-            } catch (exception &e) {
+            nbIterations[it->first] = it->second.train();
+            if (nbIterations[it->first] < 0)
                 notConverged.push_back(it->first);
-            }
         }
         for (vector<Label>::iterator it = notConverged.begin(); it != notConverged.end(); ++it) {
             remove(*it);
@@ -446,11 +445,9 @@ public:
         vector<Label> notConverged;
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             if (!it->second.trained || it->second.trainingSet->has_changed()) {
-                try {
-                    nbIterations[it->first] = it->second.train();
-                } catch (exception &e) {
+                nbIterations[it->first] = it->second.train();
+                if (nbIterations[it->first] < 0)
                     notConverged.push_back(it->first);
-                }
             }
         }
         for (vector<Label>::iterator it = notConverged.begin(); it != notConverged.end(); ++it) {
@@ -482,7 +479,9 @@ public:
         if (state != TRAINING_RUN) {
             Label label = ((ModelType *)model)->trainingSet->getPhraseLabel(0);
             thismodelgroup->models_to_train_--;
+#ifdef USE_PTHREAD
             thismodelgroup->training_threads.erase(label);
+#endif
             if (state == TRAINING_ERROR || state == TRAINING_ABORT) {
                 thismodelgroup->remove(label);
             }
