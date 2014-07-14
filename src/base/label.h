@@ -11,6 +11,7 @@
 #define __mhmm__label__
 
 #include <iostream>
+#include "mbd_common.h"
 #include "json_utilities.h"
 
 using namespace std;
@@ -21,7 +22,8 @@ using namespace std;
  * @brief Label of a data phrase
  * @details Possible types are int and string
  */
-class Label {
+class Label : public Writable
+{
 public:
     /**
      * @brief Type of the Label: 'INT' or 'SYM'

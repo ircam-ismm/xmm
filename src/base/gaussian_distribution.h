@@ -31,7 +31,7 @@ const double EPSILON_GAUSSIAN = 1.0e-20;
  * @brief Multivariate Gaussian Distribution
  * @details Full covariance, optionally multimodal with support for regression
  */
-class GaussianDistribution
+class GaussianDistribution : public Writable
 {
 public:
 #pragma mark > Constructors

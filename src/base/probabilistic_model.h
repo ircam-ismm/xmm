@@ -99,7 +99,7 @@ struct EMStopCriterion {
  * @class ProbabilisticModel
  * @brief Generic Template for Machine Learning Probabilistic models based on the EM algorithm
  */
-class ProbabilisticModel : public Listener
+class ProbabilisticModel : public Listener, public Writable
 {
 public:
     template<typename modelType> friend class ModelGroup;

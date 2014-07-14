@@ -30,7 +30,8 @@ const int PHRASE_ALLOC_BLOCKSIZE = 256;
  * or bimodal - i.e. it contains 2 arrays to store the input and output modalities. The latter case
  * can be specified by using the 'BIMODAL' flag in the constructor.
  */
-class Phrase {
+class Phrase : public Writable
+{
 public:
 #pragma mark -
 #pragma mark === Public Interface ===

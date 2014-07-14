@@ -69,7 +69,10 @@ public:
      * @param attribute name of the modified attribute of the training set
      */
     virtual void notify(string attribute) = 0;
-    
+};
+
+class Writable {
+public:
     /**
      * @brief Write to JSON Node
      * @return JSON Node containing phrase information

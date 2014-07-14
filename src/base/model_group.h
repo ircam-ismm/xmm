@@ -28,7 +28,7 @@ using namespace std;
  * @tparam modelType type of the models (implemented: GMM, HMM)
  */
 template<typename ModelType>
-class ModelGroup : public Listener
+class ModelGroup : public Listener, public Writable
 {
 public:
 #pragma mark -

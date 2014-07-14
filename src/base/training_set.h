@@ -23,7 +23,7 @@ using namespace std;
  * @brief Base class for the definition of (multimodal) training sets
  * @todo class description
  */
-class TrainingSet
+class TrainingSet : public Writable
 {
 public:
 #pragma mark -
