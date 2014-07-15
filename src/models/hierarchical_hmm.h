@@ -124,6 +124,20 @@ public:
     void set_weight_regression(double weight_regression);
     
     /**
+     * @brief Get the regression estimator type
+     * @return regression estimator type
+     * @see REGRESSION_ESTIMATOR
+     */
+    REGRESSION_ESTIMATOR get_regression_estimator() const;
+    
+    /**
+     * @brief Set the regression estimator type
+     * @param regression_estimator type of estimator
+     * @see REGRESSION_ESTIMATOR
+     */
+    void set_regression_estimator(REGRESSION_ESTIMATOR regression_estimator);
+    
+    /**
      * @brief get transition mode of the hidden Markov Chain
      * @return string corresponding to the transition mode (left-right / ergodic)
      * @todo: remove transitionMode to simplify forward complexity

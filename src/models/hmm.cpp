@@ -27,6 +27,7 @@ HMM::HMM(rtml_flags flags,
     varianceOffset_relative_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE;
     varianceOffset_absolute_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE;
     weight_regression_ = 1.;
+    regression_estimator_ = FULL;
     
     allocate();
     
@@ -63,6 +64,7 @@ void HMM::_copy(HMM *dst,
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
     dst->weight_regression_ = src.weight_regression_;
+    dst->regression_estimator_ = src.regression_estimator_;
     dst->nbStates_ = src.nbStates_;
     dst->estimateMeans_ = src.estimateMeans_;
     
@@ -390,6 +392,17 @@ void HMM::set_weight_regression(double weight_regression)
     for (int i=0; i<nbStates_; i++) {
         states_[i].set_weight_regression(weight_regression_);
     }
+}
+
+REGRESSION_ESTIMATOR HMM::get_regression_estimator() const
+{
+    return regression_estimator_;
+}
+
+
+void HMM::set_regression_estimator(REGRESSION_ESTIMATOR regression_estimator)
+{
+    regression_estimator_ = regression_estimator;
 }
 
 string HMM::get_transitionMode() const
@@ -1029,15 +1042,58 @@ void HMM::regression(vector<float> const& observation_input,
     predicted_output.assign(dimension_output, 0.0);
     vector<float> tmp_predicted_output(dimension_output);
     
-    for (int i=0; i<nbStates_; i++) {
+    unsigned int likeliest_state_index(0);
+    if (regression_estimator_ != FULL) {
+        // Get likeliest State
+        double best_alpha(is_hierarchical_ ? (alpha_h[0][0] + alpha_h[1][0]) : alpha[0]);
+        for (unsigned int i = 1; i < nbStates_ ; ++i) {
+            if (is_hierarchical_) {
+                if ((alpha_h[0][i] + alpha_h[1][i]) > best_alpha) {
+                    best_alpha = alpha_h[0][i] + alpha_h[1][i];
+                    likeliest_state_index = i;
+                }
+            } else {
+                if (alpha[i] > best_alpha) {
+                    best_alpha = alpha[i];
+                    likeliest_state_index = i;
+                }
+            }
+        }
+    }
+    
+    if (regression_estimator_ == LIKELIEST) {
+        states_[likeliest_state_index].likelihood(observation_input);
+        states_[likeliest_state_index].regression(observation_input, predicted_output);
+        return;
+    }
+    
+    // regression_estimator_ == FULL
+    int clip_min_state(0);
+    int clip_max_state(nbStates_);
+    double normalization_constant(1.0);
+    
+    if (regression_estimator_ == WINDOWED) {
+        // Compute Regression Weights
+        clip_min_state = (likeliest_state_index - (nbStates_/2));
+        clip_max_state = (likeliest_state_index + (nbStates_/2));
+        clip_min_state = (clip_min_state >= 0) ? clip_min_state : 0;
+        clip_max_state = (clip_max_state <= nbStates_) ? clip_max_state : nbStates_;
+        normalization_constant = 0.0;
+        for (int i=clip_min_state; i<clip_max_state; ++i) {
+            normalization_constant += is_hierarchical_ ? (alpha_h[0][i] + alpha_h[1][i]) : alpha[i];
+        }
+    }
+    
+    // Compute Regression
+    for (int i=clip_min_state; i<clip_max_state; ++i) {
         states_[i].likelihood(observation_input);
         states_[i].regression(observation_input, tmp_predicted_output);
         for (int d = 0; d < dimension_output; ++d)
         {
             if (is_hierarchical_)
-                predicted_output[d] += (alpha_h[0][i] + alpha_h[1][i]) * tmp_predicted_output[d];
+                predicted_output[d] += (alpha_h[0][i] + alpha_h[1][i]) * tmp_predicted_output[d] / normalization_constant;
             else
-                predicted_output[d] += alpha[i] * tmp_predicted_output[d];
+                predicted_output[d] += alpha[i] * tmp_predicted_output[d] / normalization_constant;
         }
     }
 }
@@ -1077,6 +1133,7 @@ JSONNode HMM::to_json() const
     json_hmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_hmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
     json_hmm.push_back(JSONNode("weight_regression", weight_regression_));
+    json_hmm.push_back(JSONNode("regression_estimator", regression_estimator_));
     json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
     // Model Parameters
@@ -1190,7 +1247,7 @@ void HMM::from_json(JSONNode root)
         varianceOffset_absolute_ = root_it->as_float();
         ++root_it;
         
-        // Get Covariance Offset (Minimum value)
+        // Get Regression Weight
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->name() != "weight_regression")
@@ -1198,6 +1255,16 @@ void HMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         weight_regression_ = root_it->as_float();
+        ++root_it;
+        
+        // Get Regression Estimator
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "regression_estimator")
+            throw JSONException("Wrong name: was expecting 'regression_estimator'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        regression_estimator_ = REGRESSION_ESTIMATOR(root_it->as_int());
         ++root_it;
         
         // Get Transition Mode

@@ -41,6 +41,28 @@ enum TRANSITION_MODE {
 };
 
 /**
+ * @enum REGRESSION_ESTIMATOR
+ * @brief Estimator for the regression with HMMs
+ */
+enum REGRESSION_ESTIMATOR {
+    /**
+     * @brief The output is estimated by a weighted regression over all states
+     */
+    FULL,
+    
+    /**
+     * @brief The output is estimated by a weighted regression over a window centered around
+     * the likeliest state
+     */
+    WINDOWED,
+    
+    /**
+     * @brief The output is estimated by a regression using the likeliest state only.
+     */
+    LIKELIEST
+};
+
+/**
  * @defgroup HMM Hidden Markov Models
  */
 
@@ -162,10 +184,25 @@ public:
     double get_weight_regression() const;
     
     /**
-     * @brief Get Regression Weight
+     * @brief Set Regression Weight
      * @param weight_regression Weight of the regresion part for synthesis
      */
     void set_weight_regression(double weight_regression);
+    
+    
+    /**
+     * @brief Get the regression estimator type
+     * @return regression estimator type
+     * @see REGRESSION_ESTIMATOR
+     */
+    REGRESSION_ESTIMATOR get_regression_estimator() const;
+    
+    /**
+     * @brief Set the regression estimator type
+     * @param regression_estimator type of estimator
+     * @see REGRESSION_ESTIMATOR
+     */
+    void set_regression_estimator(REGRESSION_ESTIMATOR regression_estimator);
     
     /**
      * @brief get transition mode of the hidden Markov Chain
@@ -610,6 +647,12 @@ protected:
      * A zero weight correspond to estimation using the means only.
      */
     double weight_regression_;
+    
+    /**
+     * @brief Type of regression estimator (default = FULL)
+     * @see REGRESSION_ESTIMATOR
+     */
+    REGRESSION_ESTIMATOR regression_estimator_;
 };
 
 

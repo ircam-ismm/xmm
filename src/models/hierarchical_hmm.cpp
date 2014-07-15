@@ -90,6 +90,19 @@ void HierarchicalHMM::set_weight_regression(double weight_regression)
     }
 }
 
+REGRESSION_ESTIMATOR HierarchicalHMM::get_regression_estimator() const
+{
+    return this->referenceModel_.get_regression_estimator();
+}
+
+void HierarchicalHMM::set_regression_estimator(REGRESSION_ESTIMATOR regression_estimator)
+{
+    this->referenceModel_.set_regression_estimator(regression_estimator);
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.set_regression_estimator(regression_estimator);
+    }
+}
+
 bool HierarchicalHMM::get_estimateMeans() const
 {
     return this->referenceModel_.estimateMeans_;
@@ -607,6 +620,7 @@ JSONNode HierarchicalHMM::to_json() const
     json_hhmm.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
     json_hhmm.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
     json_hhmm.push_back(JSONNode("weight_regression", get_weight_regression()));
+    json_hhmm.push_back(JSONNode("regression_estimator", get_regression_estimator()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -809,7 +823,7 @@ void HierarchicalHMM::from_json(JSONNode root)
         set_varianceOffset(relvar, root_it->as_float());
         ++root_it;
         
-        // Get Covariance Offset
+        // Get Regression Weight
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->name() != "weight_regression")
@@ -818,6 +832,17 @@ void HierarchicalHMM::from_json(JSONNode root)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         set_weight_regression(root_it->as_float());
         ++root_it;
+        
+        // Get Regression Estimator
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "regression_estimator")
+            throw JSONException("Wrong name: was expecting 'regression_estimator'", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+        set_regression_estimator(REGRESSION_ESTIMATOR(root_it->as_int()));
+        ++root_it;
+        
         
         // Get Models
         models.clear();
