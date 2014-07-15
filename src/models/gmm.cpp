@@ -415,7 +415,7 @@ double GMM::train_EM_update()
     //estimate covariances
     for (int c=0; c<nbMixtureComponents_; c++) {
         for (int d1=0; d1<dimension_; d1++) {
-            for (int d2=0; d2<dimension_; d2++) {
+            for (int d2=d1; d2<dimension_; d2++) {
                 components[c].covariance[d1 * dimension_ + d2] = 0.;
                 tbase = 0;
                 for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); ++it) {
@@ -428,6 +428,8 @@ double GMM::train_EM_update()
                     tbase += T;
                 }
                 components[c].covariance[d1 * dimension_ + d2] /= E[c];
+                if (d1 != d2)
+                    components[c].covariance[d2*dimension_+d1] = components[c].covariance[d1*dimension_+d2];
             }
         }
     }
