@@ -110,7 +110,7 @@ public:
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
     /*@{*/
-    /** @name Constructors*/
+    /** @name Constructors */
     /**
      * @brief Constructor
      * @param trainingSet training set associated with the model
@@ -182,15 +182,10 @@ public:
     void set_likelihoodwindow(unsigned int likelihoodwindow);
     
     /*@}*/
+    
 #pragma mark > Training
     /*@{*/
     /** @name Training */
-    /**
-     * @brief Function POinter for Parallel Training
-     * @param context pointer to the object to train
-     */
-    static void* train_func(void *context);
-    
     /**
      * @brief Main training method based on the EM algorithm
      * @details the method performs a loop over the pure virtual method train_EM_update() until convergence.
@@ -203,6 +198,7 @@ public:
     /**
      * @brief Interrupt the current training function
      * @param this_thread pointer to the training thread
+     * @warning only defined if USE_PTHREAD is defined
      */
     void abortTraining(pthread_t this_thread);
 #endif
@@ -214,6 +210,12 @@ public:
     void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata);
     
     /*@}*/
+
+    /**
+     * @brief Function pointer for parallel training
+     * @param context pointer to the object to train
+     */
+    static void* train_func(void *context);
     
 #pragma mark > Performance
     /*@{*/
@@ -272,8 +274,6 @@ public:
     
     /**
      * progression within the training algorithm
-     * @warning  not yet implemented?
-     * @todo  implement training progression
      */
     float trainingProgression;
     
@@ -404,6 +404,7 @@ protected:
 #ifdef USE_PTHREAD
     /**
      * @brief Mutex used in Concurrent Mode
+     * @warning only defined if USE_PTHREAD is defined
      */
     pthread_mutex_t trainingMutex;
 #endif

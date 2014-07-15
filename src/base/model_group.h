@@ -36,7 +36,7 @@ public:
 #pragma mark > Iterators
     /**
      * @enum GROUP_ESTIMATION_MODE
-     * Type of performance mode for concurrent models
+     * @brief Type of performance mode for concurrent models
      */
     enum GROUP_ESTIMATION_MODE {
         /**
@@ -67,7 +67,7 @@ public:
     
 #pragma mark > Constructors
     /*@{*/
-    /** name Constructors */
+    /** @name Constructors */
     /**
      * @brief Constructor
      * @param globalTrainingSet global training set: contains all phrases for each model
@@ -372,12 +372,9 @@ public:
     /**
      * @brief Train All model even if their data have not changed.
      * @return number of iterations for each model if sequential training (not pthread).
-     * @throws runtime_error if an error occurs during training and no callback function is defined
-     * @todo create a TrainingException Class to handle training errors
      */
     virtual map<Label, int> train()
     {
-        // TODO: create a TrainingException Class to handle training errors
 #ifdef USE_PTHREAD
         stopTraining();
 #endif
@@ -414,8 +411,6 @@ public:
     
     /**
      * @brief Train all model which data has changed.
-     * @deprecated function unused now, need checking
-     * @throws exception if an error occurs during Training
      */
     virtual map<Label, int> retrain()
     {
@@ -458,11 +453,20 @@ public:
     }
     
 #ifdef USE_PTHREAD
+    /**
+     * @brief Aborts the training of a model
+     * @warning only defined if USE_PTHREAD is defined
+     * @param label label of the model to abort
+     */
     void stopTraining(Label const& label) {
         if (this->models.find(label) != this->models.end())
             models[label].abortTraining(training_threads[label]);
     }
     
+    /**
+     * @brief Aborts training of all models
+     * @warning only defined if USE_PTHREAD is defined
+     */
     void stopTraining() {
         for (set<Label>::iterator label_it = globalTrainingSet->allLabels.begin(); label_it != globalTrainingSet->allLabels.end(); label_it++) {
             stopTraining(*label_it);
@@ -554,6 +558,8 @@ public:
         }
     }
     
+    /*@}*/
+    
 #pragma mark -
 #pragma mark === Public attributes ===
     /**
@@ -600,8 +606,6 @@ protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Training Set
-    /*@{*/
-    /** @name Training set: internal methods */
     /**
      * @brief Receives notifications from the global training set and dispatches to models
      */
@@ -681,11 +685,8 @@ protected:
         globalTrainingSet->set_unchanged();
     }
     
-    /*@}*/
-    
 #pragma mark -
 #pragma mark === Protected attributes ===
-    /** @name Protected attributes */
     /**
      * @brief defines if the phrase is bimodal (true) or unimodal (false)
      */
@@ -720,6 +721,7 @@ protected:
 #ifdef USE_PTHREAD
     /**
      * @brief Training Threads
+     * @warning only defined if USE_PTHREAD is defined
      */
     map<Label, pthread_t> training_threads;
 #endif

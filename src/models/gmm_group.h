@@ -69,7 +69,6 @@ public:
     /**
      * @brief Set the number of mixture components of the model
      * @warning sets the model to be untrained.
-     * @todo : change this untrained behavior via mirror models for training?
      * @param nbMixtureComponents number of Gaussian Mixture Components
      * @throws invalid_argument if nbMixtureComponents is <= 0
      */

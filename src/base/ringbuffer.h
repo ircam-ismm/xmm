@@ -22,7 +22,6 @@ using namespace std;
  * @details Multichannel
  * @tparam T Data type
  * @tparam channels number of channels
- * @todo remove template parameters?
  */
 template <typename T, int channels>
 class RingBuffer {

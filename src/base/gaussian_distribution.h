@@ -44,7 +44,6 @@ public:
      * @param offset_relative Offset added to diagonal covariance (proportional to variance)
      * @param offset_absolute Offset added to diagonal covariance (minimum value)
      * @param dimension_input dimension of the input modality in bimodal mode.
-     * @todo change useRegression boolean to BIMODAL flag
      */
     GaussianDistribution(rtml_flags flags = NONE,
                          unsigned int dimension=1,
@@ -113,7 +112,6 @@ public:
      * @param observation data observation (must be of size @a dimension)
      * @return likelihood
      * @throws runtime_error if the Covariance Matrix is not invertible
-     * @todo  check the 'EPSILON_GAUSSIAN' stuff
      */
     double likelihood(const float* observation) const;
     
@@ -123,7 +121,6 @@ public:
      * @return likelihood
      * @throws runtime_error if the Covariance Matrix of the input modality is not invertible
      * @throws runtime_error if the model is not bimodal
-     * @todo  check the 'EPSILON_GAUSSIAN' stuff
      */
     double likelihood_input(const float* observation_input) const;
     
@@ -133,7 +130,6 @@ public:
      * @param observation_output observation of the output modality
      * @throws runtime_error if the Covariance Matrix is not invertible
      * @throws runtime_error if the model is not bimodal
-     * @todo  check the 'EPSILON_GAUSSIAN' stuff
      * @return likelihood
      */
     double likelihood_bimodal(const float* observation_input, const float* observation_output) const;

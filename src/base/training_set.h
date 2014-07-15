@@ -21,7 +21,7 @@ using namespace std;
  * @ingroup TrainingSet
  * @class TrainingSet
  * @brief Base class for the definition of (multimodal) training sets
- * @todo class description
+ * @todo Needs more details
  */
 class TrainingSet : public Writable
 {
@@ -240,7 +240,6 @@ public:
      * @param phraseIndex index of the data phrase in the trainingSet
      * @param observation observation vector to append to the phrase
      * @throws runtime_errpr if phrase has shared memory (construction with SHARED_MEMORY flag)
-     * @todo: Add input/output methods
      */
     void recordPhrase(int phraseIndex, vector<float> const& observation);
     

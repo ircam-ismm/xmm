@@ -66,6 +66,7 @@ double GMM::get_varianceOffset_absolute() const
 
 void GMM::set_nbMixtureComponents(int nbMixtureComponents)
 {
+    PREVENT_ATTR_CHANGE();
     if (nbMixtureComponents < 1) throw invalid_argument("Number of mixture components must be > 0");
     if (nbMixtureComponents == nbMixtureComponents_) return;
     
@@ -76,6 +77,7 @@ void GMM::set_nbMixtureComponents(int nbMixtureComponents)
 
 void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
+    PREVENT_ATTR_CHANGE();
     if (varianceOffset_relative <= 0. || varianceOffset_absolute <= 0.)
         throw invalid_argument("Variance offsets must be > 0");
     

@@ -20,13 +20,13 @@
 const int GMM_DEFAULT_NB_MIXTURE_COMPONENTS = 1;
 
 /**
- * @defgroup GMM Gaussian Mixture Model
+ * @defgroup GMM Gaussian Mixture Models
  */
 
 /**
  * @ingroup GMM
  * @class GMM
- * @brief Gaussian Mixture Model
+ * @brief Gaussian Mixture Models
  * @details Multivariate Gaussian Mixture Model. Supports Bimodal data and Gaussian Mixture Regression.
  * Can be either autonomous or a state of a HMM: defines observation probabilities for each state.
  */
@@ -107,7 +107,6 @@ public:
     /**
      * @brief Set the number of mixture components of the model
      * @warning sets the model to be untrained.
-     * @todo : change this untrained behavior via mirror models for training?
      * @param nbMixtureComponents number of Gaussian Mixture Components
      * @throws invalid_argument if nbMixtureComponents is <= 0
      */
@@ -250,7 +249,7 @@ protected:
 
 #pragma mark > Training
     /*@{*/
-    /** @name Training: internal methods */
+    /** @name Training: protected methods */
     /**
      * @brief Initialize the means of the Gaussian components with the first phrase of the training set
      */

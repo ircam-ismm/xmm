@@ -35,7 +35,7 @@ const bool HHMM_DEFAULT_REGULARIZATIONFACTOR = false;
  * @ingroup HMM
  * @class HierarchicalHMM
  * @brief Hierarchical Hidden Markov Model
- * @todo Write detailed documentation
+ * @todo Needs more details
  */
 class HierarchicalHMM : public ModelGroup< HMM > {
 public:
@@ -140,7 +140,6 @@ public:
     /**
      * @brief get transition mode of the hidden Markov Chain
      * @return string corresponding to the transition mode (left-right / ergodic)
-     * @todo: remove transitionMode to simplify forward complexity
      */
     string get_transitionMode() const;
     
@@ -350,14 +349,20 @@ protected:
     /*@{*/
     /** @name Forward Algorithm */
     /**
-     * @brief TODO
-     * @todo doc this
+     * @brief Initialization of the Forward Algorithm for the hierarchical HMM.
+     * see: Jules Françoise. Realtime Segmentation and Recognition of Gestures using Hierarchical Markov Models. Master’s Thesis, Université Pierre et Marie Curie, Ircam, 2011. [http://articles.ircam.fr/textes/Francoise11a/index.pdf]
+     * @param observation observation vector. If the model is bimodal, this should be allocated for
+     * both modalities, and should contain the observation on the input modality. The predicted
+     * output will be appended to the input modality observation
      */
     void forward_init(vector<float> const& observation);
     
     /**
-     * @brief TODO
-     * @todo doc this
+     * @brief Update of the Forward Algorithm for the hierarchical HMM.
+     * see: Jules Françoise. Realtime Segmentation and Recognition of Gestures using Hierarchical Markov Models. Master’s Thesis, Université Pierre et Marie Curie, Ircam, 2011. [http://articles.ircam.fr/textes/Francoise11a/index.pdf]
+     * @param observation observation vector. If the model is bimodal, this should be allocated for
+     * both modalities, and should contain the observation on the input modality. The predicted
+     * output will be appended to the input modality observation
      */
     void forward_update(vector<float> const& observation);
     

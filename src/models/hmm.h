@@ -25,17 +25,17 @@ const float HMM_DEFAULT_EXITPROBABILITY_LAST_STATE = 0.1;
 /**
  * @enum TRANSITION_MODE
  * @brief Mode of transition of the HMM
+ * @todo: Remove transitionMode to simplify forward complexity
  */
 enum TRANSITION_MODE {
     /**
      * @brief Ergodic Transition Matrix
-     * @todo  remove this? And simplify algorithm for left-right matrix?
      */
     ERGODIC,
     
     /**
      * @brief Left-Right Transition model
-     * @details  The only authorized transitions are: auto-transition and transition to the next state
+     * @details The only authorized transitions are: auto-transition and transition to the next state
      */
     LEFT_RIGHT
 };
@@ -207,7 +207,6 @@ public:
     /**
      * @brief get transition mode of the hidden Markov Chain
      * @return string corresponding to the transition mode (left-right / ergodic)
-     * @todo: remove transitionMode to simplify forward complexity
      */
     string get_transitionMode() const;
     
@@ -318,7 +317,7 @@ protected:
     
     /**
      * @brief Evaluate the number of hidden states based on the length of the training examples
-     * @todo integrate state factor as attribute in HMM class
+     * @todo Handle Variable number of states in HMM Class
      */
     void evaluateNbStates(int factor = 5);
     
@@ -555,7 +554,6 @@ protected:
     
     /**
      * @brief Transition Matrix
-     * @todo make it smaller to be left-right specific
      */
     vector<float> transition_;
     

@@ -314,6 +314,7 @@ void HMM::normalizeTransitions()
 #pragma mark Accessors
 void HMM::set_trainingSet(TrainingSet *trainingSet)
 {
+    PREVENT_ATTR_CHANGE();
     for (int i=0; i<nbStates_; i++) {
         states_[i].set_trainingSet(trainingSet);
     }
@@ -328,6 +329,7 @@ int HMM::get_nbStates() const
 
 void HMM::set_nbStates(int nbStates)
 {
+    PREVENT_ATTR_CHANGE();
     if (nbStates < 1) throw invalid_argument("Number of states must be > 0");;
     if (nbStates == nbStates_) return;
     
@@ -346,6 +348,7 @@ int HMM::get_nbMixtureComponents() const
 
 void HMM::set_nbMixtureComponents(int nbMixtureComponents)
 {
+    PREVENT_ATTR_CHANGE();
     if (nbMixtureComponents < 1) throw invalid_argument("The number of Gaussian mixture components must be > 0");;
     if (nbMixtureComponents == nbMixtureComponents_) return;
     
@@ -373,6 +376,7 @@ double HMM::get_varianceOffset_absolute() const
 
 void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
+    PREVENT_ATTR_CHANGE();
     for (int i=0; i<nbStates_; i++) {
         states_[i].set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
@@ -417,6 +421,7 @@ string HMM::get_transitionMode() const
 
 void HMM::set_transitionMode(string transMode_str)
 {
+    PREVENT_ATTR_CHANGE();
     if (!transMode_str.compare("ergodic")) {
         transitionMode_ = ERGODIC;
     } else if (!transMode_str.compare("left-right")) {

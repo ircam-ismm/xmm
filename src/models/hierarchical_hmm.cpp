@@ -270,7 +270,6 @@ void HierarchicalHMM::setOneTransition(Label srcSegmentLabel, Label dstSegmentLa
     PREVENT_ATTR_CHANGE();
     transition[srcSegmentLabel][dstSegmentLabel] = min(proba, 1.);
     normalizeTransitions();
-    // TODO: absolute/relative mode?
 }
 
 #pragma mark -

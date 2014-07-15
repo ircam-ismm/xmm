@@ -55,8 +55,7 @@ enum FLAGS {
 
 /**
  * @ingroup Utilities
- * @class Listener
- * @brief Dummy class for handling training set notifications
+ * @brief Abstract class for handling training set notifications
  * @details It is an abstract class that contains a pure virtual method "notify" called by a training set
  * to notify changes of the training data
  */
@@ -71,8 +70,17 @@ public:
     virtual void notify(string attribute) = 0;
 };
 
+/**
+ * @ingroup Utilities
+ * @brief Abstract class for handling JSON + File I/O
+ * @details the JSON I/O methods need to be implemented. writeFile and readFile methods
+ * can be used in Python for file I/O. The __str__() Python method is implemented to use
+ * with "print" in Python. It return the pretty-printed JSON String.
+ */
 class Writable {
 public:
+    /*@{*/
+    /** @name JSON I/O */
     /**
      * @brief Write to JSON Node
      * @return JSON Node containing phrase information
@@ -85,10 +93,15 @@ public:
      * @throws JSONException if the JSON Node has a wrong format
      */
     virtual void from_json(JSONNode root) = 0;
-
+    
+    /*@}*/
+    
 #ifdef SWIGPYTHON
+    /*@{*/
+    /** @name Python File I/O (#ifdef SWIGPYTHON) */
     /**
      * @brief write method for python wrapping ('write' keyword forbidden, name has to be different)
+     * @warning only defined if SWIGPYTHON is defined
      */
     void writeFile(char* fileName)
     {
@@ -101,6 +114,7 @@ public:
     
     /**
      * @brief read method for python wrapping ('read' keyword forbidden, name has to be different)
+     * @warning only defined if SWIGPYTHON is defined
      */
     void readFile(char* fileName)
     {
@@ -121,6 +135,7 @@ public:
     
     /**
      * @brief "print" method for python => returns the results of write method
+     * @warning only defined if SWIGPYTHON is defined
      */
     char *__str__() {
         stringstream ss;
@@ -130,6 +145,7 @@ public:
         char* cstr = strdup(tmp.c_str());
         return cstr;
     }
+    /*@}*/
 #endif
 };
 
