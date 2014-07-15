@@ -21,7 +21,7 @@ def test_hmm():
     # Create a single HMM (group of GMMs running in parallel for recognition)
     hmm = mhmm.HMM(mhmm.NONE, None, 10, 1)
     # Read trained model from Json file
-    hmm.readFile('hmm_single_model_1.json')
+    hmm.readFile('hmm_single_model.json')
     # read test data (concatenation of the 3 training examples)
     test_data = np.genfromtxt('hmm_single_data.txt')
     # Initialize performance phase

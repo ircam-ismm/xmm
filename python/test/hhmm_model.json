@@ -15,6 +15,7 @@
 	"varianceoffset_relative" : 0.1,
 	"varianceoffset_absolute" : 0.01,
 	"weight_regression" : 1,
+	"regression_estimator" : 0,
 	"models" : [
 		{
 			"label" : {
@@ -41,6 +42,7 @@
 				"varianceoffset_relative" : 0.1,
 				"varianceoffset_absolute" : 0.01,
 				"weight_regression" : 1,
+				"regression_estimator" : 0,
 				"transitionmode" : 1,
 				"prior" : [
 					1,
@@ -697,6 +699,7 @@
 				"varianceoffset_relative" : 0.1,
 				"varianceoffset_absolute" : 0.01,
 				"weight_regression" : 1,
+				"regression_estimator" : 0,
 				"transitionmode" : 1,
 				"prior" : [
 					1,
@@ -1353,6 +1356,7 @@
 				"varianceoffset_relative" : 0.1,
 				"varianceoffset_absolute" : 0.01,
 				"weight_regression" : 1,
+				"regression_estimator" : 0,
 				"transitionmode" : 1,
 				"prior" : [
 					1,
