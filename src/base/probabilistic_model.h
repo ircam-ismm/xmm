@@ -312,7 +312,6 @@ protected:
      * @brief update the content of the likelihood buffer and return average likelihood.
      * @details The method also updates the cumulative log-likelihood computed over a window (cumulativeloglikelihood)
      * @param instantLikelihood instantaneous likelihood at the current step
-     * @return mean of the likelihood buffer
      */
     void updateLikelihoodBuffer(double instantLikelihood);
     

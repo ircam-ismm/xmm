@@ -25,7 +25,7 @@ using namespace std;
  * @ingroup Base
  * @class ModelGroup
  * @brief Handle machine learning models running in parallel
- * @tparam modelType type of the models (implemented: GMM, HMM)
+ * @tparam ModelType type of the models (implemented: GMM, HMM)
  */
 template<typename ModelType>
 class ModelGroup : public Listener, public Writable

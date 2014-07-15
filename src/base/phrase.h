@@ -66,7 +66,7 @@ public:
      * @brief Destructor.
      * @details Data is only deleted if the memory is not shared (no SHARED_MEMORY flag)
      */
-    ~Phrase();
+    virtual ~Phrase();
     
     /*@}*/
 

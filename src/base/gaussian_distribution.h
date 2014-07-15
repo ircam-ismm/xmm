@@ -159,7 +159,9 @@ public:
     
     /**
      * @brief Write to JSON Node
-     * @return The JSON Node containing the Gaussian Distribution parameters
+     * @details allocate model parameters and updates inverse Covariances
+     * @param root JSON Node containing model information and parameters
+     * @throws JSONException if the JSONNode has a wrong format
      */
     void from_json(JSONNode root);
     

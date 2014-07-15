@@ -176,8 +176,7 @@ public:
     
     /**
      * @brief get a copy of the high-level Prior probabilities vector
-     * @return High-level prior probability vector
-     * @warning memory is allocated for the returned array (need to be freed)
+     * @param prior output High-level prior probability vector
      */
     void get_prior(vector<double>& prior) const;
     
@@ -191,8 +190,7 @@ public:
     
     /**
      * @brief get a copy of the high-level transition matrix
-     * @return High-level transition matrix
-     * @warning memory is allocated for the returned array (need to be freed)
+     * @param trans output high-level transition matrix
      */
     void get_transition(vector<double>& trans) const;
     
@@ -208,8 +206,7 @@ public:
      * @brief get a copy of the high-level exit probabilities
      * @details exit probabilities are the probabilities to finish and go
      * back to the root
-     * @return a copy of the exit transition vector of the high level
-     * @warning memory is allocated for the returned array (need to be freed)
+     * @param trans output exit transition vector of the high level
      */
     void get_exitTransition(vector<double>& trans) const;
     
