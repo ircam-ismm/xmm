@@ -242,10 +242,6 @@ int ProbabilisticModel::train()
     } while (!train_EM_hasConverged(nbIterations, log_prob, old_log_prob));
     
     this->train_EM_terminate();
-    this->trained = true;
-    this->trainingSet->set_unchanged();
-    
-    is_training_ = false;
     
 #ifdef USE_PTHREAD
     pthread_mutex_unlock(&trainingMutex);
@@ -264,6 +260,10 @@ bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double
 
 void ProbabilisticModel::train_EM_terminate()
 {
+    this->trained = true;
+    this->trainingSet->set_unchanged();
+    this->is_training_ = false;
+    
 #ifdef USE_PTHREAD
     if (trainingCallbackFunction_) {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
