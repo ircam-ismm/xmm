@@ -562,6 +562,12 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
     
     update_likelihood_results();
     
+    // Compute time progression
+    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
+        it->second.updateAlphaWindow();
+        it->second.updateTimeProgression();
+    }
+    
     if (bimodal_) {
         unsigned int dimension = this->referenceModel_.dimension();
         unsigned int dimension_input = this->referenceModel_.dimension_input();
@@ -586,11 +592,6 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
                 i++;
             }
         }
-    }
-    
-    // Compute time progression
-    for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
-        it->second.updateTimeProgression();
     }
 }
 

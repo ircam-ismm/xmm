@@ -279,7 +279,16 @@ public:
      * @brief Results: Likelihood to exit the gesture on the next time step
      */
     double results_exit_likelihood;
+    
+    /**
+     * @brief Results: Likelihood to exit the gesture on the next time step (normalized -/- total likelihood)
+     */
     double results_exit_ratio;
+    
+    /**
+     * @brief Results: Index of the likeliest state
+     */
+    unsigned int results_likeliest_state;
     
     /**
      * @brief State probabilities estimated by the forward algorithm.
@@ -489,6 +498,13 @@ protected:
     void addCyclicTransition(double proba);
     
     /**
+     * @brief Estimates the likeliest state and compute the bounds of the windows over the states.
+     * @details The window is centered around the likeliest state, and its size is the number of states.
+     * The window is clipped to the first and last states.
+     */
+    void updateAlphaWindow();
+    
+    /**
      * @brief Compute the regression for the case of a bimodal model, given the estimated
      * state probabilities estimated by forward algorithm
      * @param observation_input observation on the input modality
@@ -651,6 +667,21 @@ protected:
      * @see REGRESSION_ESTIMATOR
      */
     REGRESSION_ESTIMATOR regression_estimator_;
+    
+    /**
+     * @brief minimum index of the alpha window (used for regression & time progression)
+     */
+    int results_window_minindex;
+    
+    /**
+     * @brief minimum index of the alpha window (used for regression & time progression)
+     */
+    int results_window_maxindex;
+    
+    /**
+     * @brief normalization constant of the alpha window (used for regression & time progression)
+     */
+    double results_window_normalization_constant;
 };
 
 

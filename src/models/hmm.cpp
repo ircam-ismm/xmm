@@ -1002,6 +1002,10 @@ double HMM::performance_update(vector<float> const& observation)
     
     forwardInitialized_ = true;
     
+    this->updateLikelihoodBuffer(1./ct);
+    updateAlphaWindow();
+    updateTimeProgression();
+    
     if (bimodal_) {
         regression(observation, results_predicted_output);
         
@@ -1017,10 +1021,6 @@ double HMM::performance_update(vector<float> const& observation)
         //     ++n;
         // } while (!play_EM_stop(n, obs_prob, old_obs_prob));
     }
-    
-    this->updateLikelihoodBuffer(1./ct);
-    
-    updateTimeProgression();
     
     return results_instant_likelihood;
 }
@@ -1040,6 +1040,36 @@ unsigned int argmax(vector<double> const& v)
     return amax;
 }
 
+void HMM::updateAlphaWindow()
+{
+    results_likeliest_state = 0;
+    // Get likeliest State
+    double best_alpha(is_hierarchical_ ? (alpha_h[0][0] + alpha_h[1][0]) : alpha[0]);
+    for (unsigned int i = 1; i < nbStates_ ; ++i) {
+        if (is_hierarchical_) {
+            if ((alpha_h[0][i] + alpha_h[1][i]) > best_alpha) {
+                best_alpha = alpha_h[0][i] + alpha_h[1][i];
+                results_likeliest_state = i;
+            }
+        } else {
+            if (alpha[i] > best_alpha) {
+                best_alpha = alpha[i];
+                results_likeliest_state = i;
+            }
+        }
+    }
+    
+    // Compute Window
+    results_window_minindex = (results_likeliest_state - (nbStates_/2));
+    results_window_maxindex = (results_likeliest_state + (nbStates_/2));
+    results_window_minindex = (results_window_minindex >= 0) ? results_window_minindex : 0;
+    results_window_maxindex = (results_window_maxindex <= nbStates_) ? results_window_maxindex : nbStates_;
+    results_window_normalization_constant = 0.0;
+    for (int i=results_window_minindex; i<results_window_maxindex; ++i) {
+        results_window_normalization_constant += is_hierarchical_ ? (alpha_h[0][i] + alpha_h[1][i]) : alpha[i];
+    }
+}
+
 void HMM::regression(vector<float> const& observation_input,
                      vector<float>& predicted_output)
 {
@@ -1047,47 +1077,15 @@ void HMM::regression(vector<float> const& observation_input,
     predicted_output.assign(dimension_output, 0.0);
     vector<float> tmp_predicted_output(dimension_output);
     
-    unsigned int likeliest_state_index(0);
-    if (regression_estimator_ != FULL) {
-        // Get likeliest State
-        double best_alpha(is_hierarchical_ ? (alpha_h[0][0] + alpha_h[1][0]) : alpha[0]);
-        for (unsigned int i = 1; i < nbStates_ ; ++i) {
-            if (is_hierarchical_) {
-                if ((alpha_h[0][i] + alpha_h[1][i]) > best_alpha) {
-                    best_alpha = alpha_h[0][i] + alpha_h[1][i];
-                    likeliest_state_index = i;
-                }
-            } else {
-                if (alpha[i] > best_alpha) {
-                    best_alpha = alpha[i];
-                    likeliest_state_index = i;
-                }
-            }
-        }
-    }
-    
     if (regression_estimator_ == LIKELIEST) {
-        states_[likeliest_state_index].likelihood(observation_input);
-        states_[likeliest_state_index].regression(observation_input, predicted_output);
+        states_[results_likeliest_state].likelihood(observation_input);
+        states_[results_likeliest_state].regression(observation_input, predicted_output);
         return;
     }
     
-    // regression_estimator_ == FULL
-    int clip_min_state(0);
-    int clip_max_state(nbStates_);
-    double normalization_constant(1.0);
-    
-    if (regression_estimator_ == WINDOWED) {
-        // Compute Regression Weights
-        clip_min_state = (likeliest_state_index - (nbStates_/2));
-        clip_max_state = (likeliest_state_index + (nbStates_/2));
-        clip_min_state = (clip_min_state >= 0) ? clip_min_state : 0;
-        clip_max_state = (clip_max_state <= nbStates_) ? clip_max_state : nbStates_;
-        normalization_constant = 0.0;
-        for (int i=clip_min_state; i<clip_max_state; ++i) {
-            normalization_constant += is_hierarchical_ ? (alpha_h[0][i] + alpha_h[1][i]) : alpha[i];
-        }
-    }
+    int clip_min_state = (regression_estimator_ == FULL) ? 0 : results_window_minindex;
+    int clip_max_state = (regression_estimator_ == FULL) ? nbStates_ : results_window_maxindex;
+    double normalization_constant = (regression_estimator_ == FULL) ? 1.0 : results_window_normalization_constant;
     
     // Compute Regression
     for (int i=clip_min_state; i<clip_max_state; ++i) {
@@ -1106,13 +1104,24 @@ void HMM::regression(vector<float> const& observation_input,
 void HMM::updateTimeProgression()
 {
     results_progress = 0.0;
-    for (unsigned int i=0 ; i<nbStates_; i++) {
+    for (int i=results_window_minindex; i<results_window_maxindex; ++i) {
         if (is_hierarchical_)
-            results_progress += (alpha_h[0][i] + alpha_h[1][i] + alpha_h[2][i]) * i;
+            results_progress += (alpha_h[0][i] + alpha_h[1][i] + alpha_h[2][i]) * i / results_window_normalization_constant;
         else
-            results_progress += alpha[i] * i;
+            results_progress += alpha[i] * i / results_window_normalization_constant;
     }
     results_progress /= double(nbStates_-1);
+    
+    //    /////////////////////////
+    //    results_progress = 0.0;
+    //    for (unsigned int i=0 ; i<nbStates_; i++) {
+    //        if (is_hierarchical_)
+    //            results_progress += (alpha_h[0][i] + alpha_h[1][i] + alpha_h[2][i]) * i;
+    //        else
+    //            results_progress += alpha[i] * i;
+    //    }
+    //    results_progress /= double(nbStates_-1);
+    //    /////////////////////////
 }
 
 #pragma mark -
