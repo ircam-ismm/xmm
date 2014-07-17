@@ -110,8 +110,7 @@ void TrainingSet::add_listener(Listener* listener)
 
 void TrainingSet::remove_listener(Listener* listener)
 {
-    if (int numerase = listeners_.erase(listener) > 1)
-        cout << numerase << endl;
+    listeners_.erase(listener);
 }
 
 unsigned int TrainingSet::dimension()

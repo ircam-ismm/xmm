@@ -655,7 +655,6 @@ double HMM::train_EM_update()
     baumWelch_estimateMixtureCoefficients();
     if (estimateMeans_)
         baumWelch_estimateMeans();
-    
     baumWelch_estimateCovariances();
     if (transitionMode_ == ERGODIC)
         baumWelch_estimatePrior();
@@ -918,11 +917,10 @@ void HMM::baumWelch_estimatePrior()
     }
     
     // Scale Prior vector
-    if (sumprior == 0) {
-        cout << "sumprior == 0" << endl;
-    }
-    for (int i=0; i<nbStates_; i++) {
-        prior_[i] /= sumprior;
+    if (sumprior > 0.) {
+        for (int i=0; i<nbStates_; i++) {
+            prior_[i] /= sumprior;
+        }
     }
 }
 
