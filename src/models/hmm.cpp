@@ -664,6 +664,49 @@ double HMM::train_EM_update()
 }
 
 
+
+double HMM::baumWelch_forward_update(vector<double>::iterator observation_likelihoods)
+{
+    double norm_const(0.);
+    previousAlpha_ = alpha;
+    for (int j=0; j<nbStates_; j++) {
+        alpha[j] = 0.;
+        for (int i=0; i<nbStates_; i++) {
+            alpha[j] += previousAlpha_[i] * transition_[i*nbStates_+j];
+        }
+        alpha[j] *= observation_likelihoods[j];
+        norm_const += alpha[j];
+    }
+    if (norm_const > 1e-300) {
+        for (int j=0; j<nbStates_; j++) {
+            alpha[j] /= norm_const;
+        }
+        return 1./norm_const;
+    } else {
+        return 0.;
+        for (int j=0; j<nbStates_; j++) {
+            alpha[j] = 1./double(nbStates_);
+        }
+        return 1.;
+    }
+}
+
+
+void HMM::baumWelch_backward_update(double ct, vector<double>::iterator observation_likelihoods)
+{
+    previousBeta_ = beta_;
+    for (int i=0 ; i<nbStates_; i++) {
+        beta_[i] = 0.;
+        for (int j=0; j<nbStates_; j++) {
+            beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * observation_likelihoods[j];
+        }
+        beta_[i] *= ct;
+        if (isnan(beta_[i]) || isinf(abs(beta_[i]))) {
+            beta_[i] = 1e100;
+        }
+    }
+}
+
 double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
 {
     int T = currentPhrase->length();
@@ -672,6 +715,18 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     vector<double>::iterator alpha_seq_it = alpha_seq_.begin();
     
     double log_prob;
+    
+    vector<double> observation_probabilities(nbStates_ * T);
+    for (unsigned int t=0; t<T; ++t) {
+        for (unsigned int i=0; i<nbStates_; i++) {
+            if (bimodal_) {
+                observation_probabilities[t * nbStates_ + i] = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
+                                                                                          currentPhrase->get_dataPointer_output(t));
+            } else {
+                observation_probabilities[t * nbStates_ + i] = states_[i].obsProb(currentPhrase->get_dataPointer(t));
+            }
+        }
+    }
     
     // Forward algorithm
     if (bimodal_) {
@@ -685,12 +740,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     alpha_seq_it += nbStates_;
     
     for (int t=1; t<T; t++) {
-        if (bimodal_) {
-            ct[t] = forward_update(currentPhrase->get_dataPointer_input(t),
-                                   currentPhrase->get_dataPointer_output(t));
-        } else {
-            ct[t] = forward_update(currentPhrase->get_dataPointer(t));
-        }
+        ct[t] = baumWelch_forward_update(observation_probabilities.begin() + t * nbStates_);
         log_prob -= log(ct[t]);
         copy(alpha.begin(), alpha.end(), alpha_seq_it);
         alpha_seq_it += nbStates_;
@@ -701,13 +751,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
 	copy(beta_.begin(), beta_.end(), beta_seq_.begin() + (T - 1)*nbStates_);
     
     for (int t=T-2; t>=0; t--) {
-        if (bimodal_) {
-            backward_update(ct[t],
-                            currentPhrase->get_dataPointer_input(t+1),
-                            currentPhrase->get_dataPointer_output(t+1));
-        } else {
-            backward_update(ct[t], currentPhrase->get_dataPointer(t+1));
-        }
+        baumWelch_backward_update(ct[t], observation_probabilities.begin() + (t+1) * nbStates_);
         copy(beta_.begin(), beta_.end(), beta_seq_.begin() + t * nbStates_);
     }
     
@@ -725,17 +769,23 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     for (int t=0; t<T; t++) {
         for (int i=0; i<nbStates_; i++) {
             norm_const = 0.;
-            for (int c=0; c<nbMixtureComponents_; c++) {
-                if (bimodal_) {
-                    oo = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
-                                                    currentPhrase->get_dataPointer_output(t),
-                                                    c);
-                } else {
-                    oo = states_[i].obsProb(currentPhrase->get_dataPointer(t),
-                                            c);
-                }
-                gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] = gammaSequence_[phraseIndex][t*nbStates_+i] * oo;
+            if (nbMixtureComponents_ == 1) {
+                oo = observation_probabilities[t * nbStates_ + i];
+                gammaSequencePerMixture_[phraseIndex][0][t*nbStates_+i] = gammaSequence_[phraseIndex][t*nbStates_+i] * oo;
                 norm_const += oo;
+            } else {
+                for (int c=0; c<nbMixtureComponents_; c++) {
+                    if (bimodal_) {
+                        oo = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
+                                                        currentPhrase->get_dataPointer_output(t),
+                                                        c);
+                    } else {
+                        oo = states_[i].obsProb(currentPhrase->get_dataPointer(t),
+                                                c);
+                    }
+                    gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] = gammaSequence_[phraseIndex][t*nbStates_+i] * oo;
+                    norm_const += oo;
+                }
             }
             if (norm_const > 0)
                 for (int c=0; c<nbMixtureComponents_; c++)
@@ -750,12 +800,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
                 epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] = alpha_seq_[t*nbStates_+i]
                 * transition_[i*nbStates_+j]
                 * beta_seq_[(t+1)*nbStates_+j];
-                if (bimodal_) {
-                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= states_[j].obsProb_bimodal(currentPhrase->get_dataPointer_input(t+1),
-                                                                                                                     currentPhrase->get_dataPointer_output(t+1));
-                } else {
-                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= states_[j].obsProb(currentPhrase->get_dataPointer(t+1));
-                }
+                epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= observation_probabilities[(t+1) * nbStates_ + j];
             }
         }
     }

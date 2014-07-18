@@ -456,6 +456,21 @@ protected:
     double baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex);
     
     /**
+     * @brief Update of the forward algorithm for Training (observation probabilities are pre-computed)
+     * @param observation_likelihoods likelihoods of the observations for each state
+     * @return instantaneous likelihood
+     */
+    double baumWelch_forward_update(vector<double>::iterator observation_likelihoods);
+    
+    /**
+     * @brief Update of the Backward algorithm for Training (observation probabilities are pre-computed)
+     * @param ct inverse of the likelihood at time step t computed
+     * with the forward algorithm (see Rabiner 1989)
+     * @param observation_likelihoods likelihoods of the observations for each state
+     */
+    void baumWelch_backward_update(double ct, vector<double>::iterator observation_likelihoods);
+    
+    /**
      * @brief Compute the sum of the gamma variable (for use in EM)
      */
     void baumWelch_gammaSum();
