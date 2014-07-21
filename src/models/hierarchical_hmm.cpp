@@ -257,8 +257,9 @@ void HierarchicalHMM::normalizeTransitions()
         double sumTrans(0.0);
         for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; ++dstit)
             sumTrans += transition[srcit->first][dstit->first];
-        for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; ++dstit)
-            transition[srcit->first][dstit->first] /= sumTrans;
+        if (sumTrans > 0.0)
+            for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; ++dstit)
+                transition[srcit->first][dstit->first] /= sumTrans;
     }
     for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; ++srcit)
         prior[srcit->first] /= sumPrior;
