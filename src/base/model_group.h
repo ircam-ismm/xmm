@@ -122,7 +122,7 @@ public:
     bool is_trained(Label const& label) const
     {
         if (models.find(label) == models.end())
-            throw out_of_range("Class Label Does not exist");
+            throw out_of_range("Class " + label.as_string() + " does not exist");
         return models.at(label).trained;
     }
     
@@ -168,7 +168,7 @@ public:
     {
         model_iterator it = models.find(label);
         if (it == models.end())
-            throw out_of_range("Class Label Does not exist");
+            throw out_of_range("Class " + label.as_string() + " does not exist");
         models.erase(it);
     }
     
@@ -652,9 +652,8 @@ protected:
      */
     virtual void updateTrainingSet(Label const& label)
     {
-        if (globalTrainingSet->is_empty()) return;
         if (globalTrainingSet->allLabels.find(label) == globalTrainingSet->allLabels.end())
-            throw out_of_range("Class " + label.as_string() + " Does not exist");
+            throw out_of_range("Class " + label.as_string() + " does not exist");
         
         if (models.find(label) == models.end()) {
             models[label] = referenceModel_;

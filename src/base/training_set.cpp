@@ -342,14 +342,16 @@ void TrainingSet::deleteEmptyPhrases()
 
 void TrainingSet::clear()
 {
-    if (!locked_)
+    if (!locked_) {
         for (phrase_iterator it = this->begin(); it != this->end(); ++it) {
             delete it->second;
             it->second = NULL;
         }
+    }
     subTrainingSets_.clear();
     phrases.clear();
     phraseLabels.clear();
+    allLabels.clear();
     has_changed_ = true;
 }
 
@@ -385,7 +387,7 @@ TrainingSet* TrainingSet::getSubTrainingSetForClass(Label const& label)
     updateSubTrainingSet(label);
     map<Label, TrainingSet>::iterator it = subTrainingSets_.find(label);
     if (it == subTrainingSets_.end())
-        throw out_of_range("Label " + label.as_string() + " Does not exist");
+        throw out_of_range("Class " + label.as_string() + " does not exist");
     return &(it->second);
 }
 

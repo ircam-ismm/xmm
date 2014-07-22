@@ -99,6 +99,8 @@ public:
     
     /**
      * @brief Set Dimension of the input modality
+     * @param dimension_input dimension of the input modality
+     * @throws out_of_range if the dimension is superior to the total dimension
      */
     void set_dimension_input(unsigned int dimension_input);
     
