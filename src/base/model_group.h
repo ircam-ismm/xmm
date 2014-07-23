@@ -575,22 +575,22 @@ public:
     /**
      * @brief Result: Likelihood of each model
      */
-    vector<float> results_instant_likelihoods;
+    vector<double> results_instant_likelihoods;
     
     /**
      * @brief Result: Normalized Instantaneous Likelihood of each model
      */
-    vector<float> results_normalized_instant_likelihoods;
+    vector<double> results_normalized_instant_likelihoods;
     
     /**
      * @brief Result: Normalized Likelihood of each model
      */
-    vector<float> results_normalized_likelihoods;
+    vector<double> results_normalized_likelihoods;
     
     /**
      * @brief Result: Windowed Cumulative Log-Likelihood of each model
      */
-    vector<float> results_log_likelihoods;
+    vector<double> results_log_likelihoods;
     
     /**
      * @brief Result: Label of the likeliest model
