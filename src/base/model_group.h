@@ -94,7 +94,7 @@ public:
      */
     virtual ~ModelGroup()
     {
-        models.clear();
+        clear();
         if (this->globalTrainingSet)
             this->globalTrainingSet->remove_listener(this);
     }
@@ -156,6 +156,8 @@ public:
      */
     virtual void clear()
     {
+        if (is_training())
+            stopTraining();
         models.clear();
     }
     
