@@ -628,8 +628,6 @@ protected:
      */
     virtual void removeDeprecatedModels()
     {
-        if (globalTrainingSet->is_empty()) return;
-        
         globalTrainingSet->updateSubTrainingSets();
         
         // Look for deleted classes
@@ -672,10 +670,8 @@ protected:
      */
     virtual void updateAllTrainingSets()
     {
-        if (globalTrainingSet->is_empty()) return;
-        if (!globalTrainingSet->has_changed()) return;
-        
         removeDeprecatedModels();
+        if (!globalTrainingSet->has_changed()) return;
         
         // Update classes models and training sets
         for (typename set<Label>::iterator it=globalTrainingSet->allLabels.begin(); it != globalTrainingSet->allLabels.end(); ++it)
