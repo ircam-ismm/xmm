@@ -59,9 +59,14 @@ public:
     
     virtual ~HierarchicalHMM();
     
+    /**
+     * @brief Remove All models
+     */
+    virtual void clear();
+    
     /*@}*/
-
-#pragma mark 
+    
+#pragma mark
     /*@{*/
     /** @name Accessors */
     /**
@@ -227,7 +232,7 @@ public:
      * @todo absolute/relative mode?
      */
     void setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba);
-
+    
     /*@}*/
     
 #pragma mark > Training
@@ -242,7 +247,7 @@ public:
     virtual void remove(Label const& label);
     
     /*@}*/
-
+    
 #pragma mark > Performance
     /*@{*/
     /** @name Performance */
@@ -252,7 +257,7 @@ public:
     virtual void performance_init();
     
     /**
-     * @brief Main performance Function: perform joint recognition and mapping 
+     * @brief Main performance Function: perform joint recognition and mapping
      * (in the case of a bimodal model)
      * @param observation observation vector. If the model is bimodal, this should be allocated for
      * both modalities, and should contain the observation on the input modality. The predicted
@@ -261,7 +266,7 @@ public:
     virtual void performance_update(vector<float> const& observation);
     
     /*@}*/
-
+    
 #pragma mark > JSON I/O
     /*@{*/
     /** @name JSON I/O */
@@ -344,7 +349,7 @@ protected:
     void normalizeTransitions();
     
     /*@}*/
-
+    
 #pragma mark > Forward Algorithm
     /*@{*/
     /** @name Forward Algorithm */
@@ -374,9 +379,9 @@ protected:
      * @param likelihoodVector likelihood vector (size nbPrimitives)
      */
     void likelihoodAlpha(int exitNum, vector<double> &likelihoodVector) const;
-
+    
     /*@}*/
-
+    
 #pragma mark -
 #pragma mark === Protected Attributes ===
     /**

@@ -28,6 +28,14 @@ HierarchicalHMM::~HierarchicalHMM()
     V2_.clear();
 }
 
+void HierarchicalHMM::clear()
+{
+    ModelGroup<HMM>::clear();
+    prior.clear();
+    transition.clear();
+    exitTransition.clear();
+}
+
 #pragma mark -
 #pragma mark Get & Set
 int HierarchicalHMM::get_nbStates() const
