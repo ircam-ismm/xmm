@@ -156,8 +156,10 @@ public:
      */
     virtual void clear()
     {
+#ifdef USE_PTHREAD
         if (is_training())
             stopTraining();
+#endif
         models.clear();
     }
     
