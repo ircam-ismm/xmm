@@ -142,7 +142,7 @@ public:
         JSONNode jsonfile = this->to_json();
         ss << jsonfile.write_formatted();
         string tmp = ss.str();
-        char* cstr = strdup(tmp.c_str());
+        static char* cstr = strdup(tmp.c_str());
         return cstr;
     }
     /*@}*/

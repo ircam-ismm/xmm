@@ -171,7 +171,7 @@ void* ProbabilisticModel::train_func(void *context)
     return NULL;
 }
 
-int ProbabilisticModel::train()
+void ProbabilisticModel::train()
 {
 #ifdef USE_PTHREAD
     pthread_mutex_lock(&trainingMutex);
@@ -189,18 +189,20 @@ int ProbabilisticModel::train()
         trainingError = true;
     }
     
-    double log_prob(log(0.)), old_log_prob;
-    int nbIterations(0);
+    double old_log_prob;
+    
+    trainingLogLikelihood = log(0.);
+    trainingNbIterations = 0;
     
     do {
-        old_log_prob = log_prob;
+        old_log_prob = trainingLogLikelihood;
         try {
-            log_prob = this->train_EM_update();
+            trainingLogLikelihood = this->train_EM_update();
         } catch (exception &e) {
             trainingError = true;
         }
         
-        if (isnan(100.*fabs((log_prob-old_log_prob)/old_log_prob)) && (nbIterations > 1))
+        if (isnan(100.*fabs((trainingLogLikelihood-old_log_prob)/old_log_prob)) && (trainingNbIterations > 1))
             trainingError = true;
         
         if (trainingError) {
@@ -217,15 +219,15 @@ int ProbabilisticModel::train()
                 this->trainingCallbackFunction_(this, TRAINING_ERROR, this->trainingExtradata_);
             }
 #endif
-            return -1;
+            return;
         }
         
-        ++nbIterations;
+        ++trainingNbIterations;
         
         if (stopcriterion.maxSteps > stopcriterion.minSteps)
-            this->trainingProgression = float(nbIterations) / float(stopcriterion.maxSteps);
+            this->trainingProgression = float(trainingNbIterations) / float(stopcriterion.maxSteps);
         else
-            this->trainingProgression = float(nbIterations) / float(stopcriterion.minSteps);
+            this->trainingProgression = float(trainingNbIterations) / float(stopcriterion.minSteps);
         
 #ifdef USE_PTHREAD
         if (this->trainingCallbackFunction_) {
@@ -239,15 +241,13 @@ int ProbabilisticModel::train()
             this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
         }
 #endif
-    } while (!train_EM_hasConverged(nbIterations, log_prob, old_log_prob));
+    } while (!train_EM_hasConverged(trainingNbIterations, trainingLogLikelihood, old_log_prob));
     
     this->train_EM_terminate();
     
 #ifdef USE_PTHREAD
     pthread_mutex_unlock(&trainingMutex);
 #endif
-    
-    return nbIterations;
 }
 
 bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
@@ -255,7 +255,7 @@ bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double
     if (stopcriterion.maxSteps > stopcriterion.minSteps)
         return (step >= stopcriterion.maxSteps);
     else
-        return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) < stopcriterion.percentChg);
+        return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) <= stopcriterion.percentChg);
 }
 
 void ProbabilisticModel::train_EM_terminate()

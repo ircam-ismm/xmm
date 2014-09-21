@@ -353,7 +353,7 @@ public:
      * @param label label of the model
      * @throw out_of_range if the label does not exist
      */
-    virtual int train(Label const& label)
+    virtual void train(Label const& label)
     {
 #ifdef USE_PTHREAD
         stopTraining(label);
@@ -362,36 +362,30 @@ public:
         
 #ifdef USE_PTHREAD
         pthread_create(&(training_threads[label]), NULL, &ModelType::train_func, &(this->models[label]));
-        if (trainingCallbackFunction_) {
-            models_to_train_++;
-        } else {
+        models_to_train_++;
+        if (!trainingCallbackFunction_) {
             pthread_join(training_threads[label], NULL);
         }
-        return 0;
 #else
-        return models[label].train();
+        models[label].train();
 #endif
     }
     
     /**
      * @brief Train All model even if their data have not changed.
-     * @return number of iterations for each model if sequential training (not pthread).
      */
-    virtual map<Label, int> train()
+    virtual void train()
     {
 #ifdef USE_PTHREAD
         stopTraining();
 #endif
         
         updateAllTrainingSets();
-        map<Label, int> nbIterations;
         
 #ifdef USE_PTHREAD
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             pthread_create(&(training_threads[it->first]), NULL, &ModelType::train_func, &(it->second));
-            if (trainingCallbackFunction_) {
-                models_to_train_++;
-            }
+            models_to_train_++;
         }
         if (!trainingCallbackFunction_) {
             for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -400,29 +394,21 @@ public:
         }
 #else
         // Sequential training
-        vector<Label> notConverged;
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-            nbIterations[it->first] = it->second.train();
-            if (nbIterations[it->first] < 0)
-                notConverged.push_back(it->first);
-        }
-        for (vector<Label>::iterator it = notConverged.begin(); it != notConverged.end(); ++it) {
-            remove(*it);
+            it->second.train();
         }
 #endif
-        return nbIterations;
     }
     
     /**
      * @brief Train all model which data has changed.
      */
-    virtual map<Label, int> retrain()
+    virtual void retrain()
     {
 #ifdef USE_PTHREAD
         stopTraining();
 #endif
         updateAllTrainingSets();
-        map<Label, int> nbIterations;
         
 #ifdef USE_PTHREAD
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -441,19 +427,12 @@ public:
         }
 #else
         // Sequential training
-        vector<Label> notConverged;
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             if (!it->second.trained || it->second.trainingSet->has_changed()) {
-                nbIterations[it->first] = it->second.train();
-                if (nbIterations[it->first] < 0)
-                    notConverged.push_back(it->first);
+                it->second.train();
             }
         }
-        for (vector<Label>::iterator it = notConverged.begin(); it != notConverged.end(); ++it) {
-            remove(*it);
-        }
 #endif
-        return nbIterations;
     }
     
 #ifdef USE_PTHREAD

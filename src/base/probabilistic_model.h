@@ -192,7 +192,7 @@ public:
      * The @a train_EM_update method computes both E and M steps of the EM algorithm.
      * @see train_EM_update
      */
-    int train();
+    void train();
     
 #ifdef USE_PTHREAD
     /**
@@ -292,6 +292,17 @@ public:
      * @warning this variable is not allocated if the model is not bimodal
      */
     vector<float> results_predicted_output;
+    
+    /**
+     * Log-likelihood of the data given the model's parameters at the en of training
+     */
+    double trainingLogLikelihood;
+    
+    /**
+     * Number of EM iterations
+     */
+    double trainingNbIterations;
+    
     
 protected:
 #pragma mark -
