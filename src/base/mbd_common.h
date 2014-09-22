@@ -137,13 +137,12 @@ public:
      * @brief "print" method for python => returns the results of write method
      * @warning only defined if SWIGPYTHON is defined
      */
-    char *__str__() {
+    string __str__() {
         stringstream ss;
         JSONNode jsonfile = this->to_json();
         ss << jsonfile.write_formatted();
         string tmp = ss.str();
-        static char* cstr = strdup(tmp.c_str());
-        return cstr;
+        return tmp;
     }
     /*@}*/
 #endif
