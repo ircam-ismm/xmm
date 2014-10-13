@@ -189,12 +189,12 @@ void ProbabilisticModel::train()
         trainingError = true;
     }
     
-    double old_log_prob;
-    
     trainingLogLikelihood = log(0.);
     trainingNbIterations = 0;
+    double old_log_prob = trainingLogLikelihood;;
     
-    do {
+    while (!train_EM_hasConverged(trainingNbIterations, trainingLogLikelihood, old_log_prob))
+    {
         old_log_prob = trainingLogLikelihood;
         try {
             trainingLogLikelihood = this->train_EM_update();
@@ -241,7 +241,7 @@ void ProbabilisticModel::train()
             this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
         }
 #endif
-    } while (!train_EM_hasConverged(trainingNbIterations, trainingLogLikelihood, old_log_prob));
+    }
     
     this->train_EM_terminate();
     
@@ -252,7 +252,7 @@ void ProbabilisticModel::train()
 
 bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
 {
-    if (stopcriterion.maxSteps > stopcriterion.minSteps)
+    if (stopcriterion.maxSteps >= stopcriterion.minSteps)
         return (step >= stopcriterion.maxSteps);
     else
         return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) <= stopcriterion.percentChg);
