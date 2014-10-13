@@ -27,6 +27,38 @@ const double EPSILON_GAUSSIAN = 1.0e-20;
 
 /**
  * @ingroup ModelBase
+ * @struct Ellipse
+ * @brief Simple structure for storing Ellipse parameters
+ */
+struct Ellipse {
+    /**
+     * @brief x center position
+     */
+    float x;
+    
+    /**
+     * @brief y center position
+     */
+    float y;
+    
+    /**
+     * @brief width: minor axis length
+     */
+    float width;
+    
+    /**
+     * @brief height: major axis length
+     */
+    float height;
+    
+    /**
+     * @brief angle (radians)
+     */
+    float angle;
+};
+
+/**
+ * @ingroup ModelBase
  * @class GaussianDistribution
  * @brief Multivariate Gaussian Distribution
  * @details Full covariance, optionally multimodal with support for regression
@@ -184,6 +216,17 @@ public:
      * @throws runtime_error if the covariance matrix is not invertible
      */
     void updateInverseCovariance();
+    
+    /**
+     * @brief Compute the 95% Confidence Interval ellipse of the Gaussian
+     * @details the ellipse is 2D, and is therefore projected over 2 axes
+     * @param dimension1 index of the first axis
+     * @param dimension2 index of the second axis
+     * @throws out_of_range if the dimensions are out of bounds
+     * @return ellipse parameters
+     */
+    Ellipse ellipse(unsigned int dimension1,
+                    unsigned int dimension2);
 
     /*@}*/
 

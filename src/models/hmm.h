@@ -301,6 +301,11 @@ public:
      */
     vector<double> alpha_h[3];
     
+    /**
+     * @brief States of the model (Gaussian Mixture Models)
+     */
+    vector<GMM> states_;
+    
 protected:
 #pragma mark -
 #pragma mark === Protected Methods ===
@@ -587,11 +592,6 @@ protected:
      * @brief Transition Matrix
      */
     vector<float> transition_;
-    
-    /**
-     * @brief States of the model (Gaussian Mixture Models)
-     */
-    vector<GMM> states_;
     
     /**
      * @brief Stop criterion for the EM estimation during performance

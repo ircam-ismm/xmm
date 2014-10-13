@@ -373,3 +373,32 @@ void GaussianDistribution::updateInverseCovariance()
         inverseMat = NULL;
     }
 }
+
+Ellipse GaussianDistribution::ellipse(unsigned int dimension1,
+                                      unsigned int dimension2)
+{
+    if (dimension1 >= dimension_ || dimension2 >= dimension_)
+        throw out_of_range("dimensions out of range");
+    
+    Ellipse gaussian_ellipse_95;
+    gaussian_ellipse_95.x = mean[dimension1];
+    gaussian_ellipse_95.y = mean[dimension2];
+    
+    // Represent 2D covariance with square matrix
+    // |a b|
+    // |b c|
+    double a = covariance[dimension1 * dimension_ + dimension1];
+    double b = covariance[dimension1 * dimension_ + dimension2];
+    double c = covariance[dimension2 * dimension_ + dimension2];
+    // Compute Eigen Values and angle
+    double trace = a+c;
+    double determinant = a*c - b*b;
+    double eigenVal1 = 0.5 * (trace + sqrt(trace*trace - 4*determinant));
+    double eigenVal2 = 0.5 * (trace - sqrt(trace*trace - 4*determinant));
+    gaussian_ellipse_95.width = 2 * sqrt(5.991 * eigenVal1);
+    gaussian_ellipse_95.height = 2 * sqrt(5.991 * eigenVal2);
+    gaussian_ellipse_95.angle = atan(b / (eigenVal1 - c));
+    
+    return gaussian_ellipse_95;
+}
+
