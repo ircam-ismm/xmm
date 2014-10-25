@@ -385,7 +385,7 @@ void Phrase::clear()
 }
 
 #pragma mark Access Data
-float Phrase::operator()(unsigned int index, unsigned int dim) const
+float Phrase::at(unsigned int index, unsigned int dim) const
 {
     if (index >= length_)
         throw out_of_range("Phrase: index out of bounds");
@@ -398,6 +398,11 @@ float Phrase::operator()(unsigned int index, unsigned int dim) const
     } else {
         return data[0][index * dimension_ + dim];
     }
+}
+
+float Phrase::operator()(unsigned int index, unsigned int dim) const
+{
+    return at(index, dim);
 }
 
 float* Phrase::get_dataPointer(unsigned int index) const

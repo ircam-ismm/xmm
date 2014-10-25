@@ -245,6 +245,14 @@ public:
      * @param dim dimension considered, indexed from 0 to the total dimension of the data across modalities
      * @throws out_of_range if time index or dimension are out of bounds
      */
+    float at(unsigned int index, unsigned int dim) const;
+    
+    /**
+     * @brief Access data at a given time index and dimension.
+     * @param index time index
+     * @param dim dimension considered, indexed from 0 to the total dimension of the data across modalities
+     * @throws out_of_range if time index or dimension are out of bounds
+     */
     float operator()(unsigned int index, unsigned int dim) const;
     
     /**
