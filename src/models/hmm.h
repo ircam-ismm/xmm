@@ -348,22 +348,17 @@ protected:
     /**
      * @brief initialize the means of each state with all training phrases (single gaussian)
      */
-    void initMeansWithAllPhrases_single();
+    void initMeansWithAllPhrases();
     
     /**
      * @brief initialize the covariances of each state with all training phrases (single gaussian)
      */
-    void initCovariancesWithAllPhrases_single();
+    void initCovariances_fullyObserved();
     
     /**
-     * @brief initialize the means of each states with all training phrases (mixture of gaussian)
+     * @brief initialize the means and covariances of each state using GMM-EM on segments.
      */
-    void initMeansWithAllPhrases_mixture();
-    
-    /**
-     * @brief initialize the covariances of each states with all training phrases (mixture of gaussian)
-     */
-    void initCovariancesWithAllPhrases_mixture();
+    void initMeansCovariancesWithGMMEM();
     
     /**
      * @brief set the prior and transition matrix to ergodic

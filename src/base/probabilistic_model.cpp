@@ -191,7 +191,7 @@ void ProbabilisticModel::train()
     
     trainingLogLikelihood = log(0.);
     trainingNbIterations = 0;
-    double old_log_prob = trainingLogLikelihood;;
+    double old_log_prob = trainingLogLikelihood;
     
     while (!train_EM_hasConverged(trainingNbIterations, trainingLogLikelihood, old_log_prob))
     {

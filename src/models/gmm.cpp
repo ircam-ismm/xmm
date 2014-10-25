@@ -8,6 +8,7 @@
 //
 
 #include "gmm.h"
+#include "kmeans.h"
 
 #pragma mark > Constructors and Utilities
 GMM::GMM(rtml_flags flags,
@@ -23,7 +24,7 @@ GMM::GMM(rtml_flags flags,
     weight_regression_ = 1.;
     
     allocate();
-    train_EM_init();
+    initParametersToDefault();
 }
 
 
@@ -123,7 +124,13 @@ double GMM::performance_update(vector<float> const& observation)
 void GMM::train_EM_init()
 {
     initParametersToDefault();
-    initMeansWithFirstPhrase();
+    if (this->trainingSet->size() > 1) {
+        initMeansWithKMeans();
+    } else {
+        initMeansWithFirstPhrase();
+    }
+    initCovariances_fullyObserved();
+    addCovarianceOffset();
     updateInverseCovariances();
 }
 
@@ -346,6 +353,63 @@ void GMM::initMeansWithFirstPhrase()
         }
         offset += step;
     }
+}
+
+void GMM::initMeansWithKMeans()
+{
+    if (!this->trainingSet || this->trainingSet->is_empty())
+        return;
+    KMeans* kmeans = new KMeans(this->trainingSet, nbMixtureComponents_);
+    kmeans->trainingInitType = KMeans::BIASED;
+    kmeans->train();
+    for (int c=0; c<nbMixtureComponents_; c++) {
+        for (unsigned int d=0; d<dimension_; ++d) {
+            components[c].mean[d] = kmeans->centers[c*dimension_+d];
+        }
+    }
+    delete kmeans;
+}
+
+void GMM::initCovariances_fullyObserved()
+{
+    // TODO: simplify with covariance symmetricity
+    // TODO: If Kmeans, covariances from cluster members
+    if (!this->trainingSet || this->trainingSet->is_empty()) return;
+    int nbPhrases = this->trainingSet->size();
+    
+    for (int n=0; n<nbMixtureComponents_; n++)
+        components[n].covariance.assign(dimension_*dimension_, 0.0);
+    
+    vector<double> gmeans(nbMixtureComponents_*dimension_, 0.0);
+    vector<int> factor(nbMixtureComponents_, 0);
+    for (int i=0; i<nbPhrases; i++) {
+        int step = ((*this->trainingSet)(i))->second->length() / nbMixtureComponents_;
+        int offset(0);
+        for (int n=0; n<nbMixtureComponents_; n++) {
+            for (int t=0; t<step; t++) {
+                for (int d1=0; d1<dimension_; d1++) {
+                    gmeans[n*dimension_+d1] += (*((*this->trainingSet)(i)->second))(offset+t, d1);
+                    for (int d2=0; d2<dimension_; d2++) {
+                        components[n].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                    }
+                }
+            }
+            offset += step;
+            factor[n] += step;
+        }
+    }
+    
+    for (int n=0; n<nbMixtureComponents_; n++)
+        for (int d1=0; d1<dimension_; d1++) {
+            gmeans[n*dimension_+d1] /= factor[n];
+            for (int d2=0; d2<dimension_; d2++)
+                components[n].covariance[d1*dimension_+d2] /= factor[n];
+        }
+    
+    for (int n=0; n<nbMixtureComponents_; n++)
+        for (int d1=0; d1<dimension_; d1++)
+            for (int d2=0; d2<dimension_; d2++)
+                components[n].covariance[d1*dimension_+d2] -= gmeans[n*dimension_+d1]*gmeans[n*dimension_+d2];
 }
 
 double GMM::train_EM_update()

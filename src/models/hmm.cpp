@@ -38,7 +38,7 @@ HMM::HMM(rtml_flags flags,
     transitionMode_ = LEFT_RIGHT;
     estimateMeans_ = HMM_DEFAULT_ESTIMATEMEANS;
     
-    train_EM_init();
+    initParametersToDefault();
 }
 
 HMM::HMM(HMM const& src)
@@ -125,6 +125,11 @@ void HMM::evaluateNbStates(int factor)
 
 void HMM::initParametersToDefault()
 {
+    if (transitionMode_ == ERGODIC) {
+        setErgodic();
+    } else {
+        setLeftRight();
+    }
     for (int i=0; i<nbStates_; i++) {
         states_[i].initParametersToDefault();
     }
@@ -157,7 +162,7 @@ void HMM::initMeansWithFirstPhrase()
 }
 
 
-void HMM::initMeansWithAllPhrases_single()
+void HMM::initMeansWithAllPhrases()
 {
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
     int nbPhrases = this->trainingSet->size();
@@ -187,23 +192,24 @@ void HMM::initMeansWithAllPhrases_single()
 }
 
 
-void HMM::initCovariancesWithAllPhrases_single()
+void HMM::initCovariances_fullyObserved()
 {
+    // TODO: simplify with covariance symmetricity.
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
     int nbPhrases = this->trainingSet->size();
     
     for (int n=0; n<nbStates_; n++)
-        for (int d1=0; d1<dimension_; d1++)
-            for (int d2=0; d2<dimension_; d2++)
-                states_[n].components[0].covariance[d1*dimension_+d2] = -states_[n].components[0].mean[d1]*states_[n].components[0].mean[d2];
+        states_[n].components[0].covariance.assign(dimension_*dimension_, 0.0);
     
     vector<int> factor(nbStates_, 0);
+    vector<double> othermeans(nbStates_*dimension_, 0.0);
     for (int i=0; i<nbPhrases; i++) {
         int step = ((*this->trainingSet)(i))->second->length() / nbStates_;
         int offset(0);
         for (int n=0; n<nbStates_; n++) {
             for (int t=0; t<step; t++) {
                 for (int d1=0; d1<dimension_; d1++) {
+                    othermeans[n*dimension_+d1] += (*((*this->trainingSet)(i)->second))(offset+t, d1);
                     for (int d2=0; d2<dimension_; d2++) {
                         states_[n].components[0].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
                     }
@@ -215,61 +221,43 @@ void HMM::initCovariancesWithAllPhrases_single()
     }
     
     for (int n=0; n<nbStates_; n++)
-        for (int d1=0; d1<dimension_; d1++)
+        for (int d1=0; d1<dimension_; d1++) {
+            othermeans[n*dimension_+d1] /= factor[n];
             for (int d2=0; d2<dimension_; d2++)
                 states_[n].components[0].covariance[d1*dimension_+d2] /= factor[n];
-}
-
-
-void HMM::initMeansWithAllPhrases_mixture()
-{
-    if (!this->trainingSet || this->trainingSet->is_empty()) return;
-    int nbPhrases = this->trainingSet->size();
-    
-    for (int i=0; i<min(nbPhrases, nbMixtureComponents_); i++) {
-        int step = ((*this->trainingSet)(i))->second->length() / nbStates_;
-        int offset(0);
-        for (int n=0; n<nbStates_; n++) {
-            for (int d=0; d<dimension_; d++) {
-                states_[n].components[i].mean[d] = 0.0;
-            }
-            for (int t=0; t<step; t++) {
-                for (int d=0; d<dimension_; d++) {
-                    states_[n].components[i].mean[d] += (*((*this->trainingSet)(i)->second))(offset+t, d) / float(step);
-                }
-            }
-            offset += step;
         }
+    
+    for (int n=0; n<nbStates_; n++) {
+        for (int d1=0; d1<dimension_; d1++)
+            for (int d2=0; d2<dimension_; d2++)
+                states_[n].components[0].covariance[d1*dimension_+d2] -= othermeans[n*dimension_+d1]*othermeans[n*dimension_+d2];
+        states_[n].addCovarianceOffset();
+        states_[n].updateInverseCovariances();
     }
 }
 
-
-void HMM::initCovariancesWithAllPhrases_mixture()
+void HMM::initMeansCovariancesWithGMMEM()
 {
-    if (!this->trainingSet || this->trainingSet->is_empty()) return;
     int nbPhrases = this->trainingSet->size();
-    
-    for (int i=0; i<min(nbPhrases, nbMixtureComponents_); i++) {
-        int step = ((*this->trainingSet)(i))->second->length() / nbStates_;
-        int offset(0);
-        for (int n=0; n<nbStates_; n++) {
-            for (int d1=0; d1<dimension_; d1++) {
-                for (int d2=0; d2<dimension_; d2++) {
-                    states_[n].components[i].covariance[d1*dimension_+d2] = -states_[n].components[i].mean[d1]*states_[n].components[i].mean[d2];
-                }
-            }
-            for (int t=0; t<step; t++) {
-                for (int d1=0; d1<dimension_; d1++) {
-                    for (int d2=0; d2<dimension_; d2++) {
-                        states_[n].components[i].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2) / float(step);
-                    }
-                }
-            }
-            offset += step;
+    for (unsigned int n=0; n<nbStates_; n++) {
+        TrainingSet temp_ts(SHARED_MEMORY | (bimodal_ ? BIMODAL : NONE), dimension_, dimension_input_);
+        for (int i=0; i<nbPhrases; i++) {
+            int step = ((*this->trainingSet)(i))->second->length() / nbStates_;
+            if (bimodal_)
+                temp_ts.connect(i,
+                                ((*this->trainingSet)(i))->second->get_dataPointer_input(n*step),
+                                ((*this->trainingSet)(i))->second->get_dataPointer_output(n*step),
+                                step);
+            else
+                temp_ts.connect(i,
+                                ((*this->trainingSet)(i))->second->get_dataPointer(n*step),
+                                step);
         }
+        GMM temp_gmm((bimodal_ ? BIMODAL : NONE), &temp_ts, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_);
+        temp_gmm.train();
+        states_[n].components = temp_gmm.components;
     }
 }
-
 
 void HMM::setErgodic()
 {
@@ -563,30 +551,20 @@ void HMM::backward_update(double ct,
 
 #pragma mark -
 #pragma mark Training algorithm
-
-
 void HMM::train_EM_init()
 {
-    // Initialize Model Parameters
-    // ---------------------------------------
-    if (transitionMode_ == ERGODIC) {
-        setErgodic();
-    } else {
-        setLeftRight();
-    }
-    for (int i=0; i<nbStates_; i++) {
-        states_[i].train_EM_init();
-    }
+    initParametersToDefault();
     
-    if (!this->trainingSet) return;
+    if (!this->trainingSet || this->trainingSet->size() == 0)
+        return;
     
     if (nbMixtureComponents_ > 1) {
-        initMeansWithAllPhrases_mixture();
-        initCovariancesWithAllPhrases_mixture();
+        initMeansCovariancesWithGMMEM();
     } else {
-        // initMeansWithAllPhrases_single();
-        initMeansWithFirstPhrase();
-        initCovariancesWithAllPhrases_single();
+        initMeansWithAllPhrases();
+        // TODO: Evaluate All vs First >> remove first?
+        //initMeansWithFirstPhrase();
+        initCovariances_fullyObserved();
     }
     this->trained = false;
     
@@ -748,7 +726,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     
     // Backward algorithm
     backward_init(ct[T-1]);
-	copy(beta_.begin(), beta_.end(), beta_seq_.begin() + (T - 1)*nbStates_);
+    copy(beta_.begin(), beta_.end(), beta_seq_.begin() + (T - 1)*nbStates_);
     
     for (int t=T-2; t>=0; t--) {
         baumWelch_backward_update(ct[t], observation_probabilities.begin() + (t+1) * nbStates_);

@@ -254,7 +254,7 @@ public:
      * @brief Get minimum number of EM steps
      * @return minimum number of steps of the EM algorithm
      */
-    int get_EM_minSteps() const
+    unsigned int get_EM_minSteps() const
     {
         return this->referenceModel_.stopcriterion.minSteps;
     }
@@ -264,7 +264,7 @@ public:
      * @return maximum number of steps of the EM algorithm
      * @see EMStopCriterion
      */
-    int get_EM_maxSteps() const
+    unsigned int get_EM_maxSteps() const
     {
         return this->referenceModel_.stopcriterion.maxSteps;
     }
@@ -284,7 +284,7 @@ public:
      * @param steps minimum number of steps of the EM algorithm
      * @throws invalid_argument if steps < 1
      */
-    void set_EM_minSteps(int steps)
+    void set_EM_minSteps(unsigned int steps)
     {
         this->referenceModel_.stopcriterion.minSteps = steps;
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
@@ -297,7 +297,7 @@ public:
      * @param steps maximum number of steps of the EM algorithm
      * @throws invalid_argument if steps < 1
      */
-    void set_EM_maxSteps(int steps)
+    void set_EM_maxSteps(unsigned int steps)
     {
         this->referenceModel_.stopcriterion.maxSteps = steps;
         for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {

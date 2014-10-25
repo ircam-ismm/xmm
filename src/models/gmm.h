@@ -256,6 +256,16 @@ protected:
     void initMeansWithFirstPhrase();
     
     /**
+     * @brief Initialize the means of the Gaussian components with a Biased K-means
+     */
+    void initMeansWithKMeans();
+    
+    /**
+     * @brief Initialize the Covariances of the Gaussian components using a fully observed approximation
+     */
+    void initCovariances_fullyObserved();
+    
+    /**
      * @brief Initialize the EM Training Algorithm
      * @details Initializes the Gaussian Components from the first phrase
      * of the Training Set
@@ -316,7 +326,6 @@ protected:
      * modality is stored.
      */
     void regression(vector<float> const& observation_input, vector<float>& predicted_output);
-    
     /*@}*/
 
 #pragma mark -
@@ -345,3 +354,4 @@ protected:
 
 
 #endif
+ 
