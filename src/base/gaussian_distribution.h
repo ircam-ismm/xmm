@@ -105,7 +105,7 @@ public:
     /**
      * @brief Destructor
      */
-    ~GaussianDistribution();
+    virtual ~GaussianDistribution();
     
     /*@}*/
     

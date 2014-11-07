@@ -63,6 +63,8 @@ class Listener {
 public:
     friend class TrainingSet;
     
+    virtual ~Listener() {}
+    
     /**
      * @brief pure virtual method for handling training set notifications.
      * @param attribute name of the modified attribute of the training set
@@ -79,6 +81,8 @@ public:
  */
 class Writable {
 public:
+    virtual ~Writable() {}
+    
     /*@{*/
     /** @name JSON I/O */
     /**

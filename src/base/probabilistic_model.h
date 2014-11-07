@@ -70,6 +70,11 @@ const double EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG = 0.01;
 const int EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW = 1;
 
 /**
+ * Default absolute maximum number of EM iterations
+ */
+const int EM_MODEL_DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS = 100;
+
+/**
  * @brief Stop Criterion for the EM algorithm
  */
 struct EMStopCriterion {

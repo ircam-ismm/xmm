@@ -37,6 +37,11 @@ public:
     Label();
     
     /**
+     * @brief Destructor
+     */
+    virtual ~Label() {}
+    
+    /**
      * @brief Constructor.
      * @details The default label type is INT, with value 0
      * @param l integer label

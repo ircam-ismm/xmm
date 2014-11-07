@@ -252,6 +252,8 @@ void ProbabilisticModel::train()
 
 bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
 {
+    if (step >= EM_MODEL_DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS)
+        return true;
     if (stopcriterion.maxSteps >= stopcriterion.minSteps)
         return (step >= stopcriterion.maxSteps);
     else
