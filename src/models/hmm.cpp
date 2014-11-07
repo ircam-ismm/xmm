@@ -602,6 +602,13 @@ void HMM::train_EM_init()
 void HMM::train_EM_terminate()
 {
     normalizeTransitions();
+    gammaSequence_.clear();
+    epsilonSequence_.clear();
+    gammaSequencePerMixture_.clear();
+    alpha_seq_.clear();
+    beta_seq_.clear();
+    gammaSum_.clear();
+    gammaSumPerMixture_.clear();
     ProbabilisticModel::train_EM_terminate();
 }
 
@@ -998,6 +1005,8 @@ void HMM::performance_init()
         previousAlpha_.clear();
         beta_.clear();
         previousBeta_.clear();
+    } else {
+        addCyclicTransition(0.05);
     }
     if (bimodal_)
         results_predicted_output.resize(dimension_ - dimension_input_);
