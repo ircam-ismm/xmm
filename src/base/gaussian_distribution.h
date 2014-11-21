@@ -30,7 +30,7 @@ const double EPSILON_GAUSSIAN = 1.0e-20;
  * @struct Ellipse
  * @brief Simple structure for storing Ellipse parameters
  */
-struct Ellipse {
+typedef struct Ellipse {
     /**
      * @brief x center position
      */
@@ -55,7 +55,7 @@ struct Ellipse {
      * @brief angle (radians)
      */
     float angle;
-};
+} t_ellipse;
 
 /**
  * @ingroup ModelBase
@@ -225,7 +225,7 @@ public:
      * @throws out_of_range if the dimensions are out of bounds
      * @return ellipse parameters
      */
-    Ellipse ellipse(unsigned int dimension1,
+    t_ellipse ellipse(unsigned int dimension1,
                     unsigned int dimension2);
 
     /*@}*/

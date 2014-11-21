@@ -7,7 +7,12 @@
 //
 
 #include "kmeans.h"
-#include <limits>
+#include <limits.h>
+
+#ifdef WIN32
+static long random() {return rand();}
+#endif
+#define kmax(a,b) (((a) > (b)) ? (a) : (b))
 
 #pragma mark -
 #pragma mark === Public Interface ===
@@ -171,7 +176,7 @@ void KMeans::train()
                     meanClusterDistance += euclidian_distance(&centers[k*dimension_], &centers[l*dimension_], dimension_);
                 }
             }
-            maxRelativeCenterVariation = max(euclidian_distance(&previous_centers[k*dimension_], &centers[k*dimension_], dimension_),
+            maxRelativeCenterVariation = kmax(euclidian_distance(&previous_centers[k*dimension_], &centers[k*dimension_], dimension_),
                                              maxRelativeCenterVariation);
         }
         meanClusterDistance /= float(nbClusters_ * (nbClusters_ - 1));
