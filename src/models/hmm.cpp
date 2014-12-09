@@ -255,7 +255,11 @@ void HMM::initMeansCovariancesWithGMMEM()
         }
         GMM temp_gmm((bimodal_ ? BIMODAL : NONE), &temp_ts, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_);
         temp_gmm.train();
-        states_[n].components = temp_gmm.components;
+        for (unsigned int c=0; c<nbMixtureComponents_; c++) {
+            states_[n].components[c].mean = temp_gmm.components[c].mean;
+            states_[n].components[c].covariance = temp_gmm.components[c].covariance;
+            states_[n].updateInverseCovariances();
+        }
     }
 }
 
@@ -558,7 +562,7 @@ void HMM::train_EM_init()
     if (!this->trainingSet || this->trainingSet->size() == 0)
         return;
     
-    if (nbMixtureComponents_ > 1) {
+    if (nbMixtureComponents_ > 0) {
         initMeansCovariancesWithGMMEM();
     } else {
         initMeansWithAllPhrases();
@@ -1013,7 +1017,8 @@ void HMM::performance_init()
 
 void HMM::addCyclicTransition(double proba)
 {
-    transition_[(nbStates_-1)*nbStates_] = proba; // Add Cyclic Transition probability
+    if (nbStates_ > 1)
+        transition_[(nbStates_-1)*nbStates_] = proba; // Add Cyclic Transition probability
 }
 
 
@@ -1115,6 +1120,8 @@ void HMM::regression(vector<float> const& observation_input,
     int clip_min_state = (regression_estimator_ == FULL) ? 0 : results_window_minindex;
     int clip_max_state = (regression_estimator_ == FULL) ? nbStates_ : results_window_maxindex;
     double normalization_constant = (regression_estimator_ == FULL) ? 1.0 : results_window_normalization_constant;
+    
+    if (normalization_constant <= 0.0) normalization_constant = 1.;
     
     // Compute Regression
     for (int i=clip_min_state; i<clip_max_state; ++i) {
