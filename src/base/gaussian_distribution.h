@@ -16,14 +16,14 @@
 /**
  * default offset for covariance matrix
  */
-const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.;
+const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.e-2;
 const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.e-3;
 
 /**
  * Should avoid probabilities > 1 in most cases
  * @todo Weird stuff, to check.
  */
-const double EPSILON_GAUSSIAN = 1.0e-20;
+const double EPSILON_GAUSSIAN = 1.0;//e-20;
 
 /**
  * @ingroup ModelBase
@@ -226,10 +226,10 @@ public:
      * @return ellipse parameters
      */
     t_ellipse ellipse(unsigned int dimension1,
-                    unsigned int dimension2);
-
+                      unsigned int dimension2);
+    
     /*@}*/
-
+    
 #pragma mark -
 #pragma mark === Public Attributes ===
     /** @name Public Attributes */

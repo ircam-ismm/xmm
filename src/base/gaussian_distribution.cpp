@@ -55,6 +55,7 @@ void GaussianDistribution::_copy(GaussianDistribution *dst, GaussianDistribution
     dst->weight_regression = src.weight_regression;
     dst->bimodal_ = src.bimodal_;
     dst->dimension_input_ = src.dimension_input_;
+    dst->scale = src.scale;
     dst->mean = src.mean;
     dst->covariance = src.covariance;
     dst->inverseCovariance_ = src.inverseCovariance_;
@@ -117,7 +118,7 @@ double GaussianDistribution::likelihood(const float* observation) const
     
     double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant * pow(2*M_PI, double(dimension_)));
     
-    if(p < 1e-80 || isnan(p) || isinf(abs(p))) p = 1e-80;
+    if(p < 1e-180 || isnan(p) || isinf(abs(p))) p = 1e-180;
     
     return p;
 }
@@ -141,7 +142,7 @@ double GaussianDistribution::likelihood_input(const float* observation_input) co
     
     double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant_input_ * pow(2*M_PI, double(dimension_input_)));
     
-    if(p < 1e-80 || isnan(p) || isinf(abs(p))) p = 1e-80;
+    if(p < 1e-180 || isnan(p) || isinf(abs(p))) p = 1e-180;
     
     return p;
 }
@@ -172,6 +173,8 @@ double GaussianDistribution::likelihood_bimodal(const float* observation_input,
     }
     
     double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant * pow(2*M_PI, (double)dimension_));
+    
+    if(p < 1e-180 || isnan(p) || isinf(abs(p))) p = 1e-180;
     
     return p;
 }
@@ -221,7 +224,7 @@ JSONNode GaussianDistribution::to_json() const
     return json_gaussDist;
 }
 
- void GaussianDistribution::from_json(JSONNode root)
+void GaussianDistribution::from_json(JSONNode root)
 {
     try {
         if (root.type() != JSON_NODE)
@@ -390,7 +393,7 @@ Ellipse GaussianDistribution::ellipse(unsigned int dimension1,
     double a = covariance[dimension1 * dimension_ + dimension1];
     double b = covariance[dimension1 * dimension_ + dimension2];
     double c = covariance[dimension2 * dimension_ + dimension2];
-    // Compute Eigen Values and angle
+    // Compute Eigen Values to get width, height and angle
     double trace = a+c;
     double determinant = a*c - b*b;
     double eigenVal1 = 0.5 * (trace + sqrt(trace*trace - 4*determinant));
