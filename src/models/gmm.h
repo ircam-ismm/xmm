@@ -326,6 +326,7 @@ protected:
      * modality is stored.
      */
     void regression(vector<float> const& observation_input, vector<float>& predicted_output);
+    
     /*@}*/
 
 #pragma mark -

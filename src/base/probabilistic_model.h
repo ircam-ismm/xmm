@@ -299,6 +299,12 @@ public:
     vector<float> results_predicted_output;
     
     /**
+     * @brief Conditional Output Variance
+     * @warning this variable is not allocated if the model is not bimodal
+     */
+    vector<double> results_output_variance;
+    
+    /**
      * Log-likelihood of the data given the model's parameters at the en of training
      */
     double trainingLogLikelihood;

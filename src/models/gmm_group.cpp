@@ -86,13 +86,18 @@ void GMMGroup::performance_update(vector<float> const& observation)
             copy(this->models[results_likeliest].results_predicted_output.begin(),
                  this->models[results_likeliest].results_predicted_output.end(),
                  results_predicted_output.begin());
+            copy(this->models[results_likeliest].results_output_variance.begin(),
+                 this->models[results_likeliest].results_output_variance.end(),
+                 results_output_variance.begin());
         } else {
             results_predicted_output.assign(dimension_output, 0.0);
+            results_output_variance.assign(dimension_output, 0.0);
             
             int i(0);
             for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
                 for (int d=0; d<dimension_output; d++) {
                     results_predicted_output[d] += results_normalized_likelihoods[i] * it->second.results_predicted_output[d];
+                    results_output_variance[d] += results_normalized_likelihoods[i] * it->second.results_output_variance[d];
                 }
                 i++;
             }

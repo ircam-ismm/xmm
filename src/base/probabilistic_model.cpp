@@ -324,6 +324,10 @@ void ProbabilisticModel::performance_init()
     if (!this->trained)
         throw runtime_error("Cannot play: model has not been trained");
     likelihoodBuffer_.clear();
+    if (bimodal_) {
+        results_predicted_output.resize(dimension_ - dimension_input_);
+        results_output_variance.resize(dimension_ - dimension_input_);
+    }
 }
 
 #pragma mark -

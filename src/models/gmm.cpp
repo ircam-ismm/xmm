@@ -106,8 +106,6 @@ void GMM::set_weight_regression(double weight_regression)
 #pragma mark > Performance
 void GMM::performance_init()
 {
-    if (bimodal_)
-        results_predicted_output.resize(dimension_ - dimension_input_);
 }
 
 double GMM::performance_update(vector<float> const& observation)
@@ -552,8 +550,11 @@ void GMM::addCovarianceOffset()
 void GMM::updateInverseCovariances()
 {
     try {
-        for (mixture_iterator component = components.begin() ; component != components.end() ; ++component)
+        for (mixture_iterator component = components.begin() ; component != components.end() ; ++component) {
             component->updateInverseCovariance();
+            if (bimodal_)
+                component->updateOutputVariances();
+        }
     } catch (exception& e) {
         throw runtime_error("Matrix inversion error: varianceoffset must be too small");
     }
@@ -564,6 +565,7 @@ void GMM::regression(vector<float> const& observation_input, vector<float>& pred
 {
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.assign(dimension_output, 0.0);
+    results_output_variance.assign(dimension_output, 0.0);
     vector<float> tmp_predicted_output(dimension_output, 0.0);
     
     for (int c=0; c<nbMixtureComponents_; c++) {
@@ -571,6 +573,7 @@ void GMM::regression(vector<float> const& observation_input, vector<float>& pred
         for (int d = 0; d < dimension_output; ++d)
         {
             predicted_output[d] += beta[c] * tmp_predicted_output[d];
+            results_output_variance[d] += beta[c] * beta[c] * components[c].output_variance[d];
         }
     }
 }

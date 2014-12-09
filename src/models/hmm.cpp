@@ -1008,8 +1008,6 @@ void HMM::performance_init()
     } else {
         addCyclicTransition(0.05);
     }
-    if (bimodal_)
-        results_predicted_output.resize(dimension_ - dimension_input_);
 }
 
 
@@ -1105,6 +1103,7 @@ void HMM::regression(vector<float> const& observation_input,
 {
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.assign(dimension_output, 0.0);
+    results_output_variance.assign(dimension_output, 0.0);
     vector<float> tmp_predicted_output(dimension_output);
     
     if (regression_estimator_ == LIKELIEST) {
@@ -1123,10 +1122,13 @@ void HMM::regression(vector<float> const& observation_input,
         states_[i].regression(observation_input, tmp_predicted_output);
         for (int d = 0; d < dimension_output; ++d)
         {
-            if (is_hierarchical_)
+            if (is_hierarchical_) {
                 predicted_output[d] += (alpha_h[0][i] + alpha_h[1][i]) * tmp_predicted_output[d] / normalization_constant;
-            else
+                results_output_variance[d] += (alpha_h[0][i] + alpha_h[1][i]) * (alpha_h[0][i] + alpha_h[1][i]) * states_[i].results_output_variance[d] / normalization_constant;
+            } else {
                 predicted_output[d] += alpha[i] * tmp_predicted_output[d] / normalization_constant;
+                results_output_variance[d] += alpha[i] * alpha[i] * states_[i].results_output_variance[d] / normalization_constant;
+            }
         }
     }
 }

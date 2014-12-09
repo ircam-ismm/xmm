@@ -218,6 +218,13 @@ public:
     void updateInverseCovariance();
     
     /**
+     * @brief Compute the conditional variance vector of the output modality
+     * (conditioned over the input).
+     * @throws runtime_error if the model is not bimodal
+     */
+    void updateOutputVariances();
+    
+    /**
      * @brief Compute the 95% Confidence Interval ellipse of the Gaussian
      * @details the ellipse is 2D, and is therefore projected over 2 axes
      * @param dimension1 index of the first axis
@@ -264,6 +271,12 @@ public:
      * A zero weight correspond to estimation using the means only.
      */
     double weight_regression;
+    
+    /**
+     * @brief Conditional Output Variance
+     * updated when covariances matrices are inverted.
+     */
+    vector<double> output_variance;
     
 #pragma mark -
 #pragma mark === Private Attributes ===

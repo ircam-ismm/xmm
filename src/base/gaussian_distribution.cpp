@@ -377,6 +377,48 @@ void GaussianDistribution::updateInverseCovariance()
     }
 }
 
+void GaussianDistribution::updateOutputVariances()
+{
+    if (!bimodal_)
+        throw runtime_error("'updateOutputVariances' can't be used when 'useRegression' is off.");
+    
+    Matrix<double> *inverseMat;
+    double det;
+    
+    unsigned int dimension_output = dimension_ - dimension_input_;
+    Matrix<double> cov_matrix_input(dimension_input_, dimension_input_, true);
+    for (int d1=0; d1<dimension_input_; d1++) {
+        for (int d2=0; d2<dimension_input_; d2++) {
+            cov_matrix_input._data[d1*dimension_input_+d2] = covariance[d1 * dimension_ + d2];
+        }
+    }
+    inverseMat = cov_matrix_input.pinv(&det);
+    Matrix<double> covariance_gs(dimension_input_, dimension_output, true);
+    for (int d1=0; d1<dimension_input_; d1++) {
+        for (int d2=0; d2<dimension_output; d2++) {
+            covariance_gs._data[d1*dimension_output+d2] = covariance[d1 * dimension_ + dimension_input_ + d2];
+        }
+    }
+    Matrix<double> covariance_sg(dimension_output, dimension_input_, true);
+    for (int d1=0; d1<dimension_output; d1++) {
+        for (int d2=0; d2<dimension_input_; d2++) {
+            covariance_gs._data[d1*dimension_input_+d2] = covariance[(dimension_input_ + d1) * dimension_ + d2];
+        }
+    }
+    Matrix<double> *tmptmptmp = inverseMat->product(&covariance_gs);
+    Matrix<double> *covariance_mod = covariance_sg.product(tmptmptmp);
+    output_variance.resize(dimension_output);
+    for (int d=0; d<dimension_output; d++) {
+        output_variance[d] = covariance[(dimension_input_ + d) * dimension_ + dimension_input_ + d] - covariance_mod->data[d * dimension_output + d];
+    }
+    delete inverseMat;
+    delete covariance_mod;
+    delete tmptmptmp;
+    inverseMat = NULL;
+    covariance_mod = NULL;
+    tmptmptmp = NULL;
+}
+
 Ellipse GaussianDistribution::ellipse(unsigned int dimension1,
                                       unsigned int dimension2)
 {

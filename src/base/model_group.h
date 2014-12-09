@@ -507,8 +507,10 @@ public:
         results_normalized_instant_likelihoods.resize(size());
         results_normalized_likelihoods.resize(size());
         results_log_likelihoods.resize(size());
-        if (bimodal_)
+        if (bimodal_) {
             results_predicted_output.resize(dimension() - dimension_input());
+            results_output_variance.resize(dimension() - dimension_input());
+        }
     }
     
     /**
@@ -582,8 +584,15 @@ public:
     
     /**
      * Result: Predicted output modality observation
+     * @warning this variable is not allocated if the model is not bimodal
      */
     vector<float> results_predicted_output;
+    
+    /**
+     * @brief Conditional Output Variance
+     * @warning this variable is not allocated if the model is not bimodal
+     */
+    vector<double> results_output_variance;
     
 protected:
 #pragma mark -
