@@ -336,9 +336,7 @@ void GaussianDistribution::addOffset()
 {
     for (int d = 0; d < dimension_; ++d)
     {
-        covariance[d * dimension_ + d] += offset_relative * scale[d];
-        if (covariance[d * dimension_ + d] < offset_absolute)
-            covariance[d * dimension_ + d] = offset_absolute;
+        covariance[d * dimension_ + d] += max(offset_absolute, offset_relative * scale[d]);
     }
 }
 
