@@ -786,9 +786,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     for (int t=0; t<T-1; t++) {
         for (int i=0; i<nbStates_; i++) {
             for (int j=0; j<nbStates_; j++) {
-                epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] = alpha_seq_[t*nbStates_+i]
-                * transition_[i*nbStates_+j]
-                * beta_seq_[(t+1)*nbStates_+j];
+                epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] = alpha_seq_[t*nbStates_+i] * transition_[i*nbStates_+j] * beta_seq_[(t+1)*nbStates_+j];
                 epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= observation_probabilities[(t+1) * nbStates_ + j];
             }
         }
@@ -973,6 +971,15 @@ void HMM::baumWelch_estimateTransitions()
     {
         phraseLength = it->second->length();
         for (int i=0; i<nbStates_; i++) {
+            // Experimental: A bit of regularization (sometimes avoids numerical errors)
+            if (transitionMode_ == LEFT_RIGHT) {
+                transition_[i*nbStates_+i] += HMM_TRANSITION_REGULARIZATION;
+                if (i<nbStates_-1)
+                    transition_[i*nbStates_+i+1] += HMM_TRANSITION_REGULARIZATION;
+                else
+                    transition_[i*nbStates_+i] += HMM_TRANSITION_REGULARIZATION;
+            }
+            // End Regularization
             for (int j=0; j<nbStates_; j++)
             {
                 for (int t=0; t<phraseLength-1; t++) {
@@ -986,8 +993,7 @@ void HMM::baumWelch_estimateTransitions()
     // Scale transition matrix
     for (int i=0; i<nbStates_; i++) {
         for (int j=0; j<nbStates_; j++) {
-            if (gammaSum_[i] > 0)
-                transition_[i*nbStates_+j] /= gammaSum_[i];
+            transition_[i*nbStates_+j] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
             if (isnan(transition_[i*nbStates_+j]))
                 throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
         }
