@@ -15,7 +15,12 @@
 	#include "gmm.h"
 	#include "gmm_group.h"
 	#include "hmm.h"
-	#include "hierarchical_hmm.h"
+  #include "hierarchical_hmm.h"
+	#include "kmeans.h"
+%}
+
+%init %{
+    import_array();
 %}
 
 %exception {
@@ -28,7 +33,7 @@
     }
 }
 
-%include "std_vector.i"
+%include std_vector.i
 %include numpy.i
 %include std_string.i
 %include std_map.i
@@ -46,10 +51,6 @@ namespace std {
    %template(maphmm) map<Label, HMM>;
 };
 
-%init %{
-    import_array();
-%}
-
 // %typemap(out) vectord {
 //     int length = $1.size();
 //     $result = PyArray_FromDims(1, &amp;length, PyArray_DOUBLE);
@@ -63,6 +64,7 @@ namespace std {
 %include "training_set.h"
 %include "probabilistic_model.h"
 %include "gaussian_distribution.h"
+%include "kmeans.h"
 %include "gmm.h"
 %include "hmm.h"
 %include "model_group.h"

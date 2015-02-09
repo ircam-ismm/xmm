@@ -41,6 +41,7 @@ install:
 	mv mhmm.py $(INSTALL_DIR)
 	mv _mhmm.so $(INSTALL_DIR)
 	cp __init__.py $(INSTALL_DIR)
+	cp util.py $(INSTALL_DIR)
 
 clean:
 	@echo "\n==> Cleaning files\n"
