@@ -31,10 +31,6 @@ HMM::HMM(rtml_flags flags,
     
     allocate();
     
-    play_EM_stopCriterion_.minSteps = PLAY_EM_STEPS;
-    play_EM_stopCriterion_.maxSteps = 0;
-    play_EM_stopCriterion_.percentChg = PLAY_EM_MAX_LOG_LIK_PERCENT_CHG;
-    
     transitionMode_ = LEFT_RIGHT;
     estimateMeans_ = HMM_DEFAULT_ESTIMATEMEANS;
     
@@ -78,7 +74,6 @@ void HMM::_copy(HMM *dst,
     dst->transitionMode_ = src.transitionMode_;
     
     dst->states_ = src.states_;
-    dst->play_EM_stopCriterion_ = src.play_EM_stopCriterion_;
 }
 
 
@@ -489,37 +484,6 @@ double HMM::forward_update(const float* observation,
         return 1.;
     }
 }
-
-
-double HMM::forward_update_withNewObservation(const float* observation,
-                                              const float* observation_output)
-{
-    if (forwardInitialized_) {
-        double norm_const(0.);
-        for (int j=0; j<nbStates_; j++) {
-            alpha[j] = 0.;
-            for (int i=0; i<nbStates_; i++) {
-                alpha[j] += previousAlpha_[i] * transition_[i*nbStates_+j];
-            }
-            alpha[j] *= states_[j].obsProb_bimodal(observation, observation_output);
-            norm_const += alpha[j];
-        }
-        if (norm_const > 0) {
-            for (int j=0; j<nbStates_; j++) {
-                alpha[j] /= norm_const;
-            }
-            return 1./norm_const;
-        } else {
-            for (int j=0; j<nbStates_; j++) {
-                alpha[j] = 1./double(nbStates_);
-            }
-            return 1.;
-        }
-    } else {
-        return forward_init(observation, observation_output);
-    }
-}
-
 
 void HMM::backward_init(double ct)
 {
@@ -1047,18 +1011,6 @@ double HMM::performance_update(vector<float> const& observation)
     
     if (bimodal_) {
         regression(observation, results_predicted_output);
-        
-        // Em-like estimation of the output sequence: deprecated now but need to be tested.
-        // ========================================================================================
-        // double obs_prob(log(ct)), old_obs_prob;
-        // int n(1);
-        // do
-        // {
-        //     old_obs_prob = obs_prob;
-        //     forward_update_withNewObservation(observation, observation + dimension_input);
-        //     regression(observation);
-        //     ++n;
-        // } while (!play_EM_stop(n, obs_prob, old_obs_prob));
     }
     
     return results_instant_likelihood;

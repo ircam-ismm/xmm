@@ -590,12 +590,6 @@ protected:
     vector<float> transition_;
     
     /**
-     * @brief Stop criterion for the EM estimation during performance
-     * @deprecated this is not currently used
-     */
-    EMStopCriterion play_EM_stopCriterion_;
-    
-    /**
      * @brief Defines if the forward algorithm has been initialized
      */
     bool forwardInitialized_;
