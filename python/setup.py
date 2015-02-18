@@ -22,8 +22,8 @@ mhmm_module = Extension('_mhmm',
                                     src_dir + 'gmm.cpp', src_dir + 'gmm_group.cpp',
                                     src_dir + 'hmm.cpp', src_dir + 'hierarchical_hmm.cpp', 
                                     src_dir + 'kmeans.cpp'],
-                        include_dirs = [numpy_include, '../components/libjson/src/', src_dir, rtml_dir],
-                        library_dirs = ['../components/libjson/built-lib'],
+                        include_dirs = [numpy_include, '../dependencies/libjson/src/', src_dir, rtml_dir],
+                        library_dirs = ['../dependencies/libjson/bin'],
                         libraries = ['json']
                         )
 # mhmm_lib setup

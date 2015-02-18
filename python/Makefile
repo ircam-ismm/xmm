@@ -16,8 +16,8 @@ endif
 DOC_DIR=../doc/
 LIB_DIR=../src/models/
 RTML_DIR=../src/base/
-JSON_XCODE_DIR=../components/libjson/build/xcode
-JSON_LIB_DIR=../components/libjson/built-lib
+JSON_XCODE_DIR=../dependencies/libjson/ide
+JSON_LIB_DIR=../dependencies/libjson/bin
 
 SWIGOPT=#-debug-template
 
@@ -25,7 +25,6 @@ json:
 	@echo "\n==> Compiling JSON Library\n"
 	@(cd $(JSON_XCODE_DIR) && xcodebuild)
 	@(cd $(JSON_XCODE_DIR) && xcodebuild install)
-	@(cd $(JSON_XCODE_DIR) && xcodebuild clean)
 
 compile: json mhmm.i setup.py $(RTML_DIR)*.cpp #$(LIB_DIR)*.cpp
 	@echo "\n==> Generating doc\n"
@@ -45,5 +44,6 @@ install:
 
 clean:
 	@echo "\n==> Cleaning files\n"
+	@(cd $(JSON_XCODE_DIR) && xcodebuild clean)
 	rm -f *.cxx *.so mhmm.py mhmm_doc.i
 	rm -rf build/
