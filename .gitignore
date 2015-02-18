@@ -1,0 +1,5 @@
+ide/xcode/build
+dependencies/libjson/ide/build
+dependencies/libjson/ide/json.xcodeproj/xcuserdata
+dependencies/libjson/ide/json.xcodeproj/project.xcworkspace/xcuserdata
+*pyc
