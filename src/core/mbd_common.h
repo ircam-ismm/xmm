@@ -21,6 +21,10 @@ const vector<double> NULLVEC_DOUBLE;
 typedef unsigned int rtml_flags;
 
 /**
+ * @defgroup Core Core Classes and Distributions
+ */
+
+/**
  * @brief Flags for the construction of data phrases and models
  */
 enum FLAGS {

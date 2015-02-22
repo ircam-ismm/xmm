@@ -11,7 +11,7 @@ author: Jules Francoise <jules.francoise@ircam.fr>
 
 import numpy as np
 import matplotlib.pyplot as plt
-import mhmm
+import xmm
 
 
 def test_hhmm():
@@ -21,7 +21,7 @@ def test_hhmm():
     (divided by 1000) and smoothed (moving average filter).
     """
     # Create a single HMM (group of GMMs running in parallel for recognition)
-    hhmm = mhmm.HierarchicalHMM()
+    hhmm = xmm.HierarchicalHMM()
     # Read trained model from Json file
     hhmm.readFile('hhmm_model.json')
     # read test data (concatenation of the 3 training examples)
@@ -36,7 +36,7 @@ def test_hhmm():
     log_likelihoods = np.zeros((test_data.shape[0], hhmm.size()))
     # Performance: Play test data and record the likelihoods of the modes
     for i in range(test_data.shape[0]):
-        hhmm.performance_update(mhmm.vectorf(test_data[i, :]))
+        hhmm.performance_update(xmm.vectorf(test_data[i, :]))
         log_likelihoods[i, :] = np.array(hhmm.results_log_likelihoods)
         instantaneous_likelihoods[i, :] = np.array(hhmm.results_instant_likelihoods)
         normalized_likelihoods[i, :] = np.array(hhmm.results_normalized_likelihoods)

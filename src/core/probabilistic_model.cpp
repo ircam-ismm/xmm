@@ -183,10 +183,12 @@ void ProbabilisticModel::train()
     
     is_training_ = true;
     
-    try {
-        this->train_EM_init();
-    } catch (exception &e) {
-        trainingError = true;
+    if (!trainingError) {
+        try {
+            this->train_EM_init();
+        } catch (exception &e) {
+            trainingError = true;
+        }
     }
     
     trainingLogLikelihood = log(0.);
@@ -196,10 +198,12 @@ void ProbabilisticModel::train()
     while (!train_EM_hasConverged(trainingNbIterations, trainingLogLikelihood, old_log_prob))
     {
         old_log_prob = trainingLogLikelihood;
-        try {
-            trainingLogLikelihood = this->train_EM_update();
-        } catch (exception &e) {
-            trainingError = true;
+        if (!trainingError) {
+            try {
+                trainingLogLikelihood = this->train_EM_update();
+            } catch (exception &e) {
+                trainingError = true;
+            }
         }
         
         if (isnan(100.*fabs((trainingLogLikelihood-old_log_prob)/old_log_prob)) && (trainingNbIterations > 1))

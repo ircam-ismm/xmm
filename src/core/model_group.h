@@ -22,7 +22,7 @@ using namespace std;
 #pragma mark -
 #pragma mark Class Definition
 /**
- * @ingroup Base
+ * @ingroup Core
  * @class ModelGroup
  * @brief Handle machine learning models running in parallel
  * @tparam ModelType type of the models (implemented: GMM, HMM)

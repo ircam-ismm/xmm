@@ -20,6 +20,10 @@ const int PHRASE_DEFAULT_DIMENSION = 1;
 const int PHRASE_ALLOC_BLOCKSIZE = 256;
 
 /**
+ * @defgroup TrainingSet Training Datasets
+ */
+
+/**
  * @ingroup TrainingSet
  * @class Phrase
  * @brief Data phrase

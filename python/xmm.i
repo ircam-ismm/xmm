@@ -1,4 +1,4 @@
-%module(docstring="Multimodal Hidden Markov Models Library") mhmm
+%module(docstring="Multimodal Hidden Markov Models Library") xmm
 
 %{
 	#define SWIG_FILE_WITH_INIT
@@ -57,7 +57,7 @@ namespace std {
 //     memcpy(PyArray_DATA($result),&amp;((*(&amp;$1))[0]),sizeof(double)*length);
 // }
 
-%include mhmm_doc.i
+%include xmm_doc.i
 %include "mbd_common.h"
 %include "phrase.h"
 %include "label.h"

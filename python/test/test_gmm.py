@@ -11,7 +11,7 @@ author: Jules Francoise <jules.francoise@ircam.fr>
 
 import numpy as np
 import matplotlib.pyplot as plt
-import mhmm
+import xmm
 import thesis
 
 
@@ -24,7 +24,7 @@ def create_training_set():
         training_set -- Unimodal Training Set
     """
     # Create the training set
-    training_set = mhmm.TrainingSet()
+    training_set = xmm.TrainingSet()
     training_set.set_dimension(6) # dimension of data in this example
     # Record data phrases
     for i in range(3):
@@ -33,7 +33,7 @@ def create_training_set():
             # Append data frame to the phrase i
             training_set.recordPhrase(i, frame)
         # Set phrase label
-        training_set.setPhraseLabel(i, mhmm.Label(i+1))
+        training_set.setPhraseLabel(i, xmm.Label(i+1))
     return training_set
 
 
@@ -49,7 +49,7 @@ def gmm_train(training_set, num_gaussians=1, varianceoffset=[1., 0.01]):
         gmm -- Trained GMM group
     """
     # Create a GMM Group (handles multiples labels for recognition)
-    gmm = mhmm.GMMGroup()
+    gmm = xmm.GMMGroup()
     # Set pointer to the training set
     gmm.set_trainingSet(training_set)
     # Set parameters
@@ -57,12 +57,12 @@ def gmm_train(training_set, num_gaussians=1, varianceoffset=[1., 0.01]):
     gmm.set_varianceOffset(varianceoffset[0], varianceoffset[1])
     # Train all models
     gmm.train()
-    print "model 1: trained in ", gmm.models[mhmm.Label(1)].trainingNbIterations, \
-            "iterations, loglikelihood = ", gmm.models[mhmm.Label(1)].trainingLogLikelihood
-    print "model 2: trained in ", gmm.models[mhmm.Label(2)].trainingNbIterations, \
-            "iterations, loglikelihood = ", gmm.models[mhmm.Label(2)].trainingLogLikelihood
-    print "model 3: trained in ", gmm.models[mhmm.Label(3)].trainingNbIterations, \
-            "iterations, loglikelihood = ", gmm.models[mhmm.Label(3)].trainingLogLikelihood
+    print "model 1: trained in ", gmm.models[xmm.Label(1)].trainingNbIterations, \
+            "iterations, loglikelihood = ", gmm.models[xmm.Label(1)].trainingLogLikelihood
+    print "model 2: trained in ", gmm.models[xmm.Label(2)].trainingNbIterations, \
+            "iterations, loglikelihood = ", gmm.models[xmm.Label(2)].trainingLogLikelihood
+    print "model 3: trained in ", gmm.models[xmm.Label(3)].trainingNbIterations, \
+            "iterations, loglikelihood = ", gmm.models[xmm.Label(3)].trainingLogLikelihood
     return gmm
 
 
@@ -88,7 +88,7 @@ def gmm_test_recognition(gmm, likelihood_window=20):
     log_likelihoods = np.zeros((test_data.shape[0], gmm.size()))
     # Performance: Play test data and record the likelihoods of the modes
     for i in range(test_data.shape[0]):
-        gmm.performance_update(mhmm.vectorf(test_data[i, :]))
+        gmm.performance_update(xmm.vectorf(test_data[i, :]))
         instantaneous_likelihoods[i, :] = np.array(gmm.results_instant_likelihoods)
         normalized_likelihoods[i, :] = np.array(gmm.results_normalized_likelihoods)
         log_likelihoods[i, :] = np.array(gmm.results_log_likelihoods)
@@ -119,7 +119,7 @@ def gmm_test_recognition(gmm, likelihood_window=20):
 if __name__ == '__main__':
     TRAINING_SET = create_training_set()
     GMM_MODEL = gmm_train(TRAINING_SET)
-    # GMM_MODEL = mhmm.GMMGroup()
+    # GMM_MODEL = xmm.GMMGroup()
     # GMM_MODEL.readFile('gmm_model.json')
     LIKELIHOOD_WINDOW = 1 # 50
     LOG_LIKELIHOODS1 = gmm_test_recognition(GMM_MODEL, LIKELIHOOD_WINDOW)

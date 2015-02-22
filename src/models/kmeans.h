@@ -17,6 +17,11 @@
 const unsigned int KMEANS_DEFAULT_MAX_ITERATIONS = 50;
 const float KMEANS_DEFAULT_RELATIVE_VARIATION_THRESHOLD = 1e-20;
 
+/**
+ * @ingroup Core
+ * @class KMeans
+ * @brief K-Means Clustering algorithm
+ */
 class KMeans : public Listener, public Writable {
 public:
     /**

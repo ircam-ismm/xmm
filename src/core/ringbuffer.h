@@ -16,7 +16,7 @@
 using namespace std;
 
 /**
- * @ingroup Utility
+ * @ingroup Utilities
  * @class RingBuffer
  * @brief Simple RingBuffer Class
  * @details Multichannel

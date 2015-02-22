@@ -26,7 +26,7 @@ const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.e-3;
 const double EPSILON_GAUSSIAN = 1.0;//e-20;
 
 /**
- * @ingroup ModelBase
+ * @ingroup Core
  * @struct Ellipse
  * @brief Simple structure for storing Ellipse parameters
  */
@@ -58,7 +58,7 @@ typedef struct Ellipse {
 } t_ellipse;
 
 /**
- * @ingroup ModelBase
+ * @ingroup Core
  * @class GaussianDistribution
  * @brief Multivariate Gaussian Distribution
  * @details Full covariance, optionally multimodal with support for regression

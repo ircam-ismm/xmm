@@ -11,7 +11,7 @@ author: Jules Francoise <jules.francoise@ircam.fr>
 
 import numpy as np
 import matplotlib.pyplot as plt
-import mhmm
+import xmm
 
 
 def test_hmm():
@@ -19,7 +19,7 @@ def test_hmm():
     The data originates from the example patch: "hhmm_following.maxpat".
     """
     # Create a single HMM (group of GMMs running in parallel for recognition)
-    hmm = mhmm.HMM(mhmm.NONE, None, 10, 1)
+    hmm = xmm.HMM(xmm.NONE, None, 10, 1)
     # Read trained model from Json file
     hmm.readFile('hmm_single_model.json')
     # read test data (concatenation of the 3 training examples)
@@ -33,7 +33,7 @@ def test_hmm():
     alphas = np.zeros((test_data.shape[0], hmm.get_nbStates()))
     # Performance: Play test data and record the likelihoods of the modes
     for i in range(test_data.shape[0]):
-        hmm.performance_update(mhmm.vectorf(test_data[i, :]))
+        hmm.performance_update(xmm.vectorf(test_data[i, :]))
         log_likelihoods[i, :] = np.array(hmm.results_log_likelihood)
         likelihoods[i, :] = np.array(hmm.results_instant_likelihood)
         timeprogression[i, :] = np.array(hmm.results_progress)

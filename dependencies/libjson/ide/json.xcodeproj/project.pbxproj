@@ -446,6 +446,7 @@
 				INSTALL_PATH = /;
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = json;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -459,6 +460,7 @@
 				INSTALL_PATH = /;
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = json;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

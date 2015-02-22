@@ -100,7 +100,7 @@ struct EMStopCriterion {
 };
 
 /**
- * @ingroup ModelBase
+ * @ingroup Core
  * @class ProbabilisticModel
  * @brief Generic Template for Machine Learning Probabilistic models based on the EM algorithm
  */

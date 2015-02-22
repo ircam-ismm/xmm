@@ -9,13 +9,13 @@ import numpy
 numpy_include = numpy.get_include()
 
 src_dir = '../src/models/'
-rtml_dir = '../src/base/'
+rtml_dir = '../src/core/'
 
-# mhmm_lib extension module
-mhmm_module = Extension('_mhmm',
+# xmm_lib extension module
+xmm_module = Extension('_xmm',
                         define_macros=[('USE_PTHREAD', None)],
                         extra_link_args = ["-lpthread"],
-                        sources=['mhmm_wrap.cxx', rtml_dir + 'json_utilities.cpp',
+                        sources=['xmm_wrap.cxx', rtml_dir + 'json_utilities.cpp',
                                     rtml_dir + 'label.cpp', rtml_dir + 'phrase.cpp',
                                     rtml_dir + 'training_set.cpp',
                                     rtml_dir + 'probabilistic_model.cpp', rtml_dir + 'gaussian_distribution.cpp',
@@ -26,11 +26,11 @@ mhmm_module = Extension('_mhmm',
                         library_dirs = ['../dependencies/libjson/bin'],
                         libraries = ['json']
                         )
-# mhmm_lib setup
-setup (name        = 'mhmm',
-       version     = '0.2',
+# xmm_lib setup
+setup (name        = 'xmm',
+       version     = '0.3',
        author      = "Jules Francoise <jules.francoise@ircam.fr>",
        description = """Multimodal Hidden Markov Models Library""",
-       ext_modules = [mhmm_module],
-       py_modules  = ["mhmm"],
+       ext_modules = [xmm_module],
+       py_modules  = ["xmm"],
        )

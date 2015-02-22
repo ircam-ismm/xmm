@@ -1,6 +1,6 @@
 //
 //  config.xcconfig
-//  mhmm-lib
+//  xmm-lib
 //
 //  Created by Jules Francoise on 06/09/13.
 //
@@ -8,4 +8,7 @@
 
 SWIG=/usr/local/bin/swig
 DOXYGEN=/Applications/Doxygen.app/Contents/Resources/doxygen
-INSTALL_DIR=./built-lib/mhmm/
+INSTALL_DIR=./built-lib/xmm/
+
+DSTROOT = $(PROJECT_DIR)/../../bin
+INSTALL_PATH = /
