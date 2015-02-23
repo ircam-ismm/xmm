@@ -392,6 +392,7 @@ public:
                 pthread_join(training_threads[it->first], NULL);
             }
         }
+        training_threads.clear();
 #else
         // Sequential training
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -467,7 +468,8 @@ public:
             Label label = ((ModelType *)model)->trainingSet->getPhraseLabel(0);
             thismodelgroup->models_to_train_--;
 #ifdef USE_PTHREAD
-            thismodelgroup->training_threads.erase(label);
+            if (thismodelgroup->trainingCallbackFunction_)
+                thismodelgroup->training_threads.erase(label);
 #endif
             if (state == TRAINING_ERROR || state == TRAINING_ABORT) {
                 thismodelgroup->remove(label);
@@ -660,8 +662,8 @@ protected:
      */
     virtual void updateAllTrainingSets()
     {
-        removeDeprecatedModels();
         if (!globalTrainingSet->has_changed()) return;
+        removeDeprecatedModels();
         
         // Update classes models and training sets
         for (typename set<Label>::iterator it=globalTrainingSet->allLabels.begin(); it != globalTrainingSet->allLabels.end(); ++it)
