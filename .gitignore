@@ -1,5 +1,6 @@
 ide/xcode/build
 ide/xcode/xmm-lib.xcodeproj/project.xcworkspace/xcuserdata
+ide/xcode/xmm-lib.xcodeproj/xcuserdata
 dependencies/libjson/ide/build
 dependencies/libjson/ide/json.xcodeproj/xcuserdata
 dependencies/libjson/ide/json.xcodeproj/project.xcworkspace/xcuserdata
