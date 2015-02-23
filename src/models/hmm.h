@@ -402,15 +402,6 @@ protected:
     double forward_update(const float* observation, const float* observation_output=NULL);
     
     /**
-     @brief Forward update with the estimated output observation
-     @deprecated generally unused in current version of max/python implementations
-     * @param observation observation on the input modality.
-     * @param observation_output observation on the output modality
-     * @return instantaneous likelihood computed with the output observation.
-     */
-    double forward_update_withNewObservation(const float* observation, const float* observation_output);
-    
-    /**
      * @brief Initialization Backward algorithm
      * @param ct inverse of the likelihood at time step t computed
      * with the forward algorithm (see Rabiner 1989)

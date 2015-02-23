@@ -12,7 +12,6 @@ author: Jules Francoise <jules.francoise@ircam.fr>
 import numpy as np
 import matplotlib.pyplot as plt
 import xmm
-import thesis
 
 
 def create_training_set():
@@ -119,8 +118,6 @@ def gmm_test_recognition(gmm, likelihood_window=20):
 if __name__ == '__main__':
     TRAINING_SET = create_training_set()
     GMM_MODEL = gmm_train(TRAINING_SET)
-    # GMM_MODEL = xmm.GMMGroup()
-    # GMM_MODEL.readFile('gmm_model.json')
     LIKELIHOOD_WINDOW = 1 # 50
     LOG_LIKELIHOODS1 = gmm_test_recognition(GMM_MODEL, LIKELIHOOD_WINDOW)
     LIKELIHOOD_WINDOW = 40 # 50
@@ -138,8 +135,6 @@ if __name__ == '__main__':
     plt.xlabel("Time (Samples)")
     plt.ylabel("Log-likelihood")
     plt.legend(("model 1", "model 2", "model 3"), loc='best')
-    thesis.cleanAxes(ax1)
-    thesis.cleanAxes(ax2)
     plt.show()
 
 

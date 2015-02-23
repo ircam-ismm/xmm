@@ -72,7 +72,6 @@
 		0B20E0B61A9A64BB00E89497 /* kmeans.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kmeans.h; sourceTree = "<group>"; };
 		0B20E0D31A9A65E300E89497 /* libxmm.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxmm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B20E0D81A9A703C00E89497 /* xmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xmm.h; sourceTree = "<group>"; };
-		0B20E0DF1A9A70CB00E89497 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		0B4909A81947718400E0D3C4 /* gaussian_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gaussian_distribution.cpp; sourceTree = "<group>"; };
 		0B4909A91947718400E0D3C4 /* gaussian_distribution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gaussian_distribution.h; sourceTree = "<group>"; };
 		0B4909AA1947718400E0D3C4 /* json_utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_utilities.cpp; sourceTree = "<group>"; };
@@ -109,6 +108,7 @@
 		0BD1C5F117D9E3D30061535A /* test_polymgmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymgmm.py; sourceTree = "<group>"; };
 		0BD1C5F217D9E3D30061535A /* test_polymhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymhmm.py; sourceTree = "<group>"; };
 		0BD1C5FE17D9EB860061535A /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
+		0BF757B71A9B83E600B8C4BC /* doxygen_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = doxygen_main.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,14 +149,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0B20E0DE1A9A70CB00E89497 /* xmm-tester */ = {
-			isa = PBXGroup;
-			children = (
-				0B20E0DF1A9A70CB00E89497 /* main.cpp */,
-			);
-			path = "xmm-tester";
-			sourceTree = "<group>";
-		};
 		0B4909A61947718400E0D3C4 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -187,6 +179,7 @@
 				0B4909B51947718400E0D3C4 /* ringbuffer.h */,
 				0B4909B61947718400E0D3C4 /* training_set.cpp */,
 				0B4909B71947718400E0D3C4 /* training_set.h */,
+				0BF757B71A9B83E600B8C4BC /* doxygen_main.h */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -217,7 +210,6 @@
 				0BD1C5E417D9E3D20061535A /* doc */,
 				0BD1C5E617D9E3D30061535A /* python */,
 				0B4909A61947718400E0D3C4 /* src */,
-				0B20E0DE1A9A70CB00E89497 /* xmm-tester */,
 				0B20E08F1A9A633600E89497 /* Products */,
 			);
 			sourceTree = "<group>";
