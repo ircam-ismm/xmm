@@ -219,13 +219,17 @@
  * @page Examples
  * @tableofcontents
  *
+ * @section maxexamples Max/Mubu Examples
+ * 
+ * Several example patches using the Max/Mubu implementation are available in the Mubu distribution
+ * released on <a href="http://forumnet.ircam.fr/product/mubu/" target="_blank">ircam-Forumnet</a>.
+ *
  * @section pyexamples Python Examples
  *
- * @subsection gmm_classif Classification with Gaussian Mixture Models
- * @include python_example.py
+ * Several examples are included in the ipython notebook IPython Notebook: `python/examples/QuickStart_Python.ipynb` @n
+ * We report here the static html version of the notebook:
  *
- * @subsection xmm_mapping Motion-Sound Mapping with Hidden markov regression
- * @include python_example.py
+ * @htmlinclude QuickStart_Python.html
  */
 
 #endif

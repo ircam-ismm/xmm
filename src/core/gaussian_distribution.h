@@ -26,7 +26,7 @@ const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.e-3;
 const double EPSILON_GAUSSIAN = 1.0;//e-20;
 
 /**
- * @ingroup Core
+ * @ingroup Utilities
  * @struct Ellipse
  * @brief Simple structure for storing Ellipse parameters
  */

@@ -10,3 +10,4 @@ python/built-lib
 *pyc
 *.a
 *.dylib
+*.ipynb_checkpoints

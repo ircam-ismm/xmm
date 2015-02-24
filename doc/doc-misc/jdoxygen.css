@@ -5,6 +5,10 @@ body, table, div, p, dl {
 	font: 400 14px/19px 'Droid Sans',sans-serif;
 }
 
+body {
+    padding: 0 !important;
+}
+
 /* @group Heading Levels */
 
 h1.groupheader {

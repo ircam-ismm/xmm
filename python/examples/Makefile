@@ -7,5 +7,6 @@ test:
 	python test_hierarchicalhmm.py
 
 clean:
-	rm -r ./xmm/
-	rm *results*.txt
+	rm -rf ./xmm/
+	rm -f *results*.txt
+	rm -f test_gmm.json

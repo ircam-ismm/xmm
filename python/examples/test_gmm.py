@@ -27,7 +27,7 @@ def create_training_set():
     training_set.set_dimension(6) # dimension of data in this example
     # Record data phrases
     for i in range(3):
-        phrase = np.genfromtxt('gmm_test_data{}.txt'.format(i+1))
+        phrase = np.genfromtxt('data/gmm_test_data{}.txt'.format(i+1))
         for frame in phrase:
             # Append data frame to the phrase i
             training_set.recordPhrase(i, frame)
@@ -74,9 +74,9 @@ def gmm_test_recognition(gmm, likelihood_window=20):
         likelihood_window -- size of the smoothing window for recognition
     """
     # read test data (concatenation of 3 test examples labeled 1, 2, 3)
-    test_data = np.genfromtxt('gmm_test_data1.txt')
-    test_data = np.vstack((test_data, np.genfromtxt('gmm_test_data2.txt')))
-    test_data = np.vstack((test_data, np.genfromtxt('gmm_test_data3.txt')))
+    test_data = np.genfromtxt('data/gmm_test_data1.txt')
+    test_data = np.vstack((test_data, np.genfromtxt('data/gmm_test_data2.txt')))
+    test_data = np.vstack((test_data, np.genfromtxt('data/gmm_test_data3.txt')))
     # Set Size of the likelihood Window (samples)
     gmm.set_likelihoodwindow(likelihood_window)
     # Initialize performance phase
