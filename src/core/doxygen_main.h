@@ -14,17 +14,27 @@
  * @anchor mainpage
  * @brief XMM is an open-source C++ library for movement recognition and mapping, released under the GPLv3 license.
  For commercial applications, a proprietary license is available upon request to Frederick Rousseau <frederick.rousseau@ircam.fr>.
- * @author Jules Françoise (<jules.francoise@ircam.fr>) ==> http://julesfrancoise.com @n
- This code has been initially authored by Jules Françoise during his PhD thesis (supervised by Frederic Bevilacqua) in the <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC.
- * @copyright Copyright 2015 Jules Françoise — Ircam. All right reserved.
+ * @author Jules Françoise (jules.francoise@ircam.fr) ==> http://julesfrancoise.com @n
+ This code has been initially authored by Jules Françoise during his PhD thesis, supervised by <a href="frederic-bevilacqua.net">Frederic Bevilacqua</a>, in the <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC (2011-2015).
+ * @copyright Copyright 2015. All right reserved.
  * @par Licence:
  * This project is released under the GPLv3 license. For commercial applications, a proprietary license is available upon
  * request to Frederick Rousseau <frederick.rousseau@ircam.fr>.
+ * 
+ * @par Citing this work
+ * If you use this code for research purposes, please cite one of the following publications:
+ * - J. Françoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic Models for Designing Motion and Sound Relationships. In Proceedings of the 2014 International Conference on New Interfaces for Musical Expression, NIME’14, London, UK, 2014.
+ * - J. Françoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model for Gesture-based Control of Sound Synthesis. In Proceedings of the 21st ACM international conference on Multimedia (MM’13), Barcelona, Spain, 2013.
+ * 
+ * @par Disclaimer
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  * @section Download
  *
- * The source code is available on __Github__: http://github.com/
- * and on __Ircam Forge__: http://forge.ircam.fr/p/xmm
+ * The source code is available on __Github__: https://github.com/Ircam-RnD/xmm
  *
  * For the Max externals, see the MuBu collection of Max objects on the ISMM team website: http://ismm.ircam.fr
  *

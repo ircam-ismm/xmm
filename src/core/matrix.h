@@ -25,7 +25,7 @@ using namespace std;
 const double EPS = 1.0e-9;
 
 /**
- * @ingroup Utility
+ * @ingroup Utilities
  * @class Matrix
  * @brief Dirty and very incomplete Matrix Class
  * @details Contains few utilities for matrix operations, with possibility to share data with vectors
