@@ -1,0 +1,7 @@
+var searchData=
+[
+  ['data',['data',['../class_matrix.html#ad0f7c2c202ffbb4a2a9e71502d2c2bd8',1,'Matrix::data()'],['../class_phrase.html#a50447effab6d04da7bfd4bb134845522',1,'Phrase::data()'],['../class_ring_buffer.html#a538b9dac6d1850fc0e1298ce8eb2cf70',1,'RingBuffer::data()']]],
+  ['defaultlabel_5f',['defaultLabel_',['../class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef',1,'TrainingSet']]],
+  ['dimension_5f',['dimension_',['../class_gaussian_distribution.html#ab756e3de1fc3a486833cf8174927cf88',1,'GaussianDistribution::dimension_()'],['../class_phrase.html#aa1162217185031f84c2ecca0f352090b',1,'Phrase::dimension_()'],['../class_probabilistic_model.html#a1eaf58ddb1d0f81bc91413a9ec23bab9',1,'ProbabilisticModel::dimension_()'],['../class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01',1,'TrainingSet::dimension_()'],['../class_k_means.html#a910d9d7e3437bd0d10d1db35a620d9f0',1,'KMeans::dimension_()']]],
+  ['dimension_5finput_5f',['dimension_input_',['../class_gaussian_distribution.html#a2a38385eb983cd626cf9804803e70f9d',1,'GaussianDistribution::dimension_input_()'],['../class_phrase.html#ae638ac4d2d14a5ab0a11f4322a9aa6d3',1,'Phrase::dimension_input_()'],['../class_probabilistic_model.html#a962ff6abcf3579ec719dc7c5dc768e81',1,'ProbabilisticModel::dimension_input_()'],['../class_training_set.html#a43c4c37ac46428050bc10fc498826b13',1,'TrainingSet::dimension_input_()']]]
+];
