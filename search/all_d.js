@@ -6,7 +6,6 @@ var searchData=
   ['maxsteps',['maxSteps',['../struct_e_m_stop_criterion.html#a04b6d9096ab9773c7641de18be070546',1,'EMStopCriterion']]],
   ['mbd_5fcommon_2eh',['mbd_common.h',['../mbd__common_8h.html',1,'']]],
   ['mean',['mean',['../class_gaussian_distribution.html#a02ef36dbae2a2ae8a0af8e7cc93da996',1,'GaussianDistribution::mean()'],['../class_phrase.html#af60870b030c68d8371ba5c43dbb15951',1,'Phrase::mean()'],['../class_ring_buffer.html#af7392ca3f708df7f75636f381ccacc3f',1,'RingBuffer::mean()'],['../class_training_set.html#a4bbc91ce09966bed9fd11f8c6a89380e',1,'TrainingSet::mean()']]],
-  ['measure',['measure',['../class_kalman_filter.html#a176c58add1d3fe7a86d5c8b54957bd89',1,'KalmanFilter']]],
   ['message_5f',['message_',['../class_j_s_o_n_exception.html#a1d6c32e8acc15777ee10d092dbf89970',1,'JSONException']]],
   ['minsteps',['minSteps',['../struct_e_m_stop_criterion.html#af57ea5481511aa12049964e851cd07ad',1,'EMStopCriterion']]],
   ['mixture',['MIXTURE',['../class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4ab067c95c079c8f64207044679539e7d5',1,'ModelGroup']]],
@@ -19,7 +18,5 @@ var searchData=
   ['modelgroup_3c_20hmm_20_3e',['ModelGroup&lt; HMM &gt;',['../class_model_group.html',1,'']]],
   ['models',['models',['../class_model_group.html#a032db28c116d1b343e5f3b1917761a88',1,'ModelGroup']]],
   ['models_5fto_5ftrain_5f',['models_to_train_',['../class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd',1,'ModelGroup']]],
-  ['monitor_5ftraining',['monitor_training',['../class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b',1,'ModelGroup']]],
-  ['mu',['mu',['../class_kalman_filter.html#a7d962553048a1141eea1dab15d973177',1,'KalmanFilter']]],
-  ['mu_5fpred',['mu_pred',['../class_kalman_filter.html#a0745e9f6269e869af273ed9caf641537',1,'KalmanFilter']]]
+  ['monitor_5ftraining',['monitor_training',['../class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b',1,'ModelGroup']]]
 ];

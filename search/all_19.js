@@ -5,7 +5,6 @@ var searchData=
   ['_7ehierarchicalhmm',['~HierarchicalHMM',['../class_hierarchical_h_m_m.html#a51e533521558e6a88907558ac0c75ea9',1,'HierarchicalHMM']]],
   ['_7ehmm',['~HMM',['../class_h_m_m.html#a5d2c896836f25b589072a7b96d5eff23',1,'HMM']]],
   ['_7ejsonexception',['~JSONException',['../class_j_s_o_n_exception.html#a884c9e5d633ca83a90a444cd308c7cdd',1,'JSONException']]],
-  ['_7ekalmanfilter',['~KalmanFilter',['../class_kalman_filter.html#af01e932cd20cec5dd06ca5d8f0b722f4',1,'KalmanFilter']]],
   ['_7ekmeans',['~KMeans',['../class_k_means.html#a63e21569b60978c8dfca1fc468d12f19',1,'KMeans']]],
   ['_7elabel',['~Label',['../class_label.html#ae0405d591a2ff63c03b104435e2a3066',1,'Label']]],
   ['_7elistener',['~Listener',['../class_listener.html#a3556fba341ebacbce35064875e6a394a',1,'Listener']]],

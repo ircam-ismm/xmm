@@ -14,8 +14,6 @@ var searchData=
   ['trainingset',['trainingSet',['../class_probabilistic_model.html#a22cce07afd58e92ac5df4fc225bc6d2d',1,'ProbabilisticModel::trainingSet()'],['../class_k_means.html#a81e8b38dee63f1b6027579f0fb443359',1,'KMeans::trainingSet()']]],
   ['transition',['transition',['../class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9',1,'HierarchicalHMM']]],
   ['transition_5f',['transition_',['../class_h_m_m.html#a19d5dae61e21fb9fb7eb17e88b4d0142',1,'HMM']]],
-  ['transition_5fmatrix',['transition_matrix',['../class_kalman_filter.html#a9fa175a0446c07b3d10a1fad2ae0c6df',1,'KalmanFilter']]],
-  ['transition_5fnoise',['transition_noise',['../class_kalman_filter.html#a5a43eb8c68377a6e70839623ea221ae2',1,'KalmanFilter']]],
   ['transitionmode_5f',['transitionMode_',['../class_h_m_m.html#aaee958ffafacab6ff4030bb3dbf3b312',1,'HMM']]],
   ['type',['type',['../class_label.html#a571e6b8a9ed58c35a77a0d884c9506c9',1,'Label']]]
 ];

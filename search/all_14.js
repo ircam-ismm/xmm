@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['update',['update',['../class_kalman_filter.html#af62c770be0717881d8461d30c52113f3',1,'KalmanFilter']]],
   ['update_5flikelihood_5fresults',['update_likelihood_results',['../class_model_group.html#a29bedf9c8051563507ba18e03fe71785',1,'ModelGroup']]],
   ['updatealltrainingsets',['updateAllTrainingSets',['../class_model_group.html#a70d856b514563568236e2986407f9e59',1,'ModelGroup']]],
   ['updatealphawindow',['updateAlphaWindow',['../class_h_m_m.html#a193ae7e8385a4d08c6dca35557fef9ea',1,'HMM']]],

@@ -4,7 +4,6 @@ var searchData=
   ['nbmixturecomponents_5f',['nbMixtureComponents_',['../class_g_m_m.html#a2657d116a4187272830a09d1e108cd0f',1,'GMM::nbMixtureComponents_()'],['../class_h_m_m.html#a8afc83fbcb845062ae1d4f4fd14b5353',1,'HMM::nbMixtureComponents_()']]],
   ['nbstates_5f',['nbStates_',['../class_h_m_m.html#a82806acbbaf5bbb9fb5ff25895685430',1,'HMM']]],
   ['ncols',['ncols',['../class_matrix.html#aa5fa135162272d25691d4e866eeb21e4',1,'Matrix']]],
-  ['next_5fobservation',['next_observation',['../class_kalman_filter.html#a25f96e86b78a1accb597c5f64b60d13b',1,'KalmanFilter']]],
   ['nodename_5f',['nodename_',['../class_j_s_o_n_exception.html#a800d8297667c3b13fc914a01291924a8',1,'JSONException']]],
   ['none',['NONE',['../mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2',1,'mbd_common.h']]],
   ['normalizemixturecoeffs',['normalizeMixtureCoeffs',['../class_g_m_m.html#a112d7f90e75d3ad377912be060ba18a8',1,'GMM']]],

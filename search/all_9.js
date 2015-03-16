@@ -1,7 +1,6 @@
 var searchData=
 [
   ['incrementallearning_5f',['incrementalLearning_',['../class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614',1,'HierarchicalHMM']]],
-  ['init',['init',['../class_kalman_filter.html#a1dd2b3be590807c7226e1f8fc8321167',1,'KalmanFilter']]],
   ['initclusterswithfirstphrase',['initClustersWithFirstPhrase',['../class_k_means.html#a66db9ee73c9d84ea54c091b7a6cd1e0c',1,'KMeans']]],
   ['initcovariances_5ffullyobserved',['initCovariances_fullyObserved',['../class_g_m_m.html#af84d1affd60751e358ffc2d8c76ab96d',1,'GMM::initCovariances_fullyObserved()'],['../class_h_m_m.html#aba89d4fd727e9ff2ed5b1d52a765c54e',1,'HMM::initCovariances_fullyObserved()']]],
   ['initmeanscovarianceswithgmmem',['initMeansCovariancesWithGMMEM',['../class_h_m_m.html#a6f9fe1d9c7a5aa884f498a51f7f43d85',1,'HMM']]],
