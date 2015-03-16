@@ -1,10 +1,32 @@
-//
-//  doxygen_main.h
-//  xmm-lib
-//
-//  Created by Jules Francoise on 23/02/2015.
-//
-//
+/*
+ * doxygen_main.h
+ *
+ * Contact:
+ * - Jules Françoise <jules.francoise@ircam.fr>
+ *
+ * This code has been initially authored by Jules Françoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
+ * Movement Interaction team <http://ismm.ircam.fr> of the
+ * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
+ *
+ * Copyright (C) 2015 UPMC, Ircam-Centre Pompidou.
+ *
+ * This File is part of XMM.
+ *
+ * XMM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * XMM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef xmm_lib_doxygen_main_h
 #define xmm_lib_doxygen_main_h
@@ -12,31 +34,47 @@
 /**
  * @mainpage XMM — Probabilistic Models for Continuous Motion Recognition and Mapping
  * @anchor mainpage
- * @brief XMM is an open-source C++ library for movement recognition and mapping, released under the GPLv3 license.
- For commercial applications, a proprietary license is available upon request to Frederick Rousseau <frederick.rousseau@ircam.fr>.
- * @author Jules Françoise (jules.francoise@ircam.fr) ==> http://julesfrancoise.com @n
- This code has been initially authored by Jules Françoise during his PhD thesis, supervised by <a href="frederic-bevilacqua.net">Frederic Bevilacqua</a>, in the <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC (2011-2015).
+ * @brief XMM is a portable, cross-platform C++ library that implements Gaussian Mixture Models and Hidden Markov Models for
+ * recognition and regression. The XMM library was developed for movement interaction in creative applications and implements an
+ * interactive machine learning workflow with fast training and continuous, real-time inference.
+ *
+ * @par Contact
+ * Jules Françoise: <jules.francoise@ircam.fr>
+ *
+ * @author
+ * This code has been initially authored by <a href="http://julesfrancoise.com">Jules Françoise</a>
+ * during his PhD thesis, supervised by <a href="frederic-bevilacqua.net">Frederic Bevilacqua</a>, in the
+ * <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the
+ * <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC (2011-2015).
+ *
  * @copyright Copyright 2015. All right reserved.
- * @par Licence:
- * This project is released under the GPLv3 license. For commercial applications, a proprietary license is available upon
- * request to Frederick Rousseau <frederick.rousseau@ircam.fr>.
+ * @par Licence
+ * This project is released under the <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a> license.
+ * For commercial applications, a proprietary license is available upon request to Frederick Rousseau <frederick.rousseau@ircam.fr>. @n@n
+ * XMM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. @n@n
+ * XMM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details. @n@n
+ * You should have received a copy of the GNU General Public License
+ * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @par Citing this work
  * If you use this code for research purposes, please cite one of the following publications:
  * - J. Françoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic Models for Designing Motion and Sound Relationships. In Proceedings of the 2014 International Conference on New Interfaces for Musical Expression, NIME’14, London, UK, 2014.
  * - J. Françoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model for Gesture-based Control of Sound Synthesis. In Proceedings of the 21st ACM international conference on Multimedia (MM’13), Barcelona, Spain, 2013.
  * 
- * @par Disclaimer
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * @par Dependencies
+ * This software uses the open-source library <a href="http://libjson.sourceforge.net/">libJSON</a> for JSON file I/O.
  *
  * @section Download
  *
  * The source code is available on __Github__: https://github.com/Ircam-RnD/xmm
  *
- * For the Max externals, see the MuBu collection of Max objects on the ISMM team website: http://ismm.ircam.fr
+ * For the <a href="https://cycling74.com/">Cycling'74 Max</a> externals, see the MuBu collection of Max objects on the ISMM team website: http://ismm.ircam.fr/mubu
  *
  * @section toc Table of Contents
  *

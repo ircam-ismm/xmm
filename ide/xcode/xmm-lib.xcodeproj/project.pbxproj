@@ -96,6 +96,7 @@
 		0B4909BE1947718400E0D3C4 /* hierarchical_hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm.h; sourceTree = "<group>"; };
 		0B4909BF1947718400E0D3C4 /* hmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hmm.cpp; sourceTree = "<group>"; };
 		0B4909C01947718400E0D3C4 /* hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
+		0B931DBD1AB1B17B00B15F3E /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../../readme.md; sourceTree = "<group>"; };
 		0BD1C5E517D9E3D30061535A /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		0BD1C5E717D9E3D30061535A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		0BD1C5E817D9E3D30061535A /* doxy2swig.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = doxy2swig.py; sourceTree = "<group>"; };
@@ -204,6 +205,7 @@
 		0BD1C5BF17D9E3BA0061535A = {
 			isa = PBXGroup;
 			children = (
+				0B931DBD1AB1B17B00B15F3E /* readme.md */,
 				0BD1C5FE17D9EB860061535A /* config.xcconfig */,
 				0B20E0A41A9A637800E89497 /* json.xcodeproj */,
 				0B20E0B01A9A63EE00E89497 /* libjson.h */,

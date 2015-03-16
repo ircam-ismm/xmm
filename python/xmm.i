@@ -1,21 +1,52 @@
 %module(docstring="Multimodal Hidden Markov Models Library") xmm
 
+/*
+ * gaussian_distribution.h
+ *
+ * Multivariate Gaussian Distribution
+ *
+ * Contact:
+ * - Jules Françoise <jules.francoise@ircam.fr>
+ *
+ * This code has been initially authored by Jules Françoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
+ * Movement Interaction team <http://ismm.ircam.fr> of the
+ * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
+ *
+ * Copyright (C) 2015 UPMC, Ircam-Centre Pompidou.
+ *
+ * This File is part of XMM.
+ *
+ * XMM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * XMM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 %{
-	#define SWIG_FILE_WITH_INIT
-	// #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-  #include <fstream>
-  #include <sstream>
+    #define SWIG_FILE_WITH_INIT
+    #include <fstream>
+    #include <sstream>
 	#include "mbd_common.h"
-  #include "phrase.h"
-  #include "label.h"
+    #include "phrase.h"
+    #include "label.h"
 	#include "training_set.h"
 	#include "probabilistic_model.h"
 	#include "model_group.h"
-  #include "gaussian_distribution.h"
+    #include "gaussian_distribution.h"
 	#include "gmm.h"
 	#include "gmm_group.h"
 	#include "hmm.h"
-  #include "hierarchical_hmm.h"
+    #include "hierarchical_hmm.h"
 	#include "kmeans.h"
 %}
 
@@ -42,20 +73,14 @@
 %apply (int DIM1, double* ARGOUT_ARRAY1) { (double *modelLikelihoods, int dimension) };
 
 namespace std {
-   %template(vectord) vector<double>;
-   %template(vectorf) vector<float>;
-   %template(vectorgauss) vector<GaussianDistribution>;
-   %template(vectorgmm) vector<GMM>;
-   %template(vectorhmm) vector<HMM>;
-   %template(mapgmm) map<Label, GMM>;
-   %template(maphmm) map<Label, HMM>;
+    %template(vectord) vector<double>;
+    %template(vectorf) vector<float>;
+    %template(vectorgauss) vector<GaussianDistribution>;
+    %template(vectorgmm) vector<GMM>;
+    %template(vectorhmm) vector<HMM>;
+    %template(mapgmm) map<Label, GMM>;
+    %template(maphmm) map<Label, HMM>;
 };
-
-// %typemap(out) vectord {
-//     int length = $1.size();
-//     $result = PyArray_FromDims(1, &amp;length, PyArray_DOUBLE);
-//     memcpy(PyArray_DATA($result),&amp;((*(&amp;$1))[0]),sizeof(double)*length);
-// }
 
 %include xmm_doc.i
 %include "mbd_common.h"
