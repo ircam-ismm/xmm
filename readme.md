@@ -13,7 +13,7 @@ This code has been initially authored by <a href="http://julesfrancoise.com">Jul
 
 ### Copyright
 
-Copyright 2015. All right reserved.
+Copyright (C) 2015 UPMC, Ircam-Centre Pompidou.
 
 ### Licence
 

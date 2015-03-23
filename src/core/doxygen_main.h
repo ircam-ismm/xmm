@@ -47,7 +47,8 @@
  * <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the
  * <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC (2011-2015).
  *
- * @copyright Copyright 2015. All right reserved.
+ * @copyright Copyright (C) 2015 UPMC, Ircam-Centre Pompidou.
+ * 
  * @par Licence
  * This project is released under the <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a> license.
  * For commercial applications, a proprietary license is available upon request to Frederick Rousseau <frederick.rousseau@ircam.fr>. @n@n
