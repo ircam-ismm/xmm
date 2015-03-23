@@ -108,19 +108,6 @@ void HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double 
     }
 }
 
-double HierarchicalHMM::get_weight_regression() const
-{
-    return this->referenceModel_.get_weight_regression();
-}
-
-void HierarchicalHMM::set_weight_regression(double weight_regression)
-{
-    this->referenceModel_.set_weight_regression(weight_regression);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-        it->second.set_weight_regression(weight_regression);
-    }
-}
-
 REGRESSION_ESTIMATOR HierarchicalHMM::get_regression_estimator() const
 {
     return this->referenceModel_.get_regression_estimator();
@@ -656,7 +643,6 @@ JSONNode HierarchicalHMM::to_json() const
     json_hhmm.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
     json_hhmm.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
     json_hhmm.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
-    json_hhmm.push_back(JSONNode("weight_regression", get_weight_regression()));
     json_hhmm.push_back(JSONNode("regression_estimator", get_regression_estimator()));
     
     // Add Models
@@ -858,16 +844,6 @@ void HierarchicalHMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         set_varianceOffset(relvar, root_it->as_float());
-        ++root_it;
-        
-        // Get Regression Weight
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "weight_regression")
-            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        set_weight_regression(root_it->as_float());
         ++root_it;
         
         // Get Regression Estimator

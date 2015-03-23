@@ -44,7 +44,6 @@ GMM::GMM(rtml_flags flags,
     nbMixtureComponents_ = nbMixtureComponents;
     varianceOffset_relative_ = varianceOffset_relative;
     varianceOffset_absolute_ = varianceOffset_absolute;
-    weight_regression_ = 1.;
     
     allocate();
     initParametersToDefault();
@@ -113,19 +112,6 @@ void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     }
 }
 
-double GMM::get_weight_regression() const
-{
-    return weight_regression_;
-}
-
-void GMM::set_weight_regression(double weight_regression)
-{
-    weight_regression_ = weight_regression;
-    for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
-        component->weight_regression = weight_regression_;
-    }
-}
-
 #pragma mark > Performance
 void GMM::performance_init()
 {
@@ -170,7 +156,6 @@ JSONNode GMM::to_json() const
     json_gmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_gmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_gmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
-    json_gmm.push_back(JSONNode("weight_regression", weight_regression_));
     
     // Model Parameters
     json_gmm.push_back(vector2json(mixtureCoeffs, "mixturecoefficients"));
@@ -236,16 +221,6 @@ void GMM::from_json(JSONNode root)
         
         allocate();
         
-        // Get Regresion Weight
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "weight_regression")
-            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        weight_regression_ = root_it->as_float();
-        ++root_it;
-        
         // Get Mixture Coefficients
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
@@ -285,7 +260,6 @@ void GMM::_copy(GMM *dst, GMM const& src)
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
-    dst->weight_regression_ = src.weight_regression_;
     dst->mixtureCoeffs = src.mixtureCoeffs;
     dst->components = src.components;
     

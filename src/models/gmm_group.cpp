@@ -76,19 +76,6 @@ void GMMGroup::set_varianceOffset(double varianceOffset_relative, double varianc
     }
 }
 
-double GMMGroup::get_weight_regression() const
-{
-    return this->referenceModel_.get_weight_regression();
-}
-
-void GMMGroup::set_weight_regression(double weight_regression)
-{
-    this->referenceModel_.set_weight_regression(weight_regression);
-    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
-        it->second.set_weight_regression(weight_regression);
-    }
-}
-
 #pragma mark -
 #pragma mark Performance
 void GMMGroup::performance_update(vector<float> const& observation)
@@ -143,7 +130,6 @@ JSONNode GMMGroup::to_json() const
     json_ccmodels.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
     json_ccmodels.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
     json_ccmodels.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
-    json_ccmodels.push_back(JSONNode("weight_regression", get_weight_regression()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -252,16 +238,6 @@ void GMMGroup::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         set_varianceOffset(relvar, root_it->as_float());
-        ++root_it;
-        
-        // Get Covariance Offset
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "weight_regression")
-            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        set_weight_regression(root_it->as_float());
         ++root_it;
         
         // Get Models

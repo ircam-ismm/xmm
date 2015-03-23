@@ -143,18 +143,6 @@ public:
      */
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
-    /**
-     * @brief Get Regression Weight
-     * @return Weight of the regresion part for synthesis
-     */
-    double get_weight_regression() const;
-    
-    /**
-     * @brief Get Regression Weight
-     * @param weight_regression Weight of the regresion part for synthesis
-     */
-    void set_weight_regression(double weight_regression);
-    
     /*@}*/
 
 #pragma mark > Performance
@@ -368,12 +356,6 @@ protected:
      * @brief Offset Added to the diagonal of covariance matrices for convergence (minimum value)
      */
     double varianceOffset_absolute_;
-    
-    /**
-     * @brief specifies the weight of the regression part in output modality estimation.
-     * A zero weight correspond to estimation using the means only.
-     */
-    double weight_regression_;
 };
 
 

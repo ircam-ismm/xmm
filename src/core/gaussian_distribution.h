@@ -290,12 +290,6 @@ public:
     vector<float> scale;
     
     /**
-     * @brief specifies the weight of the regression part in output modality estimation.
-     * A zero weight correspond to estimation using the means only.
-     */
-    double weight_regression;
-    
-    /**
      * @brief Conditional Output Variance
      * updated when covariances matrices are inverted.
      */

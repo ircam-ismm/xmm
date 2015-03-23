@@ -140,18 +140,6 @@ public:
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
     /**
-     * @brief Get Regression Weight
-     * @return Weight of the regresion part for synthesis
-     */
-    double get_weight_regression() const;
-    
-    /**
-     * @brief Get Regression Weight
-     * @param weight_regression Weight of the regresion part for synthesis
-     */
-    void set_weight_regression(double weight_regression);
-    
-    /**
      * @brief Get the regression estimator type
      * @return regression estimator type
      * @see REGRESSION_ESTIMATOR

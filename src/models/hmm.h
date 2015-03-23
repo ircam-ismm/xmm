@@ -203,19 +203,6 @@ public:
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
     
     /**
-     * @brief Get Regression Weight
-     * @return Weight of the regresion part for synthesis
-     */
-    double get_weight_regression() const;
-    
-    /**
-     * @brief Set Regression Weight
-     * @param weight_regression Weight of the regresion part for synthesis
-     */
-    void set_weight_regression(double weight_regression);
-    
-    
-    /**
      * @brief Get the regression estimator type
      * @return regression estimator type
      * @see REGRESSION_ESTIMATOR
@@ -675,12 +662,6 @@ protected:
      * @brief Exit probabilities for a hierarchical model.
      */
     vector<float> exitProbabilities_;
-    
-    /**
-     * @brief specifies the weight of the regression part in output modality estimation.
-     * A zero weight correspond to estimation using the means only.
-     */
-    double weight_regression_;
     
     /**
      * @brief Type of regression estimator (default = FULL)

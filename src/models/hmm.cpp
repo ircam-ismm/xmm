@@ -49,7 +49,6 @@ HMM::HMM(rtml_flags flags,
     nbMixtureComponents_ = nbMixtureComponents;
     varianceOffset_relative_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE;
     varianceOffset_absolute_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE;
-    weight_regression_ = 1.;
     regression_estimator_ = FULL;
     
     allocate();
@@ -82,7 +81,6 @@ void HMM::_copy(HMM *dst,
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
-    dst->weight_regression_ = src.weight_regression_;
     dst->regression_estimator_ = src.regression_estimator_;
     dst->nbStates_ = src.nbStates_;
     dst->estimateMeans_ = src.estimateMeans_;
@@ -392,20 +390,6 @@ void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     }
     varianceOffset_relative_ = varianceOffset_relative;
     varianceOffset_absolute_ = varianceOffset_absolute;
-}
-
-double HMM::get_weight_regression() const
-{
-    return weight_regression_;
-}
-
-
-void HMM::set_weight_regression(double weight_regression)
-{
-    weight_regression_ = weight_regression;
-    for (int i=0; i<nbStates_; i++) {
-        states_[i].set_weight_regression(weight_regression_);
-    }
 }
 
 REGRESSION_ESTIMATOR HMM::get_regression_estimator() const
@@ -1166,7 +1150,6 @@ JSONNode HMM::to_json() const
     json_hmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_hmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_hmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
-    json_hmm.push_back(JSONNode("weight_regression", weight_regression_));
     json_hmm.push_back(JSONNode("regression_estimator", regression_estimator_));
     json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
@@ -1279,16 +1262,6 @@ void HMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
         varianceOffset_absolute_ = root_it->as_float();
-        ++root_it;
-        
-        // Get Regression Weight
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "weight_regression")
-            throw JSONException("Wrong name: was expecting 'weight_regression'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        weight_regression_ = root_it->as_float();
         ++root_it;
         
         // Get Regression Estimator
