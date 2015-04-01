@@ -175,6 +175,16 @@ public:
     void set_dimension_input(unsigned int dimension_input);
     
     /**
+     * @brief set the column names of the Training Set
+     */
+    void set_column_names(vector<string>& colnames);
+    
+    /**
+     * @brief get a copy of the column names of the Training Set
+     */
+    vector<string> const& get_column_names() const;
+    
+    /**
      * @brief checks equality
      * @param src training set to compare
      * @return true if the training sets are equal (same phrases and labels)
@@ -523,6 +533,11 @@ private:
      * @brief Sub-ensembles of the training set for specific classes
      */
     map<Label, TrainingSet> subTrainingSets_;
+    
+    /**
+     * @brief labels of the columns of the training set (e.g. descriptor names)
+     */
+    vector<string> column_names_;
 };
 
 #endif

@@ -67,6 +67,7 @@ void TrainingSet::_copy(TrainingSet *dst, TrainingSet const& src)
     dst->bimodal_ = src.bimodal_;
     dst->dimension_ = src.dimension_;
     dst->dimension_input_ = src.dimension_input_;
+    dst->column_names_ = src.column_names_;
     dst->listeners_ = src.listeners_;
     dst->defaultLabel_ = src.defaultLabel_;
     dst->has_changed_ = true;
@@ -153,6 +154,7 @@ void TrainingSet::set_dimension(unsigned int dimension)
     if (dimension < 1)
         throw domain_error("the dimension of a phrase must be striclty positive");
     
+    column_names_.resize(dimension);
     dimension_ = dimension;
     for (phrase_iterator p = phrases.begin(); p != phrases.end(); p++) {
         p->second->set_dimension(dimension_);
@@ -188,6 +190,29 @@ void TrainingSet::set_dimension_input(unsigned int dimension_input)
     for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
         (*listen_it)->notify("dimension_input");
     }
+}
+
+void TrainingSet::set_column_names(vector<string>& colnames)
+{
+    if (colnames.size() < column_names_.size())
+        throw domain_error("number of labels inferior to the dimension of the training set");
+    column_names_ = colnames;
+    
+    for (phrase_iterator p = phrases.begin(); p != phrases.end(); p++) {
+        p->second->column_names_ = column_names_;
+    }
+    
+    for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
+        it->second.set_column_names(column_names_);
+    
+    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+        (*listen_it)->notify("column_names");
+    }
+}
+
+vector<string> const& TrainingSet::get_column_names() const
+{
+    return column_names_;
 }
 
 bool TrainingSet::operator==(TrainingSet const &src)
@@ -324,6 +349,7 @@ void TrainingSet::resetPhrase(int phraseIndex)
     if (this->phrases.find(phraseIndex) != this->phrases.end())
         delete phrases[phraseIndex];
     phrases[phraseIndex] = new Phrase(flags_, dimension_, dimension_input_);
+    phrases[phraseIndex]->column_names_ = this->column_names_;
     has_changed_ = true;
 }
 
@@ -417,6 +443,7 @@ void TrainingSet::updateSubTrainingSet(Label const& label)
 {
     subTrainingSets_[label] = TrainingSet(flags_, dimension_, dimension_input_);
     subTrainingSets_[label].setDefaultLabel(label);
+    subTrainingSets_[label].column_names_ = this->column_names_;
     subTrainingSets_[label].lock();
     int newPhraseIndex(0);
     for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
@@ -497,6 +524,7 @@ JSONNode TrainingSet::to_json() const
     json_ts.push_back(JSONNode("dimension", dimension_));
     if (bimodal_)
         json_ts.push_back(JSONNode("dimension_input", dimension_input_));
+    json_ts.push_back(vector2json(column_names_, "column_names"));
     json_ts.push_back(JSONNode("size", phrases.size()));
     JSONNode json_deflabel = defaultLabel_.to_json();
     json_deflabel.set_name("defaultlabel");
@@ -565,6 +593,17 @@ void TrainingSet::from_json(JSONNode root)
             ++root_it;
         }
         
+        // Get Column Names
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "column_names")
+            throw JSONException("Wrong name: was expecting 'column_names'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+        column_names_.resize(dimension_);
+        json2vector(*root_it, column_names_, dimension_);
+        ++root_it;
+        
         // Get Size: Number of Phrases
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
@@ -580,8 +619,8 @@ void TrainingSet::from_json(JSONNode root)
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->name() != "defaultlabel")
             throw JSONException("Wrong name: was expecting 'defaultlabel'", root_it->name());
-        if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+        if (root_it->type() != JSON_NODE)
+            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root_it->name());
         defaultLabel_.from_json(*root_it);
         ++root_it;
         
@@ -626,7 +665,7 @@ void TrainingSet::from_json(JSONNode root)
             if (array_it->type() != JSON_NODE)
                 throw JSONException("Wrong type: was expecting 'JSON_NODE'", array_it->name());
             phrases[phraseIndex] = new Phrase(flags_, dimension_, dimension_input_);
-            phraseLabels[phraseIndex].from_json(*array_it);
+            phrases[phraseIndex]->from_json(*array_it);
         }
         
         if (ts_size != phrases.size())

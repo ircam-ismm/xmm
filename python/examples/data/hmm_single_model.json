@@ -3,6 +3,12 @@
 		"flags" : 0,
 		"bimodal" : false,
 		"dimension" : 4,
+		"column_names" : [
+			"position_x",
+			"position_x",
+			"speed_x",
+			"speed_y"
+		],
 		"EMStopCriterion" : {
 			"minsteps" : 10,
 			"maxsteps" : 0,
@@ -12,7 +18,6 @@
 	},
 	"is_hierarchical" : false,
 	"estimatemeans" : true,
-	"dimension" : 4,
 	"nbstates" : 10,
 	"nbmixturecomponents" : 1,
 	"varianceoffset_relative" : 1,
@@ -140,6 +145,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -199,6 +210,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -258,6 +275,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -317,6 +340,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -376,6 +405,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -435,6 +470,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -494,6 +535,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -553,6 +600,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -612,6 +665,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,
@@ -671,6 +730,12 @@
 				"flags" : 0,
 				"bimodal" : false,
 				"dimension" : 4,
+				"column_names" : [
+					"position_x",
+					"position_x",
+					"speed_x",
+					"speed_y"
+				],
 				"EMStopCriterion" : {
 					"minsteps" : 10,
 					"maxsteps" : 0,

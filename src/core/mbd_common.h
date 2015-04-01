@@ -115,6 +115,7 @@ public:
     /**
      * @brief Write to JSON Node
      * @return JSON Node containing phrase information
+     * @todo include type attribute in each to_json function
      */
     virtual JSONNode to_json() const = 0;
     

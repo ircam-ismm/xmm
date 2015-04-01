@@ -36,6 +36,7 @@
 #include <cmath>
 #include "json_utilities.h"
 #include "mbd_common.h"
+#include "label.h"
 
 using namespace std;
 
@@ -346,6 +347,18 @@ public:
      * @return variance of the phrase (along time axis, full-size)
      */
     vector<float> variance() const;
+    
+    /*@}*/
+    
+#pragma mark -
+#pragma mark === Public Attributes ===
+    /*@{*/
+    /** @name Public Attributes */
+    
+    /**
+     * @brief labels of the columns of the phrase (e.g. descriptor names)
+     */
+    vector<string> column_names_;
     
     /*@}*/
 

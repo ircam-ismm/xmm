@@ -364,6 +364,14 @@ public:
         }
     }
     
+    /**
+     * @brief get a copy of the column names of the input/output data
+     */
+    vector<string> const& get_column_names() const
+    {
+        return this->referenceModel_.get_column_names();
+    }
+    
     /*@}*/
     
 #pragma mark > Training

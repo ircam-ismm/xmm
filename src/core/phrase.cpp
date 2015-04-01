@@ -91,6 +91,7 @@ void Phrase::_copy(Phrase *dst, Phrase const& src)
     dst->length_ = src.length_;
     dst->length_input_ = src.length_input_;
     dst->length_output_ = src.length_output_;
+    dst->column_names_ = src.column_names_;
     
     if (owns_data_)
     {
@@ -228,6 +229,7 @@ void Phrase::set_dimension(unsigned int dimension)
                                     max_length_ * modalitydim_src,
                                     max_length_ * modalitydim_dst);
     }
+    column_names_.resize(dimension);
     this->dimension_ = dimension;
 }
 
@@ -457,6 +459,7 @@ JSONNode Phrase::to_json() const
     json_phrase.push_back(JSONNode("bimodal_", bimodal_));
     json_phrase.push_back(JSONNode("dimension", dimension_));
     json_phrase.push_back(JSONNode("length", length_));
+    json_phrase.push_back(vector2json(column_names_, "column_names"));
     if (bimodal_) {
         json_phrase.push_back(JSONNode("dimension_input_", dimension_input_));
         json_phrase.push_back(array2json(data[0], length_ * dimension_input_, "data_input"));
@@ -513,6 +516,17 @@ void Phrase::from_json(JSONNode root)
         length_ = root_it->as_int();
         length_input_ = length_;
         length_output_ = length_;
+        ++root_it;
+        
+        // Get Column Names
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "column_names")
+            throw JSONException("Wrong name: was expecting 'column_names'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+        column_names_.resize(dimension_);
+        json2vector(*root_it, column_names_, dimension_);
         ++root_it;
         
         // Get Input Dimension if bimodal_

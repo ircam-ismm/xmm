@@ -265,6 +265,8 @@ void GMMGroup::from_json(JSONNode root)
             // Get Phrase Content
             if (array_it == root.end())
                 throw JSONException("JSON Node is incomplete", array_it->name());
+            if (array_it->name() != "GMM")
+                throw JSONException("Wrong name: was expecting 'GMM'", array_it->name());
             if (array_it->type() != JSON_NODE)
                 throw JSONException("Wrong type: was expecting 'JSON_NODE'", array_it->name());
             models[l] = this->referenceModel_;

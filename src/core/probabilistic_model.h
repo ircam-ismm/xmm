@@ -209,6 +209,11 @@ public:
      */
     void set_likelihoodwindow(unsigned int likelihoodwindow);
     
+    /**
+     * @brief get a copy of the column names of the input/output data
+     */
+    vector<string> const& get_column_names() const;
+    
     /*@}*/
     
 #pragma mark > Training
@@ -445,6 +450,11 @@ protected:
      * @brief defines if the model is being trained.
      */
     bool is_training_;
+    
+    /**
+     * @brief labels of the columns of input/output data (e.g. descriptor names)
+     */
+    vector<string> column_names_;
     
 #ifdef USE_PTHREAD
     /**

@@ -54,8 +54,11 @@ ProbabilisticModel::ProbabilisticModel(rtml_flags flags,
         dimension_ = this->trainingSet->dimension();
         if (bimodal_)
             dimension_input_ = this->trainingSet->dimension_input();
+        column_names_.resize(dimension_);
+        column_names_ = this->trainingSet->get_column_names();
     } else {
         dimension_ = 1;
+        column_names_.resize(dimension_);
         dimension_input_ = 0;
     }
     results_instant_likelihood = 0.0;
@@ -99,6 +102,7 @@ void ProbabilisticModel::_copy(ProbabilisticModel *dst,
     if (dst->bimodal_)
         dst->dimension_input_ = src.dimension_input_;
     dst->dimension_ = src.dimension_;
+    dst->column_names_ = src.column_names_;
     dst->stopcriterion.minSteps = src.stopcriterion.minSteps;
     dst->stopcriterion.maxSteps = src.stopcriterion.maxSteps;
     dst->stopcriterion.percentChg = src.stopcriterion.percentChg;
@@ -137,8 +141,11 @@ void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
         dimension_ = this->trainingSet->dimension();
         if (bimodal_)
             dimension_input_ = this->trainingSet->dimension_input();
+        column_names_.resize(dimension_);
+        column_names_ = this->trainingSet->get_column_names();
     } else {
         dimension_ = 1;
+        column_names_.resize(dimension_);
         dimension_input_ = 0;
     }
     this->allocate();
@@ -149,12 +156,18 @@ void ProbabilisticModel::notify(string attribute)
     if (!trainingSet) return;
     if (attribute == "dimension") {
         dimension_ = trainingSet->dimension();
+        column_names_.resize(dimension_);
         this->allocate();
         return;
     }
     if (bimodal_ && attribute == "dimension_input") {
         dimension_input_ = trainingSet->dimension_input();
         this->allocate();
+        return;
+    }
+    if (attribute == "column_names") {
+        column_names_.resize(dimension_);
+        column_names_ = trainingSet->get_column_names();
         return;
     }
     if (attribute == "destruction") {
@@ -184,6 +197,11 @@ void ProbabilisticModel::set_likelihoodwindow(unsigned int likelihoodwindow)
 {
     if (likelihoodwindow < 1) throw invalid_argument("Likelihood Buffer size must be > 1");
     likelihoodBuffer_.resize(likelihoodwindow);
+}
+
+vector<string> const& ProbabilisticModel::get_column_names() const
+{
+    return column_names_;
 }
 
 #pragma mark -
@@ -369,7 +387,7 @@ JSONNode ProbabilisticModel::to_json() const
     json_model.push_back(JSONNode("dimension", dimension_));
     if (bimodal_)
         json_model.push_back(JSONNode("dimension_input", dimension_input_));
-    
+    json_model.push_back(vector2json(column_names_, "column_names"));
     JSONNode json_stopcriterion(JSON_NODE);
     json_stopcriterion.set_name("EMStopCriterion");
     json_stopcriterion.push_back(JSONNode("minsteps", stopcriterion.minSteps));
@@ -438,6 +456,17 @@ void ProbabilisticModel::from_json(JSONNode root)
         }
         
         this->allocate();
+        
+        // Get Column Names
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->name() != "column_names")
+            throw JSONException("Wrong name: was expecting 'column_names'", root_it->name());
+        if (root_it->type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+        column_names_.resize(dimension_);
+        json2vector(*root_it, column_names_, dimension_);
+        ++root_it;
         
         // Get EM Algorithm stop criterion
         if (root_it == root.end())

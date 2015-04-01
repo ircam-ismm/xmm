@@ -1,5 +1,7 @@
 %module(docstring="Multimodal Hidden Markov Models Library") xmm
 
+#pragma SWIG nowarn=362,503
+
 /*
  * gaussian_distribution.h
  *
@@ -75,6 +77,8 @@
 namespace std {
     %template(vectord) vector<double>;
     %template(vectorf) vector<float>;
+    %template(vectors) vector<string>;
+    %template(vectorl) vector<Label>;
     %template(vectorgauss) vector<GaussianDistribution>;
     %template(vectorgmm) vector<GMM>;
     %template(vectorhmm) vector<HMM>;

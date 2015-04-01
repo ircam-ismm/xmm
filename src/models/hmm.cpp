@@ -1145,7 +1145,6 @@ JSONNode HMM::to_json() const
     // Scalar Attributes
     json_hmm.push_back(JSONNode("is_hierarchical", is_hierarchical_));
     json_hmm.push_back(JSONNode("estimatemeans", estimateMeans_));
-    json_hmm.push_back(JSONNode("dimension", dimension_));
     json_hmm.push_back(JSONNode("nbstates", nbStates_));
     json_hmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_hmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
@@ -1212,16 +1211,6 @@ void HMM::from_json(JSONNode root)
         if (root_it->type() != JSON_BOOL)
             throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
         estimateMeans_ = root_it->as_bool();
-        ++root_it;
-        
-        // Get Dimension
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "dimension")
-            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        dimension_ = root_it->as_int();
         ++root_it;
         
         // Get Number of states
