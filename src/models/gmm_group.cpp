@@ -154,101 +154,84 @@ void GMMGroup::from_json(JSONNode root)
         JSONNode::const_iterator root_it = root.begin();
         
         // Get Number of modalities
+        root_it = root.find("bimodal");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "bimodal")
-            throw JSONException("Wrong name: was expecting 'bimodal'", root_it->name());
         if (root_it->type() != JSON_BOOL)
-            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
-        if(bimodal_ != root_it->as_bool()) {
+            throw JSONException("Wrong type for node 'bimodal': was expecting 'JSON_BOOL'", root_it->name());
+        if (bimodal_ != root_it->as_bool()) {
             if (bimodal_)
                 throw JSONException("Trying to read an unimodal model in a bimodal model.", root.name());
             else
                 throw JSONException("Trying to read a bimodal model in an unimodal model.", root.name());
         }
-        ++root_it;
         
         // Get Dimension
+        root_it = root.find("dimension");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "dimension")
-            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        this->referenceModel_.dimension_ = root_it->as_int();
-        ++root_it;
+            throw JSONException("Wrong type for node 'dimension': was expecting 'JSON_NUMBER'", root_it->name());
+        this->referenceModel_.dimension_ = static_cast<unsigned int>(root_it->as_int());
         
         // Get Input Dimension if bimodal
         if (bimodal_){
+            root_it = root.find("dimension_input");
             if (root_it == root.end())
                 throw JSONException("JSON Node is incomplete", root_it->name());
-            if (root_it->name() != "dimension_input")
-                throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
             if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-            this->referenceModel_.dimension_input_ = root_it->as_int();
-            ++root_it;
+                throw JSONException("Wrong type for node 'dimension_input': was expecting 'JSON_NUMBER'", root_it->name());
+            this->referenceModel_.dimension_input_ = static_cast<unsigned int>(root_it->as_int());
         }
         
         // Get Size: Number of Models
+        root_it = root.find("size");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "size")
-            throw JSONException("Wrong name: was expecting 'size'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        int numModels = root_it->as_int();
-        ++root_it;
+            throw JSONException("Wrong type for node 'size': was expecting 'JSON_NUMBER'", root_it->name());
+        unsigned int numModels = static_cast<unsigned int>(root_it->as_int());
         
         // Get Play Mode
+        root_it = root.find("performancemode");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "performancemode")
-            throw JSONException("Wrong name: was expecting 'performancemode'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'performancemode': was expecting 'JSON_NUMBER'", root_it->name());
         performanceMode_ = (root_it->as_int() > 0) ? MIXTURE : LIKELIEST;
-        ++root_it;
         
         // Get Mixture Components
+        root_it = root.find("nbmixturecomponents");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "nbmixturecomponents")
-            throw JSONException("Wrong name: was expecting 'nbmixturecomponents'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        set_nbMixtureComponents(root_it->as_int());
-        ++root_it;
+            throw JSONException("Wrong type for node 'nbmixturecomponents': was expecting 'JSON_NUMBER'", root_it->name());
+        set_nbMixtureComponents(static_cast<unsigned int>(root_it->as_int()));
         
-        // Get Covariance Offset
+        // Get Covariance Offset (Relative to data variance)
+        root_it = root.find("varianceoffset_relative");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "varianceoffset_relative")
-            throw JSONException("Wrong name: was expecting 'varianceoffset_relative'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'varianceoffset_relative': was expecting 'JSON_NUMBER'", root_it->name());
         double relvar = root_it->as_float();
-        ++root_it;
         
-        // Get Covariance Offset
+        // Get Covariance Offset (Minimum value)
+        root_it = root.find("varianceoffset_absolute");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "varianceoffset_absolute")
-            throw JSONException("Wrong name: was expecting 'varianceoffset_absolute'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'varianceoffset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
         set_varianceOffset(relvar, root_it->as_float());
-        ++root_it;
         
         // Get Models
         models.clear();
+        root_it = root.find("models");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "models")
-            throw JSONException("Wrong name: was expecting 'models'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
-        for (int i=0 ; i<numModels ; i++)
+            throw JSONException("Wrong type for node 'models': was expecting 'JSON_ARRAY'", root_it->name());
+        for (unsigned int i=0 ; i<numModels ; i++)
         {
             // Get Label
             JSONNode::const_iterator array_it = (*root_it)[i].begin();
@@ -262,7 +245,7 @@ void GMMGroup::from_json(JSONNode root)
             l.from_json(*array_it);
             ++array_it;
             
-            // Get Phrase Content
+            // Get GMM
             if (array_it == root.end())
                 throw JSONException("JSON Node is incomplete", array_it->name());
             if (array_it->name() != "GMM")

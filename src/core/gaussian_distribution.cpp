@@ -245,77 +245,65 @@ void GaussianDistribution::from_json(JSONNode root)
     try {
         if (root.type() != JSON_NODE)
             throw JSONException("Wrong Node Type", root.name());
-        JSONNode::iterator root_it = root.begin();
+        JSONNode::iterator root_it = root.end();
         
         // Get Dimension
+        root_it = root.find("dimension");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "dimension")
-            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        dimension_ = root_it->as_int();
-        ++root_it;
+            throw JSONException("Wrong type for node 'dimension': was expecting 'JSON_NUMBER'", root_it->name());
+        dimension_ = static_cast<unsigned int>(root_it->as_int());
 
         // Get Dimension of the input modality
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "dimension_input")
-            throw JSONException("Wrong name: was expecting 'dimension_input'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        dimension_input_ = root_it->as_int();
-        ++root_it;
+        root_it = root.find("dimension_input");
+        if (root_it != root.end()) {
+            if (root_it->type() != JSON_NUMBER)
+                throw JSONException("Wrong type for node 'dimension_input': was expecting 'JSON_NUMBER'", root_it->name());
+            dimension_input_ = static_cast<unsigned int>(root_it->as_int());
+        }
         
-        // Get Covariance Offset (Relative)
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "offset_relative")
-            throw JSONException("Wrong name: was expecting 'offset_relative'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        offset_relative = root_it->as_float();
-        ++root_it;
-        
-        // Get Covariance Offset (Absolute)
-        if (root_it == root.end())
-            throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "offset_absolute")
-            throw JSONException("Wrong name: was expecting 'offset_absolute'", root_it->name());
-        if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        offset_absolute = root_it->as_float();
-        ++root_it;
-        
+        // Allocate Memory
         allocate();
         
-        // Get Scale
+        // Get Covariance Offset (Relative)
+        root_it = root.find("offset_relative");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "scale")
-            throw JSONException("Wrong name: was expecting 'scale'", root_it->name());
-        if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
-        json2vector(*root_it, scale, dimension_);
-        ++root_it;
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type for node 'offset_relative': was expecting 'JSON_NUMBER'", root_it->name());
+        offset_relative = root_it->as_float();
+        
+        // Get Covariance Offset (Absolute)
+        root_it = root.find("offset_absolute");
+        if (root_it == root.end())
+            throw JSONException("JSON Node is incomplete", root_it->name());
+        if (root_it->type() != JSON_NUMBER)
+            throw JSONException("Wrong type for node 'offset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
+        offset_absolute = root_it->as_float();
+        
+        // Get Scale
+        root_it = root.find("scale");
+        if (root_it != root.end()) {
+            if (root_it->type() != JSON_ARRAY)
+                throw JSONException("Wrong type for node 'scale': was expecting 'JSON_ARRAY'", root_it->name());
+            json2vector(*root_it, scale, dimension_);
+        }
         
         // Get Mean
+        root_it = root.find("mean");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "mean")
-            throw JSONException("Wrong name: was expecting 'mean'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            throw JSONException("Wrong type for node 'mean': was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, mean, dimension_);
-        ++root_it;
         
         // Get Covariance
+        root_it = root.find("covariance");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "covariance")
-            throw JSONException("Wrong name: was expecting 'covariance'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            throw JSONException("Wrong type for node 'covariance': was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, covariance, dimension_ * dimension_);
         
         updateInverseCovariance();
@@ -335,7 +323,7 @@ void GaussianDistribution::allocate()
     inverseCovariance_.resize(dimension_ * dimension_);
     if (bimodal_)
         inverseCovariance_input_.resize(dimension_input_ * dimension_input_);
-    scale.assign(dimension_, 1.0);
+    scale.assign(dimension_, 0.0);
 }
 
 void GaussianDistribution::addOffset()

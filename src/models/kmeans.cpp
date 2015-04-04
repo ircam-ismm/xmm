@@ -403,32 +403,27 @@ void KMeans::from_json(JSONNode root)
         JSONNode::const_iterator root_it = root.begin();
         
         // Get Dimension
+        root_it = root.find("dimension");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "dimension")
-            throw JSONException("Wrong name: was expecting 'dimension'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'dimension': was expecting 'JSON_NUMBER'", root_it->name());
         dimension_ = static_cast<unsigned int>(root_it->as_int());
-        ++root_it;
         
         // Get Number of Clusters
+        root_it = root.find("nbclusters");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "nbclusters")
-            throw JSONException("Wrong name: was expecting 'nbclusters'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'nbclusters': was expecting 'JSON_NUMBER'", root_it->name());
         nbClusters_ = static_cast<unsigned int>(root_it->as_int());
-        ++root_it;
         
-        // Get Mixture Coefficients
+        // Get Cluster Centers
+        root_it = root.find("centers");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "centers")
-            throw JSONException("Wrong name: was expecting 'centers'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            throw JSONException("Wrong type for node 'centers': was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, centers, nbClusters_);
     } catch (JSONException &e) {
         throw JSONException(e, root.name());

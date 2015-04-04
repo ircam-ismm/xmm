@@ -203,7 +203,7 @@ void Label::from_json(JSONNode root)
         if (type == INT) {
             if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-            intLabel_ = root_it->as_int();
+            intLabel_ = static_cast<int>(root_it->as_int());
         } else {
             if (root_it->type() != JSON_STRING)
                 throw JSONException("Wrong type: was expecting 'JSON_STRING'", root_it->name());

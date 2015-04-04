@@ -132,7 +132,7 @@ public:
     {
         stringstream fullmsg;
         fullmsg << "Error reading JSON, Message: " + message_ + " // (Node List: ";
-        for (unsigned int i=nodename_.size()-1 ; i>0 ; --i)
+        for (unsigned int i = static_cast<unsigned int>(nodename_.size()) - 1 ; i > 0 ; --i)
             fullmsg << nodename_[i] << " > ";
         fullmsg << nodename_[0];
         fullmsg << ")";

@@ -123,6 +123,7 @@ public:
      * @brief Read from JSON Node
      * @param root JSON Node containing phrase information
      * @throws JSONException if the JSON Node has a wrong format
+     * @todo add force_conversion optional argument?
      */
     virtual void from_json(JSONNode root) = 0;
     

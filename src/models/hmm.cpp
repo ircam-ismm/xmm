@@ -485,10 +485,6 @@ double HMM::forward_update(const float* observation,
         return 1./norm_const;
     } else {
         return 0.;
-        for (int j=0; j<nbStates_; j++) {
-            alpha[j] = 1./double(nbStates_);
-        }
-        return 1.;
     }
 }
 
@@ -644,10 +640,6 @@ double HMM::baumWelch_forward_update(vector<double>::iterator observation_likeli
         return 1./norm_const;
     } else {
         return 0.;
-        for (int j=0; j<nbStates_; j++) {
-            alpha[j] = 1./double(nbStates_);
-        }
-        return 1.;
     }
 }
 
@@ -1179,142 +1171,117 @@ void HMM::from_json(JSONNode root)
         JSONNode::iterator root_it = root.begin();
         
         // Get Parent: ProbabilisticModel
+        root_it = root.find("ProbabilisticModel");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "ProbabilisticModel")
-            throw JSONException("Wrong name: was expecting 'ProbabilisticModel'", root_it->name());
         if (root_it->type() != JSON_NODE)
-            throw JSONException("Wrong type: was expecting 'JSON_NODE'", root_it->name());
+            throw JSONException("Wrong type for node 'ProbabilisticModel': was expecting 'JSON_NODE'", root_it->name());
         ProbabilisticModel::from_json(*root_it);
-        ++root_it;
         
         // Get If Hierarchical
+        root_it = root.find("is_hierarchical");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "is_hierarchical")
-            throw JSONException("Wrong name: was expecting 'is_hierarchical'", root_it->name());
         if (root_it->type() != JSON_BOOL)
-            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
-        if(is_hierarchical_ != root_it->as_bool()) {
+            throw JSONException("Wrong type for node 'is_hierarchical': was expecting 'JSON_BOOL'", root_it->name());
+        if (is_hierarchical_ != root_it->as_bool()) {
             if (is_hierarchical_)
                 throw JSONException("Trying to read a non-hierarchical model in a hierarchical model.", root.name());
             else
                 throw JSONException("Trying to read a hierarchical model in a non-hierarchical model.", root.name());
         }
-        ++root_it;
         
         // Get If estimate means
+        root_it = root.find("estimatemeans");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "estimatemeans")
-            throw JSONException("Wrong name: was expecting 'estimatemeans'", root_it->name());
         if (root_it->type() != JSON_BOOL)
-            throw JSONException("Wrong type: was expecting 'JSON_BOOL'", root_it->name());
+            throw JSONException("Wrong type for node 'estimatemeans': was expecting 'JSON_BOOL'", root_it->name());
         estimateMeans_ = root_it->as_bool();
-        ++root_it;
         
         // Get Number of states
+        root_it = root.find("nbstates");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "nbstates")
-            throw JSONException("Wrong name: was expecting 'nbstates'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        nbStates_ = root_it->as_int();
-        ++root_it;
+            throw JSONException("Wrong type for node 'nbstates': was expecting 'JSON_NUMBER'", root_it->name());
+        nbStates_ = static_cast<int>(root_it->as_int());
         
         // Get Number of Mixture Components
+        root_it = root.find("nbmixturecomponents");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "nbmixturecomponents")
-            throw JSONException("Wrong name: was expecting 'nbmixturecomponents'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
-        nbMixtureComponents_ = root_it->as_int();
-        ++root_it;
+            throw JSONException("Wrong type for node 'nbmixturecomponents': was expecting 'JSON_NUMBER'", root_it->name());
+        nbMixtureComponents_ = static_cast<int>(root_it->as_int());
         
         // Get Covariance Offset (Relative to data variance)
+        root_it = root.find("varianceoffset_relative");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "varianceoffset_relative")
-            throw JSONException("Wrong name: was expecting 'varianceoffset_relative'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'varianceoffset_relative': was expecting 'JSON_NUMBER'", root_it->name());
         varianceOffset_relative_ = root_it->as_float();
-        ++root_it;
         
         // Get Covariance Offset (Minimum value)
+        root_it = root.find("varianceoffset_absolute");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "varianceoffset_absolute")
-            throw JSONException("Wrong name: was expecting 'varianceoffset_absolute'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'varianceoffset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
         varianceOffset_absolute_ = root_it->as_float();
-        ++root_it;
         
         // Get Regression Estimator
+        root_it = root.find("regression_estimator");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "regression_estimator")
-            throw JSONException("Wrong name: was expecting 'regression_estimator'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'regression_estimator': was expecting 'JSON_NUMBER'", root_it->name());
         regression_estimator_ = REGRESSION_ESTIMATOR(root_it->as_int());
-        ++root_it;
         
         // Get Transition Mode
+        root_it = root.find("transitionmode");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "transitionmode")
-            throw JSONException("Wrong name: was expecting 'transitionmode'", root_it->name());
         if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+            throw JSONException("Wrong type for node 'transitionmode': was expecting 'JSON_NUMBER'", root_it->name());
         transitionMode_ = TRANSITION_MODE(root_it->as_int());
-        ++root_it;
         
         // Reallocate model parameters
         allocate();
         
         // Get Prior Probabilities
+        root_it = root.find("prior");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "prior")
-            throw JSONException("Wrong name: was expecting 'prior'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            throw JSONException("Wrong type for node 'prior': was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, prior_, nbStates_);
-        ++root_it;
         
         // Get Transition Matrix
+        root_it = root.find("transition");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "transition")
-            throw JSONException("Wrong name: was expecting 'transition'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            throw JSONException("Wrong type for node 'transition': was expecting 'JSON_ARRAY'", root_it->name());
         json2vector(*root_it, transition_, nbStates_*nbStates_);
-        ++root_it;
         
         // Get Exit probabilities
         if (is_hierarchical_) {
+            root_it = root.find("exitprobabilities");
             if (root_it == root.end())
                 throw JSONException("JSON Node is incomplete", root_it->name());
-            if (root_it->name() != "exitprobabilities")
-                throw JSONException("Wrong name: was expecting 'exitprobabilities'", root_it->name());
             if (root_it->type() != JSON_ARRAY)
-                throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+                throw JSONException("Wrong type for node 'exitprobabilities': was expecting 'JSON_ARRAY'", root_it->name());
             json2vector(*root_it, exitProbabilities_, nbStates_);
-            ++root_it;
         }
         
         // Get States
+        root_it = root.find("states");
         if (root_it == root.end())
             throw JSONException("JSON Node is incomplete", root_it->name());
-        if (root_it->name() != "states")
-            throw JSONException("Wrong name: was expecting 'states'", root_it->name());
         if (root_it->type() != JSON_ARRAY)
-            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root_it->name());
+            throw JSONException("Wrong type for node 'states': was expecting 'JSON_ARRAY'", root_it->name());
         for (int i=0 ; i<nbStates_ ; i++) {
             states_[i].from_json((*root_it)[i]);
         }

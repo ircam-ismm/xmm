@@ -103,9 +103,9 @@ public:
     {
         bimodal_ = (flags & BIMODAL);
         this->globalTrainingSet = globalTrainingSet;
+        referenceModel_ = ModelType(flags, this->globalTrainingSet);
         if (this->globalTrainingSet)
             this->globalTrainingSet->add_listener(this);
-        referenceModel_ = ModelType(flags, this->globalTrainingSet);
         referenceModel_.set_trainingCallback(monitor_training, this);
         performanceMode_ = LIKELIEST;
         models_to_train_ = 0;
@@ -550,7 +550,7 @@ public:
      */
     virtual void update_likelihood_results()
     {
-        double maxLogLikelihood;
+        double maxLogLikelihood = 0.0;
         double normconst_instant(0.0);
         double normconst_smoothed(0.0);
         int i(0);
