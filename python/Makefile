@@ -1,8 +1,7 @@
-all: compile
-full: compile install clean
+all: build
 
 ifndef INSTALL_DIR
-INSTALL_DIR=./built-lib/xmm/
+INSTALL_DIR=./bin
 endif
 
 ifndef SWIG
@@ -14,36 +13,38 @@ DOXYGEN=doxygen
 endif
 
 DOC_DIR=../doc/
-LIB_DIR=../src/models/
-RTML_DIR=../src/core/
+XMM_DIR=../src
 JSON_XCODE_DIR=../dependencies/libjson/ide
 JSON_LIB_DIR=../dependencies/libjson/bin
+JSON_SRC_DIR=../dependencies/libjson/src
+XMM_SRC_FILES=$(wildcard $(XMM_DIR)/**/*.cpp $(XMM_DIR)/**/*.h)
+JSON_SRC_FILES=$(wildcard $(JSON_SRC_DIR)/*.h $(JSON_SRC_DIR)/_internal/**/*.h $(JSON_SRC_DIR)/_internal/**/*.cpp)
 
-SWIGOPT=#-debug-template
-
-json:
+$(JSON_LIB_DIR)/libjson.a: $(JSON_SRC_FILES)
 	@echo "\n==> Compiling JSON Library\n"
 	@(cd $(JSON_XCODE_DIR) && xcodebuild)
 	@(cd $(JSON_XCODE_DIR) && xcodebuild install)
 
-compile: json xmm.i setup.py $(RTML_DIR)*.cpp $(LIB_DIR)*.cpp
+build/xmm_doc.i: $(XMM_SRC_FILES)
 	@echo "\n==> Generating doc\n"
 	@(cd ../doc/ && $(DOXYGEN))
-	python doxy2swig.py $(DOC_DIR)xml/index.xml xmm_doc.i
-	@echo "\n==> Compiling XMM Library\n"
-	$(SWIG) -c++ $(SWIGOPT) -I$(LIB_DIR) -I$(RTML_DIR) -python xmm.i
-	python setup.py build_ext --inplace
+	mkdir -p ./build/
+	python src/doxy2swig.py $(DOC_DIR)xml/index.xml build/xmm_doc.i
 
-install:
-	@echo "\n==> Installing XMM Library\n"
-	mkdir -p $(INSTALL_DIR)
-	mv xmm.py $(INSTALL_DIR)
-	mv _xmm.so $(INSTALL_DIR)
-	cp __init__.py $(INSTALL_DIR)
-	cp util.py $(INSTALL_DIR)
+bin/xmm/_xmm.so: $(JSON_LIB_DIR)/libjson.a build/xmm_doc.i src/xmm.i src/setup.py $(XMM_SRC_FILES)
+	mkdir -p ./bin/xmm/
+	@echo "\n==> Compiling XMM Library\n"
+	$(SWIG) -c++ -I$(XMM_DIR)/core -I$(XMM_DIR)/models -python -outdir ./bin/xmm/ -o build/xmm_wrap.cxx src/xmm.i
+	python src/setup.py build_ext --build-lib ./bin/xmm/
+	cp src/__init__.py ./bin/xmm/
+	cp src/util.py ./bin/xmm/
+ifneq ($(INSTALL_DIR), ./bin)
+	cp -r ./bin/ $(INSTALL_DIR)/
+endif
+
+build: bin/xmm/_xmm.so
 
 clean:
-	@echo "\n==> Cleaning files\n"
 	@(cd $(JSON_XCODE_DIR) && xcodebuild clean)
-	rm -f *.cxx *.so xmm.py xmm_doc.i
 	rm -rf build/
+	rm -rf bin/

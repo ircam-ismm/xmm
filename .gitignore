@@ -6,7 +6,8 @@ dependencies/libjson/ide/json.xcodeproj/xcuserdata
 dependencies/libjson/ide/json.xcodeproj/project.xcworkspace/xcuserdata
 doc/html
 doc/xml
-python/built-lib
+python/bin
+python/build
 *pyc
 *.a
 *.dylib

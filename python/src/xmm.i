@@ -1,11 +1,5 @@
-%module(docstring="Multimodal Hidden Markov Models Library") xmm
-
-#pragma SWIG nowarn=362,503
-
 /*
- * gaussian_distribution.h
- *
- * Multivariate Gaussian Distribution
+ * xmm.i
  *
  * Contact:
  * - Jules Françoise <jules.francoise@ircam.fr>
@@ -33,6 +27,10 @@
  * You should have received a copy of the GNU General Public License
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+%module(docstring="Multimodal Hidden Markov Models Library") xmm
+
+#pragma SWIG nowarn=362,503
 
 %{
     #define SWIG_FILE_WITH_INIT
@@ -86,7 +84,7 @@ namespace std {
     %template(maphmm) map<Label, HMM>;
 };
 
-%include xmm_doc.i
+%include ../build/xmm_doc.i
 %include "mbd_common.h"
 %include "phrase.h"
 %include "label.h"

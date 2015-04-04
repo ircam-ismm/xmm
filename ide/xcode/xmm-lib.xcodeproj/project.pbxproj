@@ -97,17 +97,15 @@
 		0B4909BF1947718400E0D3C4 /* hmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hmm.cpp; sourceTree = "<group>"; };
 		0B4909C01947718400E0D3C4 /* hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
 		0B931DBD1AB1B17B00B15F3E /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../../readme.md; sourceTree = "<group>"; };
+		0B9FE2F71ACF6893007431E3 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		0B9FE2F81ACF6893007431E3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0B9FE2FA1ACF6893007431E3 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		0B9FE2FB1ACF6893007431E3 /* doxy2swig.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = doxy2swig.py; sourceTree = "<group>"; };
+		0B9FE2FC1ACF6893007431E3 /* numpy.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = numpy.i; sourceTree = "<group>"; };
+		0B9FE2FD1ACF6893007431E3 /* setup.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
+		0B9FE2FE1ACF6893007431E3 /* util.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = util.py; sourceTree = "<group>"; };
+		0B9FE2FF1ACF6893007431E3 /* xmm.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = xmm.i; sourceTree = "<group>"; };
 		0BD1C5E517D9E3D30061535A /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
-		0BD1C5E717D9E3D30061535A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		0BD1C5E817D9E3D30061535A /* doxy2swig.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = doxy2swig.py; sourceTree = "<group>"; };
-		0BD1C5E917D9E3D30061535A /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0BD1C5EA17D9E3D30061535A /* xmm.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = xmm.i; sourceTree = "<group>"; };
-		0BD1C5EB17D9E3D30061535A /* numpy.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = numpy.i; sourceTree = "<group>"; };
-		0BD1C5ED17D9E3D30061535A /* setup.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
-		0BD1C5EF17D9E3D30061535A /* test_mgmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_mgmm.py; sourceTree = "<group>"; };
-		0BD1C5F017D9E3D30061535A /* test_mhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_mhmm.py; sourceTree = "<group>"; };
-		0BD1C5F117D9E3D30061535A /* test_polymgmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymgmm.py; sourceTree = "<group>"; };
-		0BD1C5F217D9E3D30061535A /* test_polymhmm.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = test_polymhmm.py; sourceTree = "<group>"; };
 		0BD1C5FE17D9EB860061535A /* config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
 		0BF757B71A9B83E600B8C4BC /* doxygen_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = doxygen_main.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -202,6 +200,30 @@
 			path = models;
 			sourceTree = "<group>";
 		};
+		0B9FE2C21ACF6893007431E3 /* python */ = {
+			isa = PBXGroup;
+			children = (
+				0B9FE2F71ACF6893007431E3 /* Makefile */,
+				0B9FE2F81ACF6893007431E3 /* README.md */,
+				0B9FE2F91ACF6893007431E3 /* src */,
+			);
+			name = python;
+			path = ../../python;
+			sourceTree = "<group>";
+		};
+		0B9FE2F91ACF6893007431E3 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0B9FE2FA1ACF6893007431E3 /* __init__.py */,
+				0B9FE2FB1ACF6893007431E3 /* doxy2swig.py */,
+				0B9FE2FC1ACF6893007431E3 /* numpy.i */,
+				0B9FE2FD1ACF6893007431E3 /* setup.py */,
+				0B9FE2FE1ACF6893007431E3 /* util.py */,
+				0B9FE2FF1ACF6893007431E3 /* xmm.i */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		0BD1C5BF17D9E3BA0061535A = {
 			isa = PBXGroup;
 			children = (
@@ -210,7 +232,7 @@
 				0B20E0A41A9A637800E89497 /* json.xcodeproj */,
 				0B20E0B01A9A63EE00E89497 /* libjson.h */,
 				0BD1C5E417D9E3D20061535A /* doc */,
-				0BD1C5E617D9E3D30061535A /* python */,
+				0B9FE2C21ACF6893007431E3 /* python */,
 				0B4909A61947718400E0D3C4 /* src */,
 				0B20E08F1A9A633600E89497 /* Products */,
 			);
@@ -223,32 +245,6 @@
 			);
 			name = doc;
 			path = ../../doc;
-			sourceTree = "<group>";
-		};
-		0BD1C5E617D9E3D30061535A /* python */ = {
-			isa = PBXGroup;
-			children = (
-				0BD1C5E717D9E3D30061535A /* __init__.py */,
-				0BD1C5E817D9E3D30061535A /* doxy2swig.py */,
-				0BD1C5E917D9E3D30061535A /* Makefile */,
-				0BD1C5EA17D9E3D30061535A /* xmm.i */,
-				0BD1C5EB17D9E3D30061535A /* numpy.i */,
-				0BD1C5ED17D9E3D30061535A /* setup.py */,
-				0BD1C5EE17D9E3D30061535A /* test */,
-			);
-			name = python;
-			path = ../../python;
-			sourceTree = "<group>";
-		};
-		0BD1C5EE17D9E3D30061535A /* test */ = {
-			isa = PBXGroup;
-			children = (
-				0BD1C5EF17D9E3D30061535A /* test_mgmm.py */,
-				0BD1C5F017D9E3D30061535A /* test_mhmm.py */,
-				0BD1C5F117D9E3D30061535A /* test_polymgmm.py */,
-				0BD1C5F217D9E3D30061535A /* test_polymhmm.py */,
-			);
-			path = test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,7 +269,7 @@
 /* Begin PBXLegacyTarget section */
 		0BD1C5F417D9E4410061535A /* python */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "full SWIG=$(SWIG) INSTALL_DIR=$(INSTALL_DIR) DOXYGEN=$(DOXYGEN)";
+			buildArgumentsString = "$(ACTION) SWIG=$(SWIG) INSTALL_DIR=$(INSTALL_DIR) DOXYGEN=$(DOXYGEN)";
 			buildConfigurationList = 0BD1C5F517D9E4410061535A /* Build configuration list for PBXLegacyTarget "python" */;
 			buildPhases = (
 			);
