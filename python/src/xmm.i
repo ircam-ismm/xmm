@@ -68,6 +68,7 @@
 %include numpy.i
 %include std_string.i
 %include std_map.i
+%include std_set.i
 
 %apply (int DIM1, double* IN_ARRAY1) { (int dimension, double *observation) };
 %apply (int DIM1, double* ARGOUT_ARRAY1) { (double *modelLikelihoods, int dimension) };
@@ -77,6 +78,7 @@ namespace std {
     %template(vectorf) vector<float>;
     %template(vectors) vector<string>;
     %template(vectorl) vector<Label>;
+    %template(setl) set<Label>;
     %template(vectorgauss) vector<GaussianDistribution>;
     %template(vectorgmm) vector<GMM>;
     %template(vectorhmm) vector<HMM>;
@@ -84,7 +86,7 @@ namespace std {
     %template(maphmm) map<Label, HMM>;
 };
 
-%include ../build/xmm_doc.i
+%include ../xmm_doc.i
 %include "mbd_common.h"
 %include "phrase.h"
 %include "label.h"

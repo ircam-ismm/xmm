@@ -204,43 +204,46 @@
  * @tableofcontents
  *
  * @section Dependencies
- * The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.
- *
+ * The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.@n
+ * The library uses PTHREADS for parallel training of models with multiple classes.
+ * 
  * @section lib Compiling as a static/dynamic library
- * For OSX, see the xcode project in "ide/xcode/"
+ * @subsection xcodelib XCode
+ * See the xcode project in "ide/xcode/"
+ * 
+ * @subsection cmakelib CMake
+ * The library can be built using <a href="http://www.cmake.org/">CMake</a>.@n
+ * In the root directory, type the following command to generate the Makefiles:
+ * @code
+ * cmake . -G"Unix Makefiles"
+ * @endcode
+ * The following commands can be used to build the static library, run the unit tests, and generate the documentation:
+ * @code
+ * make
+ * make test
+ * make doc
+ * @endcode
  * 
  * @subsection cppusage Usage
  * 
  * The header file "xmm.h" includes all useful headers of the library.
+ * To enable parallel training, define the preprocessor macro "USE_PTHREAD" and link with the pthread library.
  *
  * @section python Building the Python Library
  * @subsection dependencies Dependencies
+ * * <a href="http://www.doxygen.org/">doxygen</a>
  * * <a href="http://www.swig.org/">swig</a>
  * * <a href="http://www.numpy.org/">Numpy</a>
  * * <a href="http://matplotlib.org/">Matplotlib</a> (for plotting utilities)
  *
  * @subsection pythonbuild Building
- * @subsubsection pythonxcode Xcode:
- * use Xcode project in "ide/xcode/" with the target __python__.
- * The installation location can be changed in "config.xcconfig", as well as the path to swig.
- *
- * @subsubsection pythoncommandline Command-line build:
- * move to the python directory and type:
+ * The python module can be built using <a href="http://www.cmake.org/">CMake</a>.@n
+ * In the python directory, type the following command to generate the Makefiles and build the python module:
  * @code
+ * cmake . -G"Unix Makefiles"
  * make
- * make install
- * make clean
  * @endcode
- *
- * To install in a specific location:
- * @code
- * make install INSTALL_DIR=/path/to/install/location/
- * @endcode
- *
- * To specify swig location:
- * @code
- * make install SWIG=/path/to/swig/
- * @endcode
+ * The module should be installed in "${xmm_root}/python/bin/"
  *
  * @subsection usage Usage
  * Place the built python library somewhere in your python path. To add personal
