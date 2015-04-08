@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -182,6 +182,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a91f76fd5d3b70cd7923a2473417f655b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gaussian__distribution_8h.html#ab0e70aa4d33181698a8ba78e9f674b87">t_ellipse</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#a91f76fd5d3b70cd7923a2473417f655b">ellipse</a> (unsigned int dimension1, unsigned int dimension2)</td></tr>
 <tr class="memdesc:a91f76fd5d3b70cd7923a2473417f655b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the 95% Confidence Interval ellipse of the Gaussian.  <a href="#a91f76fd5d3b70cd7923a2473417f655b">More...</a><br /></td></tr>
 <tr class="separator:a91f76fd5d3b70cd7923a2473417f655b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae81b297e2bd485cecf402ea0b4384510"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#ae81b297e2bd485cecf402ea0b4384510">make_bimodal</a> (unsigned int <a class="el" href="class_gaussian_distribution.html#abe3a11ec26a8747cd4959d6d5745509d">dimension_input</a>)</td></tr>
+<tr class="memdesc:ae81b297e2bd485cecf402ea0b4384510"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to bimodal distribution in place.  <a href="#ae81b297e2bd485cecf402ea0b4384510">More...</a><br /></td></tr>
+<tr class="separator:ae81b297e2bd485cecf402ea0b4384510"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3bd4815dd07584d7de70d29e21455d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#aa3bd4815dd07584d7de70d29e21455d1">make_unimodal</a> ()</td></tr>
+<tr class="memdesc:aa3bd4815dd07584d7de70d29e21455d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to unimodal distribution in place.  <a href="#aa3bd4815dd07584d7de70d29e21455d1">More...</a><br /></td></tr>
+<tr class="separator:aa3bd4815dd07584d7de70d29e21455d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2169ba7d6296dfa84c670b33cceea226"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#a2169ba7d6296dfa84c670b33cceea226">extract_submodel</a> (vector&lt; unsigned int &gt; &amp;columns, <a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *target_distribution) const </td></tr>
+<tr class="memdesc:a2169ba7d6296dfa84c670b33cceea226"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a sub-distribution with the given columns  <a href="#a2169ba7d6296dfa84c670b33cceea226">More...</a><br /></td></tr>
+<tr class="separator:a2169ba7d6296dfa84c670b33cceea226"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace2e6ce998a30b6a3e4985b48389e3ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#ace2e6ce998a30b6a3e4985b48389e3ef">extract_submodel_input</a> (<a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *target_distribution) const </td></tr>
+<tr class="memdesc:ace2e6ce998a30b6a3e4985b48389e3ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the sub-distribution of the input modality  <a href="#ace2e6ce998a30b6a3e4985b48389e3ef">More...</a><br /></td></tr>
+<tr class="separator:ace2e6ce998a30b6a3e4985b48389e3ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf4e39cc920c9c819dddc911e6d48bd0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#acf4e39cc920c9c819dddc911e6d48bd0">extract_submodel_output</a> (<a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *target_distribution) const </td></tr>
+<tr class="memdesc:acf4e39cc920c9c819dddc911e6d48bd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the sub-distribution of the output modality  <a href="#acf4e39cc920c9c819dddc911e6d48bd0">More...</a><br /></td></tr>
+<tr class="separator:acf4e39cc920c9c819dddc911e6d48bd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a351de8955657312e5b94019936d39b5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#a351de8955657312e5b94019936d39b5a">extract_inverse_model</a> (<a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *target_distribution) const </td></tr>
+<tr class="memdesc:a351de8955657312e5b94019936d39b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the model with reversed input and output modalities  <a href="#a351de8955657312e5b94019936d39b5a">More...</a><br /></td></tr>
+<tr class="separator:a351de8955657312e5b94019936d39b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Python File I/O (#ifdef SWIGPYTHON)</div></td></tr>
 <tr class="memitem:a5f8f0c00d1445a358fefdc0bb608cad8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_writable.html#a5f8f0c00d1445a358fefdc0bb608cad8">writeFile</a> (char *fileName)</td></tr>
 <tr class="memdesc:a5f8f0c00d1445a358fefdc0bb608cad8"><td class="mdescLeft">&#160;</td><td class="mdescRight">write method for python wrapping ('write' keyword forbidden, name has to be different)  <a href="#a5f8f0c00d1445a358fefdc0bb608cad8">More...</a><br /></td></tr>
@@ -193,8 +211,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad46334b43f42181f18c8f914b7140afc"><td class="mdescLeft">&#160;</td><td class="mdescRight">"print" method for python =&gt; returns the results of write method  <a href="#ad46334b43f42181f18c8f914b7140afc">More...</a><br /></td></tr>
 <tr class="separator:ad46334b43f42181f18c8f914b7140afc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Public Attributes</div></td></tr>
 <tr class="memitem:a02ef36dbae2a2ae8a0af8e7cc93da996"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#a02ef36dbae2a2ae8a0af8e7cc93da996">mean</a></td></tr>
 <tr class="memdesc:a02ef36dbae2a2ae8a0af8e7cc93da996"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mean of the Gaussian Distribution.  <a href="#a02ef36dbae2a2ae8a0af8e7cc93da996">More...</a><br /></td></tr>
 <tr class="separator:a02ef36dbae2a2ae8a0af8e7cc93da996"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,9 +229,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:acd077bc1c76336e059622458750e493f"><td class="memItemLeft" align="right" valign="top">vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#acd077bc1c76336e059622458750e493f">scale</a></td></tr>
 <tr class="memdesc:acd077bc1c76336e059622458750e493f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scaling of each dimension of the Gaussian Distribution (used of variance offsets)  <a href="#acd077bc1c76336e059622458750e493f">More...</a><br /></td></tr>
 <tr class="separator:acd077bc1c76336e059622458750e493f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a855483e90512d6b8986d35eb8f23fbe0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#a855483e90512d6b8986d35eb8f23fbe0">weight_regression</a></td></tr>
-<tr class="memdesc:a855483e90512d6b8986d35eb8f23fbe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">specifies the weight of the regression part in output modality estimation. A zero weight correspond to estimation using the means only.  <a href="#a855483e90512d6b8986d35eb8f23fbe0">More...</a><br /></td></tr>
-<tr class="separator:a855483e90512d6b8986d35eb8f23fbe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93131069c1db88779fe86e0c2ed1db4c"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gaussian_distribution.html#a93131069c1db88779fe86e0c2ed1db4c">output_variance</a></td></tr>
 <tr class="memdesc:a93131069c1db88779fe86e0c2ed1db4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional Output Variance updated when covariances matrices are inverted.  <a href="#a93131069c1db88779fe86e0c2ed1db4c">More...</a><br /></td></tr>
 <tr class="separator:a93131069c1db88779fe86e0c2ed1db4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -522,6 +538,143 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a351de8955657312e5b94019936d39b5a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianDistribution::extract_inverse_model </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *&#160;</td>
+          <td class="paramname"><em>target_distribution</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract the model with reversed input and output modalities </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training or if it is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_distribution</td><td>a bimodal Gaussian Distribution that swaps the input and output modalities </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a2169ba7d6296dfa84c670b33cceea226"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianDistribution::extract_submodel </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; unsigned int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *&#160;</td>
+          <td class="paramname"><em>target_distribution</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract a sub-distribution with the given columns </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">columns</td><td>columns indices in the target order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training </td></tr>
+    <tr><td class="paramname">out_of_range</td><td>if the number or indices of the requested columns exceeds the current dimension </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_distribution</td><td>a Gaussian Distribution from the current model considering only the target columns </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ace2e6ce998a30b6a3e4985b48389e3ef"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianDistribution::extract_submodel_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *&#160;</td>
+          <td class="paramname"><em>target_distribution</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract the sub-distribution of the input modality </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training or if it is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_distribution</td><td>a unimodal Gaussian Distribution of the input modality from the current bimodal model </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="acf4e39cc920c9c819dddc911e6d48bd0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianDistribution::extract_submodel_output </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html">GaussianDistribution</a> *&#160;</td>
+          <td class="paramname"><em>target_distribution</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract the sub-distribution of the output modality </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training or if it is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_distribution</td><td>a unimodal Gaussian Distribution of the output modality from the current bimodal model </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="aebe34b8cf2070785cbcadeb4d3003343"></a>
 <div class="memitem">
 <div class="memproto">
@@ -662,6 +815,60 @@ Public Attributes</h2></td></tr>
   <table class="exception">
     <tr><td class="paramname">runtime_error</td><td>if the Covariance Matrix of the input modality is not invertible </td></tr>
     <tr><td class="paramname">runtime_error</td><td>if the model is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ae81b297e2bd485cecf402ea0b4384510"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianDistribution::make_bimodal </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>dimension_input</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert to bimodal distribution in place. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dimension_input</td><td>dimension of the input modality </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is already bimodal </td></tr>
+    <tr><td class="paramname">out_of_range</td><td>if the requested input dimension is too large </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa3bd4815dd07584d7de70d29e21455d1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianDistribution::make_unimodal </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert to unimodal distribution in place. </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is already unimodal </td></tr>
   </table>
   </dd>
 </dl>
@@ -913,19 +1120,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="ae0ab807c64a48eaaf6699986ec71f938"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool GaussianDistribution::bimodal_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Defines if regression parameters need to be computed. </p>
@@ -949,19 +1148,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="ad955b98bf92c04a618adb5bd7b8a64fe"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">double GaussianDistribution::covarianceDeterminant</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Determinant of the covariance matrix. </p>
@@ -971,19 +1162,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="a7dc9ca3d1412eec8bca991532000cd71"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">double GaussianDistribution::covarianceDeterminant_input_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Determinant of the covariance matrix of the input modality. </p>
@@ -993,19 +1176,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="ab756e3de1fc3a486833cf8174927cf88"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int GaussianDistribution::dimension_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Dimension of the distribution. </p>
@@ -1015,19 +1190,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="a2a38385eb983cd626cf9804803e70f9d"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int GaussianDistribution::dimension_input_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Dimension of the input modality. </p>
@@ -1037,19 +1204,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="a8b9247e2377ecb7fa49c0158466017b3"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">vector&lt;double&gt; GaussianDistribution::inverseCovariance_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Inverse covariance matrix. </p>
@@ -1059,19 +1218,11 @@ Public Attributes</h2></td></tr>
 <a class="anchor" id="a5ef1429cbbc7161e6a169845b6c05a5c"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">vector&lt;double&gt; GaussianDistribution::inverseCovariance_input_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Inverse covariance matrix of the input modality. </p>
@@ -1148,20 +1299,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a855483e90512d6b8986d35eb8f23fbe0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double GaussianDistribution::weight_regression</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>specifies the weight of the regression part in output modality estimation. A zero weight correspond to estimation using the means only. </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="gaussian__distribution_8h_source.html">gaussian_distribution.h</a></li>
 <li><a class="el" href="gaussian__distribution_8cpp.html">gaussian_distribution.cpp</a></li>
@@ -1169,7 +1306,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

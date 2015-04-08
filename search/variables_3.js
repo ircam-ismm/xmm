@@ -1,6 +1,7 @@
 var searchData=
 [
   ['centers',['centers',['../class_k_means.html#aa8fa70140c88423a391d88d3c9c16bf2',1,'KMeans']]],
+  ['column_5fnames_5f',['column_names_',['../class_phrase.html#a3057c0cabca30211e3493e9143d68f85',1,'Phrase::column_names_()'],['../class_probabilistic_model.html#a128da0a10e7090633512eedf903f3d36',1,'ProbabilisticModel::column_names_()'],['../class_training_set.html#a0481e94e9042e62e17ac734e46f172c6',1,'TrainingSet::column_names_()']]],
   ['components',['components',['../class_g_m_m.html#a188e95d50ef09d6963bd26a14e518bd0',1,'GMM']]],
   ['covariance',['covariance',['../class_gaussian_distribution.html#af14f3798b573224fad7f038bdacce798',1,'GaussianDistribution']]],
   ['covariancedeterminant',['covarianceDeterminant',['../class_gaussian_distribution.html#ad955b98bf92c04a618adb5bd7b8a64fe',1,'GaussianDistribution']]],

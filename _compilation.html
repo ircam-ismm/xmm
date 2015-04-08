@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -96,14 +96,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#Dependencies">Dependencies</a></li>
-<li class="level1"><a href="#lib">Compiling as a static/dynamic library</a><ul><li class="level2"><a href="#cppusage">Usage</a></li>
+<li class="level1"><a href="#lib">Compiling as a static/dynamic library</a><ul><li class="level2"><a href="#xcodelib">XCode</a></li>
+<li class="level2"><a href="#cmakelib">CMake</a></li>
+<li class="level2"><a href="#cppusage">Usage</a></li>
 </ul>
 </li>
 <li class="level1"><a href="#python">Building the Python Library</a><ul><li class="level2"><a href="#dependencies">Dependencies</a></li>
-<li class="level2"><a href="#pythonbuild">Building</a><ul><li class="level3"><a href="#pythonxcode">Xcode:</a></li>
-<li class="level3"><a href="#pythoncommandline">Command-line build:</a></li>
-</ul>
-</li>
+<li class="level2"><a href="#pythonbuild">Building</a></li>
 <li class="level2"><a href="#usage">Usage</a></li>
 </ul>
 </li>
@@ -111,35 +110,40 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="textblock"><h1><a class="anchor" id="Dependencies"></a>
 Dependencies</h1>
-<p>The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.</p>
+<p>The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.<br />
+The library uses PTHREADS for parallel training of models with multiple classes.</p>
 <h1><a class="anchor" id="lib"></a>
 Compiling as a static/dynamic library</h1>
-<p>For OSX, see the xcode project in "ide/xcode/"</p>
-<h2><a class="anchor" id="cppusage"></a>
+<h2><a class="anchor" id="xcodelib"></a>
+XCode</h2>
+<p>See the xcode project in "ide/xcode/"</p>
+<h2><a class="anchor" id="cmakelib"></a>
+CMake</h2>
+<p>The library can be built using <a href="http://www.cmake.org/">CMake</a>.<br />
+In the root directory, type the following command to generate the Makefiles: </p><div class="fragment"><div class="line">cmake . -G<span class="stringliteral">&quot;Unix Makefiles&quot;</span></div>
+</div><!-- fragment --><p> The following commands can be used to build the static library, run the unit tests, and generate the documentation: </p><div class="fragment"><div class="line">make</div>
+<div class="line">make test</div>
+<div class="line">make doc</div>
+</div><!-- fragment --><h2><a class="anchor" id="cppusage"></a>
 Usage</h2>
-<p>The header file "xmm.h" includes all useful headers of the library.</p>
+<p>The header file "xmm.h" includes all useful headers of the library. To enable parallel training, define the preprocessor macro "USE_PTHREAD" and link with the pthread library.</p>
 <h1><a class="anchor" id="python"></a>
 Building the Python Library</h1>
 <h2><a class="anchor" id="dependencies"></a>
 Dependencies</h2>
 <ul>
+<li><a href="http://www.doxygen.org/">doxygen</a></li>
 <li><a href="http://www.swig.org/">swig</a></li>
 <li><a href="http://www.numpy.org/">Numpy</a></li>
 <li><a href="http://matplotlib.org/">Matplotlib</a> (for plotting utilities)</li>
 </ul>
 <h2><a class="anchor" id="pythonbuild"></a>
 Building</h2>
-<h3><a class="anchor" id="pythonxcode"></a>
-Xcode:</h3>
-<p>use Xcode project in "ide/xcode/" with the target <b>python</b>. The installation location can be changed in "config.xcconfig", as well as the path to swig.</p>
-<h3><a class="anchor" id="pythoncommandline"></a>
-Command-line build:</h3>
-<p>move to the python directory and type: </p><div class="fragment"><div class="line">make</div>
-<div class="line">make install</div>
-<div class="line">make clean</div>
-</div><!-- fragment --><p>To install in a specific location: </p><div class="fragment"><div class="line">make install INSTALL_DIR=/path/to/install/location/</div>
-</div><!-- fragment --><p>To specify swig location: </p><div class="fragment"><div class="line">make install SWIG=/path/to/swig/</div>
-</div><!-- fragment --><h2><a class="anchor" id="usage"></a>
+<p>The python module can be built using <a href="http://www.cmake.org/">CMake</a>.<br />
+In the python directory, type the following command to generate the Makefiles and build the python module: </p><div class="fragment"><div class="line">cmake . -G<span class="stringliteral">&quot;Unix Makefiles&quot;</span></div>
+<div class="line">make</div>
+</div><!-- fragment --><p> The module should be installed in "${xmm_root}/python/bin/"</p>
+<h2><a class="anchor" id="usage"></a>
 Usage</h2>
 <p>Place the built python library somewhere in your python path. To add personal libraries located in '/Path/To/Libs' to the python path, add the following lines to your ".bash_profile":</p>
 <div class="fragment"><div class="line">PYTHONPATH=$PYTHONPATH:/Path/To/Libs</div>
@@ -148,7 +152,7 @@ Usage</h2>
 </div><!-- fragment --><p>Additional utilities can be found in <code>xmm.util</code>. </p><center>Prev: <a class="el" href="_introduction.html">Introduction</a> | Next: <a class="el" href="_examples.html">Examples</a>.</center> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

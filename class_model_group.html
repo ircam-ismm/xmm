@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -96,9 +96,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_model_group-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ModelGroup&lt; ModelType &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span><div class="ingroups"><a class="el" href="group___core.html">Core Classes and Distributions</a></div></div>  </div>
@@ -139,6 +138,18 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:af30449688caea6c8d72b137bc9e7f82c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a> (string attribute)</td></tr>
+<tr class="memdesc:af30449688caea6c8d72b137bc9e7f82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives notifications from the global training set and dispatches to models.  <a href="#af30449688caea6c8d72b137bc9e7f82c">More...</a><br /></td></tr>
+<tr class="separator:af30449688caea6c8d72b137bc9e7f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c031af30991da14d11b3fa22ee3eded"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a> ()</td></tr>
+<tr class="memdesc:a9c031af30991da14d11b3fa22ee3eded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove models which label is not in the training set anymore.  <a href="#a9c031af30991da14d11b3fa22ee3eded">More...</a><br /></td></tr>
+<tr class="separator:a9c031af30991da14d11b3fa22ee3eded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">updateTrainingSet</a> (<a class="el" href="class_label.html">Label</a> const &amp;label)</td></tr>
+<tr class="memdesc:ae9edbba438e2f43fa0cc3b2131bee014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update training set for a specific label.  <a href="#ae9edbba438e2f43fa0cc3b2131bee014">More...</a><br /></td></tr>
+<tr class="separator:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70d856b514563568236e2986407f9e59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a> ()</td></tr>
+<tr class="memdesc:a70d856b514563568236e2986407f9e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the training set for all labels.  <a href="#a70d856b514563568236e2986407f9e59">More...</a><br /></td></tr>
+<tr class="separator:a70d856b514563568236e2986407f9e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Constructors</div></td></tr>
 <tr class="memitem:a7932b5bf96a71b87471070d859d0fc61"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a7932b5bf96a71b87471070d859d0fc61">ModelGroup</a> (<a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> flags=<a class="el" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a>, <a class="el" href="class_training_set.html">TrainingSet</a> *<a class="el" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">globalTrainingSet</a>=NULL)</td></tr>
 <tr class="memdesc:a7932b5bf96a71b87471070d859d0fc61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a7932b5bf96a71b87471070d859d0fc61">More...</a><br /></td></tr>
@@ -205,6 +216,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c54814d53049aa21b4a7bf3a1ecd8da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a4c54814d53049aa21b4a7bf3a1ecd8da">set_likelihoodwindow</a> (unsigned int likelihoodwindow)</td></tr>
 <tr class="memdesc:a4c54814d53049aa21b4a7bf3a1ecd8da"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of the likelihood smoothing buffer (number of frames)  <a href="#a4c54814d53049aa21b4a7bf3a1ecd8da">More...</a><br /></td></tr>
 <tr class="separator:a4c54814d53049aa21b4a7bf3a1ecd8da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1089e13eaae07083b4ee912c2bb3a348"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a1089e13eaae07083b4ee912c2bb3a348">get_column_names</a> () const </td></tr>
+<tr class="memdesc:a1089e13eaae07083b4ee912c2bb3a348"><td class="mdescLeft">&#160;</td><td class="mdescRight">get a copy of the column names of the input/output data  <a href="#a1089e13eaae07083b4ee912c2bb3a348">More...</a><br /></td></tr>
+<tr class="separator:a1089e13eaae07083b4ee912c2bb3a348"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Performance</div></td></tr>
 <tr class="memitem:a07a070ffc216e8864646f7e116aec8d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">performance_init</a> ()</td></tr>
 <tr class="memdesc:a07a070ffc216e8864646f7e116aec8d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize Performance.  <a href="#a07a070ffc216e8864646f7e116aec8d0">More...</a><br /></td></tr>
@@ -258,24 +272,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">results_output_variance</a></td></tr>
 <tr class="memdesc:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional Output Variance.  <a href="#a52e6f0bec9ca25df8d0526d3bd42426b">More...</a><br /></td></tr>
 <tr class="separator:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:af30449688caea6c8d72b137bc9e7f82c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a> (string attribute)</td></tr>
-<tr class="memdesc:af30449688caea6c8d72b137bc9e7f82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives notifications from the global training set and dispatches to models.  <a href="#af30449688caea6c8d72b137bc9e7f82c">More...</a><br /></td></tr>
-<tr class="separator:af30449688caea6c8d72b137bc9e7f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c031af30991da14d11b3fa22ee3eded"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a> ()</td></tr>
-<tr class="memdesc:a9c031af30991da14d11b3fa22ee3eded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove models which label is not in the training set anymore.  <a href="#a9c031af30991da14d11b3fa22ee3eded">More...</a><br /></td></tr>
-<tr class="separator:a9c031af30991da14d11b3fa22ee3eded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">updateTrainingSet</a> (<a class="el" href="class_label.html">Label</a> const &amp;label)</td></tr>
-<tr class="memdesc:ae9edbba438e2f43fa0cc3b2131bee014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update training set for a specific label.  <a href="#ae9edbba438e2f43fa0cc3b2131bee014">More...</a><br /></td></tr>
-<tr class="separator:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70d856b514563568236e2986407f9e59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a> ()</td></tr>
-<tr class="memdesc:a70d856b514563568236e2986407f9e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the training set for all labels.  <a href="#a70d856b514563568236e2986407f9e59">More...</a><br /></td></tr>
-<tr class="separator:a70d856b514563568236e2986407f9e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
 <tr class="memitem:a027be98accd769515a55ab7947d10873"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a027be98accd769515a55ab7947d10873">bimodal_</a></td></tr>
 <tr class="memdesc:a027be98accd769515a55ab7947d10873"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines if the phrase is bimodal (true) or unimodal (false)  <a href="#a027be98accd769515a55ab7947d10873">More...</a><br /></td></tr>
 <tr class="separator:a027be98accd769515a55ab7947d10873"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -634,8 +630,36 @@ template&lt;typename ModelType&gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>add force_conversion optional argument? </dd></dl>
 
-<p>Implemented in <a class="el" href="class_training_set.html#a6fcd6fc7a000a91797d810030e143054">TrainingSet</a>, <a class="el" href="class_phrase.html#a8a3a83ac55b78bebdc3230cf51b8e34c">Phrase</a>, <a class="el" href="class_hierarchical_h_m_m.html#a0e660a3f84e899dc7fcc085769e37d96">HierarchicalHMM</a>, <a class="el" href="class_h_m_m.html#aeade9ce1e945989f81f2195bb3fb147e">HMM</a>, <a class="el" href="class_probabilistic_model.html#a1e49cb29f8996a9c8d0a14722388e3d3">ProbabilisticModel</a>, <a class="el" href="class_k_means.html#a3e0f1820c9371e34c5d2bb9096c12438">KMeans</a>, <a class="el" href="class_gaussian_distribution.html#aebe34b8cf2070785cbcadeb4d3003343">GaussianDistribution</a>, <a class="el" href="class_label.html#ad0878380b073ac0caf6e3bf8b5b9a70a">Label</a>, <a class="el" href="class_g_m_m.html#ab52c8ad495c20958299ac3fd640f3c46">GMM</a>, and <a class="el" href="class_g_m_m_group.html#aaa29147e146c663245eb9194be84d639">GMMGroup</a>.</p>
+<p>Implemented in <a class="el" href="class_training_set.html#a6fcd6fc7a000a91797d810030e143054">TrainingSet</a>, <a class="el" href="class_phrase.html#a8a3a83ac55b78bebdc3230cf51b8e34c">Phrase</a>, <a class="el" href="class_hierarchical_h_m_m.html#a0e660a3f84e899dc7fcc085769e37d96">HierarchicalHMM</a>, <a class="el" href="class_probabilistic_model.html#a1e49cb29f8996a9c8d0a14722388e3d3">ProbabilisticModel</a>, <a class="el" href="class_h_m_m.html#aeade9ce1e945989f81f2195bb3fb147e">HMM</a>, <a class="el" href="class_k_means.html#a3e0f1820c9371e34c5d2bb9096c12438">KMeans</a>, <a class="el" href="class_gaussian_distribution.html#aebe34b8cf2070785cbcadeb4d3003343">GaussianDistribution</a>, <a class="el" href="class_label.html#ad0878380b073ac0caf6e3bf8b5b9a70a">Label</a>, <a class="el" href="class_g_m_m.html#ab52c8ad495c20958299ac3fd640f3c46">GMM</a>, and <a class="el" href="class_g_m_m_group.html#aaa29147e146c663245eb9194be84d639">GMMGroup</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1089e13eaae07083b4ee912c2bb3a348"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ModelType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;string&gt; const&amp; <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::get_column_names </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>get a copy of the column names of the input/output data </p>
 
 </div>
 </div>
@@ -941,7 +965,7 @@ template&lt;typename ModelType&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1068,7 +1092,7 @@ template&lt;typename ModelType&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1491,8 +1515,9 @@ template&lt;typename ModelType&gt; </div>
 
 <p>Write to JSON Node. </p>
 <dl class="section return"><dt>Returns</dt><dd>JSON Node containing phrase information </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>include type attribute in each to_json function </dd></dl>
 
-<p>Implemented in <a class="el" href="class_training_set.html#a28aedbf8cc7b2531e5cb84f7be94f981">TrainingSet</a>, <a class="el" href="class_phrase.html#aa25a2d2fd2b9bb8547190e18aeed200f">Phrase</a>, <a class="el" href="class_hierarchical_h_m_m.html#a7d56acc51e29e0eae28011fac9b18592">HierarchicalHMM</a>, <a class="el" href="class_h_m_m.html#a3f944282028342d7c978f5be29a2f9b1">HMM</a>, <a class="el" href="class_probabilistic_model.html#a85e1f6730c72f8c6eda7deb961ffdd38">ProbabilisticModel</a>, <a class="el" href="class_k_means.html#aa262df99cb2d5b67121d8602bd622285">KMeans</a>, <a class="el" href="class_gaussian_distribution.html#a9abac3128a9cb9976677870b87f07c2c">GaussianDistribution</a>, <a class="el" href="class_label.html#a7d40954e994c3c0712e2d7a57e4f55de">Label</a>, <a class="el" href="class_g_m_m.html#a8b8471f7c7c9a978def7a5ee0bdb456e">GMM</a>, and <a class="el" href="class_g_m_m_group.html#a49af34ae048c6f9d479d18d49ce6b7d1">GMMGroup</a>.</p>
+<p>Implemented in <a class="el" href="class_training_set.html#a28aedbf8cc7b2531e5cb84f7be94f981">TrainingSet</a>, <a class="el" href="class_phrase.html#aa25a2d2fd2b9bb8547190e18aeed200f">Phrase</a>, <a class="el" href="class_hierarchical_h_m_m.html#a7d56acc51e29e0eae28011fac9b18592">HierarchicalHMM</a>, <a class="el" href="class_probabilistic_model.html#a85e1f6730c72f8c6eda7deb961ffdd38">ProbabilisticModel</a>, <a class="el" href="class_h_m_m.html#a3f944282028342d7c978f5be29a2f9b1">HMM</a>, <a class="el" href="class_k_means.html#aa262df99cb2d5b67121d8602bd622285">KMeans</a>, <a class="el" href="class_gaussian_distribution.html#a9abac3128a9cb9976677870b87f07c2c">GaussianDistribution</a>, <a class="el" href="class_label.html#a7d40954e994c3c0712e2d7a57e4f55de">Label</a>, <a class="el" href="class_g_m_m.html#a8b8471f7c7c9a978def7a5ee0bdb456e">GMM</a>, and <a class="el" href="class_g_m_m_group.html#a49af34ae048c6f9d479d18d49ce6b7d1">GMMGroup</a>.</p>
 
 </div>
 </div>
@@ -1608,7 +1633,7 @@ template&lt;typename ModelType&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1637,7 +1662,7 @@ template&lt;typename ModelType&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1693,19 +1718,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::bimodal_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>defines if the phrase is bimodal (true) or unimodal (false) </p>
@@ -1749,19 +1766,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::models_to_train_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Number of Models that are still training. </p>
@@ -1773,19 +1782,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4">GROUP_ESTIMATION_MODE</a> <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::performanceMode_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Playing mode. </p>
@@ -1798,19 +1799,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">ModelType <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::referenceModel_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>reference model, Used to store shared model attributes </p>
@@ -1934,19 +1927,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">map&lt;<a class="el" href="class_label.html">Label</a>, pthread_t&gt; <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::training_threads</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Training Threads. </p>
@@ -1959,19 +1944,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void(* <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::trainingCallbackFunction_) (void *srcModel, <a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, void *extradata)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Callback function for the training algorithm. </p>
@@ -1983,19 +1960,11 @@ template&lt;typename ModelType&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename ModelType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void* <a class="el" href="class_model_group.html">ModelGroup</a>&lt; ModelType &gt;::trainingExtradata_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Extra data to pass in argument to the callback function. </p>
@@ -2008,7 +1977,7 @@ template&lt;typename ModelType&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:24 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

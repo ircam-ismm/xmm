@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['set_5fcolumn_5fnames',['set_column_names',['../class_training_set.html#adbe3d097446e40eb3236083a50906eba',1,'TrainingSet']]],
   ['set_5fdimension',['set_dimension',['../class_gaussian_distribution.html#ae7dff9f91b07c5ecfa55fbb294115d1f',1,'GaussianDistribution::set_dimension()'],['../class_phrase.html#aec2a80fe0d7bc68f574bb78c6c64419b',1,'Phrase::set_dimension()'],['../class_training_set.html#a67f3972667e4a9fbe858f4ef872e6699',1,'TrainingSet::set_dimension()']]],
   ['set_5fdimension_5finput',['set_dimension_input',['../class_gaussian_distribution.html#a0c1f343847e2e6b1913218356cf5cb08',1,'GaussianDistribution::set_dimension_input()'],['../class_phrase.html#ab6eb807a5e4dc7bd29d8e9811c4c39dd',1,'Phrase::set_dimension_input()'],['../class_training_set.html#a351de28481896d470c089bd17df228f8',1,'TrainingSet::set_dimension_input()']]],
   ['set_5fem_5fmaxsteps',['set_EM_maxSteps',['../class_model_group.html#affc27f259ee7d005548136b79f32480b',1,'ModelGroup']]],
@@ -23,7 +24,6 @@ var searchData=
   ['set_5ftransitionmode',['set_transitionMode',['../class_hierarchical_h_m_m.html#a475acbd2f6b2484e24e1642874bf2745',1,'HierarchicalHMM::set_transitionMode()'],['../class_h_m_m.html#aa5bca8bda55755c59647dc9ff00b336d',1,'HMM::set_transitionMode()']]],
   ['set_5funchanged',['set_unchanged',['../class_training_set.html#a1bafcae02772389a006d3b676be88c44',1,'TrainingSet']]],
   ['set_5fvarianceoffset',['set_varianceOffset',['../class_g_m_m.html#a79ab0bbb154ca48ec69e630c1f0337bd',1,'GMM::set_varianceOffset()'],['../class_g_m_m_group.html#a6b28c729d3f19d724570b10ffcd75e44',1,'GMMGroup::set_varianceOffset()'],['../class_hierarchical_h_m_m.html#a000d244133fb5f845825ed85d4f4cafa',1,'HierarchicalHMM::set_varianceOffset()'],['../class_h_m_m.html#a9b74c96a96310c1f3e8687dc55a53d90',1,'HMM::set_varianceOffset()']]],
-  ['set_5fweight_5fregression',['set_weight_regression',['../class_g_m_m.html#a1d28376c772e8a370b56d2d89886ba44',1,'GMM::set_weight_regression()'],['../class_g_m_m_group.html#a529dee99c8500cd5656f731470463f92',1,'GMMGroup::set_weight_regression()'],['../class_hierarchical_h_m_m.html#a42ebcadd8a2cd25e2ee858b7c59204a4',1,'HierarchicalHMM::set_weight_regression()'],['../class_h_m_m.html#aa58a696a7e480fbd869db3d8b05cdfa4',1,'HMM::set_weight_regression()']]],
   ['setdefaultlabel',['setDefaultLabel',['../class_training_set.html#ac6f56faf74eede7ef08d512a31172877',1,'TrainingSet']]],
   ['setergodic',['setErgodic',['../class_h_m_m.html#a8adfd8dcb243858389a5783bc84583f6',1,'HMM']]],
   ['setint',['setInt',['../class_label.html#af8694e5a5f686522e170164edd171132',1,'Label']]],

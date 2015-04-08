@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -180,6 +180,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a351de28481896d470c089bd17df228f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_training_set.html#a351de28481896d470c089bd17df228f8">set_dimension_input</a> (unsigned int <a class="el" href="class_training_set.html#a9d7828eaa8383c634bea5bef61dd18fa">dimension_input</a>)</td></tr>
 <tr class="memdesc:a351de28481896d470c089bd17df228f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the dimension of the input modality in bimodal mode.  <a href="#a351de28481896d470c089bd17df228f8">More...</a><br /></td></tr>
 <tr class="separator:a351de28481896d470c089bd17df228f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbe3d097446e40eb3236083a50906eba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_training_set.html#adbe3d097446e40eb3236083a50906eba">set_column_names</a> (vector&lt; string &gt; &amp;colnames)</td></tr>
+<tr class="memdesc:adbe3d097446e40eb3236083a50906eba"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the column names of the Training Set  <a href="#adbe3d097446e40eb3236083a50906eba">More...</a><br /></td></tr>
+<tr class="separator:adbe3d097446e40eb3236083a50906eba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66a67c8fe37d5fa3b4e82cc2c17d746c"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_training_set.html#a66a67c8fe37d5fa3b4e82cc2c17d746c">get_column_names</a> () const </td></tr>
+<tr class="memdesc:a66a67c8fe37d5fa3b4e82cc2c17d746c"><td class="mdescLeft">&#160;</td><td class="mdescRight">get a copy of the column names of the Training Set  <a href="#a66a67c8fe37d5fa3b4e82cc2c17d746c">More...</a><br /></td></tr>
+<tr class="separator:a66a67c8fe37d5fa3b4e82cc2c17d746c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e0cdd8c7587ab160ec1337c0a9dba3b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_training_set.html#a5e0cdd8c7587ab160ec1337c0a9dba3b">operator==</a> (<a class="el" href="class_training_set.html">TrainingSet</a> const &amp;src)</td></tr>
 <tr class="memdesc:a5e0cdd8c7587ab160ec1337c0a9dba3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks equality  <a href="#a5e0cdd8c7587ab160ec1337c0a9dba3b">More...</a><br /></td></tr>
 <tr class="separator:a5e0cdd8c7587ab160ec1337c0a9dba3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -341,10 +347,13 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a5929f0d215d5ccd8c1d4d23113dc6253"><td class="memItemLeft" align="right" valign="top">map&lt; <a class="el" href="class_label.html">Label</a>, <a class="el" href="class_training_set.html">TrainingSet</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">subTrainingSets_</a></td></tr>
 <tr class="memdesc:a5929f0d215d5ccd8c1d4d23113dc6253"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sub-ensembles of the training set for specific classes.  <a href="#a5929f0d215d5ccd8c1d4d23113dc6253">More...</a><br /></td></tr>
 <tr class="separator:a5929f0d215d5ccd8c1d4d23113dc6253"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0481e94e9042e62e17ac734e46f172c6"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_training_set.html#a0481e94e9042e62e17ac734e46f172c6">column_names_</a></td></tr>
+<tr class="memdesc:a0481e94e9042e62e17ac734e46f172c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">labels of the columns of the training set (e.g. descriptor names)  <a href="#a0481e94e9042e62e17ac734e46f172c6">More...</a><br /></td></tr>
+<tr class="separator:a0481e94e9042e62e17ac734e46f172c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for the definition of (multimodal) training sets. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Needs more details </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Needs more details </dd></dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a42b41acb2b9e82cc4a6d2a504d04bb1a"></a>
 <div class="memitem">
@@ -944,6 +953,23 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a66a67c8fe37d5fa3b4e82cc2c17d746c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; string &gt; const &amp; TrainingSet::get_column_names </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get a copy of the column names of the Training Set </p>
+
+</div>
+</div>
 <a class="anchor" id="aadcc66aa6f8e7bccfa9d7db79b5346dd"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1388,6 +1414,24 @@ This method is only usable in Own Memory (no SHARED_MEMORY flag) </p>
 
 </div>
 </div>
+<a class="anchor" id="adbe3d097446e40eb3236083a50906eba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TrainingSet::set_column_names </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>colnames</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set the column names of the Training Set </p>
+
+</div>
+</div>
 <a class="anchor" id="a67f3972667e4a9fbe858f4ef872e6699"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1758,6 +1802,28 @@ This method is only usable in Own Memory (no SHARED_MEMORY flag) </p>
 
 </div>
 </div>
+<a class="anchor" id="a0481e94e9042e62e17ac734e46f172c6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;string&gt; TrainingSet::column_names_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>labels of the columns of the training set (e.g. descriptor names) </p>
+
+</div>
+</div>
 <a class="anchor" id="aec3ccfddff385e9628431dd2e1efd6ef"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1994,7 +2060,7 @@ This method is only usable in Own Memory (no SHARED_MEMORY flag) </p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:24 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -174,9 +174,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    {</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        bimodal_ = (flags &amp; <a class="code" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0a5f4071e1a1ce30ee3c5442598bac8775">BIMODAL</a>);</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        this-&gt;globalTrainingSet = globalTrainingSet;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordflow">if</span> (this-&gt;globalTrainingSet)</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            this-&gt;globalTrainingSet-&gt;add_listener(<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        referenceModel_ = ModelType(flags, this-&gt;globalTrainingSet);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        referenceModel_ = ModelType(flags, this-&gt;globalTrainingSet);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordflow">if</span> (this-&gt;globalTrainingSet)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            this-&gt;globalTrainingSet-&gt;add_listener(<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        referenceModel_.set_trainingCallback(monitor_training, <span class="keyword">this</span>);</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        performanceMode_ = <a class="code" href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84adf0f3b0d77046474c7981dc26341f853">LIKELIEST</a>;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        models_to_train_ = 0;</div>
@@ -331,358 +331,367 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        }</div>
 <div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    }</div>
 <div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    </div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor">#pragma mark &gt; Training</span></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;</div>
-<div class="line"><a name="l00378"></a><span class="lineno"><a class="line" href="class_model_group.html#ad7a55df363d0e699b3fd831f2173d847">  378</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#ad7a55df363d0e699b3fd831f2173d847">train</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label)</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    {</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        stopTraining(label);</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        updateTrainingSet(label);</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        </div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        pthread_create(&amp;(training_threads[label]), NULL, &amp;ModelType::train_func, &amp;(this-&gt;models[label]));</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        models_to_train_++;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        <span class="keywordflow">if</span> (!trainingCallbackFunction_) {</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;            pthread_join(training_threads[label], NULL);</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        }</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        models[label].train();</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    }</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    </div>
-<div class="line"><a name="l00399"></a><span class="lineno"><a class="line" href="class_model_group.html#a3d38b77428febc66f34a0d852c22c3fa">  399</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a3d38b77428febc66f34a0d852c22c3fa">train</a>()</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    {</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        stopTraining();</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        </div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;        updateAllTrainingSets();</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;        </div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            pthread_create(&amp;(training_threads[it-&gt;first]), NULL, &amp;ModelType::train_func, &amp;(it-&gt;second));</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            models_to_train_++;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        }</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        <span class="keywordflow">if</span> (!trainingCallbackFunction_) {</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;            <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                pthread_join(training_threads[it-&gt;first], NULL);</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;            }</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;        }</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        training_threads.clear();</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;        <span class="comment">// Sequential training</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            it-&gt;second.train();</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        }</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    }</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    </div>
-<div class="line"><a name="l00429"></a><span class="lineno"><a class="line" href="class_model_group.html#a2008199ab4262f1983fae46bc954e920">  429</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a2008199ab4262f1983fae46bc954e920">retrain</a>()</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        stopTraining();</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;        updateAllTrainingSets();</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        </div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            <span class="keywordflow">if</span> (!it-&gt;second.trained || it-&gt;second.trainingSet-&gt;has_changed()) {</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                pthread_create(&amp;(training_threads[it-&gt;first]), NULL, &amp;ModelType::train_func, &amp;(it-&gt;second));</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                <span class="keywordflow">if</span> (trainingCallbackFunction_)</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                    models_to_train_++;</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            }</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        }</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        <span class="keywordflow">if</span> (!trainingCallbackFunction_) {</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                <span class="keywordflow">if</span> (!it-&gt;second.trained || it-&gt;second.trainingSet-&gt;has_changed()) {</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                    pthread_join(training_threads[it-&gt;first], NULL);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                }</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            }</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        }</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        <span class="comment">// Sequential training</span></div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            <span class="keywordflow">if</span> (!it-&gt;second.trained || it-&gt;second.trainingSet-&gt;has_changed()) {</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                it-&gt;second.train();</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;            }</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        }</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    }</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;    </div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;</div>
-<div class="line"><a name="l00467"></a><span class="lineno"><a class="line" href="class_model_group.html#a7c932f2fc24340bac9aedb723c636945">  467</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a7c932f2fc24340bac9aedb723c636945">stopTraining</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label) {</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;        <span class="keywordflow">if</span> (this-&gt;models.find(label) != this-&gt;models.end())</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;            models[label].abortTraining(training_threads[label]);</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    }</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    </div>
-<div class="line"><a name="l00476"></a><span class="lineno"><a class="line" href="class_model_group.html#ae505bd5ac601281243869cc25e774594">  476</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#ae505bd5ac601281243869cc25e774594">stopTraining</a>() {</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        <span class="keywordflow">for</span> (set&lt;Label&gt;::iterator label_it = globalTrainingSet-&gt;allLabels.begin(); label_it != globalTrainingSet-&gt;allLabels.end(); label_it++) {</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;            stopTraining(*label_it);</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        }</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    }</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    </div>
-<div class="line"><a name="l00486"></a><span class="lineno"><a class="line" href="class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b">  486</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b">monitor_training</a>(<span class="keywordtype">void</span> *model, <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, <span class="keywordtype">void</span> *extradata)</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;    {</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        <a class="code" href="class_model_group.html">ModelGroup&lt;ModelType&gt;</a> *thismodelgroup = (<a class="code" href="class_model_group.html">ModelGroup&lt;ModelType&gt;</a> *)extradata;</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        <span class="keywordflow">if</span> (state != <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada25328a5918d4be333f9c3aeac1cb2948">TRAINING_RUN</a>) {</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            <a class="code" href="class_label.html">Label</a> label = ((ModelType *)model)-&gt;trainingSet-&gt;getPhraseLabel(0);</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;            thismodelgroup-&gt;<a class="code" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">models_to_train_</a>--;</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;            <span class="keywordflow">if</span> (thismodelgroup-&gt;<a class="code" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a>)</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;                thismodelgroup-&gt;<a class="code" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">training_threads</a>.erase(label);</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;            <span class="keywordflow">if</span> (state == <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada79c254231edb6503af11fccc5ec61c89">TRAINING_ERROR</a> || state == <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada623598a8d05182a56ad06fe394e226ad">TRAINING_ABORT</a>) {</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                thismodelgroup-&gt;<a class="code" href="class_model_group.html#ad6c72425f21b14c2924a0550d9bd2d45">remove</a>(label);</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;            }</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;        }</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        <span class="keywordflow">if</span> (thismodelgroup-&gt;<a class="code" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a>)</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;            thismodelgroup-&gt;<a class="code" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a>(model, state, thismodelgroup-&gt;<a class="code" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">trainingExtradata_</a>);</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    }</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;    </div>
-<div class="line"><a name="l00508"></a><span class="lineno"><a class="line" href="class_model_group.html#aaf504d90e762fbeb3cf576e840dfca96">  508</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#aaf504d90e762fbeb3cf576e840dfca96">set_trainingCallback</a>(<span class="keywordtype">void</span> (*callback)(<span class="keywordtype">void</span> *srcModel, <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, <span class="keywordtype">void</span>* extradata), <span class="keywordtype">void</span>* extradata) {</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        this-&gt;referenceModel_.set_trainingCallback(monitor_training, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=models.begin(); it != models.end(); ++it) {</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;            it-&gt;second.set_trainingCallback(monitor_training, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        }</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;        trainingExtradata_ = extradata;</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        trainingCallbackFunction_ = callback;</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;    }</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;    </div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;<span class="preprocessor">#pragma mark &gt; Performance</span></div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;</div>
-<div class="line"><a name="l00525"></a><span class="lineno"><a class="line" href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">  525</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">performance_init</a>()</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;    {</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;            it-&gt;second.performance_init();</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;        }</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        results_instant_likelihoods.resize(size());</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;        results_normalized_instant_likelihoods.resize(size());</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        results_normalized_likelihoods.resize(size());</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;        results_log_likelihoods.resize(size());</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        <span class="keywordflow">if</span> (bimodal_) {</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;            results_predicted_output.resize(dimension() - dimension_input());</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;            results_output_variance.resize(dimension() - dimension_input());</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        }</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    }</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;    </div>
-<div class="line"><a name="l00543"></a><span class="lineno"><a class="line" href="class_model_group.html#a29bedf9c8051563507ba18e03fe71785">  543</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a29bedf9c8051563507ba18e03fe71785">update_likelihood_results</a>()</div>
-<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    {</div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;        <span class="keywordtype">double</span> maxLogLikelihood;</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;        <span class="keywordtype">double</span> normconst_instant(0.0);</div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;        <span class="keywordtype">double</span> normconst_smoothed(0.0);</div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;        <span class="keywordtype">int</span> i(0);</div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it, ++i) {</div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;            results_instant_likelihoods[i] = it-&gt;second.results_instant_likelihood;</div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;            results_log_likelihoods[i] = it-&gt;second.results_log_likelihood;</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;            results_normalized_likelihoods[i] = exp(results_log_likelihoods[i]);</div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;            </div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;            normconst_instant += results_instant_likelihoods[i];</div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;            normconst_smoothed += results_normalized_likelihoods[i];</div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;            </div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;            <span class="keywordflow">if</span> (i == 0 || results_log_likelihoods[i] &gt; maxLogLikelihood) {</div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;                maxLogLikelihood = results_log_likelihoods[i];</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;                results_likeliest = it-&gt;first;</div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;            }</div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;        }</div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;        </div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;        i = 0;</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it, ++i) {</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;            results_normalized_likelihoods[i] /= normconst_smoothed;</div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;            results_normalized_instant_likelihoods[i] = results_instant_likelihoods[i] / normconst_instant;</div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;        }</div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    }</div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    </div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;<span class="preprocessor">#pragma mark === Public attributes ===</span></div>
-<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;</div>
-<div class="line"><a name="l00577"></a><span class="lineno"><a class="line" href="class_model_group.html#a032db28c116d1b343e5f3b1917761a88">  577</a></span>&#160;    map&lt;Label, ModelType&gt; <a class="code" href="class_model_group.html#a032db28c116d1b343e5f3b1917761a88">models</a>;</div>
+<div class="line"><a name="l00370"></a><span class="lineno"><a class="line" href="class_model_group.html#a1089e13eaae07083b4ee912c2bb3a348">  370</a></span>&#160;    vector&lt;string&gt; <span class="keyword">const</span>&amp; <a class="code" href="class_model_group.html#a1089e13eaae07083b4ee912c2bb3a348">get_column_names</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="keyword">    </span>{</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keywordflow">return</span> this-&gt;referenceModel_.get_column_names();</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    </div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="preprocessor">#pragma mark &gt; Training</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
+<div class="line"><a name="l00386"></a><span class="lineno"><a class="line" href="class_model_group.html#ad7a55df363d0e699b3fd831f2173d847">  386</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#ad7a55df363d0e699b3fd831f2173d847">train</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label)</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    {</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        stopTraining(label);</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        updateTrainingSet(label);</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        </div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        pthread_create(&amp;(training_threads[label]), NULL, &amp;ModelType::train_func, &amp;(this-&gt;models[label]));</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        models_to_train_++;</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        <span class="keywordflow">if</span> (!trainingCallbackFunction_) {</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            pthread_join(training_threads[label], NULL);</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        }</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        models[label].train();</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    }</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    </div>
+<div class="line"><a name="l00407"></a><span class="lineno"><a class="line" href="class_model_group.html#a3d38b77428febc66f34a0d852c22c3fa">  407</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a3d38b77428febc66f34a0d852c22c3fa">train</a>()</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    {</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        stopTraining();</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        </div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;        updateAllTrainingSets();</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        </div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            pthread_create(&amp;(training_threads[it-&gt;first]), NULL, &amp;ModelType::train_func, &amp;(it-&gt;second));</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            models_to_train_++;</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;        }</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        <span class="keywordflow">if</span> (!trainingCallbackFunction_) {</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                pthread_join(training_threads[it-&gt;first], NULL);</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;            }</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        }</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        training_threads.clear();</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        <span class="comment">// Sequential training</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;            models_to_train_++;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;            it-&gt;second.train();</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        }</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    }</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    </div>
+<div class="line"><a name="l00438"></a><span class="lineno"><a class="line" href="class_model_group.html#a2008199ab4262f1983fae46bc954e920">  438</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a2008199ab4262f1983fae46bc954e920">retrain</a>()</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    {</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        stopTraining();</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        updateAllTrainingSets();</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        </div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;            <span class="keywordflow">if</span> (!it-&gt;second.trained || it-&gt;second.trainingSet-&gt;has_changed()) {</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                pthread_create(&amp;(training_threads[it-&gt;first]), NULL, &amp;ModelType::train_func, &amp;(it-&gt;second));</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                <span class="keywordflow">if</span> (trainingCallbackFunction_)</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                    models_to_train_++;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            }</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        }</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        <span class="keywordflow">if</span> (!trainingCallbackFunction_) {</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                <span class="keywordflow">if</span> (!it-&gt;second.trained || it-&gt;second.trainingSet-&gt;has_changed()) {</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;                    pthread_join(training_threads[it-&gt;first], NULL);</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;                }</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;            }</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        }</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="comment">// Sequential training</span></div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;            <span class="keywordflow">if</span> (!it-&gt;second.trained || it-&gt;second.trainingSet-&gt;has_changed()) {</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;                it-&gt;second.train();</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;            }</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        }</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    }</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;    </div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;</div>
+<div class="line"><a name="l00476"></a><span class="lineno"><a class="line" href="class_model_group.html#a7c932f2fc24340bac9aedb723c636945">  476</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a7c932f2fc24340bac9aedb723c636945">stopTraining</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label) {</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        <span class="keywordflow">if</span> (this-&gt;models.find(label) != this-&gt;models.end())</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;            models[label].abortTraining(training_threads[label]);</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    }</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    </div>
+<div class="line"><a name="l00485"></a><span class="lineno"><a class="line" href="class_model_group.html#ae505bd5ac601281243869cc25e774594">  485</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#ae505bd5ac601281243869cc25e774594">stopTraining</a>() {</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;        <span class="keywordflow">for</span> (set&lt;Label&gt;::iterator label_it = globalTrainingSet-&gt;allLabels.begin(); label_it != globalTrainingSet-&gt;allLabels.end(); label_it++) {</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            stopTraining(*label_it);</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        }</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;    }</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;    </div>
+<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b">  495</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b">monitor_training</a>(<span class="keywordtype">void</span> *model, <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, <span class="keywordtype">void</span> *extradata)</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;    {</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;        <a class="code" href="class_model_group.html">ModelGroup&lt;ModelType&gt;</a> *thismodelgroup = (<a class="code" href="class_model_group.html">ModelGroup&lt;ModelType&gt;</a> *)extradata;</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        <span class="keywordflow">if</span> (state != <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada25328a5918d4be333f9c3aeac1cb2948">TRAINING_RUN</a>) {</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;            <a class="code" href="class_label.html">Label</a> label = ((ModelType *)model)-&gt;trainingSet-&gt;getPhraseLabel(0);</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;            thismodelgroup-&gt;<a class="code" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">models_to_train_</a>--;</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;            <span class="keywordflow">if</span> (thismodelgroup-&gt;<a class="code" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a>)</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;                thismodelgroup-&gt;<a class="code" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">training_threads</a>.erase(label);</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;            <span class="keywordflow">if</span> (state == <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada79c254231edb6503af11fccc5ec61c89">TRAINING_ERROR</a> || state == <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada623598a8d05182a56ad06fe394e226ad">TRAINING_ABORT</a>) {</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                thismodelgroup-&gt;<a class="code" href="class_model_group.html#ad6c72425f21b14c2924a0550d9bd2d45">remove</a>(label);</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;            }</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;        }</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        <span class="keywordflow">if</span> (thismodelgroup-&gt;<a class="code" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a>)</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;            thismodelgroup-&gt;<a class="code" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a>(model, state, thismodelgroup-&gt;<a class="code" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">trainingExtradata_</a>);</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;    }</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;    </div>
+<div class="line"><a name="l00517"></a><span class="lineno"><a class="line" href="class_model_group.html#aaf504d90e762fbeb3cf576e840dfca96">  517</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#aaf504d90e762fbeb3cf576e840dfca96">set_trainingCallback</a>(<span class="keywordtype">void</span> (*callback)(<span class="keywordtype">void</span> *srcModel, <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, <span class="keywordtype">void</span>* extradata), <span class="keywordtype">void</span>* extradata) {</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;        this-&gt;referenceModel_.set_trainingCallback(monitor_training, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=models.begin(); it != models.end(); ++it) {</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            it-&gt;second.set_trainingCallback(monitor_training, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        }</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;        trainingExtradata_ = extradata;</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;        trainingCallbackFunction_ = callback;</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;    }</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    </div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;<span class="preprocessor">#pragma mark &gt; Performance</span></div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;</div>
+<div class="line"><a name="l00534"></a><span class="lineno"><a class="line" href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">  534</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">performance_init</a>()</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;    {</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it) {</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;            it-&gt;second.performance_init();</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;        }</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        results_instant_likelihoods.resize(size());</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        results_normalized_instant_likelihoods.resize(size());</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;        results_normalized_likelihoods.resize(size());</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        results_log_likelihoods.resize(size());</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;        <span class="keywordflow">if</span> (bimodal_) {</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;            results_predicted_output.resize(dimension() - dimension_input());</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;            results_output_variance.resize(dimension() - dimension_input());</div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;        }</div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;    }</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;    </div>
+<div class="line"><a name="l00552"></a><span class="lineno"><a class="line" href="class_model_group.html#a29bedf9c8051563507ba18e03fe71785">  552</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a29bedf9c8051563507ba18e03fe71785">update_likelihood_results</a>()</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;    {</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;        <span class="keywordtype">double</span> maxLogLikelihood = 0.0;</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;        <span class="keywordtype">double</span> normconst_instant(0.0);</div>
+<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;        <span class="keywordtype">double</span> normconst_smoothed(0.0);</div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;        <span class="keywordtype">int</span> i(0);</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it, ++i) {</div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;            results_instant_likelihoods[i] = it-&gt;second.results_instant_likelihood;</div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;            results_log_likelihoods[i] = it-&gt;second.results_log_likelihood;</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;            results_normalized_likelihoods[i] = exp(results_log_likelihoods[i]);</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;            </div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;            normconst_instant += results_instant_likelihoods[i];</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;            normconst_smoothed += results_normalized_likelihoods[i];</div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;            </div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;            <span class="keywordflow">if</span> (i == 0 || results_log_likelihoods[i] &gt; maxLogLikelihood) {</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;                maxLogLikelihood = results_log_likelihoods[i];</div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;                results_likeliest = it-&gt;first;</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;            }</div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;        }</div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;        </div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;        i = 0;</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=this-&gt;models.begin(); it != this-&gt;models.end(); ++it, ++i) {</div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;            results_normalized_likelihoods[i] /= normconst_smoothed;</div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;            results_normalized_instant_likelihoods[i] = results_instant_likelihoods[i] / normconst_instant;</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;        }</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;    }</div>
 <div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;    </div>
-<div class="line"><a name="l00582"></a><span class="lineno"><a class="line" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">  582</a></span>&#160;    <a class="code" href="class_training_set.html">TrainingSet</a> *<a class="code" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">globalTrainingSet</a>;</div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;    </div>
-<div class="line"><a name="l00587"></a><span class="lineno"><a class="line" href="class_model_group.html#a5b3c941e340c44ef4bd7d18abea4e9d7">  587</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a5b3c941e340c44ef4bd7d18abea4e9d7">results_instant_likelihoods</a>;</div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;    </div>
-<div class="line"><a name="l00592"></a><span class="lineno"><a class="line" href="class_model_group.html#a8974ca93eb1dbc0002a59f7060f2a7bb">  592</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a8974ca93eb1dbc0002a59f7060f2a7bb">results_normalized_instant_likelihoods</a>;</div>
-<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;    </div>
-<div class="line"><a name="l00597"></a><span class="lineno"><a class="line" href="class_model_group.html#a6201f44ae379fc688601cf69e1523aae">  597</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a6201f44ae379fc688601cf69e1523aae">results_normalized_likelihoods</a>;</div>
-<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;    </div>
-<div class="line"><a name="l00602"></a><span class="lineno"><a class="line" href="class_model_group.html#a5ee2ecaae89be75fca839d871cc5d82c">  602</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a5ee2ecaae89be75fca839d871cc5d82c">results_log_likelihoods</a>;</div>
-<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;    </div>
-<div class="line"><a name="l00607"></a><span class="lineno"><a class="line" href="class_model_group.html#a2c1a25a75af8d2d029447c5747e4a5a7">  607</a></span>&#160;    <a class="code" href="class_label.html">Label</a> <a class="code" href="class_model_group.html#a2c1a25a75af8d2d029447c5747e4a5a7">results_likeliest</a>;</div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;    </div>
-<div class="line"><a name="l00613"></a><span class="lineno"><a class="line" href="class_model_group.html#a8f6aad901bb43e4b2022b0b6f979ed83">  613</a></span>&#160;    vector&lt;float&gt; <a class="code" href="class_model_group.html#a8f6aad901bb43e4b2022b0b6f979ed83">results_predicted_output</a>;</div>
-<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;    </div>
-<div class="line"><a name="l00619"></a><span class="lineno"><a class="line" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">  619</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">results_output_variance</a>;</div>
-<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;    </div>
-<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;<span class="preprocessor">#pragma mark === Protected Methods ===</span></div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;<span class="preprocessor">#pragma mark &gt; Training Set</span></div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;</div>
-<div class="line"><a name="l00628"></a><span class="lineno"><a class="line" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">  628</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a>(<span class="keywordtype">string</span> attribute)</div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;    {</div>
-<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;        referenceModel_.notify(attribute);</div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=models.begin(); it != models.end(); ++it) {</div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;            it-&gt;second.notify(attribute);</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;        }</div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;        <span class="keywordflow">if</span> (attribute == <span class="stringliteral">&quot;destruction&quot;</span>) {</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;            globalTrainingSet = NULL;</div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;            <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;        }</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    }</div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;    </div>
-<div class="line"><a name="l00643"></a><span class="lineno"><a class="line" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">  643</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a>()</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;    {</div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;        globalTrainingSet-&gt;<a class="code" href="class_training_set.html#ab675b1b284e11c3a409fc8775ba01d41">updateSubTrainingSets</a>();</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;        </div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;        <span class="comment">// Look for deleted classes</span></div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;        <span class="keywordtype">bool</span> contLoop(<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;        <span class="keywordflow">while</span> (contLoop) {</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;            contLoop = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;            <span class="keywordflow">for</span> (model_iterator it = models.begin(); it != models.end(); ++it) {</div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;                <span class="keywordflow">if</span> (globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.find(it-&gt;first) == globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.end())</div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;                {</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;                    models.erase(it-&gt;first);</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;                    contLoop = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;                }</div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;            }</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;        }</div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;    }</div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;    </div>
-<div class="line"><a name="l00667"></a><span class="lineno"><a class="line" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">  667</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">updateTrainingSet</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label)</div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;    {</div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;        <span class="keywordflow">if</span> (globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.find(label) == globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.end())</div>
-<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;            <span class="keywordflow">throw</span> out_of_range(<span class="stringliteral">&quot;Class &quot;</span> + label.<a class="code" href="class_label.html#a8cd5a81c523827afa6dd8984187261d4">as_string</a>() + <span class="stringliteral">&quot; does not exist&quot;</span>);</div>
-<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;        </div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;        <span class="keywordflow">if</span> (models.find(label) == models.end()) {</div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;            models[label] = referenceModel_;</div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;        }</div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;        </div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;        <a class="code" href="class_training_set.html">TrainingSet</a>* new_ts = globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a516bc2b0ab0ee261a18ebbd7a95515d9">getSubTrainingSetForClass</a>(label);</div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;        models[label].set_trainingSet(new_ts);</div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;        models[label].trained = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;    }</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;    </div>
-<div class="line"><a name="l00685"></a><span class="lineno"><a class="line" href="class_model_group.html#a70d856b514563568236e2986407f9e59">  685</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a>()</div>
-<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;    {</div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;        <span class="keywordflow">if</span> (!globalTrainingSet-&gt;<a class="code" href="class_training_set.html#ae2ef357e5c4deb24a3bee3ea560c2040">has_changed</a>()) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;        removeDeprecatedModels();</div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;        </div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;        <span class="comment">// Update classes models and training sets</span></div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">typename</span> set&lt;Label&gt;::iterator it=globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.begin(); it != globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.end(); ++it)</div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;        {</div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;            updateTrainingSet(*it);</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;        }</div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;        </div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;        globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a1bafcae02772389a006d3b676be88c44">set_unchanged</a>();</div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;    }</div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;    </div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;<span class="preprocessor">#pragma mark === Protected attributes ===</span></div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;</div>
-<div class="line"><a name="l00704"></a><span class="lineno"><a class="line" href="class_model_group.html#a027be98accd769515a55ab7947d10873">  704</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_model_group.html#a027be98accd769515a55ab7947d10873">bimodal_</a>;</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;    </div>
-<div class="line"><a name="l00710"></a><span class="lineno"><a class="line" href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">  710</a></span>&#160;    <a class="code" href="class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4">GROUP_ESTIMATION_MODE</a> <a class="code" href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">performanceMode_</a>;</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;    </div>
-<div class="line"><a name="l00715"></a><span class="lineno"><a class="line" href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">  715</a></span>&#160;    ModelType <a class="code" href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">referenceModel_</a>;</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;<span class="preprocessor">#pragma mark === Public attributes ===</span></div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;</div>
+<div class="line"><a name="l00586"></a><span class="lineno"><a class="line" href="class_model_group.html#a032db28c116d1b343e5f3b1917761a88">  586</a></span>&#160;    map&lt;Label, ModelType&gt; <a class="code" href="class_model_group.html#a032db28c116d1b343e5f3b1917761a88">models</a>;</div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;    </div>
+<div class="line"><a name="l00591"></a><span class="lineno"><a class="line" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">  591</a></span>&#160;    <a class="code" href="class_training_set.html">TrainingSet</a> *<a class="code" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">globalTrainingSet</a>;</div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;    </div>
+<div class="line"><a name="l00596"></a><span class="lineno"><a class="line" href="class_model_group.html#a5b3c941e340c44ef4bd7d18abea4e9d7">  596</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a5b3c941e340c44ef4bd7d18abea4e9d7">results_instant_likelihoods</a>;</div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;    </div>
+<div class="line"><a name="l00601"></a><span class="lineno"><a class="line" href="class_model_group.html#a8974ca93eb1dbc0002a59f7060f2a7bb">  601</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a8974ca93eb1dbc0002a59f7060f2a7bb">results_normalized_instant_likelihoods</a>;</div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;    </div>
+<div class="line"><a name="l00606"></a><span class="lineno"><a class="line" href="class_model_group.html#a6201f44ae379fc688601cf69e1523aae">  606</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a6201f44ae379fc688601cf69e1523aae">results_normalized_likelihoods</a>;</div>
+<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;    </div>
+<div class="line"><a name="l00611"></a><span class="lineno"><a class="line" href="class_model_group.html#a5ee2ecaae89be75fca839d871cc5d82c">  611</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a5ee2ecaae89be75fca839d871cc5d82c">results_log_likelihoods</a>;</div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;    </div>
+<div class="line"><a name="l00616"></a><span class="lineno"><a class="line" href="class_model_group.html#a2c1a25a75af8d2d029447c5747e4a5a7">  616</a></span>&#160;    <a class="code" href="class_label.html">Label</a> <a class="code" href="class_model_group.html#a2c1a25a75af8d2d029447c5747e4a5a7">results_likeliest</a>;</div>
+<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;    </div>
+<div class="line"><a name="l00622"></a><span class="lineno"><a class="line" href="class_model_group.html#a8f6aad901bb43e4b2022b0b6f979ed83">  622</a></span>&#160;    vector&lt;float&gt; <a class="code" href="class_model_group.html#a8f6aad901bb43e4b2022b0b6f979ed83">results_predicted_output</a>;</div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;    </div>
+<div class="line"><a name="l00628"></a><span class="lineno"><a class="line" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">  628</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">results_output_variance</a>;</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;    </div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;<span class="preprocessor">#ifdef XMM_TESTING</span></div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;<span class="preprocessor">#pragma mark === Protected Methods ===</span></div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;<span class="preprocessor">#pragma mark &gt; Training Set</span></div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;</div>
+<div class="line"><a name="l00639"></a><span class="lineno"><a class="line" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">  639</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a>(<span class="keywordtype">string</span> attribute)</div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;    {</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;        referenceModel_.notify(attribute);</div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;        <span class="keywordflow">for</span> (model_iterator it=models.begin(); it != models.end(); ++it) {</div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;            it-&gt;second.notify(attribute);</div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;        }</div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;        <span class="keywordflow">if</span> (attribute == <span class="stringliteral">&quot;destruction&quot;</span>) {</div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;            globalTrainingSet = NULL;</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;            <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;        }</div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;    }</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;    </div>
+<div class="line"><a name="l00654"></a><span class="lineno"><a class="line" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">  654</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a>()</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;    {</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;        globalTrainingSet-&gt;<a class="code" href="class_training_set.html#ab675b1b284e11c3a409fc8775ba01d41">updateSubTrainingSets</a>();</div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;        </div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;        <span class="comment">// Look for deleted classes</span></div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;        <span class="keywordtype">bool</span> contLoop(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;        <span class="keywordflow">while</span> (contLoop) {</div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;            contLoop = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;            <span class="keywordflow">for</span> (model_iterator it = models.begin(); it != models.end(); ++it) {</div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;                <span class="keywordflow">if</span> (globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.find(it-&gt;first) == globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.end())</div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;                {</div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;                    models.erase(it-&gt;first);</div>
+<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;                    contLoop = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;                }</div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;            }</div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;        }</div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;    }</div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;    </div>
+<div class="line"><a name="l00678"></a><span class="lineno"><a class="line" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">  678</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">updateTrainingSet</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label)</div>
+<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;    {</div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;        <span class="keywordflow">if</span> (globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.find(label) == globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.end())</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;            <span class="keywordflow">throw</span> out_of_range(<span class="stringliteral">&quot;Class &quot;</span> + label.<a class="code" href="class_label.html#a8cd5a81c523827afa6dd8984187261d4">as_string</a>() + <span class="stringliteral">&quot; does not exist&quot;</span>);</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;        </div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;        <span class="keywordflow">if</span> (models.find(label) == models.end()) {</div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;            models[label] = referenceModel_;</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;        }</div>
+<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;        </div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;        <a class="code" href="class_training_set.html">TrainingSet</a>* new_ts = globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a516bc2b0ab0ee261a18ebbd7a95515d9">getSubTrainingSetForClass</a>(label);</div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;        models[label].set_trainingSet(new_ts);</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;        models[label].trained = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;    }</div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;    </div>
+<div class="line"><a name="l00696"></a><span class="lineno"><a class="line" href="class_model_group.html#a70d856b514563568236e2986407f9e59">  696</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a>()</div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;    {</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;        <span class="keywordflow">if</span> (!globalTrainingSet-&gt;<a class="code" href="class_training_set.html#ae2ef357e5c4deb24a3bee3ea560c2040">has_changed</a>()) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;        removeDeprecatedModels();</div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;        </div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;        <span class="comment">// Update classes models and training sets</span></div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">typename</span> set&lt;Label&gt;::iterator it=globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.begin(); it != globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>.end(); ++it)</div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;        {</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;            updateTrainingSet(*it);</div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;        }</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;        </div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;        globalTrainingSet-&gt;<a class="code" href="class_training_set.html#a1bafcae02772389a006d3b676be88c44">set_unchanged</a>();</div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;    }</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;    </div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;<span class="preprocessor">#pragma mark === Protected attributes ===</span></div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;</div>
+<div class="line"><a name="l00715"></a><span class="lineno"><a class="line" href="class_model_group.html#a027be98accd769515a55ab7947d10873">  715</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_model_group.html#a027be98accd769515a55ab7947d10873">bimodal_</a>;</div>
 <div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;    </div>
-<div class="line"><a name="l00720"></a><span class="lineno"><a class="line" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">  720</a></span>&#160;    void (*trainingCallbackFunction_)(<span class="keywordtype">void</span> *srcModel, <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, <span class="keywordtype">void</span>* extradata);</div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;    </div>
-<div class="line"><a name="l00725"></a><span class="lineno"><a class="line" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">  725</a></span>&#160;    <span class="keywordtype">void</span> *<a class="code" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">trainingExtradata_</a>;</div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;    </div>
-<div class="line"><a name="l00730"></a><span class="lineno"><a class="line" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">  730</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">models_to_train_</a>;</div>
-<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;    </div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;</div>
-<div class="line"><a name="l00737"></a><span class="lineno"><a class="line" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">  737</a></span>&#160;    map&lt;Label, pthread_t&gt; <a class="code" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">training_threads</a>;</div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;};</div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;</div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_training_set_html_ae2ef357e5c4deb24a3bee3ea560c2040"><div class="ttname"><a href="class_training_set.html#ae2ef357e5c4deb24a3bee3ea560c2040">TrainingSet::has_changed</a></div><div class="ttdeci">bool has_changed()</div><div class="ttdoc">check if the training data has changed. </div><div class="ttdef"><b>Definition:</b> training_set.cpp:118</div></div>
+<div class="line"><a name="l00721"></a><span class="lineno"><a class="line" href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">  721</a></span>&#160;    <a class="code" href="class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4">GROUP_ESTIMATION_MODE</a> <a class="code" href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">performanceMode_</a>;</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;    </div>
+<div class="line"><a name="l00726"></a><span class="lineno"><a class="line" href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">  726</a></span>&#160;    ModelType <a class="code" href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">referenceModel_</a>;</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;    </div>
+<div class="line"><a name="l00731"></a><span class="lineno"><a class="line" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">  731</a></span>&#160;    void (*trainingCallbackFunction_)(<span class="keywordtype">void</span> *srcModel, <a class="code" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, <span class="keywordtype">void</span>* extradata);</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;    </div>
+<div class="line"><a name="l00736"></a><span class="lineno"><a class="line" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">  736</a></span>&#160;    <span class="keywordtype">void</span> *<a class="code" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">trainingExtradata_</a>;</div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;    </div>
+<div class="line"><a name="l00741"></a><span class="lineno"><a class="line" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">  741</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">models_to_train_</a>;</div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;    </div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;<span class="preprocessor">#ifdef USE_PTHREAD</span></div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;</div>
+<div class="line"><a name="l00748"></a><span class="lineno"><a class="line" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">  748</a></span>&#160;    map&lt;Label, pthread_t&gt; <a class="code" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">training_threads</a>;</div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;};</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;</div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_training_set_html_ae2ef357e5c4deb24a3bee3ea560c2040"><div class="ttname"><a href="class_training_set.html#ae2ef357e5c4deb24a3bee3ea560c2040">TrainingSet::has_changed</a></div><div class="ttdeci">bool has_changed()</div><div class="ttdoc">check if the training data has changed. </div><div class="ttdef"><b>Definition:</b> training_set.cpp:119</div></div>
 <div class="ttc" id="class_model_group_html_a7ffaa4599a9e164784ec5da074d8f2b4"><div class="ttname"><a href="class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4">ModelGroup&lt; GMM &gt;::GROUP_ESTIMATION_MODE</a></div><div class="ttdeci">GROUP_ESTIMATION_MODE</div><div class="ttdef"><b>Definition:</b> model_group.h:63</div></div>
 <div class="ttc" id="class_model_group_html_a22e4541410495cef794ad0da45038f16"><div class="ttname"><a href="class_model_group.html#a22e4541410495cef794ad0da45038f16">ModelGroup::is_trained</a></div><div class="ttdeci">bool is_trained() const </div><div class="ttdoc">Check if all models have been trained. </div><div class="ttdef"><b>Definition:</b> model_group.h:156</div></div>
 <div class="ttc" id="class_model_group_html_affc27f259ee7d005548136b79f32480b"><div class="ttname"><a href="class_model_group.html#affc27f259ee7d005548136b79f32480b">ModelGroup::set_EM_maxSteps</a></div><div class="ttdeci">void set_EM_maxSteps(unsigned int steps)</div><div class="ttdoc">Set maximum number of steps of the EM algorithm. </div><div class="ttdef"><b>Definition:</b> model_group.h:322</div></div>
-<div class="ttc" id="class_training_set_html_a516bc2b0ab0ee261a18ebbd7a95515d9"><div class="ttname"><a href="class_training_set.html#a516bc2b0ab0ee261a18ebbd7a95515d9">TrainingSet::getSubTrainingSetForClass</a></div><div class="ttdeci">TrainingSet * getSubTrainingSetForClass(Label const &amp;label)</div><div class="ttdoc">get the pointer to the sub-training set containing all phrases with a given label ...</div><div class="ttdef"><b>Definition:</b> training_set.cpp:407</div></div>
+<div class="ttc" id="class_training_set_html_a516bc2b0ab0ee261a18ebbd7a95515d9"><div class="ttname"><a href="class_training_set.html#a516bc2b0ab0ee261a18ebbd7a95515d9">TrainingSet::getSubTrainingSetForClass</a></div><div class="ttdeci">TrainingSet * getSubTrainingSetForClass(Label const &amp;label)</div><div class="ttdoc">get the pointer to the sub-training set containing all phrases with a given label ...</div><div class="ttdef"><b>Definition:</b> training_set.cpp:433</div></div>
 <div class="ttc" id="class_model_group_html_af1581fd581a27d18150ae26c538748bf"><div class="ttname"><a href="class_model_group.html#af1581fd581a27d18150ae26c538748bf">ModelGroup::get_EM_percentChange</a></div><div class="ttdeci">double get_EM_percentChange() const </div><div class="ttdoc">Get EM convergence threshold in percent-change of the likelihood. </div><div class="ttdef"><b>Definition:</b> model_group.h:299</div></div>
 <div class="ttc" id="class_model_group_html_ad6c72425f21b14c2924a0550d9bd2d45"><div class="ttname"><a href="class_model_group.html#ad6c72425f21b14c2924a0550d9bd2d45">ModelGroup::remove</a></div><div class="ttdeci">virtual void remove(Label const &amp;label)</div><div class="ttdoc">Remove Specific model. </div><div class="ttdef"><b>Definition:</b> model_group.h:193</div></div>
-<div class="ttc" id="class_model_group_html_a3d38b77428febc66f34a0d852c22c3fa"><div class="ttname"><a href="class_model_group.html#a3d38b77428febc66f34a0d852c22c3fa">ModelGroup::train</a></div><div class="ttdeci">virtual void train()</div><div class="ttdoc">Train All model even if their data have not changed. </div><div class="ttdef"><b>Definition:</b> model_group.h:399</div></div>
+<div class="ttc" id="class_model_group_html_a3d38b77428febc66f34a0d852c22c3fa"><div class="ttname"><a href="class_model_group.html#a3d38b77428febc66f34a0d852c22c3fa">ModelGroup::train</a></div><div class="ttdeci">virtual void train()</div><div class="ttdoc">Train All model even if their data have not changed. </div><div class="ttdef"><b>Definition:</b> model_group.h:407</div></div>
 <div class="ttc" id="class_model_group_html_a255038345858cd9d3e23edf5a8d02d0a"><div class="ttname"><a href="class_model_group.html#a255038345858cd9d3e23edf5a8d02d0a">ModelGroup::size</a></div><div class="ttdeci">unsigned int size() const </div><div class="ttdoc">get the number of models </div><div class="ttdef"><b>Definition:</b> model_group.h:171</div></div>
-<div class="ttc" id="class_model_group_html_a29bedf9c8051563507ba18e03fe71785"><div class="ttname"><a href="class_model_group.html#a29bedf9c8051563507ba18e03fe71785">ModelGroup::update_likelihood_results</a></div><div class="ttdeci">virtual void update_likelihood_results()</div><div class="ttdoc">Update the results (Likelihoods) </div><div class="ttdef"><b>Definition:</b> model_group.h:543</div></div>
+<div class="ttc" id="class_model_group_html_a29bedf9c8051563507ba18e03fe71785"><div class="ttname"><a href="class_model_group.html#a29bedf9c8051563507ba18e03fe71785">ModelGroup::update_likelihood_results</a></div><div class="ttdeci">virtual void update_likelihood_results()</div><div class="ttdoc">Update the results (Likelihoods) </div><div class="ttdef"><b>Definition:</b> model_group.h:552</div></div>
 <div class="ttc" id="class_model_group_html_a0b8ed2e096905ce5b350f426b9ce65fc"><div class="ttname"><a href="class_model_group.html#a0b8ed2e096905ce5b350f426b9ce65fc">ModelGroup::get_likelihoodwindow</a></div><div class="ttdeci">unsigned int get_likelihoodwindow() const </div><div class="ttdoc">get size of the likelihood smoothing buffer (number of frames) </div><div class="ttdef"><b>Definition:</b> model_group.h:348</div></div>
-<div class="ttc" id="class_model_group_html_a53d911a9c559e2edf8019d2d393552fe"><div class="ttname"><a href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">ModelGroup::globalTrainingSet</a></div><div class="ttdeci">TrainingSet * globalTrainingSet</div><div class="ttdoc">Global Training set for all labels. </div><div class="ttdef"><b>Definition:</b> model_group.h:582</div></div>
-<div class="ttc" id="class_model_group_html_a5ee2ecaae89be75fca839d871cc5d82c"><div class="ttname"><a href="class_model_group.html#a5ee2ecaae89be75fca839d871cc5d82c">ModelGroup::results_log_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_log_likelihoods</div><div class="ttdoc">Result: Windowed Cumulative Log-Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:602</div></div>
+<div class="ttc" id="class_model_group_html_a53d911a9c559e2edf8019d2d393552fe"><div class="ttname"><a href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">ModelGroup::globalTrainingSet</a></div><div class="ttdeci">TrainingSet * globalTrainingSet</div><div class="ttdoc">Global Training set for all labels. </div><div class="ttdef"><b>Definition:</b> model_group.h:591</div></div>
+<div class="ttc" id="class_model_group_html_a5ee2ecaae89be75fca839d871cc5d82c"><div class="ttname"><a href="class_model_group.html#a5ee2ecaae89be75fca839d871cc5d82c">ModelGroup::results_log_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_log_likelihoods</div><div class="ttdoc">Result: Windowed Cumulative Log-Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:611</div></div>
 <div class="ttc" id="class_model_group_html_acffb5a2e6ff5d4a4107c9deaaa94e315"><div class="ttname"><a href="class_model_group.html#acffb5a2e6ff5d4a4107c9deaaa94e315">ModelGroup::is_training</a></div><div class="ttdeci">bool is_training() const </div><div class="ttdoc">Check if at least 1 model is still training. </div><div class="ttdef"><b>Definition:</b> model_group.h:133</div></div>
 <div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
-<div class="ttc" id="class_model_group_html_a333d2b0f0aacd5b0120dcac69d39a907"><div class="ttname"><a href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">ModelGroup::trainingExtradata_</a></div><div class="ttdeci">void * trainingExtradata_</div><div class="ttdoc">Extra data to pass in argument to the callback function. </div><div class="ttdef"><b>Definition:</b> model_group.h:725</div></div>
-<div class="ttc" id="class_writable_html"><div class="ttname"><a href="class_writable.html">Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:109</div></div>
-<div class="ttc" id="class_training_set_html_af8acb539f7facc780bd9ad19f8f15cb7"><div class="ttname"><a href="class_training_set.html#af8acb539f7facc780bd9ad19f8f15cb7">TrainingSet::add_listener</a></div><div class="ttdeci">void add_listener(Listener *listener)</div><div class="ttdoc">Add a listener to the training set. The listeners are notified when an attribute (e.g. dimension) of the training set is modified. </div><div class="ttdef"><b>Definition:</b> training_set.cpp:128</div></div>
-<div class="ttc" id="class_model_group_html_a4d31d8f0f7a795bca768a3a527f82b2b"><div class="ttname"><a href="class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b">ModelGroup::monitor_training</a></div><div class="ttdeci">static void monitor_training(void *model, CALLBACK_FLAG state, void *extradata)</div><div class="ttdoc">Monitors the training of each model of the group. </div><div class="ttdef"><b>Definition:</b> model_group.h:486</div></div>
+<div class="ttc" id="class_model_group_html_a333d2b0f0aacd5b0120dcac69d39a907"><div class="ttname"><a href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">ModelGroup::trainingExtradata_</a></div><div class="ttdeci">void * trainingExtradata_</div><div class="ttdoc">Extra data to pass in argument to the callback function. </div><div class="ttdef"><b>Definition:</b> model_group.h:736</div></div>
+<div class="ttc" id="class_writable_html"><div class="ttname"><a href="class_writable.html">Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:114</div></div>
+<div class="ttc" id="class_training_set_html_af8acb539f7facc780bd9ad19f8f15cb7"><div class="ttname"><a href="class_training_set.html#af8acb539f7facc780bd9ad19f8f15cb7">TrainingSet::add_listener</a></div><div class="ttdeci">void add_listener(Listener *listener)</div><div class="ttdoc">Add a listener to the training set. The listeners are notified when an attribute (e.g. dimension) of the training set is modified. </div><div class="ttdef"><b>Definition:</b> training_set.cpp:129</div></div>
+<div class="ttc" id="class_model_group_html_a4d31d8f0f7a795bca768a3a527f82b2b"><div class="ttname"><a href="class_model_group.html#a4d31d8f0f7a795bca768a3a527f82b2b">ModelGroup::monitor_training</a></div><div class="ttdeci">static void monitor_training(void *model, CALLBACK_FLAG state, void *extradata)</div><div class="ttdoc">Monitors the training of each model of the group. </div><div class="ttdef"><b>Definition:</b> model_group.h:495</div></div>
 <div class="ttc" id="probabilistic__model_8h_html_ab1d11584e349221ce1ccfd39164251ada623598a8d05182a56ad06fe394e226ad"><div class="ttname"><a href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada623598a8d05182a56ad06fe394e226ad">TRAINING_ABORT</a></div><div class="ttdef"><b>Definition:</b> probabilistic_model.h:71</div></div>
-<div class="ttc" id="class_model_group_html_a8974ca93eb1dbc0002a59f7060f2a7bb"><div class="ttname"><a href="class_model_group.html#a8974ca93eb1dbc0002a59f7060f2a7bb">ModelGroup::results_normalized_instant_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_normalized_instant_likelihoods</div><div class="ttdoc">Result: Normalized Instantaneous Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:592</div></div>
-<div class="ttc" id="class_model_group_html_a68ec6459fd3874468e9eb66f10f519fd"><div class="ttname"><a href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">ModelGroup::models_to_train_</a></div><div class="ttdeci">unsigned int models_to_train_</div><div class="ttdoc">Number of Models that are still training. </div><div class="ttdef"><b>Definition:</b> model_group.h:730</div></div>
+<div class="ttc" id="class_model_group_html_a8974ca93eb1dbc0002a59f7060f2a7bb"><div class="ttname"><a href="class_model_group.html#a8974ca93eb1dbc0002a59f7060f2a7bb">ModelGroup::results_normalized_instant_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_normalized_instant_likelihoods</div><div class="ttdoc">Result: Normalized Instantaneous Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:601</div></div>
+<div class="ttc" id="class_model_group_html_a68ec6459fd3874468e9eb66f10f519fd"><div class="ttname"><a href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">ModelGroup::models_to_train_</a></div><div class="ttdeci">unsigned int models_to_train_</div><div class="ttdoc">Number of Models that are still training. </div><div class="ttdef"><b>Definition:</b> model_group.h:741</div></div>
 <div class="ttc" id="class_training_set_html"><div class="ttname"><a href="class_training_set.html">TrainingSet</a></div><div class="ttdoc">Base class for the definition of (multimodal) training sets. </div><div class="ttdef"><b>Definition:</b> training_set.h:49</div></div>
 <div class="ttc" id="class_model_group_html_acf0a84f8fd05fdcaa4251d07cbf9de3b"><div class="ttname"><a href="class_model_group.html#acf0a84f8fd05fdcaa4251d07cbf9de3b">ModelGroup::get_EM_maxSteps</a></div><div class="ttdeci">unsigned int get_EM_maxSteps() const </div><div class="ttdoc">Get maximum number of EM steps. </div><div class="ttdef"><b>Definition:</b> model_group.h:289</div></div>
-<div class="ttc" id="class_model_group_html_a2c1a25a75af8d2d029447c5747e4a5a7"><div class="ttname"><a href="class_model_group.html#a2c1a25a75af8d2d029447c5747e4a5a7">ModelGroup::results_likeliest</a></div><div class="ttdeci">Label results_likeliest</div><div class="ttdoc">Result: Label of the likeliest model. </div><div class="ttdef"><b>Definition:</b> model_group.h:607</div></div>
+<div class="ttc" id="class_model_group_html_a2c1a25a75af8d2d029447c5747e4a5a7"><div class="ttname"><a href="class_model_group.html#a2c1a25a75af8d2d029447c5747e4a5a7">ModelGroup::results_likeliest</a></div><div class="ttdeci">Label results_likeliest</div><div class="ttdoc">Result: Label of the likeliest model. </div><div class="ttdef"><b>Definition:</b> model_group.h:616</div></div>
 <div class="ttc" id="class_model_group_html_af82bb51d8495a7b24a47ce7d73bf4621"><div class="ttname"><a href="class_model_group.html#af82bb51d8495a7b24a47ce7d73bf4621">ModelGroup::const_model_iterator</a></div><div class="ttdeci">map&lt; Label, ModelType &gt;::const_iterator const_model_iterator</div><div class="ttdoc">Constant Iterator over models. </div><div class="ttdef"><b>Definition:</b> model_group.h:83</div></div>
 <div class="ttc" id="class_model_group_html_a4fd979e956c0e13842599a82dfa4758b"><div class="ttname"><a href="class_model_group.html#a4fd979e956c0e13842599a82dfa4758b">ModelGroup::get_performanceMode</a></div><div class="ttdeci">string get_performanceMode()</div><div class="ttdoc">Get the performance mode (likeliest vs mixture) </div><div class="ttdef"><b>Definition:</b> model_group.h:267</div></div>
 <div class="ttc" id="class_model_group_html_a7b476bd31ca091504f00ebda04b63cdb"><div class="ttname"><a href="class_model_group.html#a7b476bd31ca091504f00ebda04b63cdb">ModelGroup::is_trained</a></div><div class="ttdeci">bool is_trained(Label const &amp;label) const </div><div class="ttdoc">Check if a model has been trained. </div><div class="ttdef"><b>Definition:</b> model_group.h:144</div></div>
-<div class="ttc" id="class_model_group_html_ae505bd5ac601281243869cc25e774594"><div class="ttname"><a href="class_model_group.html#ae505bd5ac601281243869cc25e774594">ModelGroup::stopTraining</a></div><div class="ttdeci">void stopTraining()</div><div class="ttdoc">Aborts training of all models. </div><div class="ttdef"><b>Definition:</b> model_group.h:476</div></div>
-<div class="ttc" id="class_model_group_html_a781ed70d4e42f1e535e1a26f44806d6a"><div class="ttname"><a href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">ModelGroup::training_threads</a></div><div class="ttdeci">map&lt; Label, pthread_t &gt; training_threads</div><div class="ttdoc">Training Threads. </div><div class="ttdef"><b>Definition:</b> model_group.h:737</div></div>
-<div class="ttc" id="class_model_group_html_a032db28c116d1b343e5f3b1917761a88"><div class="ttname"><a href="class_model_group.html#a032db28c116d1b343e5f3b1917761a88">ModelGroup::models</a></div><div class="ttdeci">map&lt; Label, ModelType &gt; models</div><div class="ttdoc">Models stored in a map. Each model is associated with a label. </div><div class="ttdef"><b>Definition:</b> model_group.h:577</div></div>
+<div class="ttc" id="class_model_group_html_ae505bd5ac601281243869cc25e774594"><div class="ttname"><a href="class_model_group.html#ae505bd5ac601281243869cc25e774594">ModelGroup::stopTraining</a></div><div class="ttdeci">void stopTraining()</div><div class="ttdoc">Aborts training of all models. </div><div class="ttdef"><b>Definition:</b> model_group.h:485</div></div>
+<div class="ttc" id="class_model_group_html_a781ed70d4e42f1e535e1a26f44806d6a"><div class="ttname"><a href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">ModelGroup::training_threads</a></div><div class="ttdeci">map&lt; Label, pthread_t &gt; training_threads</div><div class="ttdoc">Training Threads. </div><div class="ttdef"><b>Definition:</b> model_group.h:748</div></div>
+<div class="ttc" id="class_model_group_html_a032db28c116d1b343e5f3b1917761a88"><div class="ttname"><a href="class_model_group.html#a032db28c116d1b343e5f3b1917761a88">ModelGroup::models</a></div><div class="ttdeci">map&lt; Label, ModelType &gt; models</div><div class="ttdoc">Models stored in a map. Each model is associated with a label. </div><div class="ttdef"><b>Definition:</b> model_group.h:586</div></div>
 <div class="ttc" id="probabilistic__model_8h_html_ab1d11584e349221ce1ccfd39164251ad"><div class="ttname"><a href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a></div><div class="ttdeci">CALLBACK_FLAG</div><div class="ttdoc">Flags for the Callback called by the training algorithm. </div><div class="ttdef"><b>Definition:</b> probabilistic_model.h:51</div></div>
 <div class="ttc" id="class_model_group_html"><div class="ttname"><a href="class_model_group.html">ModelGroup</a></div><div class="ttdoc">Handle machine learning models running in parallel. </div><div class="ttdef"><b>Definition:</b> model_group.h:53</div></div>
-<div class="ttc" id="class_training_set_html_ab675b1b284e11c3a409fc8775ba01d41"><div class="ttname"><a href="class_training_set.html#ab675b1b284e11c3a409fc8775ba01d41">TrainingSet::updateSubTrainingSets</a></div><div class="ttdeci">void updateSubTrainingSets()</div><div class="ttdoc">create all the sub-training sets: one for each label </div><div class="ttdef"><b>Definition:</b> training_set.cpp:431</div></div>
+<div class="ttc" id="class_training_set_html_ab675b1b284e11c3a409fc8775ba01d41"><div class="ttname"><a href="class_training_set.html#ab675b1b284e11c3a409fc8775ba01d41">TrainingSet::updateSubTrainingSets</a></div><div class="ttdeci">void updateSubTrainingSets()</div><div class="ttdoc">create all the sub-training sets: one for each label </div><div class="ttdef"><b>Definition:</b> training_set.cpp:458</div></div>
 <div class="ttc" id="class_model_group_html_a5096bd68aa75b1c853924b9a08775fc0"><div class="ttname"><a href="class_model_group.html#a5096bd68aa75b1c853924b9a08775fc0">ModelGroup::clear</a></div><div class="ttdeci">virtual void clear()</div><div class="ttdoc">Remove All models. </div><div class="ttdef"><b>Definition:</b> model_group.h:179</div></div>
-<div class="ttc" id="class_model_group_html_a9c031af30991da14d11b3fa22ee3eded"><div class="ttname"><a href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">ModelGroup::removeDeprecatedModels</a></div><div class="ttdeci">virtual void removeDeprecatedModels()</div><div class="ttdoc">Remove models which label is not in the training set anymore. </div><div class="ttdef"><b>Definition:</b> model_group.h:643</div></div>
+<div class="ttc" id="class_model_group_html_a9c031af30991da14d11b3fa22ee3eded"><div class="ttname"><a href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">ModelGroup::removeDeprecatedModels</a></div><div class="ttdeci">virtual void removeDeprecatedModels()</div><div class="ttdoc">Remove models which label is not in the training set anymore. </div><div class="ttdef"><b>Definition:</b> model_group.h:654</div></div>
 <div class="ttc" id="class_model_group_html_ad457491845e48a536b3d0c55cc486d25"><div class="ttname"><a href="class_model_group.html#ad457491845e48a536b3d0c55cc486d25">ModelGroup::set_trainingSet</a></div><div class="ttdeci">void set_trainingSet(TrainingSet *globalTrainingSet)</div><div class="ttdoc">Set pointer to the global training set. </div><div class="ttdef"><b>Definition:</b> model_group.h:211</div></div>
-<div class="ttc" id="class_model_group_html_a5b3c941e340c44ef4bd7d18abea4e9d7"><div class="ttname"><a href="class_model_group.html#a5b3c941e340c44ef4bd7d18abea4e9d7">ModelGroup::results_instant_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_instant_likelihoods</div><div class="ttdoc">Result: Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:587</div></div>
+<div class="ttc" id="class_model_group_html_a5b3c941e340c44ef4bd7d18abea4e9d7"><div class="ttname"><a href="class_model_group.html#a5b3c941e340c44ef4bd7d18abea4e9d7">ModelGroup::results_instant_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_instant_likelihoods</div><div class="ttdoc">Result: Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:596</div></div>
 <div class="ttc" id="class_model_group_html_a27545fa972d1e6a5a8e455ac05a91236"><div class="ttname"><a href="class_model_group.html#a27545fa972d1e6a5a8e455ac05a91236">ModelGroup::model_iterator</a></div><div class="ttdeci">map&lt; Label, ModelType &gt;::iterator model_iterator</div><div class="ttdoc">Iterator over models. </div><div class="ttdef"><b>Definition:</b> model_group.h:78</div></div>
-<div class="ttc" id="class_training_set_html_ace7f9b4d9833ca172effbc8abdaa23cb"><div class="ttname"><a href="class_training_set.html#ace7f9b4d9833ca172effbc8abdaa23cb">TrainingSet::remove_listener</a></div><div class="ttdeci">void remove_listener(Listener *listener)</div><div class="ttdoc">Remove a listener form the training set. </div><div class="ttdef"><b>Definition:</b> training_set.cpp:133</div></div>
-<div class="ttc" id="class_model_group_html_a2008199ab4262f1983fae46bc954e920"><div class="ttname"><a href="class_model_group.html#a2008199ab4262f1983fae46bc954e920">ModelGroup::retrain</a></div><div class="ttdeci">virtual void retrain()</div><div class="ttdoc">Train all model which data has changed. </div><div class="ttdef"><b>Definition:</b> model_group.h:429</div></div>
+<div class="ttc" id="class_training_set_html_ace7f9b4d9833ca172effbc8abdaa23cb"><div class="ttname"><a href="class_training_set.html#ace7f9b4d9833ca172effbc8abdaa23cb">TrainingSet::remove_listener</a></div><div class="ttdeci">void remove_listener(Listener *listener)</div><div class="ttdoc">Remove a listener form the training set. </div><div class="ttdef"><b>Definition:</b> training_set.cpp:134</div></div>
+<div class="ttc" id="class_model_group_html_a2008199ab4262f1983fae46bc954e920"><div class="ttname"><a href="class_model_group.html#a2008199ab4262f1983fae46bc954e920">ModelGroup::retrain</a></div><div class="ttdeci">virtual void retrain()</div><div class="ttdoc">Train all model which data has changed. </div><div class="ttdef"><b>Definition:</b> model_group.h:438</div></div>
 <div class="ttc" id="class_model_group_html_aeed8c12ce339a45a37c17c65b512e77d"><div class="ttname"><a href="class_model_group.html#aeed8c12ce339a45a37c17c65b512e77d">ModelGroup::dimension</a></div><div class="ttdeci">int dimension() const </div><div class="ttdoc">Get Total Dimension of the model (sum of dimension of modalities) </div><div class="ttdef"><b>Definition:</b> model_group.h:225</div></div>
-<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:44</div></div>
-<div class="ttc" id="class_model_group_html_ad7a55df363d0e699b3fd831f2173d847"><div class="ttname"><a href="class_model_group.html#ad7a55df363d0e699b3fd831f2173d847">ModelGroup::train</a></div><div class="ttdeci">virtual void train(Label const &amp;label)</div><div class="ttdoc">Train a specific model. </div><div class="ttdef"><b>Definition:</b> model_group.h:378</div></div>
-<div class="ttc" id="class_model_group_html_a9341fe0054740ff2d29e98dcbc1c75b6"><div class="ttname"><a href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">ModelGroup::trainingCallbackFunction_</a></div><div class="ttdeci">void(* trainingCallbackFunction_)(void *srcModel, CALLBACK_FLAG state, void *extradata)</div><div class="ttdoc">Callback function for the training algorithm. </div><div class="ttdef"><b>Definition:</b> model_group.h:720</div></div>
+<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:49</div></div>
+<div class="ttc" id="class_model_group_html_ad7a55df363d0e699b3fd831f2173d847"><div class="ttname"><a href="class_model_group.html#ad7a55df363d0e699b3fd831f2173d847">ModelGroup::train</a></div><div class="ttdeci">virtual void train(Label const &amp;label)</div><div class="ttdoc">Train a specific model. </div><div class="ttdef"><b>Definition:</b> model_group.h:386</div></div>
+<div class="ttc" id="class_model_group_html_a9341fe0054740ff2d29e98dcbc1c75b6"><div class="ttname"><a href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">ModelGroup::trainingCallbackFunction_</a></div><div class="ttdeci">void(* trainingCallbackFunction_)(void *srcModel, CALLBACK_FLAG state, void *extradata)</div><div class="ttdoc">Callback function for the training algorithm. </div><div class="ttdef"><b>Definition:</b> model_group.h:731</div></div>
 <div class="ttc" id="class_model_group_html_a66baefcaa8302685e12b6a61b86876ff"><div class="ttname"><a href="class_model_group.html#a66baefcaa8302685e12b6a61b86876ff">ModelGroup::set_EM_percentChange</a></div><div class="ttdeci">void set_EM_percentChange(double logLikPercentChg_)</div><div class="ttdoc">Set convergence threshold in percent-change of the likelihood. </div><div class="ttdef"><b>Definition:</b> model_group.h:335</div></div>
 <div class="ttc" id="probabilistic__model_8h_html_ab1d11584e349221ce1ccfd39164251ada79c254231edb6503af11fccc5ec61c89"><div class="ttname"><a href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada79c254231edb6503af11fccc5ec61c89">TRAINING_ERROR</a></div><div class="ttdef"><b>Definition:</b> probabilistic_model.h:66</div></div>
 <div class="ttc" id="class_label_html_a8cd5a81c523827afa6dd8984187261d4"><div class="ttname"><a href="class_label.html#a8cd5a81c523827afa6dd8984187261d4">Label::as_string</a></div><div class="ttdeci">string as_string() const </div><div class="ttdoc">print label as c++ std::string </div><div class="ttdef"><b>Definition:</b> label.cpp:219</div></div>
 <div class="ttc" id="class_model_group_html_a6574ac7749a8a7233e81ba7a1ddfd9ac"><div class="ttname"><a href="class_model_group.html#a6574ac7749a8a7233e81ba7a1ddfd9ac">ModelGroup::get_EM_minSteps</a></div><div class="ttdeci">unsigned int get_EM_minSteps() const </div><div class="ttdoc">Get minimum number of EM steps. </div><div class="ttdef"><b>Definition:</b> model_group.h:279</div></div>
-<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0a5f4071e1a1ce30ee3c5442598bac8775"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0a5f4071e1a1ce30ee3c5442598bac8775">BIMODAL</a></div><div class="ttdoc">Defines is a phrase is used to store bimodal data. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:70</div></div>
-<div class="ttc" id="class_model_group_html_a7c932f2fc24340bac9aedb723c636945"><div class="ttname"><a href="class_model_group.html#a7c932f2fc24340bac9aedb723c636945">ModelGroup::stopTraining</a></div><div class="ttdeci">void stopTraining(Label const &amp;label)</div><div class="ttdoc">Aborts the training of a model. </div><div class="ttdef"><b>Definition:</b> model_group.h:467</div></div>
+<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0a5f4071e1a1ce30ee3c5442598bac8775"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0a5f4071e1a1ce30ee3c5442598bac8775">BIMODAL</a></div><div class="ttdoc">Defines is a phrase is used to store bimodal data. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:75</div></div>
+<div class="ttc" id="class_model_group_html_a7c932f2fc24340bac9aedb723c636945"><div class="ttname"><a href="class_model_group.html#a7c932f2fc24340bac9aedb723c636945">ModelGroup::stopTraining</a></div><div class="ttdeci">void stopTraining(Label const &amp;label)</div><div class="ttdoc">Aborts the training of a model. </div><div class="ttdef"><b>Definition:</b> model_group.h:476</div></div>
 <div class="ttc" id="class_model_group_html_a7932b5bf96a71b87471070d859d0fc61"><div class="ttname"><a href="class_model_group.html#a7932b5bf96a71b87471070d859d0fc61">ModelGroup::ModelGroup</a></div><div class="ttdeci">ModelGroup(rtml_flags flags=NONE, TrainingSet *globalTrainingSet=NULL)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> model_group.h:100</div></div>
-<div class="ttc" id="class_model_group_html_a72cb7b74e8cbd1af95f0c267a8fdde36"><div class="ttname"><a href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">ModelGroup::performanceMode_</a></div><div class="ttdeci">GROUP_ESTIMATION_MODE performanceMode_</div><div class="ttdoc">Playing mode. </div><div class="ttdef"><b>Definition:</b> model_group.h:710</div></div>
+<div class="ttc" id="class_model_group_html_a72cb7b74e8cbd1af95f0c267a8fdde36"><div class="ttname"><a href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">ModelGroup::performanceMode_</a></div><div class="ttdeci">GROUP_ESTIMATION_MODE performanceMode_</div><div class="ttdoc">Playing mode. </div><div class="ttdef"><b>Definition:</b> model_group.h:721</div></div>
 <div class="ttc" id="probabilistic__model_8h_html"><div class="ttname"><a href="probabilistic__model_8h.html">probabilistic_model.h</a></div></div>
-<div class="ttc" id="class_model_group_html_a52e6f0bec9ca25df8d0526d3bd42426b"><div class="ttname"><a href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">ModelGroup::results_output_variance</a></div><div class="ttdeci">vector&lt; double &gt; results_output_variance</div><div class="ttdoc">Conditional Output Variance. </div><div class="ttdef"><b>Definition:</b> model_group.h:619</div></div>
-<div class="ttc" id="class_listener_html"><div class="ttname"><a href="class_listener.html">Listener</a></div><div class="ttdoc">Abstract class for handling training set notifications. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:89</div></div>
-<div class="ttc" id="class_training_set_html_a1bafcae02772389a006d3b676be88c44"><div class="ttname"><a href="class_training_set.html#a1bafcae02772389a006d3b676be88c44">TrainingSet::set_unchanged</a></div><div class="ttdeci">void set_unchanged()</div><div class="ttdoc">set the status of the training set to unchanged </div><div class="ttdef"><b>Definition:</b> training_set.cpp:123</div></div>
-<div class="ttc" id="class_model_group_html_a70d856b514563568236e2986407f9e59"><div class="ttname"><a href="class_model_group.html#a70d856b514563568236e2986407f9e59">ModelGroup::updateAllTrainingSets</a></div><div class="ttdeci">virtual void updateAllTrainingSets()</div><div class="ttdoc">Update the training set for all labels. </div><div class="ttdef"><b>Definition:</b> model_group.h:685</div></div>
+<div class="ttc" id="class_model_group_html_a52e6f0bec9ca25df8d0526d3bd42426b"><div class="ttname"><a href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">ModelGroup::results_output_variance</a></div><div class="ttdeci">vector&lt; double &gt; results_output_variance</div><div class="ttdoc">Conditional Output Variance. </div><div class="ttdef"><b>Definition:</b> model_group.h:628</div></div>
+<div class="ttc" id="class_listener_html"><div class="ttname"><a href="class_listener.html">Listener</a></div><div class="ttdoc">Abstract class for handling training set notifications. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:94</div></div>
+<div class="ttc" id="class_training_set_html_a1bafcae02772389a006d3b676be88c44"><div class="ttname"><a href="class_training_set.html#a1bafcae02772389a006d3b676be88c44">TrainingSet::set_unchanged</a></div><div class="ttdeci">void set_unchanged()</div><div class="ttdoc">set the status of the training set to unchanged </div><div class="ttdef"><b>Definition:</b> training_set.cpp:124</div></div>
+<div class="ttc" id="class_model_group_html_a70d856b514563568236e2986407f9e59"><div class="ttname"><a href="class_model_group.html#a70d856b514563568236e2986407f9e59">ModelGroup::updateAllTrainingSets</a></div><div class="ttdeci">virtual void updateAllTrainingSets()</div><div class="ttdoc">Update the training set for all labels. </div><div class="ttdef"><b>Definition:</b> model_group.h:696</div></div>
 <div class="ttc" id="probabilistic__model_8h_html_ab1d11584e349221ce1ccfd39164251ada25328a5918d4be333f9c3aeac1cb2948"><div class="ttname"><a href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada25328a5918d4be333f9c3aeac1cb2948">TRAINING_RUN</a></div><div class="ttdef"><b>Definition:</b> probabilistic_model.h:56</div></div>
 <div class="ttc" id="class_model_group_html_a4c54814d53049aa21b4a7bf3a1ecd8da"><div class="ttname"><a href="class_model_group.html#a4c54814d53049aa21b4a7bf3a1ecd8da">ModelGroup::set_likelihoodwindow</a></div><div class="ttdeci">void set_likelihoodwindow(unsigned int likelihoodwindow)</div><div class="ttdoc">set size of the likelihood smoothing buffer (number of frames) </div><div class="ttdef"><b>Definition:</b> model_group.h:359</div></div>
-<div class="ttc" id="class_model_group_html_aaf504d90e762fbeb3cf576e840dfca96"><div class="ttname"><a href="class_model_group.html#aaf504d90e762fbeb3cf576e840dfca96">ModelGroup::set_trainingCallback</a></div><div class="ttdeci">void set_trainingCallback(void(*callback)(void *srcModel, CALLBACK_FLAG state, void *extradata), void *extradata)</div><div class="ttdoc">set the callback function associated with the training algorithm </div><div class="ttdef"><b>Definition:</b> model_group.h:508</div></div>
-<div class="ttc" id="class_model_group_html_a0d611640f7e4bf461647387a13efb22b"><div class="ttname"><a href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">ModelGroup::referenceModel_</a></div><div class="ttdeci">ModelType referenceModel_</div><div class="ttdoc">reference model, Used to store shared model attributes </div><div class="ttdef"><b>Definition:</b> model_group.h:715</div></div>
+<div class="ttc" id="class_model_group_html_aaf504d90e762fbeb3cf576e840dfca96"><div class="ttname"><a href="class_model_group.html#aaf504d90e762fbeb3cf576e840dfca96">ModelGroup::set_trainingCallback</a></div><div class="ttdeci">void set_trainingCallback(void(*callback)(void *srcModel, CALLBACK_FLAG state, void *extradata), void *extradata)</div><div class="ttdoc">set the callback function associated with the training algorithm </div><div class="ttdef"><b>Definition:</b> model_group.h:517</div></div>
+<div class="ttc" id="class_model_group_html_a0d611640f7e4bf461647387a13efb22b"><div class="ttname"><a href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">ModelGroup::referenceModel_</a></div><div class="ttdeci">ModelType referenceModel_</div><div class="ttdoc">reference model, Used to store shared model attributes </div><div class="ttdef"><b>Definition:</b> model_group.h:726</div></div>
 <div class="ttc" id="class_model_group_html_a20ac0395d9f5a95b546675e2247f3015"><div class="ttname"><a href="class_model_group.html#a20ac0395d9f5a95b546675e2247f3015">ModelGroup::set_performanceMode</a></div><div class="ttdeci">void set_performanceMode(string performanceMode_str)</div><div class="ttdoc">Sets the performance mode (likeliest vs mixture) </div><div class="ttdef"><b>Definition:</b> model_group.h:250</div></div>
-<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a></div><div class="ttdoc">no specific Flag: Unimodal and own Memory </div><div class="ttdef"><b>Definition:</b> mbd_common.h:57</div></div>
+<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a></div><div class="ttdoc">no specific Flag: Unimodal and own Memory </div><div class="ttdef"><b>Definition:</b> mbd_common.h:62</div></div>
+<div class="ttc" id="class_model_group_html_a1089e13eaae07083b4ee912c2bb3a348"><div class="ttname"><a href="class_model_group.html#a1089e13eaae07083b4ee912c2bb3a348">ModelGroup::get_column_names</a></div><div class="ttdeci">vector&lt; string &gt; const &amp; get_column_names() const </div><div class="ttdoc">get a copy of the column names of the input/output data </div><div class="ttdef"><b>Definition:</b> model_group.h:370</div></div>
 <div class="ttc" id="class_model_group_html_a55d01f865be1a1b20270de8b07120c03"><div class="ttname"><a href="class_model_group.html#a55d01f865be1a1b20270de8b07120c03">ModelGroup::~ModelGroup</a></div><div class="ttdeci">virtual ~ModelGroup()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> model_group.h:117</div></div>
-<div class="ttc" id="class_model_group_html_a07a070ffc216e8864646f7e116aec8d0"><div class="ttname"><a href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">ModelGroup::performance_init</a></div><div class="ttdeci">virtual void performance_init()</div><div class="ttdoc">Initialize Performance. </div><div class="ttdef"><b>Definition:</b> model_group.h:525</div></div>
-<div class="ttc" id="class_model_group_html_af30449688caea6c8d72b137bc9e7f82c"><div class="ttname"><a href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">ModelGroup::notify</a></div><div class="ttdeci">virtual void notify(string attribute)</div><div class="ttdoc">Receives notifications from the global training set and dispatches to models. </div><div class="ttdef"><b>Definition:</b> model_group.h:628</div></div>
+<div class="ttc" id="class_model_group_html_a07a070ffc216e8864646f7e116aec8d0"><div class="ttname"><a href="class_model_group.html#a07a070ffc216e8864646f7e116aec8d0">ModelGroup::performance_init</a></div><div class="ttdeci">virtual void performance_init()</div><div class="ttdoc">Initialize Performance. </div><div class="ttdef"><b>Definition:</b> model_group.h:534</div></div>
+<div class="ttc" id="class_model_group_html_af30449688caea6c8d72b137bc9e7f82c"><div class="ttname"><a href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">ModelGroup::notify</a></div><div class="ttdeci">virtual void notify(string attribute)</div><div class="ttdoc">Receives notifications from the global training set and dispatches to models. </div><div class="ttdef"><b>Definition:</b> model_group.h:639</div></div>
 <div class="ttc" id="class_model_group_html_a84de6a20ad8706cdf1a275a224a0fa09"><div class="ttname"><a href="class_model_group.html#a84de6a20ad8706cdf1a275a224a0fa09">ModelGroup::set_EM_minSteps</a></div><div class="ttdeci">void set_EM_minSteps(unsigned int steps)</div><div class="ttdoc">Set minimum number of steps of the EM algorithm. </div><div class="ttdef"><b>Definition:</b> model_group.h:309</div></div>
-<div class="ttc" id="class_model_group_html_a8f6aad901bb43e4b2022b0b6f979ed83"><div class="ttname"><a href="class_model_group.html#a8f6aad901bb43e4b2022b0b6f979ed83">ModelGroup::results_predicted_output</a></div><div class="ttdeci">vector&lt; float &gt; results_predicted_output</div><div class="ttdef"><b>Definition:</b> model_group.h:613</div></div>
+<div class="ttc" id="class_model_group_html_a8f6aad901bb43e4b2022b0b6f979ed83"><div class="ttname"><a href="class_model_group.html#a8f6aad901bb43e4b2022b0b6f979ed83">ModelGroup::results_predicted_output</a></div><div class="ttdeci">vector&lt; float &gt; results_predicted_output</div><div class="ttdef"><b>Definition:</b> model_group.h:622</div></div>
 <div class="ttc" id="hmm_8h_html_aaee94970ca1d34b71fd89fdc986fca84adf0f3b0d77046474c7981dc26341f853"><div class="ttname"><a href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84adf0f3b0d77046474c7981dc26341f853">LIKELIEST</a></div><div class="ttdoc">The output is estimated by a regression using the likeliest state only. </div><div class="ttdef"><b>Definition:</b> hmm.h:87</div></div>
-<div class="ttc" id="class_model_group_html_ae9edbba438e2f43fa0cc3b2131bee014"><div class="ttname"><a href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">ModelGroup::updateTrainingSet</a></div><div class="ttdeci">virtual void updateTrainingSet(Label const &amp;label)</div><div class="ttdoc">Update training set for a specific label. </div><div class="ttdef"><b>Definition:</b> model_group.h:667</div></div>
-<div class="ttc" id="class_training_set_html_a00954c2bce069807618ef7bb45228238"><div class="ttname"><a href="class_training_set.html#a00954c2bce069807618ef7bb45228238">TrainingSet::allLabels</a></div><div class="ttdeci">set&lt; Label &gt; allLabels</div><div class="ttdoc">Set containing all the labels present in the training set. </div><div class="ttdef"><b>Definition:</b> training_set.h:432</div></div>
+<div class="ttc" id="class_model_group_html_ae9edbba438e2f43fa0cc3b2131bee014"><div class="ttname"><a href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">ModelGroup::updateTrainingSet</a></div><div class="ttdeci">virtual void updateTrainingSet(Label const &amp;label)</div><div class="ttdoc">Update training set for a specific label. </div><div class="ttdef"><b>Definition:</b> model_group.h:678</div></div>
+<div class="ttc" id="class_training_set_html_a00954c2bce069807618ef7bb45228238"><div class="ttname"><a href="class_training_set.html#a00954c2bce069807618ef7bb45228238">TrainingSet::allLabels</a></div><div class="ttdeci">set&lt; Label &gt; allLabels</div><div class="ttdoc">Set containing all the labels present in the training set. </div><div class="ttdef"><b>Definition:</b> training_set.h:442</div></div>
 <div class="ttc" id="class_model_group_html_af814078cd2a9fb07835180ecb52b3b42"><div class="ttname"><a href="class_model_group.html#af814078cd2a9fb07835180ecb52b3b42">ModelGroup::labels_iterator</a></div><div class="ttdeci">map&lt; int, Label &gt;::iterator labels_iterator</div><div class="ttdoc">Iterator over labels. </div><div class="ttdef"><b>Definition:</b> model_group.h:88</div></div>
 <div class="ttc" id="class_model_group_html_a1ac8ccd9e899e946e1484f9d95fe9028"><div class="ttname"><a href="class_model_group.html#a1ac8ccd9e899e946e1484f9d95fe9028">ModelGroup::dimension_input</a></div><div class="ttdeci">int dimension_input() const </div><div class="ttdoc">Get the dimension of the input modality. </div><div class="ttdef"><b>Definition:</b> model_group.h:236</div></div>
-<div class="ttc" id="class_model_group_html_a027be98accd769515a55ab7947d10873"><div class="ttname"><a href="class_model_group.html#a027be98accd769515a55ab7947d10873">ModelGroup::bimodal_</a></div><div class="ttdeci">bool bimodal_</div><div class="ttdoc">defines if the phrase is bimodal (true) or unimodal (false) </div><div class="ttdef"><b>Definition:</b> model_group.h:704</div></div>
-<div class="ttc" id="class_model_group_html_a6201f44ae379fc688601cf69e1523aae"><div class="ttname"><a href="class_model_group.html#a6201f44ae379fc688601cf69e1523aae">ModelGroup::results_normalized_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_normalized_likelihoods</div><div class="ttdoc">Result: Normalized Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:597</div></div>
+<div class="ttc" id="class_model_group_html_a027be98accd769515a55ab7947d10873"><div class="ttname"><a href="class_model_group.html#a027be98accd769515a55ab7947d10873">ModelGroup::bimodal_</a></div><div class="ttdeci">bool bimodal_</div><div class="ttdoc">defines if the phrase is bimodal (true) or unimodal (false) </div><div class="ttdef"><b>Definition:</b> model_group.h:715</div></div>
+<div class="ttc" id="class_model_group_html_a6201f44ae379fc688601cf69e1523aae"><div class="ttname"><a href="class_model_group.html#a6201f44ae379fc688601cf69e1523aae">ModelGroup::results_normalized_likelihoods</a></div><div class="ttdeci">vector&lt; double &gt; results_normalized_likelihoods</div><div class="ttdoc">Result: Normalized Likelihood of each model. </div><div class="ttdef"><b>Definition:</b> model_group.h:606</div></div>
 <div class="ttc" id="class_label_html"><div class="ttname"><a href="class_label.html">Label</a></div><div class="ttdoc">Label of a data phrase. </div><div class="ttdef"><b>Definition:</b> label.h:48</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -180,136 +180,132 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    </div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordtype">void</span> set_varianceOffset(<span class="keywordtype">double</span> varianceOffset_relative, <span class="keywordtype">double</span> varianceOffset_absolute);</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordtype">double</span> get_weight_regression() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordtype">void</span> set_weight_regression(<span class="keywordtype">double</span> weight_regression);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <a class="code" href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84">REGRESSION_ESTIMATOR</a> get_regression_estimator() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordtype">void</span> set_regression_estimator(<a class="code" href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84">REGRESSION_ESTIMATOR</a> regression_estimator);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">string</span> get_transitionMode() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    </div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keywordtype">void</span> set_transitionMode(<span class="keywordtype">string</span> transMode_str);</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordtype">bool</span> get_estimateMeans() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <a class="code" href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84">REGRESSION_ESTIMATOR</a> get_regression_estimator() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordtype">void</span> set_regression_estimator(<a class="code" href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84">REGRESSION_ESTIMATOR</a> regression_estimator);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    </div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordtype">string</span> get_transitionMode() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordtype">void</span> set_transitionMode(<span class="keywordtype">string</span> transMode_str);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keywordtype">bool</span> get_estimateMeans() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="keywordtype">void</span> set_estimateMeans(<span class="keywordtype">bool</span> _estimateMeans);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordtype">void</span> addExitPoint(<span class="keywordtype">int</span> state, <span class="keywordtype">float</span> proba);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    </div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordtype">string</span> get_learningMode() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordtype">void</span> set_estimateMeans(<span class="keywordtype">bool</span> _estimateMeans);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    </div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordtype">void</span> addExitPoint(<span class="keywordtype">int</span> state, <span class="keywordtype">float</span> proba);</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    </div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keywordtype">string</span> get_learningMode() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="keywordtype">void</span> set_learningMode(<span class="keywordtype">string</span> learningMode);</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    </div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keywordtype">void</span> get_prior(vector&lt;double&gt;&amp; prior) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    </div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordtype">void</span> set_prior(vector&lt;double&gt; <span class="keyword">const</span>&amp; prior);</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keywordtype">void</span> get_transition(vector&lt;double&gt;&amp; trans) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    </div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="keywordtype">void</span> set_transition(vector&lt;double&gt; <span class="keyword">const</span>&amp; trans);</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    </div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="keywordtype">void</span> get_exitTransition(vector&lt;double&gt;&amp; trans) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordtype">void</span> set_exitTransition(vector&lt;double&gt; <span class="keyword">const</span>&amp; exittrans);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="keywordtype">void</span> setOneTransition(<a class="code" href="class_label.html">Label</a> srcSegmentLabel, <a class="code" href="class_label.html">Label</a> dstSegmentLabel, <span class="keywordtype">double</span> proba);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    </div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="preprocessor">#pragma mark &gt; Training</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <span class="keyword">remove</span>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="preprocessor">#pragma mark &gt; Performance</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> performance_init();</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    </div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> performance_update(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="preprocessor">#pragma mark &gt; JSON I/O</span></div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="keyword">virtual</span> JSONNode to_json() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    </div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> from_json(JSONNode root);</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    </div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="preprocessor">#pragma mark === Public attributes ===</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;</div>
-<div class="line"><a name="l00316"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a">  316</a></span>&#160;    map&lt;Label, double&gt; <a class="code" href="class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a">prior</a>;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    </div>
-<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a03ff201a755d9e5f1a99a085abb05eb2">  321</a></span>&#160;    map&lt;Label, double&gt; <a class="code" href="class_hierarchical_h_m_m.html#a03ff201a755d9e5f1a99a085abb05eb2">exitTransition</a>;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    </div>
-<div class="line"><a name="l00326"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9">  326</a></span>&#160;    map&lt;Label, map&lt;Label, double&gt; &gt; <a class="code" href="class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9">transition</a>;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordtype">void</span> set_learningMode(<span class="keywordtype">string</span> learningMode);</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordtype">void</span> get_prior(vector&lt;double&gt;&amp; prior) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordtype">void</span> set_prior(vector&lt;double&gt; <span class="keyword">const</span>&amp; prior);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keywordtype">void</span> get_transition(vector&lt;double&gt;&amp; trans) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    </div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keywordtype">void</span> set_transition(vector&lt;double&gt; <span class="keyword">const</span>&amp; trans);</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="keywordtype">void</span> get_exitTransition(vector&lt;double&gt;&amp; trans) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="keywordtype">void</span> set_exitTransition(vector&lt;double&gt; <span class="keyword">const</span>&amp; exittrans);</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    </div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="keywordtype">void</span> setOneTransition(<a class="code" href="class_label.html">Label</a> srcSegmentLabel, <a class="code" href="class_label.html">Label</a> dstSegmentLabel, <span class="keywordtype">double</span> proba);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    </div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="preprocessor">#pragma mark &gt; Training</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <span class="keyword">remove</span>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    </div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">#pragma mark &gt; Performance</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> performance_init();</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    </div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> performance_update(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    </div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="preprocessor">#pragma mark &gt; JSON I/O</span></div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    <span class="keyword">virtual</span> JSONNode to_json() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    </div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> from_json(JSONNode root);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="preprocessor">#pragma mark === Public attributes ===</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;</div>
+<div class="line"><a name="l00304"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a">  304</a></span>&#160;    map&lt;Label, double&gt; <a class="code" href="class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a">prior</a>;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    </div>
+<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a03ff201a755d9e5f1a99a085abb05eb2">  309</a></span>&#160;    map&lt;Label, double&gt; <a class="code" href="class_hierarchical_h_m_m.html#a03ff201a755d9e5f1a99a085abb05eb2">exitTransition</a>;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    </div>
+<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9">  314</a></span>&#160;    map&lt;Label, map&lt;Label, double&gt; &gt; <a class="code" href="class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9">transition</a>;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    </div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="preprocessor">#pragma mark === Protected Methods ===</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="preprocessor">#pragma mark &gt; High level parameters: update and estimation</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keywordtype">void</span> updateTransitionParameters();</div>
 <div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    </div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;<span class="preprocessor">#pragma mark === Protected Methods ===</span></div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="preprocessor">#pragma mark &gt; High level parameters: update and estimation</span></div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordtype">void</span> updateTransitionParameters();</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    </div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="keywordtype">void</span> updatePrior_incremental();</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    </div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <span class="keywordtype">void</span> updateTransition_incremental();</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    <span class="keywordtype">void</span> updatePrior_ergodic();</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keywordtype">void</span> updateTransition_ergodic();</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keywordtype">void</span> updatePrior_incremental();</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keywordtype">void</span> updateTransition_incremental();</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    </div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="keywordtype">void</span> updatePrior_ergodic();</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    </div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="keywordtype">void</span> updateTransition_ergodic();</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    </div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keywordtype">void</span> updateExitProbabilities();</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    </div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> updateTrainingSet(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    </div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keywordtype">void</span> normalizeTransitions();</div>
 <div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordtype">void</span> updateExitProbabilities();</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    </div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> updateTrainingSet(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <span class="keywordtype">void</span> normalizeTransitions();</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="preprocessor">#pragma mark &gt; Forward Algorithm</span></div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordtype">void</span> forward_init(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    </div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    <span class="keywordtype">void</span> forward_update(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    </div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    <span class="keywordtype">void</span> likelihoodAlpha(<span class="keywordtype">int</span> exitNum, vector&lt;double&gt; &amp;likelihoodVector) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    </div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">#pragma mark === Protected Attributes ===</span></div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;</div>
-<div class="line"><a name="l00413"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614">  413</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614">incrementalLearning_</a>;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    </div>
-<div class="line"><a name="l00418"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a9e21ede11e75945856d2dd7ec6445025">  418</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_hierarchical_h_m_m.html#a9e21ede11e75945856d2dd7ec6445025">forwardInitialized_</a>;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    </div>
-<div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a1fd852e1bff298bcb9d3257e26b827d8">  423</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_hierarchical_h_m_m.html#a1fd852e1bff298bcb9d3257e26b827d8">V1_</a>;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    </div>
-<div class="line"><a name="l00428"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">  428</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">V2_</a>;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;};</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="preprocessor">#pragma mark &gt; Forward Algorithm</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    <span class="keywordtype">void</span> forward_init(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    </div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordtype">void</span> forward_update(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    </div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    <span class="keywordtype">void</span> likelihoodAlpha(<span class="keywordtype">int</span> exitNum, vector&lt;double&gt; &amp;likelihoodVector) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    </div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor">#pragma mark === Protected Attributes ===</span></div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;</div>
+<div class="line"><a name="l00401"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614">  401</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614">incrementalLearning_</a>;</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    </div>
+<div class="line"><a name="l00406"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a9e21ede11e75945856d2dd7ec6445025">  406</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_hierarchical_h_m_m.html#a9e21ede11e75945856d2dd7ec6445025">forwardInitialized_</a>;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    </div>
+<div class="line"><a name="l00411"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a1fd852e1bff298bcb9d3257e26b827d8">  411</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_hierarchical_h_m_m.html#a1fd852e1bff298bcb9d3257e26b827d8">V1_</a>;</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    </div>
+<div class="line"><a name="l00416"></a><span class="lineno"><a class="line" href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">  416</a></span>&#160;    vector&lt;double&gt; <a class="code" href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">V2_</a>;</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;};</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="class_hierarchical_h_m_m_html_a01b68cd5b27e63db22746cb4f326078b"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a01b68cd5b27e63db22746cb4f326078b">HierarchicalHMM::model_iterator</a></div><div class="ttdeci">map&lt; Label, HMM &gt;::iterator model_iterator</div><div class="ttdoc">Iterator over models. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:70</div></div>
 <div class="ttc" id="hierarchical__hmm_8h_html_a111b706fd465a8ddb6ff672d16216044"><div class="ttname"><a href="hierarchical__hmm_8h.html#a111b706fd465a8ddb6ff672d16216044">HHMM_DEFAULT_EXITTRANSITION</a></div><div class="ttdeci">const double HHMM_DEFAULT_EXITTRANSITION</div><div class="ttdoc">Default exit transition for the highest level. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:44</div></div>
 <div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_a9e21ede11e75945856d2dd7ec6445025"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a9e21ede11e75945856d2dd7ec6445025">HierarchicalHMM::forwardInitialized_</a></div><div class="ttdeci">bool forwardInitialized_</div><div class="ttdoc">Defines if the forward algorithm has been initialized. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:418</div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_a04ca19648f7bc81fd5d0a17ed2f9c2e5"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">HierarchicalHMM::V2_</a></div><div class="ttdeci">vector&lt; double &gt; V2_</div><div class="ttdoc">intermediate Forward variable (used in Frontier algorithm) </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:428</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_a9e21ede11e75945856d2dd7ec6445025"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a9e21ede11e75945856d2dd7ec6445025">HierarchicalHMM::forwardInitialized_</a></div><div class="ttdeci">bool forwardInitialized_</div><div class="ttdoc">Defines if the forward algorithm has been initialized. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:406</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_a04ca19648f7bc81fd5d0a17ed2f9c2e5"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">HierarchicalHMM::V2_</a></div><div class="ttdeci">vector&lt; double &gt; V2_</div><div class="ttdoc">intermediate Forward variable (used in Frontier algorithm) </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:416</div></div>
 <div class="ttc" id="hmm_8h_html"><div class="ttname"><a href="hmm_8h.html">hmm.h</a></div></div>
 <div class="ttc" id="class_training_set_html"><div class="ttname"><a href="class_training_set.html">TrainingSet</a></div><div class="ttdoc">Base class for the definition of (multimodal) training sets. </div><div class="ttdef"><b>Definition:</b> training_set.h:49</div></div>
 <div class="ttc" id="model__group_8h_html"><div class="ttname"><a href="model__group_8h.html">model_group.h</a></div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_a1fd852e1bff298bcb9d3257e26b827d8"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a1fd852e1bff298bcb9d3257e26b827d8">HierarchicalHMM::V1_</a></div><div class="ttdeci">vector&lt; double &gt; V1_</div><div class="ttdoc">intermediate Forward variable (used in Frontier algorithm) </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:423</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_a1fd852e1bff298bcb9d3257e26b827d8"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a1fd852e1bff298bcb9d3257e26b827d8">HierarchicalHMM::V1_</a></div><div class="ttdeci">vector&lt; double &gt; V1_</div><div class="ttdoc">intermediate Forward variable (used in Frontier algorithm) </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:411</div></div>
 <div class="ttc" id="class_model_group_html"><div class="ttname"><a href="class_model_group.html">ModelGroup</a></div><div class="ttdoc">Handle machine learning models running in parallel. </div><div class="ttdef"><b>Definition:</b> model_group.h:53</div></div>
 <div class="ttc" id="hierarchical__hmm_8h_html_a86db2efab1f4819dab0ec21897d291bf"><div class="ttname"><a href="hierarchical__hmm_8h.html#a86db2efab1f4819dab0ec21897d291bf">HHMM_DEFAULT_REGULARIZATIONFACTOR</a></div><div class="ttdeci">const bool HHMM_DEFAULT_REGULARIZATIONFACTOR</div><div class="ttdoc">Default regularization factor for the update of transition probabilities for incremental learning...</div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:55</div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_a07e339b7d51d696b5a2b4a93744fd8b9"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9">HierarchicalHMM::transition</a></div><div class="ttdeci">map&lt; Label, map&lt; Label, double &gt; &gt; transition</div><div class="ttdoc">Transition probabilities between models. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:326</div></div>
-<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:44</div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_a0ef32224e06740287353a1bf6d3be614"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614">HierarchicalHMM::incrementalLearning_</a></div><div class="ttdeci">bool incrementalLearning_</div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:413</div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_a03ff201a755d9e5f1a99a085abb05eb2"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a03ff201a755d9e5f1a99a085abb05eb2">HierarchicalHMM::exitTransition</a></div><div class="ttdeci">map&lt; Label, double &gt; exitTransition</div><div class="ttdoc">exit probabilities of the model (probability to finish and go back to the root) </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:321</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_a07e339b7d51d696b5a2b4a93744fd8b9"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9">HierarchicalHMM::transition</a></div><div class="ttdeci">map&lt; Label, map&lt; Label, double &gt; &gt; transition</div><div class="ttdoc">Transition probabilities between models. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:314</div></div>
+<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:49</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_a0ef32224e06740287353a1bf6d3be614"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a0ef32224e06740287353a1bf6d3be614">HierarchicalHMM::incrementalLearning_</a></div><div class="ttdeci">bool incrementalLearning_</div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:401</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_a03ff201a755d9e5f1a99a085abb05eb2"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a03ff201a755d9e5f1a99a085abb05eb2">HierarchicalHMM::exitTransition</a></div><div class="ttdeci">map&lt; Label, double &gt; exitTransition</div><div class="ttdoc">exit probabilities of the model (probability to finish and go back to the root) </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:309</div></div>
 <div class="ttc" id="class_hierarchical_h_m_m_html_a0961b29717e30ea5da5ab311ef59e1c2"><div class="ttname"><a href="class_hierarchical_h_m_m.html#a0961b29717e30ea5da5ab311ef59e1c2">HierarchicalHMM::const_model_iterator</a></div><div class="ttdeci">map&lt; Label, HMM &gt;::const_iterator const_model_iterator</div><div class="ttdoc">Constant Iterator over models. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:75</div></div>
 <div class="ttc" id="class_hierarchical_h_m_m_html"><div class="ttname"><a href="class_hierarchical_h_m_m.html">HierarchicalHMM</a></div><div class="ttdoc">Hierarchical Hidden Markov Model. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:63</div></div>
-<div class="ttc" id="class_hierarchical_h_m_m_html_ac8b775f9cb7c48897450b98dad82f52a"><div class="ttname"><a href="class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a">HierarchicalHMM::prior</a></div><div class="ttdeci">map&lt; Label, double &gt; prior</div><div class="ttdoc">Prior probabilities of the models. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:316</div></div>
-<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a></div><div class="ttdoc">no specific Flag: Unimodal and own Memory </div><div class="ttdef"><b>Definition:</b> mbd_common.h:57</div></div>
+<div class="ttc" id="class_hierarchical_h_m_m_html_ac8b775f9cb7c48897450b98dad82f52a"><div class="ttname"><a href="class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a">HierarchicalHMM::prior</a></div><div class="ttdeci">map&lt; Label, double &gt; prior</div><div class="ttdoc">Prior probabilities of the models. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:304</div></div>
+<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a></div><div class="ttdoc">no specific Flag: Unimodal and own Memory </div><div class="ttdef"><b>Definition:</b> mbd_common.h:62</div></div>
 <div class="ttc" id="hierarchical__hmm_8h_html_aa243cd96c0fcd250e9d920cd9f712d21"><div class="ttname"><a href="hierarchical__hmm_8h.html#aa243cd96c0fcd250e9d920cd9f712d21">HHMM_DEFAULT_INCREMENTALLEARNING</a></div><div class="ttdeci">const bool HHMM_DEFAULT_INCREMENTALLEARNING</div><div class="ttdoc">Default value for the Incremental Learning update of the transition matrix. </div><div class="ttdef"><b>Definition:</b> hierarchical_hmm.h:49</div></div>
 <div class="ttc" id="hmm_8h_html_aaee94970ca1d34b71fd89fdc986fca84"><div class="ttname"><a href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84">REGRESSION_ESTIMATOR</a></div><div class="ttdeci">REGRESSION_ESTIMATOR</div><div class="ttdoc">Estimator for the regression with HMMs. </div><div class="ttdef"><b>Definition:</b> hmm.h:72</div></div>
 <div class="ttc" id="class_label_html"><div class="ttname"><a href="class_label.html">Label</a></div><div class="ttdoc">Label of a data phrase. </div><div class="ttdef"><b>Definition:</b> label.h:48</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

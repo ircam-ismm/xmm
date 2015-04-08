@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -192,153 +192,160 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    </div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordtype">void</span> set_dimension_input(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension_input);</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordtype">bool</span> operator==(<a class="code" href="class_training_set.html">TrainingSet</a> <span class="keyword">const</span> &amp;src);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordtype">bool</span> operator!=(<a class="code" href="class_training_set.html">TrainingSet</a> <span class="keyword">const</span> &amp;src);</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="preprocessor">#pragma mark &gt; Access Phrases</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    phrase_iterator begin();</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    phrase_iterator end();</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    </div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    const_phrase_iterator cbegin() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordtype">void</span> set_column_names(vector&lt;string&gt;&amp; colnames);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    vector&lt;string&gt; <span class="keyword">const</span>&amp; get_column_names() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    </div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordtype">bool</span> operator==(<a class="code" href="class_training_set.html">TrainingSet</a> <span class="keyword">const</span> &amp;src);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    </div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordtype">bool</span> operator!=(<a class="code" href="class_training_set.html">TrainingSet</a> <span class="keyword">const</span> &amp;src);</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#pragma mark &gt; Access Phrases</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    phrase_iterator begin();</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    </div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    const_phrase_iterator cend() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    phrase_iterator end();</div>
 <div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    </div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    phrase_iterator operator()(<span class="keywordtype">int</span> n);</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="preprocessor">#pragma mark &gt; Connect Phrases</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="keywordtype">void</span> connect(<span class="keywordtype">int</span> phraseIndex, <span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    </div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keywordtype">void</span> connect(<span class="keywordtype">int</span> phraseIndex, <span class="keywordtype">float</span> *pointer_to_data_input, <span class="keywordtype">float</span> *pointer_to_data_output, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    </div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">#pragma mark &gt; Record training Data</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="keywordtype">void</span> recordPhrase(<span class="keywordtype">int</span> phraseIndex, vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    <span class="keywordtype">void</span> recordPhrase_input(<span class="keywordtype">int</span> phraseIndex, vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    </div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    <span class="keywordtype">void</span> recordPhrase_output(<span class="keywordtype">int</span> phraseIndex, vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <span class="keywordtype">void</span> resetPhrase(<span class="keywordtype">int</span> phraseIndex);</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    </div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordtype">void</span> deletePhrase(<span class="keywordtype">int</span> phraseIndex);</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    </div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordtype">void</span> deletePhrasesOfClass(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    </div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    <span class="keywordtype">void</span> deleteEmptyPhrases();</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    </div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="keywordtype">void</span> clear();</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    </div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="preprocessor">#pragma mark &gt; Handle Labels</span></div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordtype">void</span> setDefaultLabel(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; defLabel);</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    </div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="keywordtype">void</span> setPhraseLabelToDefault(<span class="keywordtype">int</span> phraseIndex);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    </div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keywordtype">void</span> setPhraseLabel(<span class="keywordtype">int</span> phraseIndex, <a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <a class="code" href="class_label.html">Label</a> getPhraseLabel(<span class="keywordtype">int</span> phraseIndex);</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    </div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <a class="code" href="class_training_set.html">TrainingSet</a>* getSubTrainingSetForClass(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    const_phrase_iterator cbegin() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    </div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    const_phrase_iterator cend() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    phrase_iterator operator()(<span class="keywordtype">int</span> n);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">#pragma mark &gt; Connect Phrases</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <span class="keywordtype">void</span> connect(<span class="keywordtype">int</span> phraseIndex, <span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    </div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordtype">void</span> connect(<span class="keywordtype">int</span> phraseIndex, <span class="keywordtype">float</span> *pointer_to_data_input, <span class="keywordtype">float</span> *pointer_to_data_output, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    </div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">#pragma mark &gt; Record training Data</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keywordtype">void</span> recordPhrase(<span class="keywordtype">int</span> phraseIndex, vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    </div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    <span class="keywordtype">void</span> recordPhrase_input(<span class="keywordtype">int</span> phraseIndex, vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordtype">void</span> recordPhrase_output(<span class="keywordtype">int</span> phraseIndex, vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordtype">void</span> resetPhrase(<span class="keywordtype">int</span> phraseIndex);</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    </div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keywordtype">void</span> deletePhrase(<span class="keywordtype">int</span> phraseIndex);</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    </div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="keywordtype">void</span> deletePhrasesOfClass(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    </div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <span class="keywordtype">void</span> deleteEmptyPhrases();</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keywordtype">void</span> clear();</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="preprocessor">#pragma mark &gt; Handle Labels</span></div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="keywordtype">void</span> setDefaultLabel(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; defLabel);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    </div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="keywordtype">void</span> setPhraseLabelToDefault(<span class="keywordtype">int</span> phraseIndex);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="keywordtype">void</span> setPhraseLabel(<span class="keywordtype">int</span> phraseIndex, <a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    </div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <a class="code" href="class_label.html">Label</a> getPhraseLabel(<span class="keywordtype">int</span> phraseIndex);</div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    <span class="keywordtype">void</span> updateSubTrainingSets();</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    </div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="preprocessor">#pragma mark &gt; Moments</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    vector&lt;float&gt; mean() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    </div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    vector&lt;float&gt; variance() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    </div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor">#pragma mark &gt; JSON I/O</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    JSONNode to_json() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    </div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    <span class="keywordtype">void</span> from_json(JSONNode root);</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    </div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="preprocessor">#pragma mark === Public Attributes ===</span></div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;</div>
-<div class="line"><a name="l00421"></a><span class="lineno"><a class="line" href="class_training_set.html#a1e565c58f0439fa299d787af52e88324">  421</a></span>&#160;    map&lt;int, Phrase*&gt; <a class="code" href="class_training_set.html#a1e565c58f0439fa299d787af52e88324">phrases</a>;</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <a class="code" href="class_training_set.html">TrainingSet</a>* getSubTrainingSetForClass(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    </div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordtype">void</span> updateSubTrainingSets();</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">#pragma mark &gt; Moments</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    vector&lt;float&gt; mean() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    </div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    vector&lt;float&gt; variance() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    </div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">#pragma mark &gt; JSON I/O</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    JSONNode to_json() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    </div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    <span class="keywordtype">void</span> from_json(JSONNode root);</div>
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    </div>
-<div class="line"><a name="l00427"></a><span class="lineno"><a class="line" href="class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c">  427</a></span>&#160;    map&lt;int, Label&gt; <a class="code" href="class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c">phraseLabels</a>;</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    </div>
-<div class="line"><a name="l00432"></a><span class="lineno"><a class="line" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">  432</a></span>&#160;    set&lt;Label&gt; <a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>;</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    </div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor">#pragma mark === Private Methods ===</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;<span class="preprocessor">#pragma mark &gt; between Training Sets</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    <span class="keywordtype">void</span> _copy(<a class="code" href="class_training_set.html">TrainingSet</a> *dst, <a class="code" href="class_training_set.html">TrainingSet</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="preprocessor">#pragma mark &gt; Lock</span></div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keywordtype">void</span> lock();</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    </div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="preprocessor">#pragma mark &gt; Handle Labels</span></div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor">#pragma mark === Public Attributes ===</span></div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;</div>
+<div class="line"><a name="l00431"></a><span class="lineno"><a class="line" href="class_training_set.html#a1e565c58f0439fa299d787af52e88324">  431</a></span>&#160;    map&lt;int, Phrase*&gt; <a class="code" href="class_training_set.html#a1e565c58f0439fa299d787af52e88324">phrases</a>;</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    </div>
+<div class="line"><a name="l00437"></a><span class="lineno"><a class="line" href="class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c">  437</a></span>&#160;    map&lt;int, Label&gt; <a class="code" href="class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c">phraseLabels</a>;</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    </div>
+<div class="line"><a name="l00442"></a><span class="lineno"><a class="line" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">  442</a></span>&#160;    set&lt;Label&gt; <a class="code" href="class_training_set.html#a00954c2bce069807618ef7bb45228238">allLabels</a>;</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    </div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;<span class="preprocessor">#pragma mark === Private Methods ===</span></div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#pragma mark &gt; between Training Sets</span></div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keywordtype">void</span> _copy(<a class="code" href="class_training_set.html">TrainingSet</a> *dst, <a class="code" href="class_training_set.html">TrainingSet</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="preprocessor">#pragma mark &gt; Lock</span></div>
 <div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    <span class="keywordtype">void</span> updateSubTrainingSet(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    <span class="keywordtype">void</span> lock();</div>
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    </div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    <span class="keywordtype">void</span> updateLabelList();</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;<span class="preprocessor">#pragma mark === Private Attributes ===</span></div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;</div>
-<div class="line"><a name="l00480"></a><span class="lineno"><a class="line" href="class_training_set.html#a05139304a87b26d9a4fdc3e1705fe791">  480</a></span>&#160;    <a class="code" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> <a class="code" href="class_training_set.html#a05139304a87b26d9a4fdc3e1705fe791">flags_</a>;</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;<span class="preprocessor">#pragma mark &gt; Handle Labels</span></div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;    <span class="keywordtype">void</span> updateSubTrainingSet(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; label);</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    </div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    <span class="keywordtype">void</span> updateLabelList();</div>
 <div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;</div>
-<div class="line"><a name="l00485"></a><span class="lineno"><a class="line" href="class_training_set.html#ab2acfa07710f8e65e461899af3f47974">  485</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#ab2acfa07710f8e65e461899af3f47974">owns_data</a>;</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;<span class="preprocessor">#pragma mark === Private Attributes ===</span></div>
 <div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;</div>
-<div class="line"><a name="l00490"></a><span class="lineno"><a class="line" href="class_training_set.html#acd8e8c8421991a65dfc9492a3b2d7f79">  490</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#acd8e8c8421991a65dfc9492a3b2d7f79">bimodal_</a>;</div>
+<div class="line"><a name="l00490"></a><span class="lineno"><a class="line" href="class_training_set.html#a05139304a87b26d9a4fdc3e1705fe791">  490</a></span>&#160;    <a class="code" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> <a class="code" href="class_training_set.html#a05139304a87b26d9a4fdc3e1705fe791">flags_</a>;</div>
 <div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;</div>
-<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01">  495</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01">dimension_</a>;</div>
+<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="class_training_set.html#ab2acfa07710f8e65e461899af3f47974">  495</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#ab2acfa07710f8e65e461899af3f47974">owns_data</a>;</div>
 <div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;</div>
-<div class="line"><a name="l00500"></a><span class="lineno"><a class="line" href="class_training_set.html#a43c4c37ac46428050bc10fc498826b13">  500</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_training_set.html#a43c4c37ac46428050bc10fc498826b13">dimension_input_</a>;</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;    </div>
-<div class="line"><a name="l00505"></a><span class="lineno"><a class="line" href="class_training_set.html#a2026bb3d7824c61990e0b4abfeed8256">  505</a></span>&#160;    set&lt;Listener*&gt; <a class="code" href="class_training_set.html#a2026bb3d7824c61990e0b4abfeed8256">listeners_</a>;</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    </div>
-<div class="line"><a name="l00510"></a><span class="lineno"><a class="line" href="class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef">  510</a></span>&#160;    <a class="code" href="class_label.html">Label</a> <a class="code" href="class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef">defaultLabel_</a>;</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;</div>
-<div class="line"><a name="l00515"></a><span class="lineno"><a class="line" href="class_training_set.html#a44105bb743d923a3912cdd7bec7e2760">  515</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#a44105bb743d923a3912cdd7bec7e2760">has_changed_</a>;</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;</div>
-<div class="line"><a name="l00520"></a><span class="lineno"><a class="line" href="class_training_set.html#a131286946d0bdaf4265a61cf998e5dea">  520</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#a131286946d0bdaf4265a61cf998e5dea">locked_</a>;</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;    </div>
-<div class="line"><a name="l00525"></a><span class="lineno"><a class="line" href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">  525</a></span>&#160;    map&lt;Label, TrainingSet&gt; <a class="code" href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">subTrainingSets_</a>;</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;};</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_training_set_html_a131286946d0bdaf4265a61cf998e5dea"><div class="ttname"><a href="class_training_set.html#a131286946d0bdaf4265a61cf998e5dea">TrainingSet::locked_</a></div><div class="ttdeci">bool locked_</div><div class="ttdoc">if true, the training set is locked, i.e. its memory cannot be released. </div><div class="ttdef"><b>Definition:</b> training_set.h:520</div></div>
+<div class="line"><a name="l00500"></a><span class="lineno"><a class="line" href="class_training_set.html#acd8e8c8421991a65dfc9492a3b2d7f79">  500</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#acd8e8c8421991a65dfc9492a3b2d7f79">bimodal_</a>;</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;</div>
+<div class="line"><a name="l00505"></a><span class="lineno"><a class="line" href="class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01">  505</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01">dimension_</a>;</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;</div>
+<div class="line"><a name="l00510"></a><span class="lineno"><a class="line" href="class_training_set.html#a43c4c37ac46428050bc10fc498826b13">  510</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_training_set.html#a43c4c37ac46428050bc10fc498826b13">dimension_input_</a>;</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;    </div>
+<div class="line"><a name="l00515"></a><span class="lineno"><a class="line" href="class_training_set.html#a2026bb3d7824c61990e0b4abfeed8256">  515</a></span>&#160;    set&lt;Listener*&gt; <a class="code" href="class_training_set.html#a2026bb3d7824c61990e0b4abfeed8256">listeners_</a>;</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;    </div>
+<div class="line"><a name="l00520"></a><span class="lineno"><a class="line" href="class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef">  520</a></span>&#160;    <a class="code" href="class_label.html">Label</a> <a class="code" href="class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef">defaultLabel_</a>;</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;</div>
+<div class="line"><a name="l00525"></a><span class="lineno"><a class="line" href="class_training_set.html#a44105bb743d923a3912cdd7bec7e2760">  525</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#a44105bb743d923a3912cdd7bec7e2760">has_changed_</a>;</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;</div>
+<div class="line"><a name="l00530"></a><span class="lineno"><a class="line" href="class_training_set.html#a131286946d0bdaf4265a61cf998e5dea">  530</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_training_set.html#a131286946d0bdaf4265a61cf998e5dea">locked_</a>;</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;    </div>
+<div class="line"><a name="l00535"></a><span class="lineno"><a class="line" href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">  535</a></span>&#160;    map&lt;Label, TrainingSet&gt; <a class="code" href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">subTrainingSets_</a>;</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;    </div>
+<div class="line"><a name="l00540"></a><span class="lineno"><a class="line" href="class_training_set.html#a0481e94e9042e62e17ac734e46f172c6">  540</a></span>&#160;    vector&lt;string&gt; <a class="code" href="class_training_set.html#a0481e94e9042e62e17ac734e46f172c6">column_names_</a>;</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;};</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_training_set_html_a131286946d0bdaf4265a61cf998e5dea"><div class="ttname"><a href="class_training_set.html#a131286946d0bdaf4265a61cf998e5dea">TrainingSet::locked_</a></div><div class="ttdeci">bool locked_</div><div class="ttdoc">if true, the training set is locked, i.e. its memory cannot be released. </div><div class="ttdef"><b>Definition:</b> training_set.h:530</div></div>
 <div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
-<div class="ttc" id="class_writable_html"><div class="ttname"><a href="class_writable.html">Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:109</div></div>
-<div class="ttc" id="class_training_set_html_a44105bb743d923a3912cdd7bec7e2760"><div class="ttname"><a href="class_training_set.html#a44105bb743d923a3912cdd7bec7e2760">TrainingSet::has_changed_</a></div><div class="ttdeci">bool has_changed_</div><div class="ttdoc">used to track changes in the training set </div><div class="ttdef"><b>Definition:</b> training_set.h:515</div></div>
-<div class="ttc" id="class_training_set_html_aec3ccfddff385e9628431dd2e1efd6ef"><div class="ttname"><a href="class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef">TrainingSet::defaultLabel_</a></div><div class="ttdeci">Label defaultLabel_</div><div class="ttdoc">Default label for new phrases. </div><div class="ttdef"><b>Definition:</b> training_set.h:510</div></div>
+<div class="ttc" id="class_writable_html"><div class="ttname"><a href="class_writable.html">Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:114</div></div>
+<div class="ttc" id="class_training_set_html_a44105bb743d923a3912cdd7bec7e2760"><div class="ttname"><a href="class_training_set.html#a44105bb743d923a3912cdd7bec7e2760">TrainingSet::has_changed_</a></div><div class="ttdeci">bool has_changed_</div><div class="ttdoc">used to track changes in the training set </div><div class="ttdef"><b>Definition:</b> training_set.h:525</div></div>
+<div class="ttc" id="class_training_set_html_aec3ccfddff385e9628431dd2e1efd6ef"><div class="ttname"><a href="class_training_set.html#aec3ccfddff385e9628431dd2e1efd6ef">TrainingSet::defaultLabel_</a></div><div class="ttdeci">Label defaultLabel_</div><div class="ttdoc">Default label for new phrases. </div><div class="ttdef"><b>Definition:</b> training_set.h:520</div></div>
 <div class="ttc" id="class_training_set_html"><div class="ttname"><a href="class_training_set.html">TrainingSet</a></div><div class="ttdoc">Base class for the definition of (multimodal) training sets. </div><div class="ttdef"><b>Definition:</b> training_set.h:49</div></div>
-<div class="ttc" id="class_training_set_html_a5929f0d215d5ccd8c1d4d23113dc6253"><div class="ttname"><a href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">TrainingSet::subTrainingSets_</a></div><div class="ttdeci">map&lt; Label, TrainingSet &gt; subTrainingSets_</div><div class="ttdoc">Sub-ensembles of the training set for specific classes. </div><div class="ttdef"><b>Definition:</b> training_set.h:525</div></div>
+<div class="ttc" id="class_training_set_html_a5929f0d215d5ccd8c1d4d23113dc6253"><div class="ttname"><a href="class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253">TrainingSet::subTrainingSets_</a></div><div class="ttdeci">map&lt; Label, TrainingSet &gt; subTrainingSets_</div><div class="ttdoc">Sub-ensembles of the training set for specific classes. </div><div class="ttdef"><b>Definition:</b> training_set.h:535</div></div>
 <div class="ttc" id="class_training_set_html_a42b41acb2b9e82cc4a6d2a504d04bb1a"><div class="ttname"><a href="class_training_set.html#a42b41acb2b9e82cc4a6d2a504d04bb1a">TrainingSet::const_label_iterator</a></div><div class="ttdeci">map&lt; int, Label &gt;::const_iterator const_label_iterator</div><div class="ttdoc">constant label iterator: allows to iterate over the labels of the training set </div><div class="ttdef"><b>Definition:</b> training_set.h:76</div></div>
-<div class="ttc" id="class_training_set_html_a2026bb3d7824c61990e0b4abfeed8256"><div class="ttname"><a href="class_training_set.html#a2026bb3d7824c61990e0b4abfeed8256">TrainingSet::listeners_</a></div><div class="ttdeci">set&lt; Listener * &gt; listeners_</div><div class="ttdoc">Set of listener objects. The listeners are notified when attributes of the training set are changed...</div><div class="ttdef"><b>Definition:</b> training_set.h:505</div></div>
+<div class="ttc" id="class_training_set_html_a2026bb3d7824c61990e0b4abfeed8256"><div class="ttname"><a href="class_training_set.html#a2026bb3d7824c61990e0b4abfeed8256">TrainingSet::listeners_</a></div><div class="ttdeci">set&lt; Listener * &gt; listeners_</div><div class="ttdoc">Set of listener objects. The listeners are notified when attributes of the training set are changed...</div><div class="ttdef"><b>Definition:</b> training_set.h:515</div></div>
 <div class="ttc" id="class_training_set_html_a011af8080a25c6f4e3ecf19dbebe2b05"><div class="ttname"><a href="class_training_set.html#a011af8080a25c6f4e3ecf19dbebe2b05">TrainingSet::const_phrase_iterator</a></div><div class="ttdeci">map&lt; int, Phrase * &gt;::const_iterator const_phrase_iterator</div><div class="ttdoc">constant Phrase iterator: allows to iterate over the phrases of the training set </div><div class="ttdef"><b>Definition:</b> training_set.h:64</div></div>
 <div class="ttc" id="class_training_set_html_a1e6f4e9f111214519b27b6d78e1fe93c"><div class="ttname"><a href="class_training_set.html#a1e6f4e9f111214519b27b6d78e1fe93c">TrainingSet::phrase_iterator</a></div><div class="ttdeci">map&lt; int, Phrase * &gt;::iterator phrase_iterator</div><div class="ttdoc">Phrase iterator: allows to iterate over the phrases of the training set. </div><div class="ttdef"><b>Definition:</b> training_set.h:58</div></div>
-<div class="ttc" id="class_training_set_html_acd8e8c8421991a65dfc9492a3b2d7f79"><div class="ttname"><a href="class_training_set.html#acd8e8c8421991a65dfc9492a3b2d7f79">TrainingSet::bimodal_</a></div><div class="ttdeci">bool bimodal_</div><div class="ttdoc">defines if the phrase is bimodal </div><div class="ttdef"><b>Definition:</b> training_set.h:490</div></div>
+<div class="ttc" id="class_training_set_html_acd8e8c8421991a65dfc9492a3b2d7f79"><div class="ttname"><a href="class_training_set.html#acd8e8c8421991a65dfc9492a3b2d7f79">TrainingSet::bimodal_</a></div><div class="ttdeci">bool bimodal_</div><div class="ttdoc">defines if the phrase is bimodal </div><div class="ttdef"><b>Definition:</b> training_set.h:500</div></div>
 <div class="ttc" id="class_training_set_html_a22772f99da88a6df1bab83c3663da210"><div class="ttname"><a href="class_training_set.html#a22772f99da88a6df1bab83c3663da210">TrainingSet::label_iterator</a></div><div class="ttdeci">map&lt; int, Label &gt;::iterator label_iterator</div><div class="ttdoc">label iterator: allows to iterate over the labels of the training set </div><div class="ttdef"><b>Definition:</b> training_set.h:70</div></div>
-<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:44</div></div>
-<div class="ttc" id="class_training_set_html_ab2acfa07710f8e65e461899af3f47974"><div class="ttname"><a href="class_training_set.html#ab2acfa07710f8e65e461899af3f47974">TrainingSet::owns_data</a></div><div class="ttdeci">bool owns_data</div><div class="ttdoc">defines if the phrase has its own memory </div><div class="ttdef"><b>Definition:</b> training_set.h:485</div></div>
-<div class="ttc" id="class_training_set_html_a1e565c58f0439fa299d787af52e88324"><div class="ttname"><a href="class_training_set.html#a1e565c58f0439fa299d787af52e88324">TrainingSet::phrases</a></div><div class="ttdeci">map&lt; int, Phrase * &gt; phrases</div><div class="ttdoc">Training Phrases. </div><div class="ttdef"><b>Definition:</b> training_set.h:421</div></div>
-<div class="ttc" id="class_listener_html"><div class="ttname"><a href="class_listener.html">Listener</a></div><div class="ttdoc">Abstract class for handling training set notifications. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:89</div></div>
-<div class="ttc" id="class_training_set_html_a36d78a012a60d90439e1d84ae6c5cc01"><div class="ttname"><a href="class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01">TrainingSet::dimension_</a></div><div class="ttdeci">unsigned int dimension_</div><div class="ttdoc">total dimension of the training data </div><div class="ttdef"><b>Definition:</b> training_set.h:495</div></div>
-<div class="ttc" id="class_training_set_html_a43c4c37ac46428050bc10fc498826b13"><div class="ttname"><a href="class_training_set.html#a43c4c37ac46428050bc10fc498826b13">TrainingSet::dimension_input_</a></div><div class="ttdeci">unsigned int dimension_input_</div><div class="ttdoc">dimension of the input modality in bimodal mode </div><div class="ttdef"><b>Definition:</b> training_set.h:500</div></div>
+<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:49</div></div>
+<div class="ttc" id="class_training_set_html_a0481e94e9042e62e17ac734e46f172c6"><div class="ttname"><a href="class_training_set.html#a0481e94e9042e62e17ac734e46f172c6">TrainingSet::column_names_</a></div><div class="ttdeci">vector&lt; string &gt; column_names_</div><div class="ttdoc">labels of the columns of the training set (e.g. descriptor names) </div><div class="ttdef"><b>Definition:</b> training_set.h:540</div></div>
+<div class="ttc" id="class_training_set_html_ab2acfa07710f8e65e461899af3f47974"><div class="ttname"><a href="class_training_set.html#ab2acfa07710f8e65e461899af3f47974">TrainingSet::owns_data</a></div><div class="ttdeci">bool owns_data</div><div class="ttdoc">defines if the phrase has its own memory </div><div class="ttdef"><b>Definition:</b> training_set.h:495</div></div>
+<div class="ttc" id="class_training_set_html_a1e565c58f0439fa299d787af52e88324"><div class="ttname"><a href="class_training_set.html#a1e565c58f0439fa299d787af52e88324">TrainingSet::phrases</a></div><div class="ttdeci">map&lt; int, Phrase * &gt; phrases</div><div class="ttdoc">Training Phrases. </div><div class="ttdef"><b>Definition:</b> training_set.h:431</div></div>
+<div class="ttc" id="class_listener_html"><div class="ttname"><a href="class_listener.html">Listener</a></div><div class="ttdoc">Abstract class for handling training set notifications. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:94</div></div>
+<div class="ttc" id="class_training_set_html_a36d78a012a60d90439e1d84ae6c5cc01"><div class="ttname"><a href="class_training_set.html#a36d78a012a60d90439e1d84ae6c5cc01">TrainingSet::dimension_</a></div><div class="ttdeci">unsigned int dimension_</div><div class="ttdoc">total dimension of the training data </div><div class="ttdef"><b>Definition:</b> training_set.h:505</div></div>
+<div class="ttc" id="class_training_set_html_a43c4c37ac46428050bc10fc498826b13"><div class="ttname"><a href="class_training_set.html#a43c4c37ac46428050bc10fc498826b13">TrainingSet::dimension_input_</a></div><div class="ttdeci">unsigned int dimension_input_</div><div class="ttdoc">dimension of the input modality in bimodal mode </div><div class="ttdef"><b>Definition:</b> training_set.h:510</div></div>
 <div class="ttc" id="label_8h_html"><div class="ttname"><a href="label_8h.html">label.h</a></div></div>
-<div class="ttc" id="phrase_8h_html_a76a85e386f04f821134bdeb2cf7f54c0"><div class="ttname"><a href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">PHRASE_DEFAULT_DIMENSION</a></div><div class="ttdeci">const int PHRASE_DEFAULT_DIMENSION</div><div class="ttdef"><b>Definition:</b> phrase.h:42</div></div>
-<div class="ttc" id="class_training_set_html_a00954c2bce069807618ef7bb45228238"><div class="ttname"><a href="class_training_set.html#a00954c2bce069807618ef7bb45228238">TrainingSet::allLabels</a></div><div class="ttdeci">set&lt; Label &gt; allLabels</div><div class="ttdoc">Set containing all the labels present in the training set. </div><div class="ttdef"><b>Definition:</b> training_set.h:432</div></div>
-<div class="ttc" id="class_training_set_html_a05139304a87b26d9a4fdc3e1705fe791"><div class="ttname"><a href="class_training_set.html#a05139304a87b26d9a4fdc3e1705fe791">TrainingSet::flags_</a></div><div class="ttdeci">rtml_flags flags_</div><div class="ttdoc">Construction flags. </div><div class="ttdef"><b>Definition:</b> training_set.h:480</div></div>
-<div class="ttc" id="class_training_set_html_aa16cfb688f50279895cd8a6c0e68e84c"><div class="ttname"><a href="class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c">TrainingSet::phraseLabels</a></div><div class="ttdeci">map&lt; int, Label &gt; phraseLabels</div><div class="ttdoc">Labels associated to each phrase. </div><div class="ttdef"><b>Definition:</b> training_set.h:427</div></div>
+<div class="ttc" id="phrase_8h_html_a76a85e386f04f821134bdeb2cf7f54c0"><div class="ttname"><a href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">PHRASE_DEFAULT_DIMENSION</a></div><div class="ttdeci">const int PHRASE_DEFAULT_DIMENSION</div><div class="ttdef"><b>Definition:</b> phrase.h:43</div></div>
+<div class="ttc" id="class_training_set_html_a00954c2bce069807618ef7bb45228238"><div class="ttname"><a href="class_training_set.html#a00954c2bce069807618ef7bb45228238">TrainingSet::allLabels</a></div><div class="ttdeci">set&lt; Label &gt; allLabels</div><div class="ttdoc">Set containing all the labels present in the training set. </div><div class="ttdef"><b>Definition:</b> training_set.h:442</div></div>
+<div class="ttc" id="class_training_set_html_a05139304a87b26d9a4fdc3e1705fe791"><div class="ttname"><a href="class_training_set.html#a05139304a87b26d9a4fdc3e1705fe791">TrainingSet::flags_</a></div><div class="ttdeci">rtml_flags flags_</div><div class="ttdoc">Construction flags. </div><div class="ttdef"><b>Definition:</b> training_set.h:490</div></div>
+<div class="ttc" id="class_training_set_html_aa16cfb688f50279895cd8a6c0e68e84c"><div class="ttname"><a href="class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c">TrainingSet::phraseLabels</a></div><div class="ttdeci">map&lt; int, Label &gt; phraseLabels</div><div class="ttdoc">Labels associated to each phrase. </div><div class="ttdef"><b>Definition:</b> training_set.h:437</div></div>
 <div class="ttc" id="class_label_html"><div class="ttname"><a href="class_label.html">Label</a></div><div class="ttdoc">Label of a data phrase. </div><div class="ttdef"><b>Definition:</b> label.h:48</div></div>
 <div class="ttc" id="phrase_8h_html"><div class="ttname"><a href="phrase_8h.html">phrase.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

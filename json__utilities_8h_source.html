@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.3</span>
+   &#160;<span id="projectnumber">0.1-alpha</span>
    </div>
   </td>
  </tr>
@@ -194,7 +194,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    {</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        stringstream fullmsg;</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        fullmsg &lt;&lt; <span class="stringliteral">&quot;Error reading JSON, Message: &quot;</span> + message_ + <span class="stringliteral">&quot; // (Node List: &quot;</span>;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=nodename_.size()-1 ; i&gt;0 ; --i)</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i = static_cast&lt;unsigned int&gt;(nodename_.size()) - 1 ; i &gt; 0 ; --i)</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            fullmsg &lt;&lt; nodename_[i] &lt;&lt; <span class="stringliteral">&quot; &gt; &quot;</span>;</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        fullmsg &lt;&lt; nodename_[0];</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        fullmsg &lt;&lt; <span class="stringliteral">&quot;)&quot;</span>;</div>
@@ -292,7 +292,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Mar 16 2015 23:06:50 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>
