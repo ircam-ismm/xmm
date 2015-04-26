@@ -62,9 +62,11 @@ public:
      * @brief Constructor
      * @param globalTrainingSet training set associated with the model
      * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
+     * @param covariance_mode covariance mode (full vs diagonal)
      */
     GMMGroup(rtml_flags flags = NONE,
-                  TrainingSet *globalTrainingSet=NULL);
+             TrainingSet *globalTrainingSet=NULL,
+             GaussianDistribution::COVARIANCE_MODE covariance_mode = GaussianDistribution::FULL);
     
     /*@}*/
 
@@ -104,6 +106,17 @@ public:
      * @throws invalid_argument if the covariance offset is <= 0
      */
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
+    
+    /**
+     * @brief get the current covariance mode
+     */
+    GaussianDistribution::COVARIANCE_MODE get_covariance_mode() const;
+    
+    /**
+     * @brief set the covariance mode
+     * @param covariance_mode target covariance mode
+     */
+    void set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode);
     
     /*@}*/
 
@@ -160,28 +173,28 @@ public:
      * @param columns columns indices in the target order
      * @throws runtime_error if the model is training
      * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
-     * @param target_model a GMMGroup from the current model considering only the target columns
+     * @return a GMMGroup from the current model considering only the target columns
      */
     GMMGroup extract_submodel(vector<unsigned int>& columns) const;
     
     /**
      * @brief extract the submodel of the input modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a unimodal GMMGroup of the input modality from the current bimodal model
+     * @return a unimodal GMMGroup of the input modality from the current bimodal model
      */
     GMMGroup extract_submodel_input() const;
     
     /**
      * @brief extract the submodel of the output modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a unimodal GMMGroup of the output modality from the current bimodal model
+     * @return a unimodal GMMGroup of the output modality from the current bimodal model
      */
     GMMGroup extract_submodel_output() const;
     
     /**
      * @brief extract the model with reversed input and output modalities
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a bimodal GMMGroup  that swaps the input and output modalities
+     * @return a bimodal GMMGroup  that swaps the input and output modalities
      */
     GMMGroup extract_inverse_model() const;
     

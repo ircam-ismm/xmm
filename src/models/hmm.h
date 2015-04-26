@@ -120,11 +120,13 @@ public:
      * for use as a submodel of a hierarchical HMM.
      * @param nbStates number of hidden states
      * @param nbMixtureComponents number of gaussian mixture components for each state
+     * @param covariance_mode covariance mode (full vs diagonal)
      */
     HMM(rtml_flags flags = NONE,
         TrainingSet *trainingSet = NULL,
         int nbStates = HMM_DEFAULT_NB_STATES,
-        int nbMixtureComponents = GMM_DEFAULT_NB_MIXTURE_COMPONENTS);
+        int nbMixtureComponents = GMM_DEFAULT_NB_MIXTURE_COMPONENTS,
+        GaussianDistribution::COVARIANCE_MODE covariance_mode = GaussianDistribution::FULL);
     
     /**
      * @brief Copy constructor
@@ -201,6 +203,17 @@ public:
      * @param varianceOffset_absolute offset added to the diagonal of covariances matrices (minimum value)
      */
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
+    
+    /**
+     * @brief get the current covariance mode
+     */
+    GaussianDistribution::COVARIANCE_MODE get_covariance_mode() const;
+    
+    /**
+     * @brief set the covariance mode
+     * @param covariance_mode target covariance mode
+     */
+    void set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode);
     
     /**
      * @brief Get the regression estimator type
@@ -301,28 +314,28 @@ public:
      * @param columns columns indices in the target order
      * @throws runtime_error if the model is training
      * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
-     * @param target_model a HMM from the current model considering only the target columns
+     * @return a HMM from the current model considering only the target columns
      */
     HMM extract_submodel(vector<unsigned int>& columns) const;
     
     /**
      * @brief extract the submodel of the input modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a unimodal HMM of the input modality from the current bimodal model
+     * @return a unimodal HMM of the input modality from the current bimodal model
      */
     HMM extract_submodel_input() const;
     
     /**
      * @brief extract the submodel of the output modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a unimodal HMM of the output modality from the current bimodal model
+     * @return a unimodal HMM of the output modality from the current bimodal model
      */
     HMM extract_submodel_output() const;
     
     /**
      * @brief extract the model with reversed input and output modalities
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a bimodal HMM  that swaps the input and output modalities
+     * @return a bimodal HMM  that swaps the input and output modalities
      */
     HMM extract_inverse_model() const;
     
@@ -627,6 +640,11 @@ protected:
      * @brief Offset added to the diagonal of covariance matrices for convergence (minimum value)
      */
     double  varianceOffset_absolute_;
+    
+    /**
+     * @brief Covariance Mode
+     */
+    GaussianDistribution::COVARIANCE_MODE covariance_mode_;
     
     /**
      * @brief Transition mode of the model (left-right vs ergodic)

@@ -78,7 +78,8 @@ public:
     /*@{*/
     /** @name Constructor */
     HierarchicalHMM(rtml_flags flags = NONE,
-                    TrainingSet *_globalTrainingSet=NULL);
+                    TrainingSet *_globalTrainingSet=NULL,
+                    GaussianDistribution::COVARIANCE_MODE covariance_mode = GaussianDistribution::FULL);
     
     virtual ~HierarchicalHMM();
     
@@ -138,6 +139,17 @@ public:
      * @throws invalid_argument if the covariance offset is <= 0
      */
     void set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute);
+    
+    /**
+     * @brief get the current covariance mode
+     */
+    GaussianDistribution::COVARIANCE_MODE get_covariance_mode() const;
+    
+    /**
+     * @brief set the covariance mode
+     * @param covariance_mode target covariance mode
+     */
+    void set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode);
     
     /**
      * @brief Get the regression estimator type
@@ -319,28 +331,28 @@ public:
      * @param columns columns indices in the target order
      * @throws runtime_error if the model is training
      * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
-     * @param target_model a HierarchicalHMM from the current model considering only the target columns
+     * @return a HierarchicalHMM from the current model considering only the target columns
      */
     HierarchicalHMM extract_submodel(vector<unsigned int>& columns) const;
     
     /**
      * @brief extract the submodel of the input modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a unimodal GMMGroup of the input modality from the current bimodal model
+     * @return a unimodal GMMGroup of the input modality from the current bimodal model
      */
     HierarchicalHMM extract_submodel_input() const;
     
     /**
      * @brief extract the submodel of the output modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a unimodal HierarchicalHMM of the output modality from the current bimodal model
+     * @return a unimodal HierarchicalHMM of the output modality from the current bimodal model
      */
     HierarchicalHMM extract_submodel_output() const;
     
     /**
      * @brief extract the model with reversed input and output modalities
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_model a bimodal HierarchicalHMM  that swaps the input and output modalities
+     * @return a bimodal HierarchicalHMM  that swaps the input and output modalities
      */
     HierarchicalHMM extract_inverse_model() const;
     

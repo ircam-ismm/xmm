@@ -38,13 +38,14 @@ GMM::GMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbMixtureComponents,
          double varianceOffset_relative,
-         double varianceOffset_absolute)
-: ProbabilisticModel(flags, trainingSet)
+         double varianceOffset_absolute,
+         GaussianDistribution::COVARIANCE_MODE covariance_mode)
+: ProbabilisticModel(flags, trainingSet),
+  nbMixtureComponents_(nbMixtureComponents),
+  varianceOffset_relative_(varianceOffset_relative),
+  varianceOffset_absolute_(varianceOffset_absolute),
+  covariance_mode_(covariance_mode)
 {
-    nbMixtureComponents_ = nbMixtureComponents;
-    varianceOffset_relative_ = varianceOffset_relative;
-    varianceOffset_absolute_ = varianceOffset_absolute;
-    
     allocate();
     initParametersToDefault();
 }
@@ -112,6 +113,20 @@ void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     }
 }
 
+GaussianDistribution::COVARIANCE_MODE GMM::get_covariance_mode() const
+{
+    return covariance_mode_;
+}
+
+void GMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+{
+    if (covariance_mode == covariance_mode_) return;
+    covariance_mode_ = covariance_mode;
+    for (unsigned int c=0; c<nbMixtureComponents_; ++c) {
+        components[c].set_covariance_mode(covariance_mode);
+    }
+}
+
 #pragma mark > Performance
 void GMM::performance_init()
 {
@@ -156,6 +171,7 @@ JSONNode GMM::to_json() const
     json_gmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_gmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_gmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
+    json_gmm.push_back(JSONNode("covariance_mode", covariance_mode_));
     
     // Model Parameters
     json_gmm.push_back(vector2json(mixtureCoeffs, "mixturecoefficients"));
@@ -210,6 +226,16 @@ void GMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type for node 'varianceoffset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
         varianceOffset_absolute_ = root_it->as_float();
+        
+        // Get Covariance mode
+        root_it = root.find("covariance_mode");
+        if (root_it != root.end()) {
+            if (root_it->type() != JSON_NUMBER)
+                throw JSONException("Wrong type for node 'covariance_mode': was expecting 'JSON_NUMBER'", root_it->name());
+            set_covariance_mode(static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int()));
+        } else {
+            set_covariance_mode(GaussianDistribution::FULL);
+        }
         
         allocate();
         
@@ -356,6 +382,7 @@ void GMM::_copy(GMM *dst, GMM const& src)
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
+    dst->covariance_mode_ = src.covariance_mode_;
     dst->beta.resize(dst->nbMixtureComponents_);
     dst->mixtureCoeffs = src.mixtureCoeffs;
     dst->components = src.components;
@@ -365,7 +392,13 @@ void GMM::allocate()
 {
     mixtureCoeffs.resize(nbMixtureComponents_);
     beta.resize(nbMixtureComponents_);
-    components.assign(nbMixtureComponents_, GaussianDistribution(flags_, dimension_, dimension_input_, varianceOffset_relative_, varianceOffset_absolute_));
+    components.assign(nbMixtureComponents_,
+                      GaussianDistribution(flags_,
+                                           dimension_,
+                                           dimension_input_,
+                                           varianceOffset_relative_,
+                                           varianceOffset_absolute_,
+                                           covariance_mode_));
 }
 
 double GMM::obsProb(const float* observation, int mixtureComponent)
@@ -467,8 +500,13 @@ void GMM::initCovariances_fullyObserved()
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
     int nbPhrases = this->trainingSet->size();
     
-    for (int n=0; n<nbMixtureComponents_; n++)
-        components[n].covariance.assign(dimension_*dimension_, 0.0);
+    if (covariance_mode_ == GaussianDistribution::FULL) {
+        for (int n=0; n<nbMixtureComponents_; n++)
+            components[n].covariance.assign(dimension_*dimension_, 0.0);
+    } else {
+        for (int n=0; n<nbMixtureComponents_; n++)
+            components[n].covariance.assign(dimension_, 0.0);
+    }
     
     vector<double> gmeans(nbMixtureComponents_*dimension_, 0.0);
     vector<int> factor(nbMixtureComponents_, 0);
@@ -479,8 +517,13 @@ void GMM::initCovariances_fullyObserved()
             for (int t=0; t<step; t++) {
                 for (int d1=0; d1<dimension_; d1++) {
                     gmeans[n*dimension_+d1] += (*((*this->trainingSet)(i)->second))(offset+t, d1);
-                    for (int d2=0; d2<dimension_; d2++) {
-                        components[n].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                    if (covariance_mode_ == GaussianDistribution::FULL) {
+                        for (int d2=0; d2<dimension_; d2++) {
+                            components[n].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                        }
+                    } else {
+                        float value = (*((*this->trainingSet)(i)->second))(offset+t, d1);
+                        components[n].covariance[d1] += value * value;
                     }
                 }
             }
@@ -489,17 +532,28 @@ void GMM::initCovariances_fullyObserved()
         }
     }
     
-    for (int n=0; n<nbMixtureComponents_; n++)
+    for (int n=0; n<nbMixtureComponents_; n++) {
         for (int d1=0; d1<dimension_; d1++) {
             gmeans[n*dimension_+d1] /= factor[n];
-            for (int d2=0; d2<dimension_; d2++)
-                components[n].covariance[d1*dimension_+d2] /= factor[n];
+            if (covariance_mode_ == GaussianDistribution::FULL) {
+                for (int d2=0; d2<dimension_; d2++)
+                    components[n].covariance[d1*dimension_+d2] /= factor[n];
+            } else {
+                components[n].covariance[d1] /= factor[n];
+            }
         }
+    }
     
-    for (int n=0; n<nbMixtureComponents_; n++)
-        for (int d1=0; d1<dimension_; d1++)
-            for (int d2=0; d2<dimension_; d2++)
-                components[n].covariance[d1*dimension_+d2] -= gmeans[n*dimension_+d1]*gmeans[n*dimension_+d2];
+    for (int n=0; n<nbMixtureComponents_; n++) {
+        for (int d1=0; d1<dimension_; d1++) {
+            if (covariance_mode_ == GaussianDistribution::FULL) {
+                for (int d2=0; d2<dimension_; d2++)
+                    components[n].covariance[d1*dimension_+d2] -= gmeans[n*dimension_+d1]*gmeans[n*dimension_+d2];
+            } else {
+                components[n].covariance[d1] -= gmeans[n*dimension_+d1] * gmeans[n*dimension_+d1];
+            }
+        }
+    }
 }
 
 double GMM::train_EM_update()
@@ -569,23 +623,43 @@ double GMM::train_EM_update()
     }
     
     //estimate covariances
-    for (int c=0; c<nbMixtureComponents_; c++) {
-        for (int d1=0; d1<dimension_; d1++) {
-            for (int d2=d1; d2<dimension_; d2++) {
-                components[c].covariance[d1 * dimension_ + d2] = 0.;
+    if (covariance_mode_ == GaussianDistribution::FULL) {
+        for (int c=0; c<nbMixtureComponents_; c++) {
+            for (int d1=0; d1<dimension_; d1++) {
+                for (int d2=d1; d2<dimension_; d2++) {
+                    components[c].covariance[d1 * dimension_ + d2] = 0.;
+                    tbase = 0;
+                    for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); ++it) {
+                        int T = it->second->length();
+                        for (int t=0; t<T; t++) {
+                            components[c].covariance[d1 * dimension_ + d2] += p[c][tbase+t]
+                            * ((*it->second)(t, d1) - components[c].mean[d1])
+                            * ((*it->second)(t, d2) - components[c].mean[d2]);
+                        }
+                        tbase += T;
+                    }
+                    components[c].covariance[d1 * dimension_ + d2] /= E[c];
+                    if (d1 != d2)
+                        components[c].covariance[d2*dimension_+d1] = components[c].covariance[d1*dimension_+d2];
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int c=0; c<nbMixtureComponents_; c++) {
+            for (int d1=0; d1<dimension_; d1++) {
+                components[c].covariance[d1] = 0.;
                 tbase = 0;
                 for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); ++it) {
                     int T = it->second->length();
                     for (int t=0; t<T; t++) {
-                        components[c].covariance[d1 * dimension_ + d2] += p[c][tbase+t]
-                        * ((*it->second)(t, d1) - components[c].mean[d1])
-                        * ((*it->second)(t, d2) - components[c].mean[d2]);
+                        float value = ((*it->second)(t, d1) - components[c].mean[d1]);
+                        components[c].covariance[d1] += p[c][tbase+t] * value * value;
                     }
                     tbase += T;
                 }
-                components[c].covariance[d1 * dimension_ + d2] /= E[c];
-                if (d1 != d2)
-                    components[c].covariance[d2*dimension_+d1] = components[c].covariance[d1*dimension_+d2];
+                components[c].covariance[d1] /= E[c];
             }
         }
     }
@@ -605,7 +679,11 @@ void GMM::initParametersToDefault()
     double norm_coeffs(0.);
     for (int c=0; c<nbMixtureComponents_; c++) {
         components[c].scale.assign(global_trainingdata_var.begin(), global_trainingdata_var.end());
-        components[c].covariance.assign(dimension_*dimension_, varianceOffset_absolute_/2.);
+        if (covariance_mode_ == GaussianDistribution::FULL) {
+            components[c].covariance.assign(dimension_*dimension_, varianceOffset_absolute_/2.);
+        } else {
+            components[c].covariance.assign(dimension_, varianceOffset_absolute_/2.);
+        }
         components[c].addOffset();
         mixtureCoeffs[c] = 1./float(nbMixtureComponents_);
         norm_coeffs += mixtureCoeffs[c];

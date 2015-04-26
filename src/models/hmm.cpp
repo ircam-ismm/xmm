@@ -40,22 +40,20 @@ using namespace std;
 HMM::HMM(rtml_flags flags,
          TrainingSet *trainingSet,
          int nbStates,
-         int nbMixtureComponents)
-: ProbabilisticModel(flags, trainingSet)
+         int nbMixtureComponents,
+         GaussianDistribution::COVARIANCE_MODE covariance_mode)
+: ProbabilisticModel(flags, trainingSet),
+  nbStates_(nbStates),
+  nbMixtureComponents_(nbMixtureComponents),
+  varianceOffset_relative_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE),
+  varianceOffset_absolute_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE),
+  covariance_mode_(covariance_mode),
+  regression_estimator_(FULL),
+  transitionMode_(LEFT_RIGHT),
+  estimateMeans_(HMM_DEFAULT_ESTIMATEMEANS)
 {
     is_hierarchical_ = (flags & HIERARCHICAL);
-    
-    nbStates_ = nbStates;
-    nbMixtureComponents_ = nbMixtureComponents;
-    varianceOffset_relative_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE;
-    varianceOffset_absolute_ = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE;
-    regression_estimator_ = FULL;
-    
     allocate();
-    
-    transitionMode_ = LEFT_RIGHT;
-    estimateMeans_ = HMM_DEFAULT_ESTIMATEMEANS;
-    
     initParametersToDefault();
 }
 
@@ -127,7 +125,7 @@ void HMM::allocate()
     previousAlpha_.resize(nbStates_);
     beta_.resize(nbStates_);
     previousBeta_.resize(nbStates_);
-    states_.assign(nbStates_, GMM(flags_, this->trainingSet, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_));
+    states_.assign(nbStates_, GMM(flags_, this->trainingSet, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_, covariance_mode_));
     if (is_hierarchical_)
         updateExitProbabilities(NULL);
 }
@@ -215,8 +213,13 @@ void HMM::initCovariances_fullyObserved()
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
     int nbPhrases = this->trainingSet->size();
     
-    for (int n=0; n<nbStates_; n++)
-        states_[n].components[0].covariance.assign(dimension_*dimension_, 0.0);
+    if (covariance_mode_ == GaussianDistribution::FULL) {
+        for (int n=0; n<nbStates_; n++)
+            states_[n].components[0].covariance.assign(dimension_*dimension_, 0.0);
+    } else {
+        for (int n=0; n<nbStates_; n++)
+            states_[n].components[0].covariance.assign(dimension_, 0.0);
+    }
     
     vector<int> factor(nbStates_, 0);
     vector<double> othermeans(nbStates_*dimension_, 0.0);
@@ -227,8 +230,13 @@ void HMM::initCovariances_fullyObserved()
             for (int t=0; t<step; t++) {
                 for (int d1=0; d1<dimension_; d1++) {
                     othermeans[n*dimension_+d1] += (*((*this->trainingSet)(i)->second))(offset+t, d1);
-                    for (int d2=0; d2<dimension_; d2++) {
-                        states_[n].components[0].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                    if (covariance_mode_ == GaussianDistribution::FULL) {
+                        for (int d2=0; d2<dimension_; d2++) {
+                            states_[n].components[0].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                        }
+                    } else {
+                        float value = (*((*this->trainingSet)(i)->second))(offset+t, d1);
+                        states_[n].components[0].covariance[d1] += value * value;
                     }
                 }
             }
@@ -240,14 +248,23 @@ void HMM::initCovariances_fullyObserved()
     for (int n=0; n<nbStates_; n++)
         for (int d1=0; d1<dimension_; d1++) {
             othermeans[n*dimension_+d1] /= factor[n];
-            for (int d2=0; d2<dimension_; d2++)
-                states_[n].components[0].covariance[d1*dimension_+d2] /= factor[n];
+            if (covariance_mode_ == GaussianDistribution::FULL) {
+                for (int d2=0; d2<dimension_; d2++)
+                    states_[n].components[0].covariance[d1*dimension_+d2] /= factor[n];
+            } else {
+                states_[n].components[0].covariance[d1] /= factor[n];
+            }
         }
     
     for (int n=0; n<nbStates_; n++) {
-        for (int d1=0; d1<dimension_; d1++)
-            for (int d2=0; d2<dimension_; d2++)
-                states_[n].components[0].covariance[d1*dimension_+d2] -= othermeans[n*dimension_+d1]*othermeans[n*dimension_+d2];
+        for (int d1=0; d1<dimension_; d1++) {
+            if (covariance_mode_ == GaussianDistribution::FULL) {
+                for (int d2=0; d2<dimension_; d2++)
+                    states_[n].components[0].covariance[d1*dimension_+d2] -= othermeans[n*dimension_+d1]*othermeans[n*dimension_+d2];
+            } else {
+                states_[n].components[0].covariance[d1] -= othermeans[n*dimension_+d1] * othermeans[n*dimension_+d1];
+            }
+        }
         states_[n].addCovarianceOffset();
         states_[n].updateInverseCovariances();
     }
@@ -270,7 +287,7 @@ void HMM::initMeansCovariancesWithGMMEM()
                                 ((*this->trainingSet)(i))->second->get_dataPointer(n*step),
                                 step);
         }
-        GMM temp_gmm((bimodal_ ? BIMODAL : NONE), &temp_ts, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_);
+        GMM temp_gmm((bimodal_ ? BIMODAL : NONE), &temp_ts, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_, covariance_mode_);
         temp_gmm.train();
         for (unsigned int c=0; c<nbMixtureComponents_; c++) {
             states_[n].components[c].mean = temp_gmm.components[c].mean;
@@ -391,6 +408,20 @@ void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     }
     varianceOffset_relative_ = varianceOffset_relative;
     varianceOffset_absolute_ = varianceOffset_absolute;
+}
+
+GaussianDistribution::COVARIANCE_MODE HMM::get_covariance_mode() const
+{
+    return covariance_mode_;
+}
+
+void HMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+{
+    if (covariance_mode == covariance_mode_) return;
+    covariance_mode_ = covariance_mode;
+    for (unsigned int i=0; i<nbStates_; ++i) {
+        states_[i].set_covariance_mode(covariance_mode);
+    }
 }
 
 REGRESSION_ESTIMATOR HMM::get_regression_estimator() const
@@ -605,7 +636,11 @@ double HMM::train_EM_update()
     for (int i=0; i<nbStates_; i++) {
         for (int c=0; c<nbMixtureComponents_; c++) {
             states_[i].mixtureCoeffs[c] = 0.;
-            states_[i].components[c].covariance.assign(dimension_ * dimension_, 0.0);
+            if (covariance_mode_ == GaussianDistribution::FULL) {
+                states_[i].components[c].covariance.assign(dimension_ * dimension_, 0.0);
+            } else {
+                states_[i].components[c].covariance.assign(dimension_, 0.0);
+            }
         }
     }
     
@@ -863,10 +898,16 @@ void HMM::baumWelch_estimateCovariances()
             for (int t=0; t<phraseLength; t++) {
                 for (int c=0; c<nbMixtureComponents_; c++) {
                     for (int d1=0; d1<dimension_; d1++) {
-                        for (int d2=d1; d2<dimension_; d2++) {
-                            states_[i].components[c].covariance[d1*dimension_+d2] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
-                            * ((*it->second)(t, d1) - states_[i].components[c].mean[d1])
-                            * ((*it->second)(t, d2) - states_[i].components[c].mean[d2]);
+                        if (covariance_mode_ == GaussianDistribution::FULL) {
+                            for (int d2=d1; d2<dimension_; d2++) {
+                                states_[i].components[c].covariance[d1*dimension_+d2] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
+                                * ((*it->second)(t, d1) - states_[i].components[c].mean[d1])
+                                * ((*it->second)(t, d2) - states_[i].components[c].mean[d2]);
+                            }
+                        } else {
+                            float value = (*it->second)(t, d1) - states_[i].components[c].mean[d1];
+                            states_[i].components[c].covariance[d1] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
+                                * value * value;
                         }
                     }
                 }
@@ -880,10 +921,14 @@ void HMM::baumWelch_estimateCovariances()
         for (int c=0; c<nbMixtureComponents_; c++) {
             if (gammaSumPerMixture_[i*nbMixtureComponents_+c] > 0) {
                 for (int d1=0; d1<dimension_; d1++) {
-                    for (int d2=d1; d2<dimension_; d2++) {
-                        states_[i].components[c].covariance[d1*dimension_+d2] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
-                        if (d1 != d2)
-                            states_[i].components[c].covariance[d2*dimension_+d1] = states_[i].components[c].covariance[d1*dimension_+d2];
+                    if (covariance_mode_ == GaussianDistribution::FULL) {
+                        for (int d2=d1; d2<dimension_; d2++) {
+                            states_[i].components[c].covariance[d1*dimension_+d2] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
+                            if (d1 != d2)
+                                states_[i].components[c].covariance[d2*dimension_+d1] = states_[i].components[c].covariance[d1*dimension_+d2];
+                        }
+                    } else {
+                        states_[i].components[c].covariance[d1] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
                     }
                 }
             }
@@ -1142,6 +1187,7 @@ JSONNode HMM::to_json() const
     json_hmm.push_back(JSONNode("nbmixturecomponents", nbMixtureComponents_));
     json_hmm.push_back(JSONNode("varianceoffset_relative", varianceOffset_relative_));
     json_hmm.push_back(JSONNode("varianceoffset_absolute", varianceOffset_absolute_));
+    json_hmm.push_back(JSONNode("covariance_mode", covariance_mode_));
     json_hmm.push_back(JSONNode("regression_estimator", regression_estimator_));
     json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
@@ -1231,6 +1277,16 @@ void HMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type for node 'varianceoffset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
         varianceOffset_absolute_ = root_it->as_float();
+        
+        // Get Covariance mode
+        root_it = root.find("covariance_mode");
+        if (root_it != root.end()) {
+            if (root_it->type() != JSON_NUMBER)
+                throw JSONException("Wrong type for node 'covariance_mode': was expecting 'JSON_NUMBER'", root_it->name());
+            set_covariance_mode(static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int()));
+        } else {
+            set_covariance_mode(GaussianDistribution::FULL);
+        }
         
         // Get Regression Estimator
         root_it = root.find("regression_estimator");

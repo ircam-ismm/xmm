@@ -500,7 +500,7 @@ vector<float> TrainingSet::variance() const
     {
         for (unsigned int d=0; d<dimension_; d++) {
             for (unsigned int t=0 ; t<it->second->length() ; t++) {
-                variance[d] += pow((*it->second)(t, d) - _mean[d], 2);
+                variance[d] += ((*it->second)(t, d) - _mean[d]) * ((*it->second)(t, d) - _mean[d]);
             }
         }
         total_length += it->second->length();

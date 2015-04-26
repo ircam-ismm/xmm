@@ -595,7 +595,7 @@ vector<float> Phrase::variance() const
     for (unsigned int d=0; d<dimension_; d++) {
         variance[d] = 0.;
         for (unsigned int t=0; t<length_; t++) {
-            variance[d] += pow(operator()(t, d) - _mean[d], 2);
+            variance[d] += (operator()(t, d) - _mean[d]) * (operator()(t, d) - _mean[d]);
         }
         variance[d] /= float(length_);
     }

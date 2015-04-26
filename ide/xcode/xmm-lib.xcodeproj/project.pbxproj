@@ -34,6 +34,7 @@
 		0B9FE3171AD162E4007431E3 /* main_xmm_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */; };
 		0B9FE31C1AD16613007431E3 /* model_conversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE31B1AD16613007431E3 /* model_conversion.cpp */; };
 		0B9FE31F1AD1E9F1007431E3 /* libxmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0D31A9A65E300E89497 /* libxmm.a */; };
+		0BAA12F91AED0F8C006DA006 /* gaussian_covariance_mode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */; };
 		0BF36B581AE82EA200D81858 /* model_extraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* model_extraction.cpp */; };
 /* End PBXBuildFile section */
 
@@ -133,6 +134,7 @@
 		0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main_xmm_tests.cpp; sourceTree = "<group>"; };
 		0B9FE31B1AD16613007431E3 /* model_conversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_conversion.cpp; sourceTree = "<group>"; };
 		0B9FE3201AD29C9A007431E3 /* catch_utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = catch_utilities.h; sourceTree = "<group>"; };
+		0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gaussian_covariance_mode.cpp; sourceTree = "<group>"; };
 		0BD1C5E517D9E3D30061535A /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		0BF36B561AE82DEA00D81858 /* model_extraction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_extraction.cpp; sourceTree = "<group>"; };
 		0BF757B71A9B83E600B8C4BC /* doxygen_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = doxygen_main.h; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 				0B9FE3201AD29C9A007431E3 /* catch_utilities.h */,
 				0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */,
 				0B9FE31B1AD16613007431E3 /* model_conversion.cpp */,
+				0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */,
 				0BF36B561AE82DEA00D81858 /* model_extraction.cpp */,
 			);
 			name = test;
@@ -506,6 +509,7 @@
 				0B9FE3171AD162E4007431E3 /* main_xmm_tests.cpp in Sources */,
 				0BF36B581AE82EA200D81858 /* model_extraction.cpp in Sources */,
 				0B9FE31C1AD16613007431E3 /* model_conversion.cpp in Sources */,
+				0BAA12F91AED0F8C006DA006 /* gaussian_covariance_mode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

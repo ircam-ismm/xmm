@@ -439,7 +439,7 @@ numType euclidian_distance(const numType* vector1,
                            unsigned int dimension) {
     numType distance(0.0);
     for (unsigned int d=0; d<dimension; d++) {
-        distance += pow(vector1[d] - vector2[d], 2);
+        distance += (vector1[d] - vector2[d]) * (vector1[d] - vector2[d]);
     }
     return sqrt(distance);
 }

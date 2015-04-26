@@ -35,10 +35,12 @@
 #pragma mark -
 #pragma mark Constructor
 GMMGroup::GMMGroup(rtml_flags flags,
-                   TrainingSet *_globalTrainingSet)
+                   TrainingSet *_globalTrainingSet,
+                   GaussianDistribution::COVARIANCE_MODE covariance_mode)
 : ModelGroup< GMM >(flags, _globalTrainingSet)
 {
     bimodal_ = (flags & BIMODAL);
+    set_covariance_mode(covariance_mode);
 }
 
 #pragma mark -
@@ -73,6 +75,26 @@ void GMMGroup::set_varianceOffset(double varianceOffset_relative, double varianc
     this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
+    }
+}
+
+GaussianDistribution::COVARIANCE_MODE GMMGroup::get_covariance_mode() const
+{
+    return this->referenceModel_.get_covariance_mode();
+}
+
+void GMMGroup::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+{
+    PREVENT_ATTR_CHANGE();
+    if (covariance_mode == get_covariance_mode()) return;
+    try {
+        this->referenceModel_.set_covariance_mode(covariance_mode);
+    } catch (exception& e) {
+        if (strncmp(e.what(), "Non-invertible matrix", 21) != 0)
+            throw runtime_error(e.what());
+    }
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.set_covariance_mode(covariance_mode);
     }
 }
 
@@ -130,6 +152,7 @@ JSONNode GMMGroup::to_json() const
     json_ccmodels.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
     json_ccmodels.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
     json_ccmodels.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
+    json_ccmodels.push_back(JSONNode("covariance_mode", get_covariance_mode()));
     
     // Add Models
     JSONNode json_models(JSON_ARRAY);
@@ -223,6 +246,16 @@ void GMMGroup::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type for node 'varianceoffset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
         set_varianceOffset(relvar, root_it->as_float());
+        
+        // Get Covariance mode
+        root_it = root.find("covariance_mode");
+        if (root_it != root.end()) {
+            if (root_it->type() != JSON_NUMBER)
+                throw JSONException("Wrong type for node 'covariance_mode': was expecting 'JSON_NUMBER'", root_it->name());
+            set_covariance_mode(static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int()));
+        } else {
+            set_covariance_mode(GaussianDistribution::FULL);
+        }
         
         // Get Models
         models.clear();

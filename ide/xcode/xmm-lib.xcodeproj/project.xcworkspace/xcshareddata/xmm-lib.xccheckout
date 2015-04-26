@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>A24627F6-9023-4A33-8FAC-1E6AC939D566</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>xmm-lib</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>7D7360FCF28970793D825A67F640E8AA8E8D6FA6</key>
 		<string>https://github.com/Ircam-RnD/xmm.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ide/xcode/xmm-lib.xcodeproj/project.xcworkspace</string>
+	<string>ide/xcode/xmm-lib.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>7D7360FCF28970793D825A67F640E8AA8E8D6FA6</key>

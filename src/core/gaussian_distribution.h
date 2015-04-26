@@ -89,6 +89,22 @@ typedef struct Ellipse {
 class GaussianDistribution : public Writable
 {
 public:
+    
+    /**
+     * @brief Covariance Mode
+     */
+    enum COVARIANCE_MODE {
+        /**
+         * @brief Full covariance
+         */
+        FULL = 0,
+        
+        /**
+         * @brief Diagonal covariance (diagonal matrix)
+         */
+        DIAGONAL = 1
+    };
+    
 #pragma mark > Constructors
     /*@{*/
     /** @name Constructors */
@@ -99,12 +115,14 @@ public:
      * @param offset_relative Offset added to diagonal covariance (proportional to variance)
      * @param offset_absolute Offset added to diagonal covariance (minimum value)
      * @param dimension_input dimension of the input modality in bimodal mode.
+     * @param covariance_mode covariance mode (full vs diagonal)
      */
     GaussianDistribution(rtml_flags flags = NONE,
                          unsigned int dimension=1,
                          unsigned int dimension_input = 0,
                          double offset_relative = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE,
-                         double offset_absolute = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE);
+                         double offset_absolute = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE,
+                         COVARIANCE_MODE covariance_mode = FULL);
     
     /**
      * @brief Copy constructor
@@ -158,6 +176,17 @@ public:
      * @throws out_of_range if the dimension is superior to the total dimension
      */
     void set_dimension_input(unsigned int dimension_input);
+    
+    /**
+     * @brief get the current covariance mode
+     */
+    COVARIANCE_MODE get_covariance_mode() const;
+    
+    /**
+     * @brief set the covariance mode
+     * @param covariance_mode target covariance mode
+     */
+    void set_covariance_mode(COVARIANCE_MODE covariance_mode);
     
     /*@}*/
 
@@ -277,28 +306,28 @@ public:
      * @param columns columns indices in the target order
      * @throws runtime_error if the model is training
      * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
-     * @param target_distribution a Gaussian Distribution from the current model considering only the target columns
+     * @return a Gaussian Distribution from the current model considering only the target columns
      */
     GaussianDistribution extract_submodel(vector<unsigned int>& columns) const;
     
     /**
      * @brief extract the sub-distribution of the input modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_distribution a unimodal Gaussian Distribution of the input modality from the current bimodal model
+     * @return a unimodal Gaussian Distribution of the input modality from the current bimodal model
      */
     GaussianDistribution extract_submodel_input() const;
     
     /**
      * @brief extract the sub-distribution of the output modality
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_distribution a unimodal Gaussian Distribution of the output modality from the current bimodal model
+     * @return a unimodal Gaussian Distribution of the output modality from the current bimodal model
      */
     GaussianDistribution extract_submodel_output() const;
     
     /**
      * @brief extract the model with reversed input and output modalities
      * @throws runtime_error if the model is training or if it is not bimodal
-     * @param target_distribution a bimodal Gaussian Distribution  that swaps the input and output modalities
+     * @return a bimodal Gaussian Distribution  that swaps the input and output modalities
      */
     GaussianDistribution extract_inverse_model() const;
     
@@ -378,6 +407,11 @@ private:
      * @brief Inverse covariance matrix of the input modality
      */
     vector<double> inverseCovariance_input_;
+    
+    /**
+     * @brief Covariance Mode
+     */
+    COVARIANCE_MODE covariance_mode_;
 };
 
 #endif

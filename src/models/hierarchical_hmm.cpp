@@ -35,11 +35,13 @@
 #pragma mark -
 #pragma mark Constructors
 HierarchicalHMM::HierarchicalHMM(rtml_flags flags,
-                                 TrainingSet *_globalTrainingSet)
-: ModelGroup< HMM >(flags|HIERARCHICAL, _globalTrainingSet)
+                                 TrainingSet *_globalTrainingSet,
+                                 GaussianDistribution::COVARIANCE_MODE covariance_mode)
+: ModelGroup< HMM >(flags|HIERARCHICAL, _globalTrainingSet),
+  incrementalLearning_(HHMM_DEFAULT_INCREMENTALLEARNING),
+  forwardInitialized_(false)
 {
-    incrementalLearning_ = HHMM_DEFAULT_INCREMENTALLEARNING;
-    forwardInitialized_ = false;
+    set_covariance_mode(covariance_mode);
 }
 
 HierarchicalHMM::~HierarchicalHMM()
@@ -105,6 +107,26 @@ void HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double 
     this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
+    }
+}
+
+GaussianDistribution::COVARIANCE_MODE HierarchicalHMM::get_covariance_mode() const
+{
+    return this->referenceModel_.get_covariance_mode();
+}
+
+void HierarchicalHMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+{
+    PREVENT_ATTR_CHANGE();
+    if (covariance_mode == get_covariance_mode()) return;
+    try {
+        this->referenceModel_.set_covariance_mode(covariance_mode);
+    } catch (exception& e) {
+        if (strncmp(e.what(), "Non-invertible matrix", 21) != 0)
+            throw runtime_error(e.what());
+    }
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.set_covariance_mode(covariance_mode);
     }
 }
 
@@ -643,6 +665,7 @@ JSONNode HierarchicalHMM::to_json() const
     json_hhmm.push_back(JSONNode("nbmixturecomponents", get_nbMixtureComponents()));
     json_hhmm.push_back(JSONNode("varianceoffset_relative", get_varianceOffset_relative()));
     json_hhmm.push_back(JSONNode("varianceoffset_absolute", get_varianceOffset_absolute()));
+    json_hhmm.push_back(JSONNode("covariance_mode", get_covariance_mode()));
     json_hhmm.push_back(JSONNode("regression_estimator", get_regression_estimator()));
     
     // Add Models
@@ -820,6 +843,16 @@ void HierarchicalHMM::from_json(JSONNode root)
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type for node 'varianceoffset_absolute': was expecting 'JSON_NUMBER'", root_it->name());
         set_varianceOffset(relvar, root_it->as_float());
+        
+        // Get Covariance mode
+        root_it = root.find("covariance_mode");
+        if (root_it != root.end()) {
+            if (root_it->type() != JSON_NUMBER)
+                throw JSONException("Wrong type for node 'covariance_mode': was expecting 'JSON_NUMBER'", root_it->name());
+            set_covariance_mode(static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int()));
+        } else {
+            set_covariance_mode(GaussianDistribution::FULL);
+        }
         
         // Get Regression Estimator
         root_it = root.find("regression_estimator");
