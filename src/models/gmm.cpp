@@ -146,11 +146,7 @@ double GMM::performance_update(vector<float> const& observation)
 void GMM::train_EM_init()
 {
     initParametersToDefault();
-    if (this->trainingSet->size() > 1) {
-        initMeansWithKMeans();
-    } else {
-        initMeansWithFirstPhrase();
-    }
+    initMeansWithKMeans();
     initCovariances_fullyObserved();
     addCovarianceOffset();
     updateInverseCovariances();
@@ -458,26 +454,6 @@ double GMM::obsProb_bimodal(const float* observation_input,
 }
 
 #pragma mark > Training
-void GMM::initMeansWithFirstPhrase()
-{
-    if (!this->trainingSet || this->trainingSet->is_empty())
-        return;
-    int step = this->trainingSet->begin()->second->length() / nbMixtureComponents_;
-    
-    int offset(0);
-    for (int c=0; c<nbMixtureComponents_; c++) {
-        for (int d=0; d<dimension_; d++) {
-            components[c].mean[d] = 0.0;
-        }
-        for (int t=0; t<step; t++) {
-            for (int d=0; d<dimension_; d++) {
-                components[c].mean[d] += (*this->trainingSet->begin()->second)(offset+t, d) / float(step);
-            }
-        }
-        offset += step;
-    }
-}
-
 void GMM::initMeansWithKMeans()
 {
     if (!this->trainingSet || this->trainingSet->is_empty())

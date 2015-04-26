@@ -324,10 +324,6 @@ protected:
 #pragma mark > Training
     /*@{*/
     /** @name Training: protected methods */
-    /**
-     * @brief Initialize the means of the Gaussian components with the first phrase of the training set
-     */
-    void initMeansWithFirstPhrase();
     
     /**
      * @brief Initialize the means of the Gaussian components with a Biased K-means

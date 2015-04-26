@@ -146,34 +146,8 @@ void HMM::initParametersToDefault()
         setLeftRight();
     }
     for (int i=0; i<nbStates_; i++) {
-        states_[i].initParametersToDefault();
+        states[i].initParametersToDefault();
     }
-}
-
-void HMM::initMeansWithFirstPhrase()
-{
-    if (!this->trainingSet || this->trainingSet->is_empty()) return;
-    
-    for (int n=0; n<nbStates_; n++)
-        for (int d=0; d<dimension_; d++)
-            states_[n].components[0].mean[d] = 0.0;
-    
-    vector<int> factor(nbStates_, 0);
-    int step = ((*this->trainingSet)(0))->second->length() / nbStates_;
-    int offset(0);
-    for (int n=0; n<nbStates_; n++) {
-        for (int t=0; t<step; t++) {
-            for (int d=0; d<dimension_; d++) {
-                states_[n].components[0].mean[d] += (*((*this->trainingSet)(0)->second))(offset+t, d);
-            }
-        }
-        offset += step;
-        factor[n] += step;
-    }
-    
-    for (int n=0; n<nbStates_; n++)
-        for (int d=0; d<dimension_; d++)
-            states_[n].components[0].mean[d] /= factor[n];
 }
 
 

@@ -418,11 +418,6 @@ protected:
     void initParametersToDefault();
     
     /**
-     * @brief initialize the means of each state with the first phrase (single gaussian)
-     */
-    void initMeansWithFirstPhrase();
-    
-    /**
      * @brief initialize the means of each state with all training phrases (single gaussian)
      */
     void initMeansWithAllPhrases();
