@@ -84,18 +84,12 @@ void GaussianDistribution::_copy(GaussianDistribution *dst, GaussianDistribution
     if (dst->bimodal_) {
         dst->covarianceDeterminant_input_ = src.covarianceDeterminant_input_;
         dst->inverseCovariance_input_ = src.inverseCovariance_input_;
+        dst->output_variance = src.output_variance;
     }
-    
-    dst->allocate();
 }
 
 GaussianDistribution::~GaussianDistribution()
 {
-    mean.clear();
-    covariance.clear();
-    inverseCovariance_.clear();
-    if (bimodal_)
-        inverseCovariance_input_.clear();
 }
 
 #pragma mark Accessors
@@ -147,7 +141,7 @@ double GaussianDistribution::likelihood(const float* observation) const
 double GaussianDistribution::likelihood_input(const float* observation_input) const
 {
     if (!bimodal_)
-        throw runtime_error("'likelihood_input' can't be used when 'useRegression' is off.");
+        throw runtime_error("'likelihood_input' can't be used when 'bimodal_' is off.");
 
     if (covarianceDeterminant_input_ == 0.0)
         throw runtime_error("Covariance Matrix of input modality is not invertible");
@@ -172,7 +166,7 @@ double GaussianDistribution::likelihood_bimodal(const float* observation_input,
                                                 const float* observation_output) const
 {
     if (!bimodal_)
-        throw runtime_error("'likelihood_bimodal' can't be used when 'useRegression' is off.");
+        throw runtime_error("'likelihood_bimodal' can't be used when 'bimodal_' is off.");
 
     if (covarianceDeterminant == 0.0)
         throw runtime_error("Covariance Matrix is not invertible");
@@ -203,7 +197,7 @@ double GaussianDistribution::likelihood_bimodal(const float* observation_input,
 void GaussianDistribution::regression(vector<float> const& observation_input, vector<float>& predicted_output) const
 {
     if (!bimodal_)
-        throw runtime_error("'regression' can't be used when 'useRegression' is off.");
+        throw runtime_error("'regression' can't be used when 'bimodal_' is off.");
 
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.resize(dimension_output);
@@ -372,7 +366,7 @@ void GaussianDistribution::updateInverseCovariance()
 void GaussianDistribution::updateOutputVariances()
 {
     if (!bimodal_)
-        throw runtime_error("'updateOutputVariances' can't be used when 'useRegression' is off.");
+        throw runtime_error("'updateOutputVariances' can't be used when 'bimodal_' is off.");
     
     Matrix<double> *inverseMat;
     double det;
@@ -437,5 +431,92 @@ Ellipse GaussianDistribution::ellipse(unsigned int dimension1,
     gaussian_ellipse_95.angle = atan(b / (eigenVal1 - c));
     
     return gaussian_ellipse_95;
+}
+
+void GaussianDistribution::make_bimodal(unsigned int dimension_input)
+{
+    if (bimodal_)
+        throw runtime_error("The model is already bimodal");
+    if (dimension_input >= dimension_)
+        throw out_of_range("Request input dimension exceeds the current dimension");
+    this->bimodal_ = true;
+    this->dimension_input_ = dimension_input;
+    this->inverseCovariance_input_.resize(dimension_input*dimension_input);
+    this->updateInverseCovariance();
+    this->updateOutputVariances();
+}
+
+void GaussianDistribution::make_unimodal()
+{
+    if (!bimodal_)
+        throw runtime_error("The model is already unimodal");
+    this->bimodal_ = false;
+    this->dimension_input_ = 0;
+    this->inverseCovariance_input_.clear();
+}
+
+GaussianDistribution GaussianDistribution::extract_submodel(vector<unsigned int>& columns) const
+{
+    if (columns.size() > dimension_)
+        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+    for (unsigned int column=0; column<columns.size(); ++column) {
+        if (columns[column] >= dimension_)
+            throw out_of_range("Some column indices exceeds the dimension of the current model");
+    }
+    size_t new_dim =columns.size();
+    GaussianDistribution target_distribution(NONE, static_cast<unsigned int>(new_dim), 0, offset_relative, offset_absolute);
+    target_distribution.allocate();
+    for (unsigned int new_index1=0; new_index1<new_dim; ++new_index1) {
+        unsigned int col_index1 = columns[new_index1];
+        target_distribution.mean[new_index1] = mean[col_index1];
+        target_distribution.scale[new_index1] = scale[col_index1];
+        for (unsigned int new_index2=0; new_index2<new_dim; ++new_index2) {
+            unsigned int col_index2 = columns[new_index2];
+            target_distribution.covariance[new_index1*new_dim+new_index2] = covariance[col_index1*dimension_+col_index2];
+        }
+    }
+    try {
+        target_distribution.updateInverseCovariance();
+    } catch (exception const& e) {
+    }
+    return target_distribution;
+}
+
+GaussianDistribution GaussianDistribution::extract_submodel_input() const
+{
+    if (!bimodal_)
+        throw runtime_error("The distribution needs to be bimodal");
+    vector<unsigned int> columns_input(dimension_input_);
+    for (unsigned int i=0; i<dimension_input_; ++i) {
+        columns_input[i] = i;
+    }
+    return extract_submodel(columns_input);
+}
+
+GaussianDistribution GaussianDistribution::extract_submodel_output() const
+{
+    if (!bimodal_)
+        throw runtime_error("The distribution needs to be bimodal");
+    vector<unsigned int> columns_output(dimension_ - dimension_input_);
+    for (unsigned int i=dimension_input_; i<dimension_; ++i) {
+        columns_output[i-dimension_input_] = i;
+    }
+    return extract_submodel(columns_output);
+}
+
+GaussianDistribution GaussianDistribution::extract_inverse_model() const
+{
+    if (!bimodal_)
+        throw runtime_error("The distribution needs to be bimodal");
+    vector<unsigned int> columns(dimension_);
+    for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
+        columns[i] = i+dimension_input_;
+    }
+    for (unsigned int i=dimension_-dimension_input_, j=0; i<dimension_; ++i, ++j) {
+        columns[i] = j;
+    }
+    GaussianDistribution target_distribution = extract_submodel(columns);
+    target_distribution.make_bimodal(dimension_-dimension_input_);
+    return target_distribution;
 }
 

@@ -143,12 +143,8 @@ void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
             dimension_input_ = this->trainingSet->dimension_input();
         column_names_.resize(dimension_);
         column_names_ = this->trainingSet->get_column_names();
-    } else {
-        dimension_ = 1;
-        column_names_.resize(dimension_);
-        dimension_input_ = 0;
+        this->allocate();
     }
-    this->allocate();
 }
 
 void ProbabilisticModel::notify(string attribute)

@@ -265,3 +265,103 @@ void GMMGroup::from_json(JSONNode root)
         throw JSONException(e, root.name());
     }
 }
+
+#pragma mark > Conversion & Extraction
+void GMMGroup::make_bimodal(unsigned int dimension_input)
+{
+    if (is_training())
+        throw runtime_error("Cannot convert model during Training");
+    if (bimodal_)
+        throw runtime_error("The model is already bimodal");
+    if (dimension_input >= dimension())
+        throw out_of_range("Request input dimension exceeds the current dimension");
+    
+    try {
+        this->referenceModel_.make_bimodal(dimension_input);
+    } catch (exception const& e) {
+    }
+    bimodal_ = true;
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.make_bimodal(dimension_input);
+    }
+    set_trainingSet(NULL);
+    results_predicted_output.resize(dimension() - this->dimension_input());
+    results_output_variance.resize(dimension() - this->dimension_input());
+}
+
+void GMMGroup::make_unimodal()
+{
+    if (is_training())
+        throw runtime_error("Cannot convert model during Training");
+    if (!bimodal_)
+        throw runtime_error("The model is already unimodal");
+    this->referenceModel_.make_unimodal();
+    for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+        it->second.make_unimodal();
+    }
+    set_trainingSet(NULL);
+    results_predicted_output.clear();
+    results_output_variance.clear();
+    bimodal_ = false;
+}
+
+GMMGroup GMMGroup::extract_submodel(vector<unsigned int>& columns) const
+{
+    if (is_training())
+        throw runtime_error("Cannot extract model during Training");
+    if (columns.size() > this->dimension())
+        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+    for (unsigned int column=0; column<columns.size(); ++column) {
+        if (columns[column] >= this->dimension())
+            throw out_of_range("Some column indices exceeds the dimension of the current model");
+    }
+    GMMGroup target_model(*this);
+    target_model.set_trainingSet(NULL);
+    target_model.set_trainingCallback(monitor_training, (void*)this);
+    target_model.bimodal_ = false;
+    target_model.referenceModel_ = this->referenceModel_.extract_submodel(columns);
+    for (model_iterator it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        it->second = this->models.at(it->first).extract_submodel(columns);
+    }
+    target_model.results_predicted_output.clear();
+    target_model.results_output_variance.clear();
+    return target_model;
+}
+
+GMMGroup GMMGroup::extract_submodel_input() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns_input(dimension_input());
+    for (unsigned int i=0; i<dimension_input(); ++i) {
+        columns_input[i] = i;
+    }
+    return extract_submodel(columns_input);
+}
+
+GMMGroup GMMGroup::extract_submodel_output() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns_output(dimension() - dimension_input());
+    for (unsigned int i=dimension_input(); i<dimension(); ++i) {
+        columns_output[i-dimension_input()] = i;
+    }
+    return extract_submodel(columns_output);
+}
+
+GMMGroup GMMGroup::extract_inverse_model() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns(dimension());
+    for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
+        columns[i] = i+dimension_input();
+    }
+    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension(); ++i, ++j) {
+        columns[i] = j;
+    }
+    GMMGroup target_model = extract_submodel(columns);
+    target_model.make_bimodal(dimension()-dimension_input());
+    return target_model;
+}

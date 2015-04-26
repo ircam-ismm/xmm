@@ -342,8 +342,9 @@ public:
      */
     double trainingNbIterations;
     
-    
+#ifndef XMM_TESTING
 protected:
+#endif
 #pragma mark -
 #pragma mark === Protected Methods ===
     /*@{*/

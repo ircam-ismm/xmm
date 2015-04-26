@@ -278,6 +278,56 @@ public:
     
     /*@}*/
     
+#pragma mark > Conversion & Extraction
+    /*@{*/
+    /** @name Conversion & Extraction */
+    
+    /**
+     * @brief Convert to bimodal HMM in place
+     * @param dimension_input dimension of the input modality
+     * @throws runtime_error if the model is already bimodal
+     * @throws out_of_range if the requested input dimension is too large
+     */
+    void make_bimodal(unsigned int dimension_input);
+    
+    /**
+     * @brief Convert to unimodal HMM in place
+     * @throws runtime_error if the model is already unimodal
+     */
+    void make_unimodal();
+    
+    /**
+     * @brief extract a submodel with the given columns
+     * @param columns columns indices in the target order
+     * @throws runtime_error if the model is training
+     * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
+     * @param target_model a HMM from the current model considering only the target columns
+     */
+    HMM extract_submodel(vector<unsigned int>& columns) const;
+    
+    /**
+     * @brief extract the submodel of the input modality
+     * @throws runtime_error if the model is training or if it is not bimodal
+     * @param target_model a unimodal HMM of the input modality from the current bimodal model
+     */
+    HMM extract_submodel_input() const;
+    
+    /**
+     * @brief extract the submodel of the output modality
+     * @throws runtime_error if the model is training or if it is not bimodal
+     * @param target_model a unimodal HMM of the output modality from the current bimodal model
+     */
+    HMM extract_submodel_output() const;
+    
+    /**
+     * @brief extract the model with reversed input and output modalities
+     * @throws runtime_error if the model is training or if it is not bimodal
+     * @param target_model a bimodal HMM  that swaps the input and output modalities
+     */
+    HMM extract_inverse_model() const;
+    
+    /*@}*/
+    
 #pragma mark -
 #pragma mark === Public Attributes ===
     /**
@@ -318,7 +368,9 @@ public:
      */
     vector<GMM> states_;
     
+#ifndef XMM_TESTING
 protected:
+#endif
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Copy between models

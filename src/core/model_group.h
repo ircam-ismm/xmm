@@ -216,6 +216,9 @@ public:
         if (this->globalTrainingSet)
             this->globalTrainingSet->add_listener(this);
         referenceModel_.set_trainingSet(this->globalTrainingSet);
+        for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
+            it->second.set_trainingSet(NULL);
+        }
     }
     
     /**
@@ -426,6 +429,7 @@ public:
 #else
         // Sequential training
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+            models_to_train_++;
             it->second.train();
         }
 #endif
@@ -626,7 +630,9 @@ public:
      */
     vector<double> results_output_variance;
     
+#ifndef XMM_TESTING
 protected:
+#endif
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Training Set

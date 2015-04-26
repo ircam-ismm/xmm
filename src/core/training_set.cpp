@@ -43,6 +43,7 @@ TrainingSet::TrainingSet(rtml_flags flags,
     
     owns_data = !(flags_ & SHARED_MEMORY);
     dimension_ = dimension;
+    column_names_.resize(dimension, "");
     bimodal_ = (flags_ & BIMODAL);
     dimension_input_ = bimodal_ ? dimension_input : 0;
 }
@@ -217,9 +218,6 @@ vector<string> const& TrainingSet::get_column_names() const
 
 bool TrainingSet::operator==(TrainingSet const &src)
 {
-    if (!this)
-        return false;
-    
     if (this->owns_data != src.owns_data)
         return false;
     

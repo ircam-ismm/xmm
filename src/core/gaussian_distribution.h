@@ -258,6 +258,50 @@ public:
     t_ellipse ellipse(unsigned int dimension1,
                       unsigned int dimension2);
     
+    /**
+     * @brief Convert to bimodal distribution in place
+     * @param dimension_input dimension of the input modality
+     * @throws runtime_error if the model is already bimodal
+     * @throws out_of_range if the requested input dimension is too large
+     */
+    void make_bimodal(unsigned int dimension_input);
+    
+    /**
+     * @brief Convert to unimodal distribution in place
+     * @throws runtime_error if the model is already unimodal
+     */
+    void make_unimodal();
+    
+    /**
+     * @brief extract a sub-distribution with the given columns
+     * @param columns columns indices in the target order
+     * @throws runtime_error if the model is training
+     * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
+     * @param target_distribution a Gaussian Distribution from the current model considering only the target columns
+     */
+    GaussianDistribution extract_submodel(vector<unsigned int>& columns) const;
+    
+    /**
+     * @brief extract the sub-distribution of the input modality
+     * @throws runtime_error if the model is training or if it is not bimodal
+     * @param target_distribution a unimodal Gaussian Distribution of the input modality from the current bimodal model
+     */
+    GaussianDistribution extract_submodel_input() const;
+    
+    /**
+     * @brief extract the sub-distribution of the output modality
+     * @throws runtime_error if the model is training or if it is not bimodal
+     * @param target_distribution a unimodal Gaussian Distribution of the output modality from the current bimodal model
+     */
+    GaussianDistribution extract_submodel_output() const;
+    
+    /**
+     * @brief extract the model with reversed input and output modalities
+     * @throws runtime_error if the model is training or if it is not bimodal
+     * @param target_distribution a bimodal Gaussian Distribution  that swaps the input and output modalities
+     */
+    GaussianDistribution extract_inverse_model() const;
+    
     /*@}*/
     
 #pragma mark -
@@ -297,7 +341,9 @@ public:
     
 #pragma mark -
 #pragma mark === Private Attributes ===
+#ifndef XMM_TESTING
 private:
+#endif
     /**
      * @brief Defines if regression parameters need to be computed
      */

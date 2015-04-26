@@ -242,6 +242,113 @@ void GMM::from_json(JSONNode root)
     this->trained = true;
 }
 
+
+#pragma mark > Conversion & Extraction
+void GMM::make_bimodal(unsigned int dimension_input)
+{
+    if (is_training())
+        throw runtime_error("Cannot convert model during Training");
+    if (bimodal_)
+        throw runtime_error("The model is already bimodal");
+    if (dimension_input >= dimension_)
+        throw out_of_range("Request input dimension exceeds the current dimension");
+    set_trainingSet(NULL);
+    flags_ = BIMODAL;
+    bimodal_ = true;
+    dimension_input_ = dimension_input;
+    for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
+        component->make_bimodal(dimension_input);
+    }
+    results_predicted_output.resize(dimension_ - dimension_input_);
+    results_output_variance.resize(dimension_ - dimension_input_);
+}
+
+void GMM::make_unimodal()
+{
+    if (is_training())
+        throw runtime_error("Cannot convert model during Training");
+    if (!bimodal_)
+        throw runtime_error("The model is already unimodal");
+    set_trainingSet(NULL);
+    flags_ = NONE;
+    bimodal_ = false;
+    dimension_input_ = 0;
+    for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
+        component->make_unimodal();
+    }
+    results_predicted_output.clear();
+    results_output_variance.clear();
+}
+
+GMM GMM::extract_submodel(vector<unsigned int>& columns) const
+{
+    if (is_training())
+        throw runtime_error("Cannot extract model during Training");
+    if (columns.size() > dimension_)
+        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+    for (unsigned int column=0; column<columns.size(); ++column) {
+        if (columns[column] >= dimension_)
+            throw out_of_range("Some column indices exceeds the dimension of the current model");
+    }
+    size_t new_dim =columns.size();
+    GMM target_model(*this);
+    target_model.set_trainingSet(NULL);
+    target_model.set_trainingCallback(NULL, NULL);
+    target_model.bimodal_ = false;
+    target_model.dimension_ = static_cast<unsigned int>(new_dim);
+    target_model.dimension_input_ = 0;
+    target_model.flags_ = NONE;
+    target_model.allocate();
+    target_model.column_names_.resize(new_dim);
+    for (unsigned int new_index=0; new_index<new_dim; ++new_index) {
+        target_model.column_names_[new_index] = column_names_[columns[new_index]];
+    }
+    for (unsigned int c=0; c<nbMixtureComponents_; ++c) {
+        target_model.components[c] = components[c].extract_submodel(columns);
+    }
+    target_model.results_predicted_output.clear();
+    target_model.results_output_variance.clear();
+    return target_model;
+}
+
+GMM GMM::extract_submodel_input() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns_input(dimension_input_);
+    for (unsigned int i=0; i<dimension_input_; ++i) {
+        columns_input[i] = i;
+    }
+    return extract_submodel(columns_input);
+}
+
+GMM GMM::extract_submodel_output() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns_output(dimension_ - dimension_input_);
+    for (unsigned int i=dimension_input_; i<dimension_; ++i) {
+        columns_output[i-dimension_input_] = i;
+    }
+    return extract_submodel(columns_output);
+}
+
+GMM GMM::extract_inverse_model() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns(dimension_);
+    for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
+        columns[i] = i+dimension_input_;
+    }
+    for (unsigned int i=dimension_-dimension_input_, j=0; i<dimension_; ++i, ++j) {
+        columns[i] = j;
+    }
+    GMM target_model = extract_submodel(columns);
+    target_model.make_bimodal(dimension_-dimension_input_);
+    return target_model;
+}
+
 #pragma mark > Utilities
 void GMM::_copy(GMM *dst, GMM const& src)
 {
@@ -249,10 +356,9 @@ void GMM::_copy(GMM *dst, GMM const& src)
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
     dst->varianceOffset_relative_ = src.varianceOffset_relative_;
     dst->varianceOffset_absolute_ = src.varianceOffset_absolute_;
+    dst->beta.resize(dst->nbMixtureComponents_);
     dst->mixtureCoeffs = src.mixtureCoeffs;
     dst->components = src.components;
-    
-    dst->allocate();
 }
 
 void GMM::allocate()

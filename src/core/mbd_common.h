@@ -33,6 +33,11 @@
 #ifndef mhmm_listener_object_h
 #define mhmm_listener_object_h
 
+// Remember to change version numbre in setup.py and Doxyfile
+#define XMM_VERSION_MAJOR 0
+#define XMM_VERSION_MINOR 1
+#define XMM_VERSION_PATCH -alpha
+
 #include "json_utilities.h"
 #include <fstream>
 

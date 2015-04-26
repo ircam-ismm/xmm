@@ -92,6 +92,7 @@ void HMM::_copy(HMM *dst,
     
     dst->transition_ = src.transition_;
     dst->prior_ = src.prior_;
+    dst->exitProbabilities_ = src.exitProbabilities_;
     dst->transitionMode_ = src.transitionMode_;
     
     dst->states_ = src.states_;
@@ -1324,4 +1325,108 @@ void HMM::addExitPoint(int stateIndex, float proba)
     if (stateIndex >= this->nbStates_)
         throw out_of_range("State index out of bounds");
     exitProbabilities_[stateIndex] = proba;
+}
+
+#pragma mark > Conversion & Extraction
+void HMM::make_bimodal(unsigned int dimension_input)
+{
+    if (is_training())
+        throw runtime_error("Cannot convert model during Training");
+    if (bimodal_)
+        throw runtime_error("The model is already bimodal");
+    if (dimension_input >= dimension_)
+        throw out_of_range("Request input dimension exceeds the current dimension");
+    set_trainingSet(NULL);
+    flags_ = flags_ | BIMODAL;
+    bimodal_ = true;
+    dimension_input_ = dimension_input;
+    for (unsigned int i=0; i<nbStates_; i++) {
+        states_[i].make_bimodal(dimension_input);
+    }
+    results_predicted_output.resize(dimension_ - dimension_input_);
+    results_output_variance.resize(dimension_ - dimension_input_);
+}
+
+void HMM::make_unimodal()
+{
+    if (is_training())
+        throw runtime_error("Cannot convert model during Training");
+    if (!bimodal_)
+        throw runtime_error("The model is already unimodal");
+    set_trainingSet(NULL);
+    flags_ = NONE;
+    bimodal_ = false;
+    dimension_input_ = 0;
+    for (unsigned int i=0; i<nbStates_; i++) {
+        states_[i].make_unimodal();
+    }
+    results_predicted_output.clear();
+    results_output_variance.clear();
+}
+
+HMM HMM::extract_submodel(vector<unsigned int>& columns) const
+{
+    if (is_training())
+        throw runtime_error("Cannot extract model during Training");
+    if (columns.size() > dimension_)
+        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+    for (unsigned int column=0; column<columns.size(); ++column) {
+        if (columns[column] >= dimension_)
+            throw out_of_range("Some column indices exceeds the dimension of the current model");
+    }
+    HMM target_model(*this);
+    size_t new_dim = columns.size();
+    target_model.set_trainingSet(NULL);
+    target_model.set_trainingCallback(NULL, NULL);
+    target_model.bimodal_ = false;
+    target_model.dimension_ = static_cast<unsigned int>(new_dim);
+    target_model.dimension_input_ = 0;
+    target_model.flags_ = (this->flags_ & HIERARCHICAL);
+    target_model.allocate();
+    target_model.column_names_.resize(new_dim);
+    for (unsigned int new_index=0; new_index<new_dim; ++new_index) {
+        target_model.column_names_[new_index] = column_names_[columns[new_index]];
+    }
+    for (unsigned int i=0; i<nbStates_; ++i) {
+        target_model.states_[i] = states_[i].extract_submodel(columns);
+    }
+    return target_model;
+}
+
+HMM HMM::extract_submodel_input() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns_input(dimension_input_);
+    for (unsigned int i=0; i<dimension_input_; ++i) {
+        columns_input[i] = i;
+    }
+    return extract_submodel(columns_input);
+}
+
+HMM HMM::extract_submodel_output() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns_output(dimension_ - dimension_input_);
+    for (unsigned int i=dimension_input_; i<dimension_; ++i) {
+        columns_output[i-dimension_input_] = i;
+    }
+    return extract_submodel(columns_output);
+}
+
+HMM HMM::extract_inverse_model() const
+{
+    if (!bimodal_)
+        throw runtime_error("The model needs to be bimodal");
+    vector<unsigned int> columns(dimension_);
+    for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
+        columns[i] = i+dimension_input_;
+    }
+    for (unsigned int i=dimension_-dimension_input_, j=0; i<dimension_; ++i, ++j) {
+        columns[i] = j;
+    }
+    HMM target_model = extract_submodel(columns);
+    target_model.make_bimodal(dimension_-dimension_input_);
+    return target_model;
 }
