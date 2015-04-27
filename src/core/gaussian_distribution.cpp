@@ -175,7 +175,7 @@ double GaussianDistribution::likelihood(const float* observation) const
         }
     }
     
-    double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant * pow(2*M_PI, double(dimension_)));
+    double p = exp(-0.5 * euclidianDistance) / sqrt(covarianceDeterminant * pow(2*M_PI, double(dimension_)));
     
     if(p < 1e-180 || isnan(p) || isinf(abs(p))) p = 1e-180;
     
@@ -205,7 +205,7 @@ double GaussianDistribution::likelihood_input(const float* observation_input) co
         }
     }
     
-    double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant_input_ * pow(2*M_PI, double(dimension_input_)));
+    double p = exp(-0.5 * euclidianDistance) / sqrt(covarianceDeterminant_input_ * pow(2*M_PI, double(dimension_input_)));
     
     if(p < 1e-180 || isnan(p) || isinf(abs(p))) p = 1e-180;
     
@@ -247,7 +247,7 @@ double GaussianDistribution::likelihood_bimodal(const float* observation_input,
     }
     
     
-    double p = exp(-0.5 * euclidianDistance) * EPSILON_GAUSSIAN / sqrt(covarianceDeterminant * pow(2*M_PI, (double)dimension_));
+    double p = exp(-0.5 * euclidianDistance) / sqrt(covarianceDeterminant * pow(2*M_PI, (double)dimension_));
     
     if(p < 1e-180 || isnan(p) || isinf(abs(p))) p = 1e-180;
     
@@ -376,7 +376,11 @@ void GaussianDistribution::from_json(JSONNode root)
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->type() != JSON_ARRAY)
             throw JSONException("Wrong type for node 'covariance': was expecting 'JSON_ARRAY'", root_it->name());
-        json2vector(*root_it, covariance, dimension_ * dimension_);
+        if (covariance_mode_ == FULL) {
+            json2vector(*root_it, covariance, dimension_ * dimension_);
+        } else {
+            json2vector(*root_it, covariance, dimension_);
+        }
         
         updateInverseCovariance();
         

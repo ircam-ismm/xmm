@@ -228,9 +228,9 @@ void GMM::from_json(JSONNode root)
         if (root_it != root.end()) {
             if (root_it->type() != JSON_NUMBER)
                 throw JSONException("Wrong type for node 'covariance_mode': was expecting 'JSON_NUMBER'", root_it->name());
-            set_covariance_mode(static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int()));
+            covariance_mode_ = static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int());
         } else {
-            set_covariance_mode(GaussianDistribution::FULL);
+            covariance_mode_ = GaussianDistribution::FULL;
         }
         
         allocate();

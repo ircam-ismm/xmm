@@ -43,14 +43,14 @@ HMM::HMM(rtml_flags flags,
          int nbMixtureComponents,
          GaussianDistribution::COVARIANCE_MODE covariance_mode)
 : ProbabilisticModel(flags, trainingSet),
-  nbStates_(nbStates),
-  nbMixtureComponents_(nbMixtureComponents),
-  varianceOffset_relative_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE),
-  varianceOffset_absolute_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE),
-  covariance_mode_(covariance_mode),
-  regression_estimator_(FULL),
-  transitionMode_(LEFT_RIGHT),
-  estimateMeans_(HMM_DEFAULT_ESTIMATEMEANS)
+nbStates_(nbStates),
+nbMixtureComponents_(nbMixtureComponents),
+varianceOffset_relative_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE),
+varianceOffset_absolute_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE),
+covariance_mode_(covariance_mode),
+regression_estimator_(FULL),
+transitionMode_(LEFT_RIGHT),
+estimateMeans_(HMM_DEFAULT_ESTIMATEMEANS)
 {
     is_hierarchical_ = (flags & HIERARCHICAL);
     allocate();
@@ -88,29 +88,17 @@ void HMM::_copy(HMM *dst,
     dst->beta_.resize(dst->nbStates_);
     dst->previousBeta_.resize(dst->nbStates_);
     
-    dst->transition_ = src.transition_;
-    dst->prior_ = src.prior_;
-    dst->exitProbabilities_ = src.exitProbabilities_;
     dst->transitionMode_ = src.transitionMode_;
+    dst->transition = src.transition;
+    dst->prior = src.prior;
+    dst->exitProbabilities_ = src.exitProbabilities_;
     
-    dst->states_ = src.states_;
+    dst->states = src.states;
 }
 
 
 HMM::~HMM()
 {
-    prior_.clear();
-    transition_.clear();
-    alpha.clear();
-    previousAlpha_.clear();
-    beta_.clear();
-    previousBeta_.clear();
-    states_.clear();
-    if (is_hierarchical_) {
-        for (int i=0 ; i<3 ; i++)
-            this->alpha_h[i].clear();
-        exitProbabilities_.clear();
-    }
 }
 
 #pragma mark -
@@ -119,13 +107,24 @@ HMM::~HMM()
 
 void HMM::allocate()
 {
-    prior_.resize(nbStates_);
-    transition_.resize(nbStates_*nbStates_);
+    if (transitionMode_ == ERGODIC) {
+        prior.resize(nbStates_);
+        transition.resize(nbStates_*nbStates_);
+    } else {
+        prior.clear();
+        transition.resize(nbStates_*2);
+    }
     alpha.resize(nbStates_);
     previousAlpha_.resize(nbStates_);
     beta_.resize(nbStates_);
     previousBeta_.resize(nbStates_);
-    states_.assign(nbStates_, GMM(flags_, this->trainingSet, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_, covariance_mode_));
+    states.assign(nbStates_,
+                  GMM(flags_,
+                      this->trainingSet,
+                      nbMixtureComponents_,
+                      varianceOffset_relative_,
+                      varianceOffset_absolute_,
+                      covariance_mode_));
     if (is_hierarchical_)
         updateExitProbabilities(NULL);
 }
@@ -158,7 +157,7 @@ void HMM::initMeansWithAllPhrases()
     
     for (int n=0; n<nbStates_; n++)
         for (int d=0; d<dimension_; d++)
-            states_[n].components[0].mean[d] = 0.0;
+            states[n].components[0].mean[d] = 0.0;
     
     vector<int> factor(nbStates_, 0);
     for (int i=0; i<nbPhrases; i++) {
@@ -167,7 +166,7 @@ void HMM::initMeansWithAllPhrases()
         for (int n=0; n<nbStates_; n++) {
             for (int t=0; t<step; t++) {
                 for (int d=0; d<dimension_; d++) {
-                    states_[n].components[0].mean[d] += (*((*this->trainingSet)(i)->second))(offset+t, d);
+                    states[n].components[0].mean[d] += (*((*this->trainingSet)(i)->second))(offset+t, d);
                 }
             }
             offset += step;
@@ -177,7 +176,7 @@ void HMM::initMeansWithAllPhrases()
     
     for (int n=0; n<nbStates_; n++)
         for (int d=0; d<dimension_; d++)
-            states_[n].components[0].mean[d] /= factor[n];
+            states[n].components[0].mean[d] /= factor[n];
 }
 
 
@@ -189,10 +188,10 @@ void HMM::initCovariances_fullyObserved()
     
     if (covariance_mode_ == GaussianDistribution::FULL) {
         for (int n=0; n<nbStates_; n++)
-            states_[n].components[0].covariance.assign(dimension_*dimension_, 0.0);
+            states[n].components[0].covariance.assign(dimension_*dimension_, 0.0);
     } else {
         for (int n=0; n<nbStates_; n++)
-            states_[n].components[0].covariance.assign(dimension_, 0.0);
+            states[n].components[0].covariance.assign(dimension_, 0.0);
     }
     
     vector<int> factor(nbStates_, 0);
@@ -206,11 +205,11 @@ void HMM::initCovariances_fullyObserved()
                     othermeans[n*dimension_+d1] += (*((*this->trainingSet)(i)->second))(offset+t, d1);
                     if (covariance_mode_ == GaussianDistribution::FULL) {
                         for (int d2=0; d2<dimension_; d2++) {
-                            states_[n].components[0].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
+                            states[n].components[0].covariance[d1*dimension_+d2] += (*((*this->trainingSet)(i)->second))(offset+t, d1) * (*((*this->trainingSet)(i)->second))(offset+t, d2);
                         }
                     } else {
                         float value = (*((*this->trainingSet)(i)->second))(offset+t, d1);
-                        states_[n].components[0].covariance[d1] += value * value;
+                        states[n].components[0].covariance[d1] += value * value;
                     }
                 }
             }
@@ -224,9 +223,9 @@ void HMM::initCovariances_fullyObserved()
             othermeans[n*dimension_+d1] /= factor[n];
             if (covariance_mode_ == GaussianDistribution::FULL) {
                 for (int d2=0; d2<dimension_; d2++)
-                    states_[n].components[0].covariance[d1*dimension_+d2] /= factor[n];
+                    states[n].components[0].covariance[d1*dimension_+d2] /= factor[n];
             } else {
-                states_[n].components[0].covariance[d1] /= factor[n];
+                states[n].components[0].covariance[d1] /= factor[n];
             }
         }
     
@@ -234,13 +233,13 @@ void HMM::initCovariances_fullyObserved()
         for (int d1=0; d1<dimension_; d1++) {
             if (covariance_mode_ == GaussianDistribution::FULL) {
                 for (int d2=0; d2<dimension_; d2++)
-                    states_[n].components[0].covariance[d1*dimension_+d2] -= othermeans[n*dimension_+d1]*othermeans[n*dimension_+d2];
+                    states[n].components[0].covariance[d1*dimension_+d2] -= othermeans[n*dimension_+d1]*othermeans[n*dimension_+d2];
             } else {
-                states_[n].components[0].covariance[d1] -= othermeans[n*dimension_+d1] * othermeans[n*dimension_+d1];
+                states[n].components[0].covariance[d1] -= othermeans[n*dimension_+d1] * othermeans[n*dimension_+d1];
             }
         }
-        states_[n].addCovarianceOffset();
-        states_[n].updateInverseCovariances();
+        states[n].addCovarianceOffset();
+        states[n].updateInverseCovariances();
     }
 }
 
@@ -264,9 +263,9 @@ void HMM::initMeansCovariancesWithGMMEM()
         GMM temp_gmm((bimodal_ ? BIMODAL : NONE), &temp_ts, nbMixtureComponents_, varianceOffset_relative_, varianceOffset_absolute_, covariance_mode_);
         temp_gmm.train();
         for (unsigned int c=0; c<nbMixtureComponents_; c++) {
-            states_[n].components[c].mean = temp_gmm.components[c].mean;
-            states_[n].components[c].covariance = temp_gmm.components[c].covariance;
-            states_[n].updateInverseCovariances();
+            states[n].components[c].mean = temp_gmm.components[c].mean;
+            states[n].components[c].covariance = temp_gmm.components[c].covariance;
+            states[n].updateInverseCovariances();
         }
     }
 }
@@ -274,9 +273,9 @@ void HMM::initMeansCovariancesWithGMMEM()
 void HMM::setErgodic()
 {
     for (int i=0 ; i<nbStates_; i++) {
-        prior_[i] = 1/(float)nbStates_;
+        prior[i] = 1/(float)nbStates_;
         for (int j=0; j<nbStates_; j++) {
-            transition_[i*nbStates_+j] = 1/(float)nbStates_;
+            transition[i*nbStates_+j] = 1/(float)nbStates_;
         }
     }
 }
@@ -284,30 +283,36 @@ void HMM::setErgodic()
 
 void HMM::setLeftRight()
 {
-    for (int i=0 ; i<nbStates_; i++) {
-        prior_[i] = 0.;
-        for (int j=0; j<nbStates_; j++) {
-            transition_[i*nbStates_+j] = ((i == j) || ((i+1) == j)) ? 0.5 : 0;
-        }
-    }
-    transition_[nbStates_*nbStates_-1] = 1.;
-    prior_[0] = 1.;
+    transition.assign(nbStates_*2, 0.5);
+    transition[(nbStates_-1)*2] = 1.;
+    transition[(nbStates_-1)*2+1] = 0.;
 }
 
 
 void HMM::normalizeTransitions()
 {
-    double norm_prior(0.), norm_transition;
-    for (int i=0; i<nbStates_; i++) {
-        norm_prior += prior_[i];
-        norm_transition = 0.;
-        for (int j=0; j<nbStates_; j++)
-            norm_transition += transition_[i*nbStates_+j];
-        for (int j=0; j<nbStates_; j++)
-            transition_[i*nbStates_+j] /= norm_transition;
+    double norm_transition;
+    if (transitionMode_ == ERGODIC) {
+        double norm_prior(0.);
+        for (int i=0; i<nbStates_; i++) {
+            norm_prior += prior[i];
+            norm_transition = 0.;
+            for (int j=0; j<nbStates_; j++)
+                norm_transition += transition[i*nbStates_+j];
+            for (int j=0; j<nbStates_; j++)
+                transition[i*nbStates_+j] /= norm_transition;
+        }
+        for (int i=0; i<nbStates_; i++)
+            prior[i] /= norm_prior;
+    } else {
+        for (int i=0; i<nbStates_; i++) {
+            norm_transition = transition[i*2] + transition[i*2+1];
+            // norm_transition = transition[i*2];
+            // norm_transition += transition[i*2+1];
+            transition[i*2] /= norm_transition;
+            transition[i*2+1] /= norm_transition;
+        }
     }
-    for (int i=0; i<nbStates_; i++)
-        prior_[i] /= norm_prior;
 }
 
 #pragma mark -
@@ -316,7 +321,7 @@ void HMM::set_trainingSet(TrainingSet *trainingSet)
 {
     PREVENT_ATTR_CHANGE();
     for (int i=0; i<nbStates_; i++) {
-        states_[i].set_trainingSet(trainingSet);
+        states[i].set_trainingSet(trainingSet);
     }
     ProbabilisticModel::set_trainingSet(trainingSet);
 }
@@ -353,7 +358,7 @@ void HMM::set_nbMixtureComponents(int nbMixtureComponents)
     if (nbMixtureComponents == nbMixtureComponents_) return;
     
     for (int i=0; i<nbStates_; i++) {
-        states_[i].set_nbMixtureComponents(nbMixtureComponents);
+        states[i].set_nbMixtureComponents(nbMixtureComponents);
     }
     
     nbMixtureComponents_ = nbMixtureComponents;
@@ -378,7 +383,7 @@ void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
 {
     PREVENT_ATTR_CHANGE();
     for (int i=0; i<nbStates_; i++) {
-        states_[i].set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
+        states[i].set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
     varianceOffset_relative_ = varianceOffset_relative;
     varianceOffset_absolute_ = varianceOffset_absolute;
@@ -394,7 +399,7 @@ void HMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_m
     if (covariance_mode == covariance_mode_) return;
     covariance_mode_ = covariance_mode;
     for (unsigned int i=0; i<nbStates_; ++i) {
-        states_[i].set_covariance_mode(covariance_mode);
+        states[i].set_covariance_mode(covariance_mode);
     }
 }
 
@@ -439,16 +444,29 @@ double HMM::forward_init(const float* observation,
                          const float* observation_output)
 {
     double norm_const(0.);
-    for (int i=0 ; i<nbStates_ ; i++) {
+    if (transitionMode_ == ERGODIC) {
+        for (int i=0 ; i<nbStates_ ; i++) {
+            if (bimodal_) {
+                if (observation_output)
+                    alpha[i] = prior[i] * states[i].obsProb_bimodal(observation, observation_output);
+                else
+                    alpha[i] = prior[i] * states[i].obsProb_input(observation);
+            } else {
+                alpha[i] = prior[i] * states[i].obsProb(observation);
+            }
+            norm_const += alpha[i];
+        }
+    } else {
+        alpha.assign(nbStates_, 0.0);
         if (bimodal_) {
             if (observation_output)
-                alpha[i] = prior_[i] * states_[i].obsProb_bimodal(observation, observation_output);
+                alpha[0] = states[0].obsProb_bimodal(observation, observation_output);
             else
-                alpha[i] = prior_[i] * states_[i].obsProb_input(observation);
+                alpha[0] = states[0].obsProb_input(observation);
         } else {
-            alpha[i] = prior_[i] * states_[i].obsProb(observation);
+            alpha[0] = states[0].obsProb(observation);
         }
-        norm_const += alpha[i];
+        norm_const += alpha[0];
     }
     if (norm_const > 0) {
         for (int i=0 ; i<nbStates_ ; i++) {
@@ -471,16 +489,25 @@ double HMM::forward_update(const float* observation,
     previousAlpha_ = alpha;
     for (int j=0; j<nbStates_; j++) {
         alpha[j] = 0.;
-        for (int i=0; i<nbStates_; i++) {
-            alpha[j] += previousAlpha_[i] * transition_[i*nbStates_+j];
+        if (transitionMode_ == ERGODIC) {
+            for (int i=0; i<nbStates_; i++) {
+                alpha[j] += previousAlpha_[i] * transition[i*nbStates_+j];
+            }
+        } else {
+            alpha[j] += previousAlpha_[j] * transition[j*2];
+            if (j>0) {
+                alpha[j] += previousAlpha_[j-1] * transition[(j-1)*2+1];
+            } else {
+                alpha[0] += previousAlpha_[nbStates_-1] * transition[nbStates_*2-1];
+            }
         }
         if (bimodal_) {
             if (observation_output)
-                alpha[j] *= states_[j].obsProb_bimodal(observation, observation_output);
+                alpha[j] *= states[j].obsProb_bimodal(observation, observation_output);
             else
-                alpha[j] *= states_[j].obsProb_input(observation);
+                alpha[j] *= states[j].obsProb_input(observation);
         } else {
-            alpha[j] *= states_[j].obsProb(observation);
+            alpha[j] *= states[j].obsProb(observation);
         }
         norm_const += alpha[j];
     }
@@ -508,16 +535,37 @@ void HMM::backward_update(double ct,
     previousBeta_ = beta_;
     for (int i=0 ; i<nbStates_; i++) {
         beta_[i] = 0.;
-        for (int j=0; j<nbStates_; j++) {
+        if (transitionMode_ == ERGODIC) {
+            for (int j=0; j<nbStates_; j++) {
+                if (bimodal_) {
+                    if (observation_output)
+                        beta_[i] += transition[i*nbStates_+j] * previousBeta_[j] * states[j].obsProb_bimodal(observation, observation_output);
+                    else
+                        beta_[i] += transition[i*nbStates_+j] * previousBeta_[j] * states[j].obsProb_input(observation);
+                } else {
+                    beta_[i] += transition[i*nbStates_+j] * previousBeta_[j] * states[j].obsProb(observation);
+                }
+                
+            }
+        } else {
             if (bimodal_) {
                 if (observation_output)
-                    beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * states_[j].obsProb_bimodal(observation, observation_output);
+                    beta_[i] += transition[i*2] * previousBeta_[i] * states[i].obsProb_bimodal(observation, observation_output);
                 else
-                    beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * states_[j].obsProb_input(observation);
+                    beta_[i] += transition[i*2] * previousBeta_[i] * states[i].obsProb_input(observation);
             } else {
-                beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * states_[j].obsProb(observation);
+                beta_[i] += transition[i*2] * previousBeta_[i] * states[i].obsProb(observation);
             }
-            
+            if (i<nbStates_-1) {
+                if (bimodal_) {
+                    if (observation_output)
+                        beta_[i] += transition[i*2+1] * previousBeta_[i+1] * states[i+1].obsProb_bimodal(observation, observation_output);
+                    else
+                        beta_[i] += transition[i*2+1] * previousBeta_[i+1] * states[i+1].obsProb_input(observation);
+                } else {
+                    beta_[i] += transition[i*2+1] * previousBeta_[i+1] * states[i+1].obsProb(observation);
+                }
+            }
         }
         beta_[i] *= ct;
         if (isnan(beta_[i]) || isinf(abs(beta_[i]))) {
@@ -535,12 +583,10 @@ void HMM::train_EM_init()
     if (!this->trainingSet || this->trainingSet->size() == 0)
         return;
     
-    if (nbMixtureComponents_ > 0) {
+    if (nbMixtureComponents_ > 0) { // TODO: weird > 0
         initMeansCovariancesWithGMMEM();
     } else {
         initMeansWithAllPhrases();
-        // TODO: Evaluate All vs First >> remove first?
-        //initMeansWithFirstPhrase();
         initCovariances_fullyObserved();
     }
     this->trained = false;
@@ -558,7 +604,11 @@ void HMM::train_EM_init()
     for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++) {
         int T = it->second->length();
         gammaSequence_[i].resize(T*nbStates_);
-        epsilonSequence_[i].resize(T*nbStates_*nbStates_);
+        if (transitionMode_ == ERGODIC) {
+            epsilonSequence_[i].resize(T*nbStates_*nbStates_);
+        } else {
+            epsilonSequence_[i].resize(T*2*nbStates_);
+        }
         gammaSequencePerMixture_[i].resize(nbMixtureComponents_);
         for (int c=0; c<nbMixtureComponents_; c++) {
             gammaSequencePerMixture_[i][c].resize(T*nbStates_);
@@ -609,11 +659,11 @@ double HMM::train_EM_update()
     // set covariance and mixture coefficients to zero for each state
     for (int i=0; i<nbStates_; i++) {
         for (int c=0; c<nbMixtureComponents_; c++) {
-            states_[i].mixtureCoeffs[c] = 0.;
+            states[i].mixtureCoeffs[c] = 0.;
             if (covariance_mode_ == GaussianDistribution::FULL) {
-                states_[i].components[c].covariance.assign(dimension_ * dimension_, 0.0);
+                states[i].components[c].covariance.assign(dimension_ * dimension_, 0.0);
             } else {
-                states_[i].components[c].covariance.assign(dimension_, 0.0);
+                states[i].components[c].covariance.assign(dimension_, 0.0);
             }
         }
     }
@@ -637,8 +687,17 @@ double HMM::baumWelch_forward_update(vector<double>::iterator observation_likeli
     previousAlpha_ = alpha;
     for (int j=0; j<nbStates_; j++) {
         alpha[j] = 0.;
-        for (int i=0; i<nbStates_; i++) {
-            alpha[j] += previousAlpha_[i] * transition_[i*nbStates_+j];
+        if (transitionMode_ == ERGODIC) {
+            for (int i=0; i<nbStates_; i++) {
+                alpha[j] += previousAlpha_[i] * transition[i*nbStates_+j];
+            }
+        } else {
+            alpha[j] += previousAlpha_[j] * transition[j*2];
+            if (j>0) {
+                alpha[j] += previousAlpha_[j-1] * transition[(j-1)*2+1];
+            } else {
+                alpha[0] += previousAlpha_[nbStates_-1] * transition[nbStates_*2-1];
+            }
         }
         alpha[j] *= observation_likelihoods[j];
         norm_const += alpha[j];
@@ -659,8 +718,15 @@ void HMM::baumWelch_backward_update(double ct, vector<double>::iterator observat
     previousBeta_ = beta_;
     for (int i=0 ; i<nbStates_; i++) {
         beta_[i] = 0.;
-        for (int j=0; j<nbStates_; j++) {
-            beta_[i] += transition_[i*nbStates_+j] * previousBeta_[j] * observation_likelihoods[j];
+        if (transitionMode_ == ERGODIC) {
+            for (int j=0; j<nbStates_; j++) {
+                beta_[i] += transition[i*nbStates_+j] * previousBeta_[j] * observation_likelihoods[j];
+            }
+        } else {
+            beta_[i] += transition[i*2] * previousBeta_[i] * observation_likelihoods[i];
+            if (i<nbStates_-1) {
+                beta_[i] += transition[i*2+1] * previousBeta_[i+1] * observation_likelihoods[i+1];
+            }
         }
         beta_[i] *= ct;
         if (isnan(beta_[i]) || isinf(abs(beta_[i]))) {
@@ -682,10 +748,10 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     for (unsigned int t=0; t<T; ++t) {
         for (unsigned int i=0; i<nbStates_; i++) {
             if (bimodal_) {
-                observation_probabilities[t * nbStates_ + i] = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
-                                                                                          currentPhrase->get_dataPointer_output(t));
+                observation_probabilities[t * nbStates_ + i] = states[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
+                                                                                         currentPhrase->get_dataPointer_output(t));
             } else {
-                observation_probabilities[t * nbStates_ + i] = states_[i].obsProb(currentPhrase->get_dataPointer(t));
+                observation_probabilities[t * nbStates_ + i] = states[i].obsProb(currentPhrase->get_dataPointer(t));
             }
         }
     }
@@ -738,12 +804,12 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
             } else {
                 for (int c=0; c<nbMixtureComponents_; c++) {
                     if (bimodal_) {
-                        oo = states_[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
-                                                        currentPhrase->get_dataPointer_output(t),
-                                                        c);
+                        oo = states[i].obsProb_bimodal(currentPhrase->get_dataPointer_input(t),
+                                                       currentPhrase->get_dataPointer_output(t),
+                                                       c);
                     } else {
-                        oo = states_[i].obsProb(currentPhrase->get_dataPointer(t),
-                                                c);
+                        oo = states[i].obsProb(currentPhrase->get_dataPointer(t),
+                                               c);
                     }
                     gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] = gammaSequence_[phraseIndex][t*nbStates_+i] * oo;
                     norm_const += oo;
@@ -756,11 +822,30 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     }
     
     // Compute Epsilon Variable
-    for (int t=0; t<T-1; t++) {
-        for (int i=0; i<nbStates_; i++) {
-            for (int j=0; j<nbStates_; j++) {
-                epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] = alpha_seq_[t*nbStates_+i] * transition_[i*nbStates_+j] * beta_seq_[(t+1)*nbStates_+j];
-                epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= observation_probabilities[(t+1) * nbStates_ + j];
+    if (transitionMode_ == ERGODIC) {
+        for (int t=0; t<T-1; t++) {
+            for (int i=0; i<nbStates_; i++) {
+                for (int j=0; j<nbStates_; j++) {
+                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] = alpha_seq_[t*nbStates_+i]
+                    * transition[i*nbStates_+j]
+                    * beta_seq_[(t+1)*nbStates_+j];
+                    epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j] *= observation_probabilities[(t+1) * nbStates_ + j];
+                }
+            }
+        }
+    } else {
+        for (int t=0; t<T-1; t++) {
+            for (int i=0; i<nbStates_; i++) {
+                epsilonSequence_[phraseIndex][t*2*nbStates_+i*2] = alpha_seq_[t*nbStates_+i]
+                    * transition[i*2]
+                    * beta_seq_[(t+1)*nbStates_+i];
+                epsilonSequence_[phraseIndex][t*2*nbStates_+i*2] *= observation_probabilities[(t+1) * nbStates_ + i];
+                if (i<nbStates_-1) {
+                    epsilonSequence_[phraseIndex][t*2*nbStates_+i*2+1] = alpha_seq_[t*nbStates_+i]
+                        * transition[i*2+1]
+                        * beta_seq_[(t+1)*nbStates_+i+1];
+                    epsilonSequence_[phraseIndex][t*2*nbStates_+i*2+1] *= observation_probabilities[(t+1) * nbStates_ + i+1];
+                }
             }
         }
     }
@@ -804,7 +889,7 @@ void HMM::baumWelch_estimateMixtureCoefficients()
         for (int i=0; i<nbStates_; i++) {
             for (int t=0; t<phraseLength; t++) {
                 for (int c=0; c<nbMixtureComponents_; c++) {
-                    states_[i].mixtureCoeffs[c] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i];
+                    states[i].mixtureCoeffs[c] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i];
                 }
             }
         }
@@ -813,7 +898,7 @@ void HMM::baumWelch_estimateMixtureCoefficients()
     
     // Scale mixture coefficients
     for (int i=0; i<nbStates_; i++) {
-        states_[i].normalizeMixtureCoeffs();
+        states[i].normalizeMixtureCoeffs();
     }
 }
 
@@ -824,7 +909,7 @@ void HMM::baumWelch_estimateMeans()
     
     for (int i=0; i<nbStates_; i++) {
         for (int c=0; c<nbMixtureComponents_; c++) {
-            states_[i].components[c].mean.assign(dimension_, 0.0);
+            states[i].components[c].mean.assign(dimension_, 0.0);
         }
     }
     
@@ -837,7 +922,7 @@ void HMM::baumWelch_estimateMeans()
             for (int t=0; t<phraseLength; t++) {
                 for (int c=0; c<nbMixtureComponents_; c++) {
                     for (int d=0; d<dimension_; d++) {
-                        states_[i].components[c].mean[d] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] * (*it->second)(t, d);
+                        states[i].components[c].mean[d] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i] * (*it->second)(t, d);
                     }
                 }
             }
@@ -850,9 +935,9 @@ void HMM::baumWelch_estimateMeans()
         for (int c=0; c<nbMixtureComponents_; c++) {
             for (int d=0; d<dimension_; d++) {
                 if (gammaSumPerMixture_[i*nbMixtureComponents_+c] > 0) {
-                    states_[i].components[c].mean[d] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
+                    states[i].components[c].mean[d] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
                 }
-                if (isnan(states_[i].components[c].mean[d]))
+                if (isnan(states[i].components[c].mean[d]))
                     throw runtime_error("Convergence Error");
             }
         }
@@ -874,14 +959,14 @@ void HMM::baumWelch_estimateCovariances()
                     for (int d1=0; d1<dimension_; d1++) {
                         if (covariance_mode_ == GaussianDistribution::FULL) {
                             for (int d2=d1; d2<dimension_; d2++) {
-                                states_[i].components[c].covariance[d1*dimension_+d2] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
-                                * ((*it->second)(t, d1) - states_[i].components[c].mean[d1])
-                                * ((*it->second)(t, d2) - states_[i].components[c].mean[d2]);
+                                states[i].components[c].covariance[d1*dimension_+d2] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
+                                * ((*it->second)(t, d1) - states[i].components[c].mean[d1])
+                                * ((*it->second)(t, d2) - states[i].components[c].mean[d2]);
                             }
                         } else {
-                            float value = (*it->second)(t, d1) - states_[i].components[c].mean[d1];
-                            states_[i].components[c].covariance[d1] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
-                                * value * value;
+                            float value = (*it->second)(t, d1) - states[i].components[c].mean[d1];
+                            states[i].components[c].covariance[d1] += gammaSequencePerMixture_[phraseIndex][c][t*nbStates_+i]
+                            * value * value;
                         }
                     }
                 }
@@ -897,18 +982,18 @@ void HMM::baumWelch_estimateCovariances()
                 for (int d1=0; d1<dimension_; d1++) {
                     if (covariance_mode_ == GaussianDistribution::FULL) {
                         for (int d2=d1; d2<dimension_; d2++) {
-                            states_[i].components[c].covariance[d1*dimension_+d2] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
+                            states[i].components[c].covariance[d1*dimension_+d2] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
                             if (d1 != d2)
-                                states_[i].components[c].covariance[d2*dimension_+d1] = states_[i].components[c].covariance[d1*dimension_+d2];
+                                states[i].components[c].covariance[d2*dimension_+d1] = states[i].components[c].covariance[d1*dimension_+d2];
                         }
                     } else {
-                        states_[i].components[c].covariance[d1] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
+                        states[i].components[c].covariance[d1] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
                     }
                 }
             }
         }
-        states_[i].addCovarianceOffset();
-        states_[i].updateInverseCovariances();
+        states[i].addCovarianceOffset();
+        states[i].updateInverseCovariances();
     }
 }
 
@@ -917,7 +1002,7 @@ void HMM::baumWelch_estimatePrior()
 {
     // Set prior vector to 0
     for (int i=0; i<nbStates_; i++)
-        prior_[i] = 0.;
+        prior[i] = 0.;
     
     // Re-estimate Prior probabilities
     double sumprior = 0.;
@@ -925,7 +1010,7 @@ void HMM::baumWelch_estimatePrior()
     for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); it++)
     {
         for (int i=0; i<nbStates_; i++) {
-            prior_[i] += gammaSequence_[phraseIndex][i];
+            prior[i] += gammaSequence_[phraseIndex][i];
             sumprior += gammaSequence_[phraseIndex][i];
         }
         phraseIndex++;
@@ -934,7 +1019,7 @@ void HMM::baumWelch_estimatePrior()
     // Scale Prior vector
     if (sumprior > 0.) {
         for (int i=0; i<nbStates_; i++) {
-            prior_[i] /= sumprior;
+            prior[i] /= sumprior;
         }
     }
 }
@@ -943,9 +1028,11 @@ void HMM::baumWelch_estimatePrior()
 void HMM::baumWelch_estimateTransitions()
 {
     // Set prior vector and transition matrix to 0
-    for (int i=0; i<nbStates_; i++)
-        for (int j=0; j<nbStates_; j++)
-            transition_[i*nbStates_+j] = 0.;
+    if (transitionMode_ == ERGODIC) {
+        transition.assign(nbStates_*nbStates_, 0.0);
+    } else {
+        transition.assign(nbStates_*2, 0.0);
+    }
     
     int phraseLength;
     // Re-estimate Prior and Transition probabilities
@@ -956,17 +1043,28 @@ void HMM::baumWelch_estimateTransitions()
         for (int i=0; i<nbStates_; i++) {
             // Experimental: A bit of regularization (sometimes avoids numerical errors)
             if (transitionMode_ == LEFT_RIGHT) {
-                transition_[i*nbStates_+i] += HMM_TRANSITION_REGULARIZATION;
+                transition[i*2] += HMM_TRANSITION_REGULARIZATION;
                 if (i<nbStates_-1)
-                    transition_[i*nbStates_+i+1] += HMM_TRANSITION_REGULARIZATION;
+                    transition[i*2+1] += HMM_TRANSITION_REGULARIZATION;
                 else
-                    transition_[i*nbStates_+i] += HMM_TRANSITION_REGULARIZATION;
+                    transition[i*2] += HMM_TRANSITION_REGULARIZATION;
             }
             // End Regularization
-            for (int j=0; j<nbStates_; j++)
-            {
+            if (transitionMode_ == ERGODIC) {
+                for (int j=0; j<nbStates_; j++)
+                {
+                    for (int t=0; t<phraseLength-1; t++) {
+                        transition[i*nbStates_+j] += epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j];
+                    }
+                }
+            } else {
                 for (int t=0; t<phraseLength-1; t++) {
-                    transition_[i*nbStates_+j] += epsilonSequence_[phraseIndex][t*nbStates_*nbStates_+i*nbStates_+j];
+                    transition[i*2] += epsilonSequence_[phraseIndex][t*2*nbStates_+i*2];
+                }
+                if (i<nbStates_-1) {
+                    for (int t=0; t<phraseLength-1; t++) {
+                        transition[i*2+1] += epsilonSequence_[phraseIndex][t*2*nbStates_+i*2+1];
+                    }
                 }
             }
         }
@@ -974,11 +1072,24 @@ void HMM::baumWelch_estimateTransitions()
     }
     
     // Scale transition matrix
-    for (int i=0; i<nbStates_; i++) {
-        for (int j=0; j<nbStates_; j++) {
-            transition_[i*nbStates_+j] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
-            if (isnan(transition_[i*nbStates_+j]))
+    if (transitionMode_ == ERGODIC) {
+        for (int i=0; i<nbStates_; i++) {
+            for (int j=0; j<nbStates_; j++) {
+                transition[i*nbStates_+j] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
+                if (isnan(transition[i*nbStates_+j]))
+                    throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+            }
+        }
+    } else {
+        for (int i=0; i<nbStates_; i++) {
+            transition[i*2] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
+            if (isnan(transition[i*2]))
                 throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+            if (i<nbStates_-1) {
+                transition[i*2+1] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
+                if (isnan(transition[i*2+1]))
+                    throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+            }
         }
     }
 }
@@ -1006,8 +1117,13 @@ void HMM::performance_init()
 
 void HMM::addCyclicTransition(double proba)
 {
-    if (nbStates_ > 1)
-        transition_[(nbStates_-1)*nbStates_] = proba; // Add Cyclic Transition probability
+    if (transitionMode_ == ERGODIC) {
+        if (nbStates_ > 1)
+            transition[(nbStates_-1)*nbStates_] = proba;
+    } else {
+        if (nbStates_ > 1)
+            transition[(nbStates_-1)*2+1] = proba;
+    }
 }
 
 
@@ -1089,8 +1205,8 @@ void HMM::regression(vector<float> const& observation_input,
     vector<float> tmp_predicted_output(dimension_output);
     
     if (regression_estimator_ == LIKELIEST) {
-        states_[results_likeliest_state].likelihood(observation_input);
-        states_[results_likeliest_state].regression(observation_input, predicted_output);
+        states[results_likeliest_state].likelihood(observation_input);
+        states[results_likeliest_state].regression(observation_input, predicted_output);
         return;
     }
     
@@ -1102,16 +1218,16 @@ void HMM::regression(vector<float> const& observation_input,
     
     // Compute Regression
     for (int i=clip_min_state; i<clip_max_state; ++i) {
-        states_[i].likelihood(observation_input);
-        states_[i].regression(observation_input, tmp_predicted_output);
+        states[i].likelihood(observation_input);
+        states[i].regression(observation_input, tmp_predicted_output);
         for (int d = 0; d < dimension_output; ++d)
         {
             if (is_hierarchical_) {
                 predicted_output[d] += (alpha_h[0][i] + alpha_h[1][i]) * tmp_predicted_output[d] / normalization_constant;
-                results_output_variance[d] += (alpha_h[0][i] + alpha_h[1][i]) * (alpha_h[0][i] + alpha_h[1][i]) * states_[i].results_output_variance[d] / normalization_constant;
+                results_output_variance[d] += (alpha_h[0][i] + alpha_h[1][i]) * (alpha_h[0][i] + alpha_h[1][i]) * states[i].results_output_variance[d] / normalization_constant;
             } else {
                 predicted_output[d] += alpha[i] * tmp_predicted_output[d] / normalization_constant;
-                results_output_variance[d] += alpha[i] * alpha[i] * states_[i].results_output_variance[d] / normalization_constant;
+                results_output_variance[d] += alpha[i] * alpha[i] * states[i].results_output_variance[d] / normalization_constant;
             }
         }
     }
@@ -1166,8 +1282,8 @@ JSONNode HMM::to_json() const
     json_hmm.push_back(JSONNode("transitionmode", int(transitionMode_)));
     
     // Model Parameters
-    json_hmm.push_back(vector2json(prior_, "prior"));
-    json_hmm.push_back(vector2json(transition_, "transition"));
+    json_hmm.push_back(vector2json(prior, "prior"));
+    json_hmm.push_back(vector2json(transition, "transition"));
     if (is_hierarchical_)
         json_hmm.push_back(vector2json(exitProbabilities_, "exitprobabilities"));
     
@@ -1175,7 +1291,7 @@ JSONNode HMM::to_json() const
     JSONNode json_states(JSON_ARRAY);
     for (int i=0 ; i<nbStates_ ; i++)
     {
-        json_states.push_back(states_[i].to_json());
+        json_states.push_back(states[i].to_json());
     }
     json_states.set_name("states");
     json_hmm.push_back(json_states);
@@ -1257,9 +1373,9 @@ void HMM::from_json(JSONNode root)
         if (root_it != root.end()) {
             if (root_it->type() != JSON_NUMBER)
                 throw JSONException("Wrong type for node 'covariance_mode': was expecting 'JSON_NUMBER'", root_it->name());
-            set_covariance_mode(static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int()));
+            covariance_mode_ = static_cast<GaussianDistribution::COVARIANCE_MODE>(root_it->as_int());
         } else {
-            set_covariance_mode(GaussianDistribution::FULL);
+            covariance_mode_ = GaussianDistribution::FULL;
         }
         
         // Get Regression Estimator
@@ -1287,7 +1403,9 @@ void HMM::from_json(JSONNode root)
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->type() != JSON_ARRAY)
             throw JSONException("Wrong type for node 'prior': was expecting 'JSON_ARRAY'", root_it->name());
-        json2vector(*root_it, prior_, nbStates_);
+        if (transitionMode_ == ERGODIC) {
+            json2vector(*root_it, prior, nbStates_);
+        }
         
         // Get Transition Matrix
         root_it = root.find("transition");
@@ -1295,7 +1413,23 @@ void HMM::from_json(JSONNode root)
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->type() != JSON_ARRAY)
             throw JSONException("Wrong type for node 'transition': was expecting 'JSON_ARRAY'", root_it->name());
-        json2vector(*root_it, transition_, nbStates_*nbStates_);
+        if (transitionMode_ == ERGODIC) {
+            json2vector(*root_it, transition, nbStates_*nbStates_);
+        } else {
+            try {
+                json2vector(*root_it, transition, nbStates_*2);
+            } catch (exception& e) {
+                cout << "warning: hazardous reading from previous file version" << endl;
+                vector<double> deprec_trans(nbStates_*nbStates_);
+                json2vector(*root_it, deprec_trans, nbStates_*nbStates_);
+                for (unsigned int i=0; i<nbStates_-1; ++i) {
+                    transition[i*2] = deprec_trans[i*nbStates_+i];
+                    transition[i*2+1] = deprec_trans[i*nbStates_+i+1];
+                }
+                transition[(nbStates_-1)*2] = deprec_trans[nbStates_*nbStates_-1];
+                transition[nbStates_*2-1] = deprec_trans[(nbStates_-1)*nbStates_];
+            }
+        }
         
         // Get Exit probabilities
         if (is_hierarchical_) {
@@ -1314,7 +1448,7 @@ void HMM::from_json(JSONNode root)
         if (root_it->type() != JSON_ARRAY)
             throw JSONException("Wrong type for node 'states': was expecting 'JSON_ARRAY'", root_it->name());
         for (int i=0 ; i<nbStates_ ; i++) {
-            states_[i].from_json((*root_it)[i]);
+            states[i].from_json((*root_it)[i]);
         }
         
     } catch (JSONException &e) {
@@ -1371,7 +1505,7 @@ void HMM::make_bimodal(unsigned int dimension_input)
     bimodal_ = true;
     dimension_input_ = dimension_input;
     for (unsigned int i=0; i<nbStates_; i++) {
-        states_[i].make_bimodal(dimension_input);
+        states[i].make_bimodal(dimension_input);
     }
     results_predicted_output.resize(dimension_ - dimension_input_);
     results_output_variance.resize(dimension_ - dimension_input_);
@@ -1388,7 +1522,7 @@ void HMM::make_unimodal()
     bimodal_ = false;
     dimension_input_ = 0;
     for (unsigned int i=0; i<nbStates_; i++) {
-        states_[i].make_unimodal();
+        states[i].make_unimodal();
     }
     results_predicted_output.clear();
     results_output_variance.clear();
@@ -1418,7 +1552,7 @@ HMM HMM::extract_submodel(vector<unsigned int>& columns) const
         target_model.column_names_[new_index] = column_names_[columns[new_index]];
     }
     for (unsigned int i=0; i<nbStates_; ++i) {
-        target_model.states_[i] = states_[i].extract_submodel(columns);
+        target_model.states[i] = states[i].extract_submodel(columns);
     }
     return target_model;
 }

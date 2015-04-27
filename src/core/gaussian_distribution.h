@@ -43,12 +43,6 @@ const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.e-2;
 const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.e-3;
 
 /**
- * Should avoid probabilities > 1 in most cases
- * @todo Weird stuff, to check.
- */
-const double EPSILON_GAUSSIAN = 1.0;//e-20;
-
-/**
  * @ingroup Utilities
  * @struct Ellipse
  * @brief Simple structure for storing Ellipse parameters

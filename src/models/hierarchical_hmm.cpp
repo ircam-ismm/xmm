@@ -447,9 +447,9 @@ void HierarchicalHMM::forward_init(vector<float> const& observation)
         // Compute Emission probability and initialize on the first state of the primitive
         it->second.alpha_h[0][0] = this->prior[it->first];
         if (bimodal_) {
-            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb_input(&observation[0]);
+            it->second.alpha_h[0][0] *= it->second.states[0].obsProb_input(&observation[0]);
         } else {
-            it->second.alpha_h[0][0] *= it->second.states_[0].obsProb(&observation[0]);
+            it->second.alpha_h[0][0] *= it->second.states[0].obsProb(&observation[0]);
         }
         it->second.results_instant_likelihood = it->second.alpha_h[0][0] ;
         it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
@@ -489,7 +489,7 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
         front.resize(N) ;
         
         // k=0: first state of the primitive
-        front[0] = dstit->second.transition_[0] * dstit->second.alpha_h[0][0] ;
+        front[0] = dstit->second.transition[0] * dstit->second.alpha_h[0][0] ;
         
         int i(0);
         for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); srcit++, i++) {
@@ -500,9 +500,14 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
         for (int k=1 ; k<N ; ++k)
         {
             front[k] = 0;
-            for (int j = 0 ; j < N ; ++j)
-            {
-                front[k] += dstit->second.transition_[j*N+k] / (1 - dstit->second.exitProbabilities_[j]) * dstit->second.alpha_h[0][j] ;
+            if (referenceModel_.transitionMode_ == ERGODIC) {
+                for (int j = 0 ; j < N ; ++j)
+                {
+                    front[k] += dstit->second.transition[j*N+k] / (1 - dstit->second.exitProbabilities_[j]) * dstit->second.alpha_h[0][j] ;
+                }
+            } else {
+                front[k] += dstit->second.transition[k*2] / (1 - dstit->second.exitProbabilities_[k]) * dstit->second.alpha_h[0][k] ;
+                front[k] += dstit->second.transition[(k-1)*2+1] / (1 - dstit->second.exitProbabilities_[k-1]) * dstit->second.alpha_h[0][k-1] ;
             }
         }
         
@@ -522,9 +527,9 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
         for (int k=0 ; k<N ; ++k)
         {
             if (bimodal_)
-                tmp = dstit->second.states_[k].obsProb_input(&observation[0]) * front[k];
+                tmp = dstit->second.states[k].obsProb_input(&observation[0]) * front[k];
             else
-                tmp = dstit->second.states_[k].obsProb(&observation[0]) * front[k];
+                tmp = dstit->second.states[k].obsProb(&observation[0]) * front[k];
             
             dstit->second.alpha_h[2][k] = this->exitTransition[dstit->first] * dstit->second.exitProbabilities_[k] * tmp ;
             dstit->second.alpha_h[1][k] = (1 - this->exitTransition[dstit->first]) * dstit->second.exitProbabilities_[k] * tmp ;

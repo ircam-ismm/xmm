@@ -379,7 +379,17 @@ public:
     /**
      * @brief States of the model (Gaussian Mixture Models)
      */
-    vector<GMM> states_;
+    vector<GMM> states;
+    
+    /**
+     * @brief Prior probabilities
+     */
+    vector<float> prior;
+    
+    /**
+     * @brief Transition Matrix
+     */
+    vector<float> transition;
     
 #ifndef XMM_TESTING
 protected:
@@ -645,16 +655,6 @@ protected:
      * @brief Transition mode of the model (left-right vs ergodic)
      */
     TRANSITION_MODE transitionMode_;
-    
-    /**
-     * @brief Prior probabilities
-     */
-    vector<float> prior_;
-    
-    /**
-     * @brief Transition Matrix
-     */
-    vector<float> transition_;
     
     /**
      * @brief Defines if the forward algorithm has been initialized

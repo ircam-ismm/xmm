@@ -441,6 +441,7 @@ protected:
      * @param observation observation vector. If the model is bimodal, this should be allocated for
      * both modalities, and should contain the observation on the input modality. The predicted
      * output will be appended to the input modality observation
+     * @todo check if the algorithm is right for an ergodic transition structure of the sub-hmms
      */
     void forward_update(vector<float> const& observation);
     

@@ -153,6 +153,10 @@ TEST_CASE( "GMM with Diagonal covariance (unimodal)", "[GMM]" ) {
         log_likelihood2[i] = a.results_log_likelihood;
     }
     CHECK_VECTOR_APPROX(log_likelihood, log_likelihood2);
+    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    JSONNode a_json = a.to_json();
+    GMM b;
+    b.from_json(a_json);
 }
 
 TEST_CASE( "GMMGroup with Diagonal covariance (unimodal)", "[GMMGroup]" ) {
@@ -228,6 +232,10 @@ TEST_CASE( "HMM with Diagonal covariance (unimodal)", "[HMM]" ) {
         log_likelihood2[i] = a.results_log_likelihood;
     }
     CHECK_VECTOR_APPROX(log_likelihood, log_likelihood2);
+    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    JSONNode a_json = a.to_json();
+    HMM b;
+    b.from_json(a_json);
 }
 
 TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[HierarchicalHMM]" ) {
@@ -268,6 +276,10 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
         log_likelihood2[i] = a.results_log_likelihoods[0];
     }
     CHECK_VECTOR_APPROX(log_likelihood, log_likelihood2);
+    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    JSONNode a_json = a.to_json();
+    HierarchicalHMM b;
+    b.from_json(a_json);
 }
 
 //TEST_CASE( "Computation Time with Diagonal covariance", "[GaussianDistribution]" ) {
