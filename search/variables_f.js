@@ -10,6 +10,5 @@ var searchData=
   ['play_5fem_5fsteps',['PLAY_EM_STEPS',['../hmm_8h.html#a8cb19cec085d4421bca670ecd97f437f',1,'hmm.h']]],
   ['previousalpha_5f',['previousAlpha_',['../class_h_m_m.html#a5f0ba18de1dd7d63b05ec30ff7d3ee27',1,'HMM']]],
   ['previousbeta_5f',['previousBeta_',['../class_h_m_m.html#acecff0bc82aa191b147328c04a089db1',1,'HMM']]],
-  ['prior',['prior',['../class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a',1,'HierarchicalHMM']]],
-  ['prior_5f',['prior_',['../class_h_m_m.html#a586ee0cd833fec9b20703540e1fabfc1',1,'HMM']]]
+  ['prior',['prior',['../class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a',1,'HierarchicalHMM::prior()'],['../class_h_m_m.html#a636706a3e860b98d4dbd144653267cb0',1,'HMM::prior()']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['full',['FULL',['../hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84ad08f8ac0aa8dfb59589824359772459e',1,'hmm.h']]]
+  ['ergodic',['ERGODIC',['../hmm_8h.html#a7372f7a97e412d35065de1e85bb3d623ab5cb6a0fd0c5e14be3565068845c9edb',1,'hmm.h']]]
 ];

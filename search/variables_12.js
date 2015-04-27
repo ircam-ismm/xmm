@@ -12,8 +12,7 @@ var searchData=
   ['trainingnbiterations',['trainingNbIterations',['../class_probabilistic_model.html#aca4e6dd4ff1182ac86fe408763e6c1c9',1,'ProbabilisticModel::trainingNbIterations()'],['../class_k_means.html#ad1461357e059111069563dcb3d942407',1,'KMeans::trainingNbIterations()']]],
   ['trainingprogression',['trainingProgression',['../class_probabilistic_model.html#ac4de3fcbd627cd15f1c4e8be8cf93e07',1,'ProbabilisticModel']]],
   ['trainingset',['trainingSet',['../class_probabilistic_model.html#a22cce07afd58e92ac5df4fc225bc6d2d',1,'ProbabilisticModel::trainingSet()'],['../class_k_means.html#a81e8b38dee63f1b6027579f0fb443359',1,'KMeans::trainingSet()']]],
-  ['transition',['transition',['../class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9',1,'HierarchicalHMM']]],
-  ['transition_5f',['transition_',['../class_h_m_m.html#a19d5dae61e21fb9fb7eb17e88b4d0142',1,'HMM']]],
+  ['transition',['transition',['../class_hierarchical_h_m_m.html#a07e339b7d51d696b5a2b4a93744fd8b9',1,'HierarchicalHMM::transition()'],['../class_h_m_m.html#a11c744bbe5d4d5a22e8e84a2bab8951d',1,'HMM::transition()']]],
   ['transitionmode_5f',['transitionMode_',['../class_h_m_m.html#aaee958ffafacab6ff4030bb3dbf3b312',1,'HMM']]],
   ['type',['type',['../class_label.html#a571e6b8a9ed58c35a77a0d884c9506c9',1,'Label']]]
 ];

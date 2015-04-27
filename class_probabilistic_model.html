@@ -97,6 +97,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="class_probabilistic_model-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -182,33 +183,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1e49cb29f8996a9c8d0a14722388e3d3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a1e49cb29f8996a9c8d0a14722388e3d3">from_json</a> (JSONNode root)</td></tr>
 <tr class="memdesc:a1e49cb29f8996a9c8d0a14722388e3d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read from JSON Node.  <a href="#a1e49cb29f8996a9c8d0a14722388e3d3">More...</a><br /></td></tr>
 <tr class="separator:a1e49cb29f8996a9c8d0a14722388e3d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Copy between models</div></td></tr>
-<tr class="memitem:a54c5f4914cc90319cccd6c4629318bd6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a54c5f4914cc90319cccd6c4629318bd6">_copy</a> (<a class="el" href="class_probabilistic_model.html">ProbabilisticModel</a> *dst, <a class="el" href="class_probabilistic_model.html">ProbabilisticModel</a> const &amp;src)</td></tr>
-<tr class="memdesc:a54c5f4914cc90319cccd6c4629318bd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy between two models.  <a href="#a54c5f4914cc90319cccd6c4629318bd6">More...</a><br /></td></tr>
-<tr class="separator:a54c5f4914cc90319cccd6c4629318bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Utility</div></td></tr>
-<tr class="memitem:aeb6f121a50e25bdf4167485253cb2d0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#aeb6f121a50e25bdf4167485253cb2d0e">updateLikelihoodBuffer</a> (double instantLikelihood)</td></tr>
-<tr class="memdesc:aeb6f121a50e25bdf4167485253cb2d0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">update the content of the likelihood buffer and return average likelihood.  <a href="#aeb6f121a50e25bdf4167485253cb2d0e">More...</a><br /></td></tr>
-<tr class="separator:aeb6f121a50e25bdf4167485253cb2d0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f063fd7a05d12bcf6fbf821ae0f0eae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a3f063fd7a05d12bcf6fbf821ae0f0eae">notify</a> (string attribute)</td></tr>
-<tr class="memdesc:a3f063fd7a05d12bcf6fbf821ae0f0eae"><td class="mdescLeft">&#160;</td><td class="mdescRight">handle notifications of the training set  <a href="#a3f063fd7a05d12bcf6fbf821ae0f0eae">More...</a><br /></td></tr>
-<tr class="separator:a3f063fd7a05d12bcf6fbf821ae0f0eae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff456477b0de13e7e54dbf932c806f58"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#aff456477b0de13e7e54dbf932c806f58">allocate</a> ()=0</td></tr>
-<tr class="memdesc:aff456477b0de13e7e54dbf932c806f58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate memory for the model's parameters.  <a href="#aff456477b0de13e7e54dbf932c806f58">More...</a><br /></td></tr>
-<tr class="separator:aff456477b0de13e7e54dbf932c806f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Training: internal methods</div></td></tr>
-<tr class="memitem:a5ed7aff8876be79abd1c15a6fcac117a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a5ed7aff8876be79abd1c15a6fcac117a">train_EM_init</a> ()=0</td></tr>
-<tr class="memdesc:a5ed7aff8876be79abd1c15a6fcac117a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the training algorithm.  <a href="#a5ed7aff8876be79abd1c15a6fcac117a">More...</a><br /></td></tr>
-<tr class="separator:a5ed7aff8876be79abd1c15a6fcac117a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3e7b4c42c23f23e2580fcb2c0208e31"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#ad3e7b4c42c23f23e2580fcb2c0208e31">train_EM_update</a> ()=0</td></tr>
-<tr class="memdesc:ad3e7b4c42c23f23e2580fcb2c0208e31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update Method of the EM algorithm.  <a href="#ad3e7b4c42c23f23e2580fcb2c0208e31">More...</a><br /></td></tr>
-<tr class="separator:ad3e7b4c42c23f23e2580fcb2c0208e31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b259e018c140cc61e3c5541583b009a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a2b259e018c140cc61e3c5541583b009a">train_EM_terminate</a> ()</td></tr>
-<tr class="memdesc:a2b259e018c140cc61e3c5541583b009a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminate the training algorithm.  <a href="#a2b259e018c140cc61e3c5541583b009a">More...</a><br /></td></tr>
-<tr class="separator:a2b259e018c140cc61e3c5541583b009a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a988a3b124cbec208b0ffeceac926d304"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a988a3b124cbec208b0ffeceac926d304">train_EM_hasConverged</a> (int step, double log_prob, double old_log_prob) const </td></tr>
-<tr class="memdesc:a988a3b124cbec208b0ffeceac926d304"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks if the training has converged according to the object's EM stop criterion  <a href="#a988a3b124cbec208b0ffeceac926d304">More...</a><br /></td></tr>
-<tr class="separator:a988a3b124cbec208b0ffeceac926d304"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Python File I/O (#ifdef SWIGPYTHON)</div></td></tr>
 <tr class="memitem:a5f8f0c00d1445a358fefdc0bb608cad8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_writable.html#a5f8f0c00d1445a358fefdc0bb608cad8">writeFile</a> (char *fileName)</td></tr>
 <tr class="memdesc:a5f8f0c00d1445a358fefdc0bb608cad8"><td class="mdescLeft">&#160;</td><td class="mdescRight">write method for python wrapping ('write' keyword forbidden, name has to be different)  <a href="#a5f8f0c00d1445a358fefdc0bb608cad8">More...</a><br /></td></tr>
@@ -253,6 +227,39 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a07e5ff7e01f0d75476dc333c0dac118a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4e6dd4ff1182ac86fe408763e6c1c9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#aca4e6dd4ff1182ac86fe408763e6c1c9">trainingNbIterations</a></td></tr>
 <tr class="separator:aca4e6dd4ff1182ac86fe408763e6c1c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Copy between models</div></td></tr>
+<tr class="memitem:a54c5f4914cc90319cccd6c4629318bd6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a54c5f4914cc90319cccd6c4629318bd6">_copy</a> (<a class="el" href="class_probabilistic_model.html">ProbabilisticModel</a> *dst, <a class="el" href="class_probabilistic_model.html">ProbabilisticModel</a> const &amp;src)</td></tr>
+<tr class="memdesc:a54c5f4914cc90319cccd6c4629318bd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy between two models.  <a href="#a54c5f4914cc90319cccd6c4629318bd6">More...</a><br /></td></tr>
+<tr class="separator:a54c5f4914cc90319cccd6c4629318bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Utility</div></td></tr>
+<tr class="memitem:aeb6f121a50e25bdf4167485253cb2d0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#aeb6f121a50e25bdf4167485253cb2d0e">updateLikelihoodBuffer</a> (double instantLikelihood)</td></tr>
+<tr class="memdesc:aeb6f121a50e25bdf4167485253cb2d0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">update the content of the likelihood buffer and return average likelihood.  <a href="#aeb6f121a50e25bdf4167485253cb2d0e">More...</a><br /></td></tr>
+<tr class="separator:aeb6f121a50e25bdf4167485253cb2d0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f063fd7a05d12bcf6fbf821ae0f0eae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a3f063fd7a05d12bcf6fbf821ae0f0eae">notify</a> (string attribute)</td></tr>
+<tr class="memdesc:a3f063fd7a05d12bcf6fbf821ae0f0eae"><td class="mdescLeft">&#160;</td><td class="mdescRight">handle notifications of the training set  <a href="#a3f063fd7a05d12bcf6fbf821ae0f0eae">More...</a><br /></td></tr>
+<tr class="separator:a3f063fd7a05d12bcf6fbf821ae0f0eae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff456477b0de13e7e54dbf932c806f58"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#aff456477b0de13e7e54dbf932c806f58">allocate</a> ()=0</td></tr>
+<tr class="memdesc:aff456477b0de13e7e54dbf932c806f58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate memory for the model's parameters.  <a href="#aff456477b0de13e7e54dbf932c806f58">More...</a><br /></td></tr>
+<tr class="separator:aff456477b0de13e7e54dbf932c806f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Training: internal methods</div></td></tr>
+<tr class="memitem:a5ed7aff8876be79abd1c15a6fcac117a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a5ed7aff8876be79abd1c15a6fcac117a">train_EM_init</a> ()=0</td></tr>
+<tr class="memdesc:a5ed7aff8876be79abd1c15a6fcac117a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the training algorithm.  <a href="#a5ed7aff8876be79abd1c15a6fcac117a">More...</a><br /></td></tr>
+<tr class="separator:a5ed7aff8876be79abd1c15a6fcac117a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3e7b4c42c23f23e2580fcb2c0208e31"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#ad3e7b4c42c23f23e2580fcb2c0208e31">train_EM_update</a> ()=0</td></tr>
+<tr class="memdesc:ad3e7b4c42c23f23e2580fcb2c0208e31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update Method of the EM algorithm.  <a href="#ad3e7b4c42c23f23e2580fcb2c0208e31">More...</a><br /></td></tr>
+<tr class="separator:ad3e7b4c42c23f23e2580fcb2c0208e31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b259e018c140cc61e3c5541583b009a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a2b259e018c140cc61e3c5541583b009a">train_EM_terminate</a> ()</td></tr>
+<tr class="memdesc:a2b259e018c140cc61e3c5541583b009a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminate the training algorithm.  <a href="#a2b259e018c140cc61e3c5541583b009a">More...</a><br /></td></tr>
+<tr class="separator:a2b259e018c140cc61e3c5541583b009a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a988a3b124cbec208b0ffeceac926d304"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a988a3b124cbec208b0ffeceac926d304">train_EM_hasConverged</a> (int step, double log_prob, double old_log_prob) const </td></tr>
+<tr class="memdesc:a988a3b124cbec208b0ffeceac926d304"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks if the training has converged according to the object's EM stop criterion  <a href="#a988a3b124cbec208b0ffeceac926d304">More...</a><br /></td></tr>
+<tr class="separator:a988a3b124cbec208b0ffeceac926d304"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
 <tr class="memitem:a84d9e019d30c696aef8bc5c5d932a65c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html#a84d9e019d30c696aef8bc5c5d932a65c">flags_</a></td></tr>
 <tr class="memdesc:a84d9e019d30c696aef8bc5c5d932a65c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construction flags.  <a href="#a84d9e019d30c696aef8bc5c5d932a65c">More...</a><br /></td></tr>
 <tr class="separator:a84d9e019d30c696aef8bc5c5d932a65c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -435,7 +442,7 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -492,7 +499,7 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -659,7 +666,7 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -929,6 +936,9 @@ Friends</h2></td></tr>
 <a class="anchor" id="a988a3b124cbec208b0ffeceac926d304"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool ProbabilisticModel::train_EM_hasConverged </td>
@@ -954,6 +964,11 @@ Friends</h2></td></tr>
           <td></td><td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>checks if the training has converged according to the object's EM stop criterion </p>
@@ -984,7 +999,7 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1011,7 +1026,7 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1038,7 +1053,7 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1085,6 +1100,9 @@ Friends</h2></td></tr>
 <a class="anchor" id="aeb6f121a50e25bdf4167485253cb2d0e"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void ProbabilisticModel::updateLikelihoodBuffer </td>
@@ -1094,6 +1112,11 @@ Friends</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>update the content of the likelihood buffer and return average likelihood. </p>
@@ -1200,11 +1223,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="ab5335793d9c36b1badff2fabf6d3e8c1"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool ProbabilisticModel::bimodal_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>defines if the phrase is bimodal (true) or unimodal (false) </p>
@@ -1214,11 +1245,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a128da0a10e7090633512eedf903f3d36"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">vector&lt;string&gt; ProbabilisticModel::column_names_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>labels of the columns of input/output data (e.g. descriptor names) </p>
@@ -1228,11 +1267,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a1eaf58ddb1d0f81bc91413a9ec23bab9"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int ProbabilisticModel::dimension_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Total dimension of the data (both modalities if bimodal) </p>
@@ -1242,11 +1289,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a962ff6abcf3579ec719dc7c5dc768e81"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">unsigned int ProbabilisticModel::dimension_input_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Dimension of the input modality. </p>
@@ -1256,11 +1311,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a84d9e019d30c696aef8bc5c5d932a65c"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> ProbabilisticModel::flags_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Construction flags. </p>
@@ -1270,11 +1333,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a4dd5aac601e821d7ab10a91026db2549"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool ProbabilisticModel::is_training_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>defines if the model is being trained. </p>
@@ -1284,11 +1355,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="aad304c91d85691b7a4619ecb4e2bc17c"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="class_ring_buffer.html">RingBuffer</a>&lt;double, 1&gt; ProbabilisticModel::likelihoodBuffer_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Likelihood buffer used for smoothing. </p>
@@ -1384,11 +1463,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a0d37edb69944c7628deaae23721d5200"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void(* ProbabilisticModel::trainingCallbackFunction_) (void *srcModel, <a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, void *extradata)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Callback function for the training algorithm. </p>
@@ -1398,11 +1485,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="a4f605d1aef84faeb1bf67253eb225ded"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void* ProbabilisticModel::trainingExtradata_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Extra data to pass in argument to the callback function. </p>
@@ -1425,11 +1520,19 @@ template&lt;typename modelType &gt; </div>
 <a class="anchor" id="afef1e0f0d7172cd1510ce1236e30f46e"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">pthread_mutex_t ProbabilisticModel::trainingMutex</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Mutex used in Concurrent Mode. </p>
@@ -1483,7 +1586,7 @@ template&lt;typename modelType &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 8 2015 11:44:24 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

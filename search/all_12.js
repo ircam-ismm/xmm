@@ -2,6 +2,7 @@ var searchData=
 [
   ['scale',['scale',['../class_gaussian_distribution.html#acd077bc1c76336e059622458750e493f',1,'GaussianDistribution']]],
   ['set_5fcolumn_5fnames',['set_column_names',['../class_training_set.html#adbe3d097446e40eb3236083a50906eba',1,'TrainingSet']]],
+  ['set_5fcovariance_5fmode',['set_covariance_mode',['../class_gaussian_distribution.html#a758c79b30ecef29c753c9a1ba86da782',1,'GaussianDistribution::set_covariance_mode()'],['../class_g_m_m.html#a53d0380a4832b38a8e3eb4185abe5af2',1,'GMM::set_covariance_mode()'],['../class_g_m_m_group.html#a655e92dc894351e6727fef0cf5071aa1',1,'GMMGroup::set_covariance_mode()'],['../class_hierarchical_h_m_m.html#ab37fcf5421cef7bbc79c646a7deb8594',1,'HierarchicalHMM::set_covariance_mode()'],['../class_h_m_m.html#a760530623d38b36df0fa120e2fb97bc8',1,'HMM::set_covariance_mode()']]],
   ['set_5fdimension',['set_dimension',['../class_gaussian_distribution.html#ae7dff9f91b07c5ecfa55fbb294115d1f',1,'GaussianDistribution::set_dimension()'],['../class_phrase.html#aec2a80fe0d7bc68f574bb78c6c64419b',1,'Phrase::set_dimension()'],['../class_training_set.html#a67f3972667e4a9fbe858f4ef872e6699',1,'TrainingSet::set_dimension()']]],
   ['set_5fdimension_5finput',['set_dimension_input',['../class_gaussian_distribution.html#a0c1f343847e2e6b1913218356cf5cb08',1,'GaussianDistribution::set_dimension_input()'],['../class_phrase.html#ab6eb807a5e4dc7bd29d8e9811c4c39dd',1,'Phrase::set_dimension_input()'],['../class_training_set.html#a351de28481896d470c089bd17df228f8',1,'TrainingSet::set_dimension_input()']]],
   ['set_5fem_5fmaxsteps',['set_EM_maxSteps',['../class_model_group.html#affc27f259ee7d005548136b79f32480b',1,'ModelGroup']]],
@@ -36,7 +37,7 @@ var searchData=
   ['shared_5fmemory',['SHARED_MEMORY',['../mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ae13d44fa8bcf277623a99467e2d20a72',1,'mbd_common.h']]],
   ['size',['size',['../class_model_group.html#a255038345858cd9d3e23edf5a8d02d0a',1,'ModelGroup::size()'],['../class_ring_buffer.html#a7cc1c5962bbce0b19b56a5138d5a2780',1,'RingBuffer::size()'],['../class_training_set.html#ab4f8c3f9ccbf659a2645b97f90d914af',1,'TrainingSet::size()']]],
   ['size_5ft',['size_t',['../class_ring_buffer.html#a10fd39b85c56f014ce49502a45debea5',1,'RingBuffer']]],
-  ['states_5f',['states_',['../class_h_m_m.html#ab1a60ea392e7ca9fdfb3299f1c311e7b',1,'HMM']]],
+  ['states',['states',['../class_h_m_m.html#a3be8d4e27cf120e969821dcb6f409c3a',1,'HMM']]],
   ['stopcriterion',['stopcriterion',['../class_probabilistic_model.html#aa6573f13e39c8713c64f8fc233a1416a',1,'ProbabilisticModel']]],
   ['stoptraining',['stopTraining',['../class_model_group.html#a7c932f2fc24340bac9aedb723c636945',1,'ModelGroup::stopTraining(Label const &amp;label)'],['../class_model_group.html#ae505bd5ac601281243869cc25e774594',1,'ModelGroup::stopTraining()']]],
   ['subtrainingsets_5f',['subTrainingSets_',['../class_training_set.html#a5929f0d215d5ccd8c1d4d23113dc6253',1,'TrainingSet']]],

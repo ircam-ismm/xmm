@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ergodic',['ERGODIC',['../hmm_8h.html#a7372f7a97e412d35065de1e85bb3d623ab5cb6a0fd0c5e14be3565068845c9edb',1,'hmm.h']]]
+  ['diagonal',['DIAGONAL',['../class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985aba3e1b9da9ea86ea25b460b1e56668f1',1,'GaussianDistribution']]]
 ];

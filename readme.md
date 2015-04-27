@@ -13,7 +13,7 @@ This code has been initially authored by <a href="http://julesfrancoise.com">Jul
 
 ### Copyright
 
-Copyright 2015. All right reserved.
+Copyright (C) 2015 UPMC, Ircam-Centre Pompidou.
 
 ### Licence
 
@@ -53,3 +53,68 @@ For the <a href="https://cycling74.com/">Cycling'74 Max</a> externals, see the M
 ## Documentation
 
 The full documentation is available on Github Pages: http://ircam-rnd.github.io/xmm/
+
+## Compilation and Usage
+
+### Dependencies
+
+The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.
+The library uses PTHREADS for parallel training of models with multiple classes.
+
+### Compiling as a static/dynamic library
+#### XCode
+
+See the xcode project in "ide/xcode/"
+
+#### CMake
+
+The library can be built using <a href="http://www.cmake.org/">CMake</a>.
+In the root directory, type the following command to generate the Makefiles:
+```
+cmake . -G"Unix Makefiles"
+```
+The following commands can be used to build the static library, run the unit tests, and generate the documentation:
+```
+make
+make test
+make doc
+```
+#### Usage
+
+The header file "xmm.h" includes all useful headers of the library.
+To enable parallel training, define the preprocessor macro "USE_PTHREAD" and link with the pthread library.
+
+### python Building the Python Library
+#### Dependencies
+
+* <a href="http://www.doxygen.org/">doxygen</a>
+* <a href="http://www.swig.org/">swig</a>
+* <a href="http://www.numpy.org/">Numpy</a>
+* <a href="http://matplotlib.org/">Matplotlib</a> (for plotting utilities)
+
+#### Building
+
+The python module can be built using <a href="http://www.cmake.org/">CMake</a>.
+In the python directory, type the following command to generate the Makefiles and build the python module:
+```
+cmake . -G"Unix Makefiles"
+make
+```
+The module should be installed in "${xmm_root}/python/bin/"
+
+#### Usage
+
+Place the built python library somewhere in your python path. To add personal
+libraries located in '/Path/To/Libs' to the python path, add the following
+lines to your ".bash_profile":
+```
+PYTHONPATH=$PYTHONPATH:/Path/To/Libs
+export PYTHONPATH
+```
+
+To import the library in python:
+```
+>>> import xmm
+```
+
+Additional utilities can be found in `xmm.util`.

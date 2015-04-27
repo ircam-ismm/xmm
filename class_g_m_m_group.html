@@ -96,8 +96,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_g_m_m_group-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">GMMGroup Class Reference<div class="ingroups"><a class="el" href="group___g_m_m.html">Gaussian Mixture Models</a></div></div>  </div>
@@ -137,22 +138,10 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af30449688caea6c8d72b137bc9e7f82c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a> (string attribute)</td></tr>
-<tr class="memdesc:af30449688caea6c8d72b137bc9e7f82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives notifications from the global training set and dispatches to models.  <a href="#af30449688caea6c8d72b137bc9e7f82c">More...</a><br /></td></tr>
-<tr class="separator:af30449688caea6c8d72b137bc9e7f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c031af30991da14d11b3fa22ee3eded"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a> ()</td></tr>
-<tr class="memdesc:a9c031af30991da14d11b3fa22ee3eded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove models which label is not in the training set anymore.  <a href="#a9c031af30991da14d11b3fa22ee3eded">More...</a><br /></td></tr>
-<tr class="separator:a9c031af30991da14d11b3fa22ee3eded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">updateTrainingSet</a> (<a class="el" href="class_label.html">Label</a> const &amp;label)</td></tr>
-<tr class="memdesc:ae9edbba438e2f43fa0cc3b2131bee014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update training set for a specific label.  <a href="#ae9edbba438e2f43fa0cc3b2131bee014">More...</a><br /></td></tr>
-<tr class="separator:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70d856b514563568236e2986407f9e59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a> ()</td></tr>
-<tr class="memdesc:a70d856b514563568236e2986407f9e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the training set for all labels.  <a href="#a70d856b514563568236e2986407f9e59">More...</a><br /></td></tr>
-<tr class="separator:a70d856b514563568236e2986407f9e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Constructors</div></td></tr>
-<tr class="memitem:a5ddf9a6772ea2687d1e5263261560ee8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a5ddf9a6772ea2687d1e5263261560ee8">GMMGroup</a> (<a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> flags=<a class="el" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a>, <a class="el" href="class_training_set.html">TrainingSet</a> *<a class="el" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">globalTrainingSet</a>=NULL)</td></tr>
-<tr class="memdesc:a5ddf9a6772ea2687d1e5263261560ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a5ddf9a6772ea2687d1e5263261560ee8">More...</a><br /></td></tr>
-<tr class="separator:a5ddf9a6772ea2687d1e5263261560ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae1de4d1e0fd65fb4b3003079986321f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#aae1de4d1e0fd65fb4b3003079986321f">GMMGroup</a> (<a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> flags=<a class="el" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a>, <a class="el" href="class_training_set.html">TrainingSet</a> *<a class="el" href="class_model_group.html#a53d911a9c559e2edf8019d2d393552fe">globalTrainingSet</a>=NULL, <a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a> covariance_mode=<a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985a33df6894f38a937e470cce46aaa632de">GaussianDistribution::FULL</a>)</td></tr>
+<tr class="memdesc:aae1de4d1e0fd65fb4b3003079986321f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#aae1de4d1e0fd65fb4b3003079986321f">More...</a><br /></td></tr>
+<tr class="separator:aae1de4d1e0fd65fb4b3003079986321f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Accessors</div></td></tr>
 <tr class="memitem:ae75206797b7fa530158fc5cfbc9edf11"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#ae75206797b7fa530158fc5cfbc9edf11">get_nbMixtureComponents</a> () const </td></tr>
 <tr class="memdesc:ae75206797b7fa530158fc5cfbc9edf11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of Gaussian mixture Components.  <a href="#ae75206797b7fa530158fc5cfbc9edf11">More...</a><br /></td></tr>
@@ -169,6 +158,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6b28c729d3f19d724570b10ffcd75e44"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a6b28c729d3f19d724570b10ffcd75e44">set_varianceOffset</a> (double varianceOffset_relative, double varianceOffset_absolute)</td></tr>
 <tr class="memdesc:a6b28c729d3f19d724570b10ffcd75e44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the offset to add to the covariance matrices.  <a href="#a6b28c729d3f19d724570b10ffcd75e44">More...</a><br /></td></tr>
 <tr class="separator:a6b28c729d3f19d724570b10ffcd75e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af198a677a0a37b8b7882e0d9bae6186a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#af198a677a0a37b8b7882e0d9bae6186a">get_covariance_mode</a> () const </td></tr>
+<tr class="memdesc:af198a677a0a37b8b7882e0d9bae6186a"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the current covariance mode  <a href="#af198a677a0a37b8b7882e0d9bae6186a">More...</a><br /></td></tr>
+<tr class="separator:af198a677a0a37b8b7882e0d9bae6186a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a655e92dc894351e6727fef0cf5071aa1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a655e92dc894351e6727fef0cf5071aa1">set_covariance_mode</a> (<a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a> covariance_mode)</td></tr>
+<tr class="memdesc:a655e92dc894351e6727fef0cf5071aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the covariance mode  <a href="#a655e92dc894351e6727fef0cf5071aa1">More...</a><br /></td></tr>
+<tr class="separator:a655e92dc894351e6727fef0cf5071aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Performance</div></td></tr>
 <tr class="memitem:a9dffbe7214ae20f71a600bc4a3c0acc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a9dffbe7214ae20f71a600bc4a3c0acc8">performance_update</a> (vector&lt; float &gt; const &amp;observation)</td></tr>
 <tr class="memdesc:a9dffbe7214ae20f71a600bc4a3c0acc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main Play function: performs recognition (unimodal mode) and regression (bimodal mode)  <a href="#a9dffbe7214ae20f71a600bc4a3c0acc8">More...</a><br /></td></tr>
@@ -187,18 +182,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a10dfce5929772279137106a92c545df9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a10dfce5929772279137106a92c545df9">make_unimodal</a> ()</td></tr>
 <tr class="memdesc:a10dfce5929772279137106a92c545df9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to unimodal GMMGroup in place.  <a href="#a10dfce5929772279137106a92c545df9">More...</a><br /></td></tr>
 <tr class="separator:a10dfce5929772279137106a92c545df9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa160273355c5af7951b3080c3d97386c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#aa160273355c5af7951b3080c3d97386c">extract_submodel</a> (vector&lt; unsigned int &gt; &amp;columns, <a class="el" href="class_g_m_m_group.html">GMMGroup</a> *target_model) const </td></tr>
-<tr class="memdesc:aa160273355c5af7951b3080c3d97386c"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a submodel with the given columns  <a href="#aa160273355c5af7951b3080c3d97386c">More...</a><br /></td></tr>
-<tr class="separator:aa160273355c5af7951b3080c3d97386c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40dd575c2a8b54ecbc011b7c9a7e481e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a40dd575c2a8b54ecbc011b7c9a7e481e">extract_submodel_input</a> (<a class="el" href="class_g_m_m_group.html">GMMGroup</a> *target_model) const </td></tr>
-<tr class="memdesc:a40dd575c2a8b54ecbc011b7c9a7e481e"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the submodel of the input modality  <a href="#a40dd575c2a8b54ecbc011b7c9a7e481e">More...</a><br /></td></tr>
-<tr class="separator:a40dd575c2a8b54ecbc011b7c9a7e481e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ecfe265812b409e3b709e1a4e2e72ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a1ecfe265812b409e3b709e1a4e2e72ac">extract_submodel_output</a> (<a class="el" href="class_g_m_m_group.html">GMMGroup</a> *target_model) const </td></tr>
-<tr class="memdesc:a1ecfe265812b409e3b709e1a4e2e72ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the submodel of the output modality  <a href="#a1ecfe265812b409e3b709e1a4e2e72ac">More...</a><br /></td></tr>
-<tr class="separator:a1ecfe265812b409e3b709e1a4e2e72ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3810203385c3d78a400b1df252da2a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#af3810203385c3d78a400b1df252da2a1">extract_inverse_model</a> (<a class="el" href="class_g_m_m_group.html">GMMGroup</a> *target_model) const </td></tr>
-<tr class="memdesc:af3810203385c3d78a400b1df252da2a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the model with reversed input and output modalities  <a href="#af3810203385c3d78a400b1df252da2a1">More...</a><br /></td></tr>
-<tr class="separator:af3810203385c3d78a400b1df252da2a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cf864f3f679b168fbdbb0f2380b6d36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_g_m_m_group.html">GMMGroup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a8cf864f3f679b168fbdbb0f2380b6d36">extract_submodel</a> (vector&lt; unsigned int &gt; &amp;columns) const </td></tr>
+<tr class="memdesc:a8cf864f3f679b168fbdbb0f2380b6d36"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a submodel with the given columns  <a href="#a8cf864f3f679b168fbdbb0f2380b6d36">More...</a><br /></td></tr>
+<tr class="separator:a8cf864f3f679b168fbdbb0f2380b6d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc2e732680bab1fbc847097d74c7be89"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_g_m_m_group.html">GMMGroup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#adc2e732680bab1fbc847097d74c7be89">extract_submodel_input</a> () const </td></tr>
+<tr class="memdesc:adc2e732680bab1fbc847097d74c7be89"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the submodel of the input modality  <a href="#adc2e732680bab1fbc847097d74c7be89">More...</a><br /></td></tr>
+<tr class="separator:adc2e732680bab1fbc847097d74c7be89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23d39acc81e71f7df5a706d7c2e11b52"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_g_m_m_group.html">GMMGroup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#a23d39acc81e71f7df5a706d7c2e11b52">extract_submodel_output</a> () const </td></tr>
+<tr class="memdesc:a23d39acc81e71f7df5a706d7c2e11b52"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the submodel of the output modality  <a href="#a23d39acc81e71f7df5a706d7c2e11b52">More...</a><br /></td></tr>
+<tr class="separator:a23d39acc81e71f7df5a706d7c2e11b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac48c670d37097eeb85cfe7207a23bd84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_g_m_m_group.html">GMMGroup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_g_m_m_group.html#ac48c670d37097eeb85cfe7207a23bd84">extract_inverse_model</a> () const </td></tr>
+<tr class="memdesc:ac48c670d37097eeb85cfe7207a23bd84"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the model with reversed input and output modalities  <a href="#ac48c670d37097eeb85cfe7207a23bd84">More...</a><br /></td></tr>
+<tr class="separator:ac48c670d37097eeb85cfe7207a23bd84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Tests &amp; Utilies</div></td></tr>
 <tr class="memitem:acffb5a2e6ff5d4a4107c9deaaa94e315"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#acffb5a2e6ff5d4a4107c9deaaa94e315">is_training</a> () const</td></tr>
 <tr class="memdesc:acffb5a2e6ff5d4a4107c9deaaa94e315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if at least 1 model is still training.  <a href="#acffb5a2e6ff5d4a4107c9deaaa94e315">More...</a><br /></td></tr>
@@ -307,6 +302,24 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">results_output_variance</a></td></tr>
 <tr class="memdesc:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional Output Variance.  <a href="#a52e6f0bec9ca25df8d0526d3bd42426b">More...</a><br /></td></tr>
 <tr class="separator:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:af30449688caea6c8d72b137bc9e7f82c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a> (string attribute)</td></tr>
+<tr class="memdesc:af30449688caea6c8d72b137bc9e7f82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives notifications from the global training set and dispatches to models.  <a href="#af30449688caea6c8d72b137bc9e7f82c">More...</a><br /></td></tr>
+<tr class="separator:af30449688caea6c8d72b137bc9e7f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c031af30991da14d11b3fa22ee3eded"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a> ()</td></tr>
+<tr class="memdesc:a9c031af30991da14d11b3fa22ee3eded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove models which label is not in the training set anymore.  <a href="#a9c031af30991da14d11b3fa22ee3eded">More...</a><br /></td></tr>
+<tr class="separator:a9c031af30991da14d11b3fa22ee3eded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#ae9edbba438e2f43fa0cc3b2131bee014">updateTrainingSet</a> (<a class="el" href="class_label.html">Label</a> const &amp;label)</td></tr>
+<tr class="memdesc:ae9edbba438e2f43fa0cc3b2131bee014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update training set for a specific label.  <a href="#ae9edbba438e2f43fa0cc3b2131bee014">More...</a><br /></td></tr>
+<tr class="separator:ae9edbba438e2f43fa0cc3b2131bee014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70d856b514563568236e2986407f9e59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a> ()</td></tr>
+<tr class="memdesc:a70d856b514563568236e2986407f9e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the training set for all labels.  <a href="#a70d856b514563568236e2986407f9e59">More...</a><br /></td></tr>
+<tr class="separator:a70d856b514563568236e2986407f9e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
 <tr class="memitem:a027be98accd769515a55ab7947d10873"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a027be98accd769515a55ab7947d10873">bimodal_</a></td></tr>
 <tr class="memdesc:a027be98accd769515a55ab7947d10873"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines if the phrase is bimodal (true) or unimodal (false)  <a href="#a027be98accd769515a55ab7947d10873">More...</a><br /></td></tr>
 <tr class="separator:a027be98accd769515a55ab7947d10873"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -431,7 +444,7 @@ Training</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a5ddf9a6772ea2687d1e5263261560ee8"></a>
+<a class="anchor" id="aae1de4d1e0fd65fb4b3003079986321f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -445,7 +458,13 @@ Training</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_training_set.html">TrainingSet</a> *&#160;</td>
-          <td class="paramname"><em>globalTrainingSet</em> = <code>NULL</code>&#160;</td>
+          <td class="paramname"><em>globalTrainingSet</em> = <code>NULL</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a>&#160;</td>
+          <td class="paramname"><em>covariance_mode</em> = <code><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985a33df6894f38a937e470cce46aaa632de">GaussianDistribution::FULL</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -460,6 +479,7 @@ Training</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">globalTrainingSet</td><td>training set associated with the model </td></tr>
     <tr><td class="paramname">flags</td><td>Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression. </td></tr>
+    <tr><td class="paramname">covariance_mode</td><td>covariance mode (full vs diagonal) </td></tr>
   </table>
   </dd>
 </dl>
@@ -577,15 +597,14 @@ Training</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af3810203385c3d78a400b1df252da2a1"></a>
+<a class="anchor" id="ac48c670d37097eeb85cfe7207a23bd84"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GMMGroup::extract_inverse_model </td>
+          <td class="memname"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> GMMGroup::extract_inverse_model </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> *&#160;</td>
-          <td class="paramname"><em>target_model</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -598,35 +617,20 @@ Training</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">target_model</td><td>a bimodal GMMGroup that swaps the input and output modalities </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>a bimodal GMMGroup that swaps the input and output modalities </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="aa160273355c5af7951b3080c3d97386c"></a>
+<a class="anchor" id="a8cf864f3f679b168fbdbb0f2380b6d36"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GMMGroup::extract_submodel </td>
+          <td class="memname"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> GMMGroup::extract_submodel </td>
           <td>(</td>
           <td class="paramtype">vector&lt; unsigned int &gt; &amp;&#160;</td>
-          <td class="paramname"><em>columns</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> *&#160;</td>
-          <td class="paramname"><em>target_model</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"><em>columns</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -645,24 +649,18 @@ Training</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">target_model</td><td>a GMMGroup from the current model considering only the target columns </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>a GMMGroup from the current model considering only the target columns </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a40dd575c2a8b54ecbc011b7c9a7e481e"></a>
+<a class="anchor" id="adc2e732680bab1fbc847097d74c7be89"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GMMGroup::extract_submodel_input </td>
+          <td class="memname"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> GMMGroup::extract_submodel_input </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> *&#160;</td>
-          <td class="paramname"><em>target_model</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -675,24 +673,18 @@ Training</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">target_model</td><td>a unimodal GMMGroup of the input modality from the current bimodal model </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>a unimodal GMMGroup of the input modality from the current bimodal model </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a1ecfe265812b409e3b709e1a4e2e72ac"></a>
+<a class="anchor" id="a23d39acc81e71f7df5a706d7c2e11b52"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GMMGroup::extract_submodel_output </td>
+          <td class="memname"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> GMMGroup::extract_submodel_output </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_g_m_m_group.html">GMMGroup</a> *&#160;</td>
-          <td class="paramname"><em>target_model</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -705,12 +697,7 @@ Training</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">target_model</td><td>a unimodal GMMGroup of the output modality from the current bimodal model </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>a unimodal GMMGroup of the output modality from the current bimodal model </dd></dl>
 
 </div>
 </div>
@@ -776,6 +763,23 @@ Training</h2></td></tr>
 </div><div class="memdoc">
 
 <p>get a copy of the column names of the input/output data </p>
+
+</div>
+</div>
+<a class="anchor" id="af198a677a0a37b8b7882e0d9bae6186a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a> GMMGroup::get_covariance_mode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get the current covariance mode </p>
 
 </div>
 </div>
@@ -1169,7 +1173,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1310,7 +1314,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1341,6 +1345,30 @@ Training</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Train all model which data has changed. </p>
+
+</div>
+</div>
+<a class="anchor" id="a655e92dc894351e6727fef0cf5071aa1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GMMGroup::set_covariance_mode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a>&#160;</td>
+          <td class="paramname"><em>covariance_mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set the covariance mode </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">covariance_mode</td><td>target covariance mode </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1892,7 +1920,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1919,7 +1947,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1981,7 +2009,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2047,7 +2075,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2069,7 +2097,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2092,7 +2120,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2268,7 +2296,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2291,7 +2319,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2313,7 +2341,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2329,7 +2357,7 @@ Training</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

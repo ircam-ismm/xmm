@@ -96,8 +96,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_hierarchical_h_m_m-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -138,18 +138,9 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af30449688caea6c8d72b137bc9e7f82c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a> (string attribute)</td></tr>
-<tr class="memdesc:af30449688caea6c8d72b137bc9e7f82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives notifications from the global training set and dispatches to models.  <a href="#af30449688caea6c8d72b137bc9e7f82c">More...</a><br /></td></tr>
-<tr class="separator:af30449688caea6c8d72b137bc9e7f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c031af30991da14d11b3fa22ee3eded"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a> ()</td></tr>
-<tr class="memdesc:a9c031af30991da14d11b3fa22ee3eded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove models which label is not in the training set anymore.  <a href="#a9c031af30991da14d11b3fa22ee3eded">More...</a><br /></td></tr>
-<tr class="separator:a9c031af30991da14d11b3fa22ee3eded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70d856b514563568236e2986407f9e59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a> ()</td></tr>
-<tr class="memdesc:a70d856b514563568236e2986407f9e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the training set for all labels.  <a href="#a70d856b514563568236e2986407f9e59">More...</a><br /></td></tr>
-<tr class="separator:a70d856b514563568236e2986407f9e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Constructor</div></td></tr>
-<tr class="memitem:a65eb7b95b5df1794907ec02a50db2ff8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a65eb7b95b5df1794907ec02a50db2ff8">HierarchicalHMM</a> (<a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> flags=<a class="el" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a>, <a class="el" href="class_training_set.html">TrainingSet</a> *_globalTrainingSet=NULL)</td></tr>
-<tr class="separator:a65eb7b95b5df1794907ec02a50db2ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaa2cff5d7892a27c0a589c0fbce4e31"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#aeaa2cff5d7892a27c0a589c0fbce4e31">HierarchicalHMM</a> (<a class="el" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> flags=<a class="el" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a>, <a class="el" href="class_training_set.html">TrainingSet</a> *_globalTrainingSet=NULL, <a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a> covariance_mode=<a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985a33df6894f38a937e470cce46aaa632de">GaussianDistribution::FULL</a>)</td></tr>
+<tr class="separator:aeaa2cff5d7892a27c0a589c0fbce4e31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51e533521558e6a88907558ac0c75ea9"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a51e533521558e6a88907558ac0c75ea9">~HierarchicalHMM</a> ()</td></tr>
 <tr class="separator:a51e533521558e6a88907558ac0c75ea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2eed441fd76fb155c7035a6c584bb2b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#ac2eed441fd76fb155c7035a6c584bb2b">clear</a> ()</td></tr>
@@ -177,6 +168,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a000d244133fb5f845825ed85d4f4cafa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a000d244133fb5f845825ed85d4f4cafa">set_varianceOffset</a> (double varianceOffset_relative, double varianceOffset_absolute)</td></tr>
 <tr class="memdesc:a000d244133fb5f845825ed85d4f4cafa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the offset to add to the covariance matrices.  <a href="#a000d244133fb5f845825ed85d4f4cafa">More...</a><br /></td></tr>
 <tr class="separator:a000d244133fb5f845825ed85d4f4cafa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76ba5f38c56ef4e868b4a630da9a0cf8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a76ba5f38c56ef4e868b4a630da9a0cf8">get_covariance_mode</a> () const </td></tr>
+<tr class="memdesc:a76ba5f38c56ef4e868b4a630da9a0cf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the current covariance mode  <a href="#a76ba5f38c56ef4e868b4a630da9a0cf8">More...</a><br /></td></tr>
+<tr class="separator:a76ba5f38c56ef4e868b4a630da9a0cf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab37fcf5421cef7bbc79c646a7deb8594"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#ab37fcf5421cef7bbc79c646a7deb8594">set_covariance_mode</a> (<a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a> covariance_mode)</td></tr>
+<tr class="memdesc:ab37fcf5421cef7bbc79c646a7deb8594"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the covariance mode  <a href="#ab37fcf5421cef7bbc79c646a7deb8594">More...</a><br /></td></tr>
+<tr class="separator:ab37fcf5421cef7bbc79c646a7deb8594"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cb0310f6398ae86bebc55223ca2a3a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84">REGRESSION_ESTIMATOR</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a2cb0310f6398ae86bebc55223ca2a3a8">get_regression_estimator</a> () const </td></tr>
 <tr class="memdesc:a2cb0310f6398ae86bebc55223ca2a3a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the regression estimator type.  <a href="#a2cb0310f6398ae86bebc55223ca2a3a8">More...</a><br /></td></tr>
 <tr class="separator:a2cb0310f6398ae86bebc55223ca2a3a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -240,6 +237,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0e660a3f84e899dc7fcc085769e37d96"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a0e660a3f84e899dc7fcc085769e37d96">from_json</a> (JSONNode root)</td></tr>
 <tr class="memdesc:a0e660a3f84e899dc7fcc085769e37d96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read from JSON Node.  <a href="#a0e660a3f84e899dc7fcc085769e37d96">More...</a><br /></td></tr>
 <tr class="separator:a0e660a3f84e899dc7fcc085769e37d96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Conversion &amp; Extraction</div></td></tr>
+<tr class="memitem:af4620606596284db6f3de37b5f63e9e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#af4620606596284db6f3de37b5f63e9e9">make_bimodal</a> (unsigned int <a class="el" href="class_model_group.html#a1ac8ccd9e899e946e1484f9d95fe9028">dimension_input</a>)</td></tr>
+<tr class="memdesc:af4620606596284db6f3de37b5f63e9e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to bimodal HierarchicalHMM in place.  <a href="#af4620606596284db6f3de37b5f63e9e9">More...</a><br /></td></tr>
+<tr class="separator:af4620606596284db6f3de37b5f63e9e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf23d2899798eb3aade8df3161cdb8f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#acf23d2899798eb3aade8df3161cdb8f9">make_unimodal</a> ()</td></tr>
+<tr class="memdesc:acf23d2899798eb3aade8df3161cdb8f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to unimodal HierarchicalHMM in place.  <a href="#acf23d2899798eb3aade8df3161cdb8f9">More...</a><br /></td></tr>
+<tr class="separator:acf23d2899798eb3aade8df3161cdb8f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff7c21ed83c3338e0d9a6c4c0e224e79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#aff7c21ed83c3338e0d9a6c4c0e224e79">extract_submodel</a> (vector&lt; unsigned int &gt; &amp;columns) const </td></tr>
+<tr class="memdesc:aff7c21ed83c3338e0d9a6c4c0e224e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract a submodel with the given columns  <a href="#aff7c21ed83c3338e0d9a6c4c0e224e79">More...</a><br /></td></tr>
+<tr class="separator:aff7c21ed83c3338e0d9a6c4c0e224e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa00182fe822f3be987d805c721c6f47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#afa00182fe822f3be987d805c721c6f47">extract_submodel_input</a> () const </td></tr>
+<tr class="memdesc:afa00182fe822f3be987d805c721c6f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the submodel of the input modality  <a href="#afa00182fe822f3be987d805c721c6f47">More...</a><br /></td></tr>
+<tr class="separator:afa00182fe822f3be987d805c721c6f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a929b341d51ed38095cd2dd37e39244e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a929b341d51ed38095cd2dd37e39244e1">extract_submodel_output</a> () const </td></tr>
+<tr class="memdesc:a929b341d51ed38095cd2dd37e39244e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the submodel of the output modality  <a href="#a929b341d51ed38095cd2dd37e39244e1">More...</a><br /></td></tr>
+<tr class="separator:a929b341d51ed38095cd2dd37e39244e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa85890c82088dc4429b872311529a328"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#aa85890c82088dc4429b872311529a328">extract_inverse_model</a> () const </td></tr>
+<tr class="memdesc:aa85890c82088dc4429b872311529a328"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract the model with reversed input and output modalities  <a href="#aa85890c82088dc4429b872311529a328">More...</a><br /></td></tr>
+<tr class="separator:aa85890c82088dc4429b872311529a328"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Tests &amp; Utilies</div></td></tr>
 <tr class="memitem:acffb5a2e6ff5d4a4107c9deaaa94e315"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#acffb5a2e6ff5d4a4107c9deaaa94e315">is_training</a> () const</td></tr>
 <tr class="memdesc:acffb5a2e6ff5d4a4107c9deaaa94e315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if at least 1 model is still training.  <a href="#acffb5a2e6ff5d4a4107c9deaaa94e315">More...</a><br /></td></tr>
@@ -348,30 +364,18 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a52e6f0bec9ca25df8d0526d3bd42426b">results_output_variance</a></td></tr>
 <tr class="memdesc:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional Output Variance.  <a href="#a52e6f0bec9ca25df8d0526d3bd42426b">More...</a><br /></td></tr>
 <tr class="separator:a52e6f0bec9ca25df8d0526d3bd42426b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a027be98accd769515a55ab7947d10873"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a027be98accd769515a55ab7947d10873">bimodal_</a></td></tr>
-<tr class="memdesc:a027be98accd769515a55ab7947d10873"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines if the phrase is bimodal (true) or unimodal (false)  <a href="#a027be98accd769515a55ab7947d10873">More...</a><br /></td></tr>
-<tr class="separator:a027be98accd769515a55ab7947d10873"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72cb7b74e8cbd1af95f0c267a8fdde36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4">GROUP_ESTIMATION_MODE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">performanceMode_</a></td></tr>
-<tr class="memdesc:a72cb7b74e8cbd1af95f0c267a8fdde36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Playing mode.  <a href="#a72cb7b74e8cbd1af95f0c267a8fdde36">More...</a><br /></td></tr>
-<tr class="separator:a72cb7b74e8cbd1af95f0c267a8fdde36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d611640f7e4bf461647387a13efb22b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_h_m_m.html">HMM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">referenceModel_</a></td></tr>
-<tr class="memdesc:a0d611640f7e4bf461647387a13efb22b"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference model, Used to store shared model attributes  <a href="#a0d611640f7e4bf461647387a13efb22b">More...</a><br /></td></tr>
-<tr class="separator:a0d611640f7e4bf461647387a13efb22b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9341fe0054740ff2d29e98dcbc1c75b6"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a> )(void *srcModel, <a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, void *extradata)</td></tr>
-<tr class="memdesc:a9341fe0054740ff2d29e98dcbc1c75b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback function for the training algorithm.  <a href="#a9341fe0054740ff2d29e98dcbc1c75b6">More...</a><br /></td></tr>
-<tr class="separator:a9341fe0054740ff2d29e98dcbc1c75b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a333d2b0f0aacd5b0120dcac69d39a907"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">trainingExtradata_</a></td></tr>
-<tr class="memdesc:a333d2b0f0aacd5b0120dcac69d39a907"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extra data to pass in argument to the callback function.  <a href="#a333d2b0f0aacd5b0120dcac69d39a907">More...</a><br /></td></tr>
-<tr class="separator:a333d2b0f0aacd5b0120dcac69d39a907"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68ec6459fd3874468e9eb66f10f519fd"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">models_to_train_</a></td></tr>
-<tr class="memdesc:a68ec6459fd3874468e9eb66f10f519fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of Models that are still training.  <a href="#a68ec6459fd3874468e9eb66f10f519fd">More...</a><br /></td></tr>
-<tr class="separator:a68ec6459fd3874468e9eb66f10f519fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a781ed70d4e42f1e535e1a26f44806d6a"><td class="memItemLeft" align="right" valign="top">map&lt; <a class="el" href="class_label.html">Label</a>, pthread_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">training_threads</a></td></tr>
-<tr class="memdesc:a781ed70d4e42f1e535e1a26f44806d6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training Threads.  <a href="#a781ed70d4e42f1e535e1a26f44806d6a">More...</a><br /></td></tr>
-<tr class="separator:a781ed70d4e42f1e535e1a26f44806d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:af30449688caea6c8d72b137bc9e7f82c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#af30449688caea6c8d72b137bc9e7f82c">notify</a> (string attribute)</td></tr>
+<tr class="memdesc:af30449688caea6c8d72b137bc9e7f82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives notifications from the global training set and dispatches to models.  <a href="#af30449688caea6c8d72b137bc9e7f82c">More...</a><br /></td></tr>
+<tr class="separator:af30449688caea6c8d72b137bc9e7f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c031af30991da14d11b3fa22ee3eded"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9c031af30991da14d11b3fa22ee3eded">removeDeprecatedModels</a> ()</td></tr>
+<tr class="memdesc:a9c031af30991da14d11b3fa22ee3eded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove models which label is not in the training set anymore.  <a href="#a9c031af30991da14d11b3fa22ee3eded">More...</a><br /></td></tr>
+<tr class="separator:a9c031af30991da14d11b3fa22ee3eded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70d856b514563568236e2986407f9e59"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a70d856b514563568236e2986407f9e59">updateAllTrainingSets</a> ()</td></tr>
+<tr class="memdesc:a70d856b514563568236e2986407f9e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the training set for all labels.  <a href="#a70d856b514563568236e2986407f9e59">More...</a><br /></td></tr>
+<tr class="separator:a70d856b514563568236e2986407f9e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">High level parameters: update and estimation</div></td></tr>
 <tr class="memitem:aa77017b34a765d2db49de8faa380b25a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#aa77017b34a765d2db49de8faa380b25a">updateTransitionParameters</a> ()</td></tr>
 <tr class="memdesc:aa77017b34a765d2db49de8faa380b25a"><td class="mdescLeft">&#160;</td><td class="mdescRight">update high-level parameters when a new primitive is learned  <a href="#aa77017b34a765d2db49de8faa380b25a">More...</a><br /></td></tr>
@@ -421,6 +425,27 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a04ca19648f7bc81fd5d0a17ed2f9c2e5"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_hierarchical_h_m_m.html#a04ca19648f7bc81fd5d0a17ed2f9c2e5">V2_</a></td></tr>
 <tr class="memdesc:a04ca19648f7bc81fd5d0a17ed2f9c2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">intermediate Forward variable (used in Frontier algorithm)  <a href="#a04ca19648f7bc81fd5d0a17ed2f9c2e5">More...</a><br /></td></tr>
 <tr class="separator:a04ca19648f7bc81fd5d0a17ed2f9c2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a027be98accd769515a55ab7947d10873"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a027be98accd769515a55ab7947d10873">bimodal_</a></td></tr>
+<tr class="memdesc:a027be98accd769515a55ab7947d10873"><td class="mdescLeft">&#160;</td><td class="mdescRight">defines if the phrase is bimodal (true) or unimodal (false)  <a href="#a027be98accd769515a55ab7947d10873">More...</a><br /></td></tr>
+<tr class="separator:a027be98accd769515a55ab7947d10873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72cb7b74e8cbd1af95f0c267a8fdde36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4">GROUP_ESTIMATION_MODE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36">performanceMode_</a></td></tr>
+<tr class="memdesc:a72cb7b74e8cbd1af95f0c267a8fdde36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Playing mode.  <a href="#a72cb7b74e8cbd1af95f0c267a8fdde36">More...</a><br /></td></tr>
+<tr class="separator:a72cb7b74e8cbd1af95f0c267a8fdde36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d611640f7e4bf461647387a13efb22b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_h_m_m.html">HMM</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a0d611640f7e4bf461647387a13efb22b">referenceModel_</a></td></tr>
+<tr class="memdesc:a0d611640f7e4bf461647387a13efb22b"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference model, Used to store shared model attributes  <a href="#a0d611640f7e4bf461647387a13efb22b">More...</a><br /></td></tr>
+<tr class="separator:a0d611640f7e4bf461647387a13efb22b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9341fe0054740ff2d29e98dcbc1c75b6"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a9341fe0054740ff2d29e98dcbc1c75b6">trainingCallbackFunction_</a> )(void *srcModel, <a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> state, void *extradata)</td></tr>
+<tr class="memdesc:a9341fe0054740ff2d29e98dcbc1c75b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback function for the training algorithm.  <a href="#a9341fe0054740ff2d29e98dcbc1c75b6">More...</a><br /></td></tr>
+<tr class="separator:a9341fe0054740ff2d29e98dcbc1c75b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a333d2b0f0aacd5b0120dcac69d39a907"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a333d2b0f0aacd5b0120dcac69d39a907">trainingExtradata_</a></td></tr>
+<tr class="memdesc:a333d2b0f0aacd5b0120dcac69d39a907"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extra data to pass in argument to the callback function.  <a href="#a333d2b0f0aacd5b0120dcac69d39a907">More...</a><br /></td></tr>
+<tr class="separator:a333d2b0f0aacd5b0120dcac69d39a907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68ec6459fd3874468e9eb66f10f519fd"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a68ec6459fd3874468e9eb66f10f519fd">models_to_train_</a></td></tr>
+<tr class="memdesc:a68ec6459fd3874468e9eb66f10f519fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of Models that are still training.  <a href="#a68ec6459fd3874468e9eb66f10f519fd">More...</a><br /></td></tr>
+<tr class="separator:a68ec6459fd3874468e9eb66f10f519fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a781ed70d4e42f1e535e1a26f44806d6a"><td class="memItemLeft" align="right" valign="top">map&lt; <a class="el" href="class_label.html">Label</a>, pthread_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_model_group.html#a781ed70d4e42f1e535e1a26f44806d6a">training_threads</a></td></tr>
+<tr class="memdesc:a781ed70d4e42f1e535e1a26f44806d6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Training Threads.  <a href="#a781ed70d4e42f1e535e1a26f44806d6a">More...</a><br /></td></tr>
+<tr class="separator:a781ed70d4e42f1e535e1a26f44806d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Training</h2></td></tr>
@@ -448,7 +473,7 @@ Training</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Hierarchical Hidden Markov Model. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Needs more details </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Needs more details </dd></dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a0961b29717e30ea5da5ab311ef59e1c2"></a>
 <div class="memitem">
@@ -524,7 +549,7 @@ Training</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a65eb7b95b5df1794907ec02a50db2ff8"></a>
+<a class="anchor" id="aeaa2cff5d7892a27c0a589c0fbce4e31"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -538,7 +563,13 @@ Training</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_training_set.html">TrainingSet</a> *&#160;</td>
-          <td class="paramname"><em>_globalTrainingSet</em> = <code>NULL</code>&#160;</td>
+          <td class="paramname"><em>_globalTrainingSet</em> = <code>NULL</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a>&#160;</td>
+          <td class="paramname"><em>covariance_mode</em> = <code><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985a33df6894f38a937e470cce46aaa632de">GaussianDistribution::FULL</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -712,6 +743,110 @@ Training</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aa85890c82088dc4429b872311529a328"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a> HierarchicalHMM::extract_inverse_model </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract the model with reversed input and output modalities </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training or if it is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a bimodal HierarchicalHMM that swaps the input and output modalities </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aff7c21ed83c3338e0d9a6c4c0e224e79"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a> HierarchicalHMM::extract_submodel </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; unsigned int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>columns</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract a submodel with the given columns </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">columns</td><td>columns indices in the target order </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training </td></tr>
+    <tr><td class="paramname">out_of_range</td><td>if the number or indices of the requested columns exceeds the current dimension </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a HierarchicalHMM from the current model considering only the target columns </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afa00182fe822f3be987d805c721c6f47"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a> HierarchicalHMM::extract_submodel_input </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract the submodel of the input modality </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training or if it is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a unimodal GMMGroup of the input modality from the current bimodal model </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a929b341d51ed38095cd2dd37e39244e1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_hierarchical_h_m_m.html">HierarchicalHMM</a> HierarchicalHMM::extract_submodel_output </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>extract the submodel of the output modality </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is training or if it is not bimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a unimodal HierarchicalHMM of the output modality from the current bimodal model </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="aa717a82b852ece8c4afef053be9cd180"></a>
 <div class="memitem">
 <div class="memproto">
@@ -773,6 +908,7 @@ Training</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>check if the algorithm is right for an ergodic transition structure of the sub-hmms </dd></dl>
 
 </div>
 </div>
@@ -838,6 +974,23 @@ Training</h2></td></tr>
 </div><div class="memdoc">
 
 <p>get a copy of the column names of the input/output data </p>
+
+</div>
+</div>
+<a class="anchor" id="a76ba5f38c56ef4e868b4a630da9a0cf8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a> HierarchicalHMM::get_covariance_mode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>get the current covariance mode </p>
 
 </div>
 </div>
@@ -1329,6 +1482,60 @@ Training</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af4620606596284db6f3de37b5f63e9e9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void HierarchicalHMM::make_bimodal </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>dimension_input</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert to bimodal HierarchicalHMM in place. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dimension_input</td><td>dimension of the input modality </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is already bimodal </td></tr>
+    <tr><td class="paramname">out_of_range</td><td>if the requested input dimension is too large </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="acf23d2899798eb3aade8df3161cdb8f9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void HierarchicalHMM::make_unimodal </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert to unimodal HierarchicalHMM in place. </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">runtime_error</td><td>if the model is already unimodal </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a4d31d8f0f7a795bca768a3a527f82b2b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1413,7 +1620,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1566,7 +1773,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1597,6 +1804,30 @@ Training</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Train all model which data has changed. </p>
+
+</div>
+</div>
+<a class="anchor" id="ab37fcf5421cef7bbc79c646a7deb8594"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void HierarchicalHMM::set_covariance_mode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985">GaussianDistribution::COVARIANCE_MODE</a>&#160;</td>
+          <td class="paramname"><em>covariance_mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set the covariance mode </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">covariance_mode</td><td>target covariance mode </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -2194,7 +2425,7 @@ Training</h2></td></tr>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>transitions are normalized after the value is set. </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>absolute/relative mode? </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>absolute/relative mode? </dd></dl>
 
 </div>
 </div>
@@ -2415,7 +2646,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2659,7 +2890,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2782,7 +3013,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2804,7 +3035,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2841,7 +3072,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -3017,7 +3248,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -3040,7 +3271,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -3062,7 +3293,7 @@ Training</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -3136,7 +3367,7 @@ Training</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 8 2015 11:44:23 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

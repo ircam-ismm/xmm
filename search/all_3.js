@@ -16,6 +16,8 @@ var searchData=
   ['const_5fphrase_5fiterator',['const_phrase_iterator',['../class_training_set.html#a011af8080a25c6f4e3ecf19dbebe2b05',1,'TrainingSet']]],
   ['core_20classes_20and_20distributions',['Core Classes and Distributions',['../group___core.html',1,'']]],
   ['covariance',['covariance',['../class_gaussian_distribution.html#af14f3798b573224fad7f038bdacce798',1,'GaussianDistribution']]],
+  ['covariance_5fmode',['COVARIANCE_MODE',['../class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985',1,'GaussianDistribution']]],
+  ['covariance_5fmode_5f',['covariance_mode_',['../class_gaussian_distribution.html#a01c551b1973762bfe06eb0892c2dd931',1,'GaussianDistribution::covariance_mode_()'],['../class_g_m_m.html#a351d08c8e52f915823e389387597db01',1,'GMM::covariance_mode_()'],['../class_h_m_m.html#aefefa022472ac56ab94f65fa4fc25352',1,'HMM::covariance_mode_()']]],
   ['covariancedeterminant',['covarianceDeterminant',['../class_gaussian_distribution.html#ad955b98bf92c04a618adb5bd7b8a64fe',1,'GaussianDistribution']]],
   ['covariancedeterminant_5finput_5f',['covarianceDeterminant_input_',['../class_gaussian_distribution.html#a7dc9ca3d1412eec8bca991532000cd71',1,'GaussianDistribution']]],
   ['current_5findex_5f',['current_index_',['../class_ring_buffer.html#a5b34a157558b1ad35c04718ab6fe33e5',1,'RingBuffer']]]

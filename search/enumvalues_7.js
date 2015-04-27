@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['none',['NONE',['../mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2',1,'mbd_common.h']]]
+  ['mixture',['MIXTURE',['../class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4ab067c95c079c8f64207044679539e7d5',1,'ModelGroup']]]
 ];

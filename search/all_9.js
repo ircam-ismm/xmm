@@ -5,7 +5,6 @@ var searchData=
   ['initcovariances_5ffullyobserved',['initCovariances_fullyObserved',['../class_g_m_m.html#af84d1affd60751e358ffc2d8c76ab96d',1,'GMM::initCovariances_fullyObserved()'],['../class_h_m_m.html#aba89d4fd727e9ff2ed5b1d52a765c54e',1,'HMM::initCovariances_fullyObserved()']]],
   ['initmeanscovarianceswithgmmem',['initMeansCovariancesWithGMMEM',['../class_h_m_m.html#a6f9fe1d9c7a5aa884f498a51f7f43d85',1,'HMM']]],
   ['initmeanswithallphrases',['initMeansWithAllPhrases',['../class_h_m_m.html#ac873c4e69b04746c2c12945ca9e4f462',1,'HMM']]],
-  ['initmeanswithfirstphrase',['initMeansWithFirstPhrase',['../class_g_m_m.html#a264a73fea9efe9854790d2abbba6baac',1,'GMM::initMeansWithFirstPhrase()'],['../class_h_m_m.html#a942064a16c238252420e6629c5d2f515',1,'HMM::initMeansWithFirstPhrase()']]],
   ['initmeanswithkmeans',['initMeansWithKMeans',['../class_g_m_m.html#aef4da3f0f7a35f76fa0090b8bb68e3e3',1,'GMM']]],
   ['initparameterstodefault',['initParametersToDefault',['../class_g_m_m.html#afb128d6f42022e0522c323c1124a3a07',1,'GMM::initParametersToDefault()'],['../class_h_m_m.html#a6bbdcd6654c5346dab4a64b5110a2e43',1,'HMM::initParametersToDefault()']]],
   ['int',['INT',['../class_label.html#a33187ae72bdf82ee444ca9bf5c6273c7a76ec56dc1d45ffa3ded5a65bc7fe489b',1,'Label']]],
