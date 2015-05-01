@@ -445,15 +445,26 @@ void HierarchicalHMM::forward_init(vector<float> const& observation)
         }
         
         // Compute Emission probability and initialize on the first state of the primitive
-        it->second.alpha_h[0][0] = this->prior[it->first];
-        if (bimodal_) {
-            it->second.alpha_h[0][0] *= it->second.states[0].obsProb_input(&observation[0]);
+        if (it->second.transitionMode_ == ERGODIC) {
+            for (int i=0 ; i<it->second.nbStates_ ; i++) {
+                if (bimodal_) {
+                    it->second.alpha_h[0][i] = it->second.prior[i] * it->second.states[i].obsProb_input(&observation[0]);
+                } else {
+                    it->second.alpha_h[0][i] = it->second.prior[i] * it->second.states[i].obsProb(&observation[0]);
+                }
+                it->second.results_instant_likelihood += it->second.alpha_h[0][i] ;
+            }
         } else {
-            it->second.alpha_h[0][0] *= it->second.states[0].obsProb(&observation[0]);
+            it->second.alpha_h[0][0] = this->prior[it->first];
+            if (bimodal_) {
+                it->second.alpha_h[0][0] *= it->second.states[0].obsProb_input(&observation[0]);
+            } else {
+                it->second.alpha_h[0][0] *= it->second.states[0].obsProb(&observation[0]);
+            }
+            it->second.results_instant_likelihood = it->second.alpha_h[0][0] ;
         }
-        it->second.results_instant_likelihood = it->second.alpha_h[0][0] ;
         it->second.updateLikelihoodBuffer(it->second.results_instant_likelihood);
-        norm_const += it->second.alpha_h[0][0] ;
+        norm_const += it->second.results_instant_likelihood;
     }
     
     // Normalize Alpha variables
@@ -486,34 +497,40 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
         
         // 1) COMPUTE FRONTIER VARIABLE
         //    --------------------------------------
-        front.resize(N) ;
+        front.assign(N, 0.0) ;
         
-        // k=0: first state of the primitive
-        front[0] = dstit->second.transition[0] * dstit->second.alpha_h[0][0] ;
-        
-        int i(0);
-        for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); srcit++, i++) {
-            front[0] += V1_[i] * this->transition[srcit->first][dstit->first] + this->prior[dstit->first] * V2_[i];
-        }
-        
-        // k>0: rest of the primitive
-        for (int k=1 ; k<N ; ++k)
-        {
-            front[k] = 0;
-            if (referenceModel_.transitionMode_ == ERGODIC) {
-                for (int j = 0 ; j < N ; ++j)
-                {
-                    front[k] += dstit->second.transition[j*N+k] / (1 - dstit->second.exitProbabilities_[j]) * dstit->second.alpha_h[0][j] ;
+        if (dstit->second.transitionMode_ == ERGODIC) {
+            for (int k=0 ; k<N ; ++k)
+            {
+                for (unsigned int j=0; j<N; ++j) {
+                    front[k] += dstit->second.transition[j*N + k] / (1 - dstit->second.exitProbabilities_[j]) * dstit->second.alpha_h[0][j] ;
                 }
-            } else {
+                
+                int i(0);
+                for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); srcit++, i++) {
+                    front[k] += dstit->second.prior[k] * (V1_[i] * this->transition[srcit->first][dstit->first] + this->prior[dstit->first] * V2_[i]);
+                }
+            }
+        } else {
+            // k=0: first state of the primitive
+            front[0] = dstit->second.transition[0] * dstit->second.alpha_h[0][0] ;
+            
+            int i(0);
+            for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); srcit++, i++) {
+                front[0] += V1_[i] * this->transition[srcit->first][dstit->first] + this->prior[dstit->first] * V2_[i];
+            }
+            
+            // k>0: rest of the primitive
+            for (int k=1 ; k<N ; ++k)
+            {
                 front[k] += dstit->second.transition[k*2] / (1 - dstit->second.exitProbabilities_[k]) * dstit->second.alpha_h[0][k] ;
                 front[k] += dstit->second.transition[(k-1)*2+1] / (1 - dstit->second.exitProbabilities_[k-1]) * dstit->second.alpha_h[0][k-1] ;
             }
-        }
-        
-        for (int i=0; i<3; i++) {
-            for (int k=0; k<N; k++){
-                dstit->second.alpha_h[i][k] = 0.0;
+            
+            for (int i=0; i<3; i++) {
+                for (int k=0; k<N; k++){
+                    dstit->second.alpha_h[i][k] = 0.0;
+                }
             }
         }
         

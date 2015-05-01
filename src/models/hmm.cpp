@@ -428,12 +428,17 @@ void HMM::set_transitionMode(string transMode_str)
 {
     PREVENT_ATTR_CHANGE();
     if (!transMode_str.compare("ergodic")) {
+        if (transitionMode_ == ERGODIC)
+            return;
         transitionMode_ = ERGODIC;
     } else if (!transMode_str.compare("left-right")) {
+        if (transitionMode_ == LEFT_RIGHT)
+            return;
         transitionMode_ = LEFT_RIGHT;
     } else {
         throw invalid_argument("Wrong Transition mode. choose 'ergodic' or 'left-right'");
     }
+    allocate();
 }
 
 #pragma mark -
