@@ -424,14 +424,24 @@ public:
             for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
                 pthread_join(training_threads[it->first], NULL);
             }
+            training_threads.clear();
         }
-        training_threads.clear();
 #else
         // Sequential training
         for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
             models_to_train_++;
             it->second.train();
         }
+#endif
+    }
+    
+    virtual void join_training()
+    {
+#ifdef USE_PTHREAD
+        for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
+            pthread_join(training_threads[it->first], NULL);
+        }
+        training_threads.clear();
 #endif
     }
     

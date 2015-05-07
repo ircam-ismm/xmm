@@ -326,9 +326,11 @@ void ProbabilisticModel::abortTraining(pthread_t this_thread)
 {
     if (!is_training_)
         return;
-    pthread_cancel(this_thread);
+    if (pthread_cancel(this_thread))
+        throw runtime_error("Error Canceling the training thread");
     void *status;
-    pthread_join(this_thread, &status);
+    if (pthread_join(this_thread, &status))
+        throw runtime_error("Error Joining the training thread after cancel");
     pthread_mutex_unlock(&trainingMutex);
     is_training_ = false;
     if (trainingCallbackFunction_) {
