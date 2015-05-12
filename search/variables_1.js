@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['alllabels',['allLabels',['../class_training_set.html#a00954c2bce069807618ef7bb45228238',1,'TrainingSet']]],
-  ['alpha',['alpha',['../class_h_m_m.html#a5cfacd3aaf03bab46e9dbd623ed38129',1,'HMM']]],
-  ['alpha_5fh',['alpha_h',['../class_h_m_m.html#afbb88e03439f8bd4bbde20b2e91a02ea',1,'HMM']]],
-  ['alpha_5fseq_5f',['alpha_seq_',['../class_h_m_m.html#ac25f79f40d60419eb353c8641093f21e',1,'HMM']]],
-  ['angle',['angle',['../struct_ellipse.html#a054c9454d331a5df22b1a9070dc0b33b',1,'Ellipse']]]
+  ['alllabels',['allLabels',['../classxmm_1_1_training_set.html#aa7659aa701ca76cc5c05a7e249570d4a',1,'xmm::TrainingSet']]],
+  ['alloc_5fblocksize',['ALLOC_BLOCKSIZE',['../classxmm_1_1_phrase.html#a9fb70bb13afe55a3106897b164153ef1',1,'xmm::Phrase']]],
+  ['alpha',['alpha',['../classxmm_1_1_h_m_m.html#ae119e994c113ca6964aed9ea0e07734e',1,'xmm::HMM']]],
+  ['alpha_5fh',['alpha_h',['../classxmm_1_1_h_m_m.html#a23ee0701891ffd46017badf0ca6e66ff',1,'xmm::HMM']]],
+  ['alpha_5fseq_5f',['alpha_seq_',['../classxmm_1_1_h_m_m.html#a6069db4fe8bd5b373a38f9cd9910332b',1,'xmm::HMM']]],
+  ['angle',['angle',['../structxmm_1_1_ellipse.html#a12a4091881a897c412ddb76d76b90da6',1,'xmm::Ellipse']]]
 ];

@@ -59,6 +59,7 @@ The full documentation is available on Github Pages: http://ircam-rnd.github.io/
 ### Dependencies
 
 The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.
+The library depends on the <a href="https://github.com/philsquared/Catch">Catch</a> unit-test framework.
 The library uses PTHREADS for parallel training of models with multiple classes.
 
 ### Compiling as a static/dynamic library
@@ -84,7 +85,7 @@ make doc
 The header file "xmm.h" includes all useful headers of the library.
 To enable parallel training, define the preprocessor macro "USE_PTHREAD" and link with the pthread library.
 
-### python Building the Python Library
+### Building the Python Library
 #### Dependencies
 
 * <a href="http://www.doxygen.org/">doxygen</a>
@@ -101,20 +102,3 @@ cmake . -G"Unix Makefiles"
 make
 ```
 The module should be installed in "${xmm_root}/python/bin/"
-
-#### Usage
-
-Place the built python library somewhere in your python path. To add personal
-libraries located in '/Path/To/Libs' to the python path, add the following
-lines to your ".bash_profile":
-```
-PYTHONPATH=$PYTHONPATH:/Path/To/Libs
-export PYTHONPATH
-```
-
-To import the library in python:
-```
->>> import xmm
-```
-
-Additional utilities can be found in `xmm.util`.

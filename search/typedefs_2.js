@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['label_5fiterator',['label_iterator',['../class_training_set.html#a22772f99da88a6df1bab83c3663da210',1,'TrainingSet']]],
-  ['labels_5fiterator',['labels_iterator',['../class_model_group.html#af814078cd2a9fb07835180ecb52b3b42',1,'ModelGroup']]]
+  ['label_5fiterator',['label_iterator',['../classxmm_1_1_training_set.html#a56359cbc78c18554e31c5ded2778a3c5',1,'xmm::TrainingSet']]],
+  ['labels_5fiterator',['labels_iterator',['../classxmm_1_1_model_group.html#a1fe1c3f04c9de23378fdd20c8c44319a',1,'xmm::ModelGroup']]]
 ];

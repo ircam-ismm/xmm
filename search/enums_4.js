@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['training_5finit',['TRAINING_INIT',['../class_k_means.html#a1ae68b000b788dc8803663e2aa16be62',1,'KMeans']]],
-  ['transition_5fmode',['TRANSITION_MODE',['../hmm_8h.html#a7372f7a97e412d35065de1e85bb3d623',1,'hmm.h']]]
+  ['training_5finit',['TRAINING_INIT',['../classxmm_1_1_k_means.html#a6a98e4c1c26374e3b1a2b8033d7fb643',1,'xmm::KMeans']]],
+  ['transition_5fmode',['TRANSITION_MODE',['../classxmm_1_1_h_m_m.html#aa4d7d59690e77ac5c823bc646bbe2184',1,'xmm::HMM']]]
 ];

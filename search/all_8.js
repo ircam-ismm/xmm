@@ -1,21 +1,16 @@
 var searchData=
 [
-  ['has_5fchanged',['has_changed',['../class_training_set.html#ae2ef357e5c4deb24a3bee3ea560c2040',1,'TrainingSet']]],
-  ['has_5fchanged_5f',['has_changed_',['../class_training_set.html#a44105bb743d923a3912cdd7bec7e2760',1,'TrainingSet']]],
-  ['height',['height',['../struct_ellipse.html#abb841400b3d3b1401a487156dac2425c',1,'Ellipse']]],
-  ['hhmm_5fdefault_5fexittransition',['HHMM_DEFAULT_EXITTRANSITION',['../hierarchical__hmm_8h.html#a111b706fd465a8ddb6ff672d16216044',1,'hierarchical_hmm.h']]],
-  ['hhmm_5fdefault_5fincrementallearning',['HHMM_DEFAULT_INCREMENTALLEARNING',['../hierarchical__hmm_8h.html#aa243cd96c0fcd250e9d920cd9f712d21',1,'hierarchical_hmm.h']]],
-  ['hhmm_5fdefault_5fregularizationfactor',['HHMM_DEFAULT_REGULARIZATIONFACTOR',['../hierarchical__hmm_8h.html#a86db2efab1f4819dab0ec21897d291bf',1,'hierarchical_hmm.h']]],
-  ['hierarchical',['HIERARCHICAL',['../mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0a303f53ad410544a203a55303be010705',1,'mbd_common.h']]],
+  ['has_5fchanged',['has_changed',['../classxmm_1_1_training_set.html#a7eec7054c9789867d0038ead05697545',1,'xmm::TrainingSet']]],
+  ['has_5fchanged_5f',['has_changed_',['../classxmm_1_1_training_set.html#ac79aa9ea645254a57d7ec0b537425ac0',1,'xmm::TrainingSet']]],
+  ['height',['height',['../structxmm_1_1_ellipse.html#a448e560ba052a246cc97b3a8532febee',1,'xmm::Ellipse']]],
+  ['hierarchical',['HIERARCHICAL',['../namespacexmm.html#a69da9e2acc206d2b195268fffd40ce7aaa00514285461ad6a1f13540f75fafe81',1,'xmm']]],
   ['hierarchical_5fhmm_2ecpp',['hierarchical_hmm.cpp',['../hierarchical__hmm_8cpp.html',1,'']]],
   ['hierarchical_5fhmm_2eh',['hierarchical_hmm.h',['../hierarchical__hmm_8h.html',1,'']]],
-  ['hierarchicalhmm',['HierarchicalHMM',['../class_hierarchical_h_m_m.html',1,'HierarchicalHMM'],['../class_probabilistic_model.html#a93e4431b1280c0766c160d659f131905',1,'ProbabilisticModel::HierarchicalHMM()'],['../class_g_m_m.html#a93e4431b1280c0766c160d659f131905',1,'GMM::HierarchicalHMM()'],['../class_h_m_m.html#a93e4431b1280c0766c160d659f131905',1,'HMM::HierarchicalHMM()'],['../class_hierarchical_h_m_m.html#aeaa2cff5d7892a27c0a589c0fbce4e31',1,'HierarchicalHMM::HierarchicalHMM()']]],
-  ['hmm',['HMM',['../class_h_m_m.html',1,'HMM'],['../class_g_m_m.html#abd125588df935c8f85050d534d496dc5',1,'GMM::HMM()'],['../class_h_m_m.html#a43b31b1ffa21d25dc64b7db3d650b2f5',1,'HMM::HMM(rtml_flags flags=NONE, TrainingSet *trainingSet=NULL, int nbStates=HMM_DEFAULT_NB_STATES, int nbMixtureComponents=GMM_DEFAULT_NB_MIXTURE_COMPONENTS, GaussianDistribution::COVARIANCE_MODE covariance_mode=GaussianDistribution::FULL)'],['../class_h_m_m.html#a260412ec89c6ee31621d922f26e5e64c',1,'HMM::HMM(HMM const &amp;src)'],['../group___h_m_m.html',1,'(Global Namespace)']]],
+  ['hierarchicalhmm',['HierarchicalHMM',['../classxmm_1_1_probabilistic_model.html#a93e4431b1280c0766c160d659f131905',1,'xmm::ProbabilisticModel::HierarchicalHMM()'],['../classxmm_1_1_g_m_m.html#a93e4431b1280c0766c160d659f131905',1,'xmm::GMM::HierarchicalHMM()'],['../classxmm_1_1_h_m_m.html#a93e4431b1280c0766c160d659f131905',1,'xmm::HMM::HierarchicalHMM()'],['../classxmm_1_1_hierarchical_h_m_m.html#a08741b985e0572d94513ec8e0e1de483',1,'xmm::HierarchicalHMM::HierarchicalHMM(xmm_flags flags=NONE, TrainingSet *_globalTrainingSet=NULL, GaussianDistribution::COVARIANCE_MODE covariance_mode=GaussianDistribution::FULL)'],['../classxmm_1_1_hierarchical_h_m_m.html#a459c6bee4d89c58eb53b40d14e4945e1',1,'xmm::HierarchicalHMM::HierarchicalHMM(HierarchicalHMM const &amp;src)']]],
+  ['hierarchicalhmm',['HierarchicalHMM',['../classxmm_1_1_hierarchical_h_m_m.html',1,'xmm']]],
+  ['hmm',['HMM',['../classxmm_1_1_h_m_m.html',1,'xmm']]],
+  ['hmm',['HMM',['../classxmm_1_1_g_m_m.html#abd125588df935c8f85050d534d496dc5',1,'xmm::GMM::HMM()'],['../classxmm_1_1_h_m_m.html#a1d5ba3e4531d72b7c0f3d72bb38088f8',1,'xmm::HMM::HMM(xmm_flags flags=NONE, TrainingSet *trainingSet=NULL, int nbStates=DEFAULT_NB_STATES, int nbMixtureComponents=GMM::DEFAULT_NB_MIXTURE_COMPONENTS, GaussianDistribution::COVARIANCE_MODE covariance_mode=GaussianDistribution::FULL)'],['../classxmm_1_1_h_m_m.html#a15f2627d5a9a4bea357f62a4996c5176',1,'xmm::HMM::HMM(HMM const &amp;src)'],['../group___h_m_m.html',1,'(Global Namespace)']]],
   ['hmm_2ecpp',['hmm.cpp',['../hmm_8cpp.html',1,'']]],
   ['hmm_2eh',['hmm.h',['../hmm_8h.html',1,'']]],
-  ['hmm_5fdefault_5festimatemeans',['HMM_DEFAULT_ESTIMATEMEANS',['../hmm_8h.html#ae374c7696a3a4034437d784b89ecbed1',1,'hmm.h']]],
-  ['hmm_5fdefault_5fexitprobability_5flast_5fstate',['HMM_DEFAULT_EXITPROBABILITY_LAST_STATE',['../hmm_8h.html#a7ca18026aeb5b7ac1cb7d30c9d753fc9',1,'hmm.h']]],
-  ['hmm_5fdefault_5fnb_5fstates',['HMM_DEFAULT_NB_STATES',['../hmm_8h.html#a8d0392abd94c18499a61e003e7c89233',1,'hmm.h']]],
-  ['hmm_5ftransition_5fregularization',['HMM_TRANSITION_REGULARIZATION',['../hmm_8h.html#a62c1c002a114b6baadb149c3d375b63e',1,'hmm.h']]],
-  ['hmmgroup',['HMMGroup',['../class_h_m_m.html#a0c322b843df0f24da255d48d585a1508',1,'HMM']]]
+  ['hmmgroup',['HMMGroup',['../classxmm_1_1_h_m_m.html#a0c322b843df0f24da255d48d585a1508',1,'xmm::HMM']]]
 ];

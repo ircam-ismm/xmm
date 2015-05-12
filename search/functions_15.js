@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['variance',['variance',['../class_phrase.html#ae9ebb9158205773f1a49cbea7bd93a09',1,'Phrase::variance()'],['../class_training_set.html#a163a7accaba11bf048d9798f1a25b0de',1,'TrainingSet::variance()']]],
-  ['vector2json',['vector2json',['../json__utilities_8h.html#a47e37d43ad077333cc109c1be6963aea',1,'json_utilities.h']]]
+  ['variance',['variance',['../classxmm_1_1_phrase.html#ac3ec18f313ed25e32b75d952a49b93e9',1,'xmm::Phrase::variance()'],['../classxmm_1_1_training_set.html#a690ca6cd2f7be933c2b92c42f9c5b030',1,'xmm::TrainingSet::variance()']]],
+  ['vector2json',['vector2json',['../namespacexmm.html#a8a779e747257c09bfdae6b7d16cc4a11',1,'xmm']]]
 ];

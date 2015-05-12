@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.1-alpha</span>
+   &#160;<span id="projectnumber">0.1-alpha.2</span>
    </div>
   </td>
  </tr>
@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -132,191 +133,226 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> * along with XMM.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#ifndef __rtml__phrase__</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#define __rtml__phrase__</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#ifndef xmm_lib_phrase_h_</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#define xmm_lib_phrase_h_</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="json__utilities_8h.html">json_utilities.h</a>&quot;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="mbd__common_8h.html">mbd_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="xmm__common_8h.html">xmm_common.h</a>&quot;</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="label_8h.html">label.h</a>&quot;</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">using namespace </span><a class="code" href="namespacestd.html">std</a>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">   43</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">PHRASE_DEFAULT_DIMENSION</a> = 1;</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="phrase_8h.html#ad280440ff6bdcc0ea6b562ea64dac59f">   44</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="phrase_8h.html#ad280440ff6bdcc0ea6b562ea64dac59f">PHRASE_ALLOC_BLOCKSIZE</a> = 256;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="class_phrase.html">   61</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_phrase.html">Phrase</a> : <span class="keyword">public</span> <a class="code" href="class_writable.html">Writable</a></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#pragma mark === Public Interface ===</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#pragma mark &gt; Constructors</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="class_phrase.html">Phrase</a>(<a class="code" href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a> flags=<a class="code" href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a>,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;           <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension=<a class="code" href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">PHRASE_DEFAULT_DIMENSION</a>,</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;           <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension_input = 0);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <a class="code" href="class_phrase.html">Phrase</a>(<a class="code" href="class_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <a class="code" href="class_phrase.html">Phrase</a>&amp; operator=(<a class="code" href="class_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="class_phrase.html">Phrase</a>();</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#pragma mark &gt; Tests</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">bool</span> is_empty() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">bool</span> operator==(<a class="code" href="class_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">bool</span> operator!=(<a class="code" href="class_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#pragma mark &gt; Accessors</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">void</span> trim(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> phraseLength);</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">void</span> trim();</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension_input() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension_output() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">void</span> set_dimension(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">void</span> set_dimension_input(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dimension_input);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="preprocessor">#pragma mark &gt; Connect (shared data)</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keywordtype">void</span> connect(<span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordtype">void</span> connect(<span class="keywordtype">float</span> *pointer_to_data_input, <span class="keywordtype">float</span> *pointer_to_data_output, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordtype">void</span> connect_input(<span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    </div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">void</span> connect_output(<span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length);</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    </div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <span class="keywordtype">void</span> disconnect();</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="preprocessor">#pragma mark &gt; Record (own Data)</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="keywordtype">void</span> record(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordtype">void</span> record_input(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordtype">void</span> record_output(vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    </div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordtype">void</span> clear();</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">#pragma mark &gt; Access Data</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="keywordtype">float</span> at(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    </div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordtype">float</span> operator()(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="keywordtype">float</span>* get_dataPointer(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    </div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keywordtype">float</span>* get_dataPointer_input(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordtype">float</span>* get_dataPointer_output(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    </div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="preprocessor">#pragma mark &gt; JSON I/O</span></div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    JSONNode to_json() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    </div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    <span class="keywordtype">void</span> from_json(JSONNode root);</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;<span class="preprocessor">#pragma mark &gt; Moments</span></div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    vector&lt;float&gt; mean() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    </div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    vector&lt;float&gt; variance() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    </div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="preprocessor">#pragma mark === Public Attributes ===</span></div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;</div>
-<div class="line"><a name="l00361"></a><span class="lineno"><a class="line" href="class_phrase.html#a3057c0cabca30211e3493e9143d68f85">  361</a></span>&#160;    vector&lt;string&gt; <a class="code" href="class_phrase.html#a3057c0cabca30211e3493e9143d68f85">column_names_</a>;</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#pragma mark === Private Methods ===</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="keywordtype">void</span> _copy(<a class="code" href="class_phrase.html">Phrase</a> *dst, <a class="code" href="class_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordtype">void</span> reallocate_length();</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="preprocessor">#pragma mark === Private Attributes ===</span></div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;</div>
-<div class="line"><a name="l00393"></a><span class="lineno"><a class="line" href="class_phrase.html#a0f7ce5ad5ae27023b4cbfab305406e3d">  393</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_phrase.html#a0f7ce5ad5ae27023b4cbfab305406e3d">owns_data_</a>;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;</div>
-<div class="line"><a name="l00398"></a><span class="lineno"><a class="line" href="class_phrase.html#a47a642952680f8fc5dd97b73a480365b">  398</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_phrase.html#a47a642952680f8fc5dd97b73a480365b">bimodal_</a>;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;</div>
-<div class="line"><a name="l00403"></a><span class="lineno"><a class="line" href="class_phrase.html#adc1f81a081a43add9f399d142e73190b">  403</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_phrase.html#adc1f81a081a43add9f399d142e73190b">is_empty_</a>;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;</div>
-<div class="line"><a name="l00408"></a><span class="lineno"><a class="line" href="class_phrase.html#a9adc0149af36c27e04d2c80600a1fb15">  408</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_phrase.html#a9adc0149af36c27e04d2c80600a1fb15">length_</a>;</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;</div>
-<div class="line"><a name="l00413"></a><span class="lineno"><a class="line" href="class_phrase.html#a3e3dd63583442580972640d188a54fe4">  413</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_phrase.html#a3e3dd63583442580972640d188a54fe4">length_input_</a>;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    </div>
-<div class="line"><a name="l00418"></a><span class="lineno"><a class="line" href="class_phrase.html#a612e0c10385268bd26a7804eaa736001">  418</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_phrase.html#a612e0c10385268bd26a7804eaa736001">length_output_</a>;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;</div>
-<div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="class_phrase.html#a149c7c64245f51fd0f716e0a8e036d87">  423</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_phrase.html#a149c7c64245f51fd0f716e0a8e036d87">max_length_</a>;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;</div>
-<div class="line"><a name="l00428"></a><span class="lineno"><a class="line" href="class_phrase.html#aa1162217185031f84c2ecca0f352090b">  428</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_phrase.html#aa1162217185031f84c2ecca0f352090b">dimension_</a>;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;</div>
-<div class="line"><a name="l00433"></a><span class="lineno"><a class="line" href="class_phrase.html#ae638ac4d2d14a5ab0a11f4322a9aa6d3">  433</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_phrase.html#ae638ac4d2d14a5ab0a11f4322a9aa6d3">dimension_input_</a>;</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    </div>
-<div class="line"><a name="l00439"></a><span class="lineno"><a class="line" href="class_phrase.html#a50447effab6d04da7bfd4bb134845522">  439</a></span>&#160;    <span class="keywordtype">float</span> **<a class="code" href="class_phrase.html#a50447effab6d04da7bfd4bb134845522">data</a>;</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;};</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<span class="preprocessor">#pragma mark Utility: Memory Allocation</span></div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00452"></a><span class="lineno"><a class="line" href="phrase_8h.html#a602fba6506f7f4c4c5d7cc2ab03b5964">  452</a></span>&#160;T* <a class="code" href="phrase_8h.html#a602fba6506f7f4c4c5d7cc2ab03b5964">reallocate</a>(T *src, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim_src, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim_dst) {</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;    T *dst = <span class="keyword">new</span> T[dim_dst];</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;    </div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keywordflow">if</span> (!src) <span class="keywordflow">return</span> dst;</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    </div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <span class="keywordflow">if</span> (dim_dst &gt; dim_src) {</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        copy(src, src+dim_src, dst);</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        copy(src, src+dim_dst, dst);</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;    }</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;    <span class="keyword">delete</span>[] src;</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;    <span class="keywordflow">return</span> dst;</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;}</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;</div>
-<div class="ttc" id="class_phrase_html_a50447effab6d04da7bfd4bb134845522"><div class="ttname"><a href="class_phrase.html#a50447effab6d04da7bfd4bb134845522">Phrase::data</a></div><div class="ttdeci">float ** data</div><div class="ttdoc">Pointer to the Data arrays. </div><div class="ttdef"><b>Definition:</b> phrase.h:439</div></div>
-<div class="ttc" id="class_phrase_html_ae638ac4d2d14a5ab0a11f4322a9aa6d3"><div class="ttname"><a href="class_phrase.html#ae638ac4d2d14a5ab0a11f4322a9aa6d3">Phrase::dimension_input_</a></div><div class="ttdeci">unsigned int dimension_input_</div><div class="ttdoc">Used in bimodal mode: dimension of the input modality. </div><div class="ttdef"><b>Definition:</b> phrase.h:433</div></div>
-<div class="ttc" id="class_phrase_html_a3057c0cabca30211e3493e9143d68f85"><div class="ttname"><a href="class_phrase.html#a3057c0cabca30211e3493e9143d68f85">Phrase::column_names_</a></div><div class="ttdeci">vector&lt; string &gt; column_names_</div><div class="ttdoc">labels of the columns of the phrase (e.g. descriptor names) </div><div class="ttdef"><b>Definition:</b> phrase.h:361</div></div>
-<div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
-<div class="ttc" id="class_writable_html"><div class="ttname"><a href="class_writable.html">Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:114</div></div>
-<div class="ttc" id="class_phrase_html_a9adc0149af36c27e04d2c80600a1fb15"><div class="ttname"><a href="class_phrase.html#a9adc0149af36c27e04d2c80600a1fb15">Phrase::length_</a></div><div class="ttdeci">unsigned int length_</div><div class="ttdoc">Length of the phrase. If bimodal, it is the minimal length between modalities. </div><div class="ttdef"><b>Definition:</b> phrase.h:408</div></div>
-<div class="ttc" id="class_phrase_html_a3e3dd63583442580972640d188a54fe4"><div class="ttname"><a href="class_phrase.html#a3e3dd63583442580972640d188a54fe4">Phrase::length_input_</a></div><div class="ttdeci">unsigned int length_input_</div><div class="ttdoc">Length of the array of the input modality. </div><div class="ttdef"><b>Definition:</b> phrase.h:413</div></div>
-<div class="ttc" id="class_phrase_html_a47a642952680f8fc5dd97b73a480365b"><div class="ttname"><a href="class_phrase.html#a47a642952680f8fc5dd97b73a480365b">Phrase::bimodal_</a></div><div class="ttdeci">bool bimodal_</div><div class="ttdoc">Defines if the phrase is bimodal (true) or unimodal (false) </div><div class="ttdef"><b>Definition:</b> phrase.h:398</div></div>
-<div class="ttc" id="phrase_8h_html_a602fba6506f7f4c4c5d7cc2ab03b5964"><div class="ttname"><a href="phrase_8h.html#a602fba6506f7f4c4c5d7cc2ab03b5964">reallocate</a></div><div class="ttdeci">T * reallocate(T *src, unsigned int dim_src, unsigned int dim_dst)</div><div class="ttdoc">Reallocate a C-like array (using c++ std::copy) </div><div class="ttdef"><b>Definition:</b> phrase.h:452</div></div>
-<div class="ttc" id="class_phrase_html_adc1f81a081a43add9f399d142e73190b"><div class="ttname"><a href="class_phrase.html#adc1f81a081a43add9f399d142e73190b">Phrase::is_empty_</a></div><div class="ttdeci">bool is_empty_</div><div class="ttdoc">true if the phrase does not contain any data </div><div class="ttdef"><b>Definition:</b> phrase.h:403</div></div>
-<div class="ttc" id="mbd__common_8h_html_a189076608daed669bdde526d4db999d8"><div class="ttname"><a href="mbd__common_8h.html#a189076608daed669bdde526d4db999d8">rtml_flags</a></div><div class="ttdeci">unsigned int rtml_flags</div><div class="ttdef"><b>Definition:</b> mbd_common.h:49</div></div>
-<div class="ttc" id="class_phrase_html"><div class="ttname"><a href="class_phrase.html">Phrase</a></div><div class="ttdoc">Data phrase. </div><div class="ttdef"><b>Definition:</b> phrase.h:61</div></div>
-<div class="ttc" id="class_phrase_html_a0f7ce5ad5ae27023b4cbfab305406e3d"><div class="ttname"><a href="class_phrase.html#a0f7ce5ad5ae27023b4cbfab305406e3d">Phrase::owns_data_</a></div><div class="ttdeci">bool owns_data_</div><div class="ttdoc">Defines if the phrase stores the data itself. </div><div class="ttdef"><b>Definition:</b> phrase.h:393</div></div>
-<div class="ttc" id="class_phrase_html_aa1162217185031f84c2ecca0f352090b"><div class="ttname"><a href="class_phrase.html#aa1162217185031f84c2ecca0f352090b">Phrase::dimension_</a></div><div class="ttdeci">unsigned int dimension_</div><div class="ttdoc">Total dimension of the phrase. </div><div class="ttdef"><b>Definition:</b> phrase.h:428</div></div>
-<div class="ttc" id="mbd__common_8h_html_afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2"><div class="ttname"><a href="mbd__common_8h.html#afd2a3e1f988b8f765da51bf29b250ff0ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a></div><div class="ttdoc">no specific Flag: Unimodal and own Memory </div><div class="ttdef"><b>Definition:</b> mbd_common.h:62</div></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacexmm.html">xmm</a></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html">   58</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classxmm_1_1_phrase.html">Phrase</a> : <span class="keyword">public</span> <a class="code" href="classxmm_1_1_writable.html">Writable</a></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a7e2d1f014cb6dd7cc1a2d84bee1a275b">   62</a></span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a7e2d1f014cb6dd7cc1a2d84bee1a275b">DEFAULT_DIMENSION</a> = 1;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a9fb70bb13afe55a3106897b164153ef1">   63</a></span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a9fb70bb13afe55a3106897b164153ef1">ALLOC_BLOCKSIZE</a> = 256;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#pragma mark === Public Interface ===</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#pragma mark &gt; Constructors</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <a class="code" href="classxmm_1_1_phrase.html#a630f6f94e6fe01d902bd8a33cb2e2330">Phrase</a>(<a class="code" href="namespacexmm.html#a157fc9395f33695bcc3118bc63de76e9">xmm_flags</a> flags=<a class="code" href="namespacexmm.html#a69da9e2acc206d2b195268fffd40ce7aa924b8d8d843f38c99b956e527f19f14b">NONE</a>,</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;               <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#aaa1a6d26bfaffd30bdbdee3dd55fc3d3">dimension</a>=DEFAULT_DIMENSION,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;               <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a119f73933a0d34163cd46cfb48f590f8">dimension_input</a> = 0);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <a class="code" href="classxmm_1_1_phrase.html#a630f6f94e6fe01d902bd8a33cb2e2330">Phrase</a>(<a class="code" href="classxmm_1_1_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <a class="code" href="classxmm_1_1_phrase.html">Phrase</a>&amp; <a class="code" href="classxmm_1_1_phrase.html#acee90fe71c8b87131ec7ea1f66107347">operator=</a>(<a class="code" href="classxmm_1_1_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classxmm_1_1_phrase.html#a13af657884c5b9bdb386e655b6627588">~Phrase</a>();</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#pragma mark &gt; Tests</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_phrase.html#a0862f802d0628c67d0d696b3b72cc4f2">is_empty</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_phrase.html#af60b35619350828ccf731629e4bf4464">operator==</a>(<a class="code" href="classxmm_1_1_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_phrase.html#a95b70f74490079ffd807ce6b942ed0bb">operator!=</a>(<a class="code" href="classxmm_1_1_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">#pragma mark &gt; Accessors</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ae922ebac3962b72f5801526a4aa2afd6">length</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#afe44f3bb934d4df66e24655df3588add">trim</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> phraseLength);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#afe44f3bb934d4df66e24655df3588add">trim</a>();</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#aaa1a6d26bfaffd30bdbdee3dd55fc3d3">dimension</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a119f73933a0d34163cd46cfb48f590f8">dimension_input</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a74bb50d35f44ef8e768965daa08505e4">dimension_output</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a64df869d2b0a177d9e844d7b69cbcd7a">set_dimension</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#aaa1a6d26bfaffd30bdbdee3dd55fc3d3">dimension</a>);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a9374e0e8692c84e9a59ea91ad48b2e69">set_dimension_input</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a119f73933a0d34163cd46cfb48f590f8">dimension_input</a>);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="preprocessor">#pragma mark &gt; Connect (shared data)</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a155c957a7634bbb055d75a9cb34d5151">connect</a>(<span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ae922ebac3962b72f5801526a4aa2afd6">length</a>);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a155c957a7634bbb055d75a9cb34d5151">connect</a>(<span class="keywordtype">float</span> *pointer_to_data_input, <span class="keywordtype">float</span> *pointer_to_data_output, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ae922ebac3962b72f5801526a4aa2afd6">length</a>);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a50045cef022a024bcce56788ff5c684b">connect_input</a>(<span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ae922ebac3962b72f5801526a4aa2afd6">length</a>);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        </div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a3649d75542d7081accbd862444cb2334">connect_output</a>(<span class="keywordtype">float</span> *pointer_to_data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ae922ebac3962b72f5801526a4aa2afd6">length</a>);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        </div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a58ab8e9e4ed35493cdcb030dc6c5fbec">disconnect</a>();</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#pragma mark &gt; Record (own Data)</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a5514cb335f79222c9c7ffddabcd467ce">record</a>(std::vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a67d1327b6b1e8310864deb8de7daacdf">record_input</a>(std::vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a3dee80317db568fa998a99a6347b4ed8">record_output</a>(std::vector&lt;float&gt; <span class="keyword">const</span>&amp; observation);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        </div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#af7feadca4c5b1732b97543caea5d876e">clear</a>();</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        </div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="preprocessor">#pragma mark &gt; Access Data</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <span class="keywordtype">float</span> <a class="code" href="classxmm_1_1_phrase.html#a9cc13e48ed4bdbc94824be9cba475780">at</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        </div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        <span class="keywordtype">float</span> <a class="code" href="classxmm_1_1_phrase.html#ac5df1ca42ae8f23084e3bbf5457d7cef">operator()</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        </div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        <span class="keywordtype">float</span>* <a class="code" href="classxmm_1_1_phrase.html#aab61f5c84eb47e14e6f707461bd9c932">get_dataPointer</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <span class="keywordtype">float</span>* <a class="code" href="classxmm_1_1_phrase.html#a605faadd99105e8d5217c775828eead3">get_dataPointer_input</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        </div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keywordtype">float</span>* <a class="code" href="classxmm_1_1_phrase.html#af87ee3e403404186a1d9b844f2f1497f">get_dataPointer_output</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> index) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        </div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="preprocessor">#pragma mark &gt; JSON I/O</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        JSONNode <a class="code" href="classxmm_1_1_phrase.html#ab968b73de57a98f20c63e4cd8b81ff82">to_json</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        </div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a076abc5a8367110f930873a6b3c5b6a3">from_json</a>(JSONNode root);</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;<span class="preprocessor">#pragma mark &gt; Moments</span></div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        std::vector&lt;float&gt; <a class="code" href="classxmm_1_1_phrase.html#ae83af0a6368511508f27fe74228de362">mean</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        </div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        std::vector&lt;float&gt; <a class="code" href="classxmm_1_1_phrase.html#ac3ec18f313ed25e32b75d952a49b93e9">variance</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        </div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="preprocessor">#pragma mark === Public Attributes ===</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;</div>
+<div class="line"><a name="l00362"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a9e7dc32a623c1978aac99592bbac4b3f">  362</a></span>&#160;        std::vector&lt;std::string&gt; <a class="code" href="classxmm_1_1_phrase.html#a9e7dc32a623c1978aac99592bbac4b3f">column_names_</a>;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        </div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">#pragma mark === Private Methods ===</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#a03dcc79cd83598557769a1bc7b255e4b">_copy</a>(<a class="code" href="classxmm_1_1_phrase.html">Phrase</a> *dst, <a class="code" href="classxmm_1_1_phrase.html">Phrase</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_phrase.html#ae8d2ddbfc345606002734030cb5b876c">reallocate_length</a>();</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        </div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">#pragma mark === Private Attributes ===</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;</div>
+<div class="line"><a name="l00394"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a636e372305c0bc9b72afc97175fa7810">  394</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_phrase.html#a636e372305c0bc9b72afc97175fa7810">owns_data_</a>;</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        </div>
+<div class="line"><a name="l00399"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a18463f547824b65d7f48790577199552">  399</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_phrase.html#a18463f547824b65d7f48790577199552">bimodal_</a>;</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        </div>
+<div class="line"><a name="l00404"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#aeb351567bad34be5ccc1390d09b8b7c3">  404</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_phrase.html#aeb351567bad34be5ccc1390d09b8b7c3">is_empty_</a>;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;        </div>
+<div class="line"><a name="l00409"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a17b449f16971bda24f3d1fb93cbae088">  409</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a17b449f16971bda24f3d1fb93cbae088">length_</a>;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        </div>
+<div class="line"><a name="l00414"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#ac7a07917167887639a0f43259427e216">  414</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ac7a07917167887639a0f43259427e216">length_input_</a>;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        </div>
+<div class="line"><a name="l00419"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a304af2af3b5f8c7c879e1087df0165d9">  419</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a304af2af3b5f8c7c879e1087df0165d9">length_output_</a>;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        </div>
+<div class="line"><a name="l00424"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a1430d21eec6b29ea0892b76f91935e6b">  424</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#a1430d21eec6b29ea0892b76f91935e6b">max_length_</a>;</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        </div>
+<div class="line"><a name="l00429"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#ae90896bb7e797030e81eef59a49dbd69">  429</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#ae90896bb7e797030e81eef59a49dbd69">dimension_</a>;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;        </div>
+<div class="line"><a name="l00434"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#afb3ff7bc9836327d0a66045a545543a3">  434</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_phrase.html#afb3ff7bc9836327d0a66045a545543a3">dimension_input_</a>;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        </div>
+<div class="line"><a name="l00440"></a><span class="lineno"><a class="line" href="classxmm_1_1_phrase.html#a564fccb3de71e71962f6257834c9a347">  440</a></span>&#160;        <span class="keywordtype">float</span> **<a class="code" href="classxmm_1_1_phrase.html#a564fccb3de71e71962f6257834c9a347">data</a>;</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    };</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    </div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<span class="preprocessor">#pragma mark -</span></div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;<span class="preprocessor">#pragma mark Utility: Memory Allocation</span></div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00453"></a><span class="lineno"><a class="line" href="namespacexmm.html#a1ee0ceef7e30bc53c3ca5ea18cac0ca8">  453</a></span>&#160;    T* <a class="code" href="namespacexmm.html#a1ee0ceef7e30bc53c3ca5ea18cac0ca8">reallocate</a>(T *src, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim_src, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> dim_dst) {</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;        T *dst = <span class="keyword">new</span> T[dim_dst];</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        </div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="keywordflow">if</span> (!src) <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        </div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        <span class="keywordflow">if</span> (dim_dst &gt; dim_src) {</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            std::copy(src, src+dim_src, dst);</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;            std::copy(src, src+dim_dst, dst);</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        }</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keyword">delete</span>[] src;</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;        <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    }</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    </div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;}</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;</div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a9cc13e48ed4bdbc94824be9cba475780"><div class="ttname"><a href="classxmm_1_1_phrase.html#a9cc13e48ed4bdbc94824be9cba475780">xmm::Phrase::at</a></div><div class="ttdeci">float at(unsigned int index, unsigned int dim) const </div><div class="ttdoc">Access data at a given time index and dimension. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:413</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html"><div class="ttname"><a href="classxmm_1_1_phrase.html">xmm::Phrase</a></div><div class="ttdoc">Data phrase. </div><div class="ttdef"><b>Definition:</b> phrase.h:58</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_acee90fe71c8b87131ec7ea1f66107347"><div class="ttname"><a href="classxmm_1_1_phrase.html#acee90fe71c8b87131ec7ea1f66107347">xmm::Phrase::operator=</a></div><div class="ttdeci">Phrase &amp; operator=(Phrase const &amp;src)</div><div class="ttdoc">Assignment. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:60</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ac5df1ca42ae8f23084e3bbf5457d7cef"><div class="ttname"><a href="classxmm_1_1_phrase.html#ac5df1ca42ae8f23084e3bbf5457d7cef">xmm::Phrase::operator()</a></div><div class="ttdeci">float operator()(unsigned int index, unsigned int dim) const </div><div class="ttdoc">Access data at a given time index and dimension. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:428</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_af7feadca4c5b1732b97543caea5d876e"><div class="ttname"><a href="classxmm_1_1_phrase.html#af7feadca4c5b1732b97543caea5d876e">xmm::Phrase::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Reset length of the phrase to 0 ==> empty phrase . </div><div class="ttdef"><b>Definition:</b> phrase.cpp:402</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a076abc5a8367110f930873a6b3c5b6a3"><div class="ttname"><a href="classxmm_1_1_phrase.html#a076abc5a8367110f930873a6b3c5b6a3">xmm::Phrase::from_json</a></div><div class="ttdeci">void from_json(JSONNode root)</div><div class="ttdoc">Read from JSON Node. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:475</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a636e372305c0bc9b72afc97175fa7810"><div class="ttname"><a href="classxmm_1_1_phrase.html#a636e372305c0bc9b72afc97175fa7810">xmm::Phrase::owns_data_</a></div><div class="ttdeci">bool owns_data_</div><div class="ttdoc">Defines if the phrase stores the data itself. </div><div class="ttdef"><b>Definition:</b> phrase.h:394</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ab968b73de57a98f20c63e4cd8b81ff82"><div class="ttname"><a href="classxmm_1_1_phrase.html#ab968b73de57a98f20c63e4cd8b81ff82">xmm::Phrase::to_json</a></div><div class="ttdeci">JSONNode to_json() const </div><div class="ttdoc">Write to JSON Node. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:455</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ae922ebac3962b72f5801526a4aa2afd6"><div class="ttname"><a href="classxmm_1_1_phrase.html#ae922ebac3962b72f5801526a4aa2afd6">xmm::Phrase::length</a></div><div class="ttdeci">unsigned int length() const </div><div class="ttdef"><b>Definition:</b> phrase.cpp:169</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a03dcc79cd83598557769a1bc7b255e4b"><div class="ttname"><a href="classxmm_1_1_phrase.html#a03dcc79cd83598557769a1bc7b255e4b">xmm::Phrase::_copy</a></div><div class="ttdeci">void _copy(Phrase *dst, Phrase const &amp;src)</div><div class="ttdef"><b>Definition:</b> phrase.cpp:67</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_afe44f3bb934d4df66e24655df3588add"><div class="ttname"><a href="classxmm_1_1_phrase.html#afe44f3bb934d4df66e24655df3588add">xmm::Phrase::trim</a></div><div class="ttdeci">void trim()</div><div class="ttdoc">trim phrase to minimal length of modalities </div><div class="ttdef"><b>Definition:</b> phrase.cpp:183</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a564fccb3de71e71962f6257834c9a347"><div class="ttname"><a href="classxmm_1_1_phrase.html#a564fccb3de71e71962f6257834c9a347">xmm::Phrase::data</a></div><div class="ttdeci">float ** data</div><div class="ttdoc">Pointer to the Data arrays. </div><div class="ttdef"><b>Definition:</b> phrase.h:440</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a3649d75542d7081accbd862444cb2334"><div class="ttname"><a href="classxmm_1_1_phrase.html#a3649d75542d7081accbd862444cb2334">xmm::Phrase::connect_output</a></div><div class="ttdeci">void connect_output(float *pointer_to_data, unsigned int length)</div><div class="ttdoc">Connect a Bimodal phrase to a shared container for the output modality. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:292</div></div>
+<div class="ttc" id="namespacexmm_html_a157fc9395f33695bcc3118bc63de76e9"><div class="ttname"><a href="namespacexmm.html#a157fc9395f33695bcc3118bc63de76e9">xmm::xmm_flags</a></div><div class="ttdeci">unsigned int xmm_flags</div><div class="ttdef"><b>Definition:</b> xmm_common.h:53</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a9374e0e8692c84e9a59ea91ad48b2e69"><div class="ttname"><a href="classxmm_1_1_phrase.html#a9374e0e8692c84e9a59ea91ad48b2e69">xmm::Phrase::set_dimension_input</a></div><div class="ttdeci">void set_dimension_input(unsigned int dimension_input)</div><div class="ttdef"><b>Definition:</b> phrase.cpp:236</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a155c957a7634bbb055d75a9cb34d5151"><div class="ttname"><a href="classxmm_1_1_phrase.html#a155c957a7634bbb055d75a9cb34d5151">xmm::Phrase::connect</a></div><div class="ttdeci">void connect(float *pointer_to_data, unsigned int length)</div><div class="ttdoc">Connect a unimodal phrase to a shared container. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:256</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a17b449f16971bda24f3d1fb93cbae088"><div class="ttname"><a href="classxmm_1_1_phrase.html#a17b449f16971bda24f3d1fb93cbae088">xmm::Phrase::length_</a></div><div class="ttdeci">unsigned int length_</div><div class="ttdoc">Length of the phrase. If bimodal, it is the minimal length between modalities. </div><div class="ttdef"><b>Definition:</b> phrase.h:409</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ac3ec18f313ed25e32b75d952a49b93e9"><div class="ttname"><a href="classxmm_1_1_phrase.html#ac3ec18f313ed25e32b75d952a49b93e9">xmm::Phrase::variance</a></div><div class="ttdeci">std::vector&lt; float &gt; variance() const </div><div class="ttdoc">Compute the variance of the data phrase along the time axis. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:591</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ae90896bb7e797030e81eef59a49dbd69"><div class="ttname"><a href="classxmm_1_1_phrase.html#ae90896bb7e797030e81eef59a49dbd69">xmm::Phrase::dimension_</a></div><div class="ttdeci">unsigned int dimension_</div><div class="ttdoc">Total dimension of the phrase. </div><div class="ttdef"><b>Definition:</b> phrase.h:429</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a5514cb335f79222c9c7ffddabcd467ce"><div class="ttname"><a href="classxmm_1_1_phrase.html#a5514cb335f79222c9c7ffddabcd467ce">xmm::Phrase::record</a></div><div class="ttdeci">void record(std::vector&lt; float &gt; const &amp;observation)</div><div class="ttdoc">Record observation. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:317</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a304af2af3b5f8c7c879e1087df0165d9"><div class="ttname"><a href="classxmm_1_1_phrase.html#a304af2af3b5f8c7c879e1087df0165d9">xmm::Phrase::length_output_</a></div><div class="ttdeci">unsigned int length_output_</div><div class="ttdoc">Length of the array of the output modality. </div><div class="ttdef"><b>Definition:</b> phrase.h:419</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a9e7dc32a623c1978aac99592bbac4b3f"><div class="ttname"><a href="classxmm_1_1_phrase.html#a9e7dc32a623c1978aac99592bbac4b3f">xmm::Phrase::column_names_</a></div><div class="ttdeci">std::vector&lt; std::string &gt; column_names_</div><div class="ttdoc">labels of the columns of the phrase (e.g. descriptor names) </div><div class="ttdef"><b>Definition:</b> phrase.h:362</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ae8d2ddbfc345606002734030cb5b876c"><div class="ttname"><a href="classxmm_1_1_phrase.html#ae8d2ddbfc345606002734030cb5b876c">xmm::Phrase::reallocate_length</a></div><div class="ttdeci">void reallocate_length()</div><div class="ttdoc">Memory Allocation. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:387</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a3dee80317db568fa998a99a6347b4ed8"><div class="ttname"><a href="classxmm_1_1_phrase.html#a3dee80317db568fa998a99a6347b4ed8">xmm::Phrase::record_output</a></div><div class="ttdeci">void record_output(std::vector&lt; float &gt; const &amp;observation)</div><div class="ttdoc">Record observation on output modality Appends the observation vector observation to the data array Th...</div><div class="ttdef"><b>Definition:</b> phrase.cpp:367</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a605faadd99105e8d5217c775828eead3"><div class="ttname"><a href="classxmm_1_1_phrase.html#a605faadd99105e8d5217c775828eead3">xmm::Phrase::get_dataPointer_input</a></div><div class="ttdeci">float * get_dataPointer_input(unsigned int index) const </div><div class="ttdoc">Get pointer to the data at a given time index for the input modality. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:440</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a119f73933a0d34163cd46cfb48f590f8"><div class="ttname"><a href="classxmm_1_1_phrase.html#a119f73933a0d34163cd46cfb48f590f8">xmm::Phrase::dimension_input</a></div><div class="ttdeci">unsigned int dimension_input() const </div><div class="ttdef"><b>Definition:</b> phrase.cpp:194</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a67d1327b6b1e8310864deb8de7daacdf"><div class="ttname"><a href="classxmm_1_1_phrase.html#a67d1327b6b1e8310864deb8de7daacdf">xmm::Phrase::record_input</a></div><div class="ttdeci">void record_input(std::vector&lt; float &gt; const &amp;observation)</div><div class="ttdoc">Record observation on input modality Appends the observation vector observation to the data array Thi...</div><div class="ttdef"><b>Definition:</b> phrase.cpp:348</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_aaa1a6d26bfaffd30bdbdee3dd55fc3d3"><div class="ttname"><a href="classxmm_1_1_phrase.html#aaa1a6d26bfaffd30bdbdee3dd55fc3d3">xmm::Phrase::dimension</a></div><div class="ttdeci">unsigned int dimension() const </div><div class="ttdef"><b>Definition:</b> phrase.cpp:189</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_aab61f5c84eb47e14e6f707461bd9c932"><div class="ttname"><a href="classxmm_1_1_phrase.html#aab61f5c84eb47e14e6f707461bd9c932">xmm::Phrase::get_dataPointer</a></div><div class="ttdeci">float * get_dataPointer(unsigned int index) const </div><div class="ttdoc">Get pointer to the data at a given time index. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:433</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a0862f802d0628c67d0d696b3b72cc4f2"><div class="ttname"><a href="classxmm_1_1_phrase.html#a0862f802d0628c67d0d696b3b72cc4f2">xmm::Phrase::is_empty</a></div><div class="ttdeci">bool is_empty() const </div><div class="ttdoc">Checks if the phrase is empty (length 0) </div><div class="ttdef"><b>Definition:</b> phrase.cpp:138</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a18463f547824b65d7f48790577199552"><div class="ttname"><a href="classxmm_1_1_phrase.html#a18463f547824b65d7f48790577199552">xmm::Phrase::bimodal_</a></div><div class="ttdeci">bool bimodal_</div><div class="ttdoc">Defines if the phrase is bimodal (true) or unimodal (false) </div><div class="ttdef"><b>Definition:</b> phrase.h:399</div></div>
+<div class="ttc" id="classxmm_1_1_writable_html"><div class="ttname"><a href="classxmm_1_1_writable.html">xmm::Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> xmm_common.h:114</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a9fb70bb13afe55a3106897b164153ef1"><div class="ttname"><a href="classxmm_1_1_phrase.html#a9fb70bb13afe55a3106897b164153ef1">xmm::Phrase::ALLOC_BLOCKSIZE</a></div><div class="ttdeci">static const unsigned int ALLOC_BLOCKSIZE</div><div class="ttdef"><b>Definition:</b> phrase.h:63</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_aeb351567bad34be5ccc1390d09b8b7c3"><div class="ttname"><a href="classxmm_1_1_phrase.html#aeb351567bad34be5ccc1390d09b8b7c3">xmm::Phrase::is_empty_</a></div><div class="ttdeci">bool is_empty_</div><div class="ttdoc">true if the phrase does not contain any data </div><div class="ttdef"><b>Definition:</b> phrase.h:404</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ae83af0a6368511508f27fe74228de362"><div class="ttname"><a href="classxmm_1_1_phrase.html#ae83af0a6368511508f27fe74228de362">xmm::Phrase::mean</a></div><div class="ttdeci">std::vector&lt; float &gt; mean() const </div><div class="ttdoc">Compute the mean of the data phrase along the time axis. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:578</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a74bb50d35f44ef8e768965daa08505e4"><div class="ttname"><a href="classxmm_1_1_phrase.html#a74bb50d35f44ef8e768965daa08505e4">xmm::Phrase::dimension_output</a></div><div class="ttdeci">unsigned int dimension_output() const </div><div class="ttdef"><b>Definition:</b> phrase.cpp:201</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_af60b35619350828ccf731629e4bf4464"><div class="ttname"><a href="classxmm_1_1_phrase.html#af60b35619350828ccf731629e4bf4464">xmm::Phrase::operator==</a></div><div class="ttdeci">bool operator==(Phrase const &amp;src)</div><div class="ttdoc">Check equality. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:143</div></div>
+<div class="ttc" id="xmm__common_8h_html"><div class="ttname"><a href="xmm__common_8h.html">xmm_common.h</a></div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a630f6f94e6fe01d902bd8a33cb2e2330"><div class="ttname"><a href="classxmm_1_1_phrase.html#a630f6f94e6fe01d902bd8a33cb2e2330">xmm::Phrase::Phrase</a></div><div class="ttdeci">Phrase(xmm_flags flags=NONE, unsigned int dimension=DEFAULT_DIMENSION, unsigned int dimension_input=0)</div><div class="ttdoc">Phrase Constructor. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:36</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_afb3ff7bc9836327d0a66045a545543a3"><div class="ttname"><a href="classxmm_1_1_phrase.html#afb3ff7bc9836327d0a66045a545543a3">xmm::Phrase::dimension_input_</a></div><div class="ttdeci">unsigned int dimension_input_</div><div class="ttdoc">Used in bimodal mode: dimension of the input modality. </div><div class="ttdef"><b>Definition:</b> phrase.h:434</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a13af657884c5b9bdb386e655b6627588"><div class="ttname"><a href="classxmm_1_1_phrase.html#a13af657884c5b9bdb386e655b6627588">xmm::Phrase::~Phrase</a></div><div class="ttdeci">virtual ~Phrase()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:118</div></div>
+<div class="ttc" id="namespacexmm_html_a69da9e2acc206d2b195268fffd40ce7aa924b8d8d843f38c99b956e527f19f14b"><div class="ttname"><a href="namespacexmm.html#a69da9e2acc206d2b195268fffd40ce7aa924b8d8d843f38c99b956e527f19f14b">xmm::NONE</a></div><div class="ttdoc">no specific Flag: Unimodal and own Memory </div><div class="ttdef"><b>Definition:</b> xmm_common.h:62</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a64df869d2b0a177d9e844d7b69cbcd7a"><div class="ttname"><a href="classxmm_1_1_phrase.html#a64df869d2b0a177d9e844d7b69cbcd7a">xmm::Phrase::set_dimension</a></div><div class="ttdeci">void set_dimension(unsigned int dimension)</div><div class="ttdef"><b>Definition:</b> phrase.cpp:208</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a58ab8e9e4ed35493cdcb030dc6c5fbec"><div class="ttname"><a href="classxmm_1_1_phrase.html#a58ab8e9e4ed35493cdcb030dc6c5fbec">xmm::Phrase::disconnect</a></div><div class="ttdeci">void disconnect()</div><div class="ttdoc">Disconnect a phrase from a shared container. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:304</div></div>
+<div class="ttc" id="namespacexmm_html"><div class="ttname"><a href="namespacexmm.html">xmm</a></div><div class="ttdef"><b>Definition:</b> gaussian_distribution.h:39</div></div>
 <div class="ttc" id="label_8h_html"><div class="ttname"><a href="label_8h.html">label.h</a></div></div>
-<div class="ttc" id="mbd__common_8h_html"><div class="ttname"><a href="mbd__common_8h.html">mbd_common.h</a></div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a1430d21eec6b29ea0892b76f91935e6b"><div class="ttname"><a href="classxmm_1_1_phrase.html#a1430d21eec6b29ea0892b76f91935e6b">xmm::Phrase::max_length_</a></div><div class="ttdeci">unsigned int max_length_</div><div class="ttdoc">Allocated length (only used in own memory mode) </div><div class="ttdef"><b>Definition:</b> phrase.h:424</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a50045cef022a024bcce56788ff5c684b"><div class="ttname"><a href="classxmm_1_1_phrase.html#a50045cef022a024bcce56788ff5c684b">xmm::Phrase::connect_input</a></div><div class="ttdeci">void connect_input(float *pointer_to_data, unsigned int length)</div><div class="ttdoc">Connect a Bimodal phrase to a shared container for the input modality. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:280</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a7e2d1f014cb6dd7cc1a2d84bee1a275b"><div class="ttname"><a href="classxmm_1_1_phrase.html#a7e2d1f014cb6dd7cc1a2d84bee1a275b">xmm::Phrase::DEFAULT_DIMENSION</a></div><div class="ttdeci">static const unsigned int DEFAULT_DIMENSION</div><div class="ttdef"><b>Definition:</b> phrase.h:62</div></div>
 <div class="ttc" id="json__utilities_8h_html"><div class="ttname"><a href="json__utilities_8h.html">json_utilities.h</a></div></div>
-<div class="ttc" id="class_phrase_html_a612e0c10385268bd26a7804eaa736001"><div class="ttname"><a href="class_phrase.html#a612e0c10385268bd26a7804eaa736001">Phrase::length_output_</a></div><div class="ttdeci">unsigned int length_output_</div><div class="ttdoc">Length of the array of the output modality. </div><div class="ttdef"><b>Definition:</b> phrase.h:418</div></div>
-<div class="ttc" id="phrase_8h_html_ad280440ff6bdcc0ea6b562ea64dac59f"><div class="ttname"><a href="phrase_8h.html#ad280440ff6bdcc0ea6b562ea64dac59f">PHRASE_ALLOC_BLOCKSIZE</a></div><div class="ttdeci">const int PHRASE_ALLOC_BLOCKSIZE</div><div class="ttdef"><b>Definition:</b> phrase.h:44</div></div>
-<div class="ttc" id="phrase_8h_html_a76a85e386f04f821134bdeb2cf7f54c0"><div class="ttname"><a href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">PHRASE_DEFAULT_DIMENSION</a></div><div class="ttdeci">const int PHRASE_DEFAULT_DIMENSION</div><div class="ttdef"><b>Definition:</b> phrase.h:43</div></div>
-<div class="ttc" id="class_phrase_html_a149c7c64245f51fd0f716e0a8e036d87"><div class="ttname"><a href="class_phrase.html#a149c7c64245f51fd0f716e0a8e036d87">Phrase::max_length_</a></div><div class="ttdeci">unsigned int max_length_</div><div class="ttdoc">Allocated length (only used in own memory mode) </div><div class="ttdef"><b>Definition:</b> phrase.h:423</div></div>
+<div class="ttc" id="namespacexmm_html_a1ee0ceef7e30bc53c3ca5ea18cac0ca8"><div class="ttname"><a href="namespacexmm.html#a1ee0ceef7e30bc53c3ca5ea18cac0ca8">xmm::reallocate</a></div><div class="ttdeci">T * reallocate(T *src, unsigned int dim_src, unsigned int dim_dst)</div><div class="ttdoc">Reallocate a C-like array (using c++ std::copy) </div><div class="ttdef"><b>Definition:</b> phrase.h:453</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_ac7a07917167887639a0f43259427e216"><div class="ttname"><a href="classxmm_1_1_phrase.html#ac7a07917167887639a0f43259427e216">xmm::Phrase::length_input_</a></div><div class="ttdeci">unsigned int length_input_</div><div class="ttdoc">Length of the array of the input modality. </div><div class="ttdef"><b>Definition:</b> phrase.h:414</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_a95b70f74490079ffd807ce6b942ed0bb"><div class="ttname"><a href="classxmm_1_1_phrase.html#a95b70f74490079ffd807ce6b942ed0bb">xmm::Phrase::operator!=</a></div><div class="ttdeci">bool operator!=(Phrase const &amp;src)</div><div class="ttdoc">Check inequality. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:163</div></div>
+<div class="ttc" id="classxmm_1_1_phrase_html_af87ee3e403404186a1d9b844f2f1497f"><div class="ttname"><a href="classxmm_1_1_phrase.html#af87ee3e403404186a1d9b844f2f1497f">xmm::Phrase::get_dataPointer_output</a></div><div class="ttdeci">float * get_dataPointer_output(unsigned int index) const </div><div class="ttdoc">Get pointer to the data at a given time index for the output modality. </div><div class="ttdef"><b>Definition:</b> phrase.cpp:447</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 12 2015 22:46:29 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

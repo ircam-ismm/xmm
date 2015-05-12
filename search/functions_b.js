@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kmeans',['KMeans',['../class_k_means.html#ac090f79fa613fa9aa1d203673d40b59a',1,'KMeans::KMeans(TrainingSet *trainingSet=NULL, int nbClusters=1)'],['../class_k_means.html#a4de192a8ff0bc79216c54acff5642c04',1,'KMeans::KMeans(KMeans const &amp;src)']]]
+  ['kmeans',['KMeans',['../classxmm_1_1_k_means.html#a8a4a73f249cecf15e69b713855a059a9',1,'xmm::KMeans::KMeans(TrainingSet *trainingSet=NULL, int nbClusters=1)'],['../classxmm_1_1_k_means.html#a974652c9e07d24353edc706dd13636a3',1,'xmm::KMeans::KMeans(KMeans const &amp;src)']]]
 ];

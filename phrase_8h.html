@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.1-alpha</span>
+   &#160;<span id="projectnumber">0.1-alpha.2</span>
    </div>
   </td>
  </tr>
@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -98,114 +99,41 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">phrase.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cmath&gt;</code><br />
 <code>#include &quot;<a class="el" href="json__utilities_8h_source.html">json_utilities.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="mbd__common_8h_source.html">mbd_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="xmm__common_8h_source.html">xmm_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="label_8h_source.html">label.h</a>&quot;</code><br />
 </div>
 <p><a href="phrase_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_phrase.html">Phrase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data phrase.  <a href="class_phrase.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxmm_1_1_phrase.html">xmm::Phrase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data phrase.  <a href="classxmm_1_1_phrase.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacexmm"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacexmm.html">xmm</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a602fba6506f7f4c4c5d7cc2ab03b5964"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a602fba6506f7f4c4c5d7cc2ab03b5964"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="phrase_8h.html#a602fba6506f7f4c4c5d7cc2ab03b5964">reallocate</a> (T *src, unsigned int dim_src, unsigned int dim_dst)</td></tr>
-<tr class="memdesc:a602fba6506f7f4c4c5d7cc2ab03b5964"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reallocate a C-like array (using c++ std::copy)  <a href="#a602fba6506f7f4c4c5d7cc2ab03b5964">More...</a><br /></td></tr>
-<tr class="separator:a602fba6506f7f4c4c5d7cc2ab03b5964"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a76a85e386f04f821134bdeb2cf7f54c0"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0">PHRASE_DEFAULT_DIMENSION</a> = 1</td></tr>
-<tr class="separator:a76a85e386f04f821134bdeb2cf7f54c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad280440ff6bdcc0ea6b562ea64dac59f"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="phrase_8h.html#ad280440ff6bdcc0ea6b562ea64dac59f">PHRASE_ALLOC_BLOCKSIZE</a> = 256</td></tr>
-<tr class="separator:ad280440ff6bdcc0ea6b562ea64dac59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ee0ceef7e30bc53c3ca5ea18cac0ca8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1ee0ceef7e30bc53c3ca5ea18cac0ca8"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a1ee0ceef7e30bc53c3ca5ea18cac0ca8">xmm::reallocate</a> (T *src, unsigned int dim_src, unsigned int dim_dst)</td></tr>
+<tr class="memdesc:a1ee0ceef7e30bc53c3ca5ea18cac0ca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reallocate a C-like array (using c++ std::copy)  <a href="#a1ee0ceef7e30bc53c3ca5ea18cac0ca8">More...</a><br /></td></tr>
+<tr class="separator:a1ee0ceef7e30bc53c3ca5ea18cac0ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a602fba6506f7f4c4c5d7cc2ab03b5964"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">T* reallocate </td>
-          <td>(</td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>dim_src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>dim_dst</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Reallocate a C-like array (using c++ std::copy) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">src</td><td>source array </td></tr>
-    <tr><td class="paramname">dim_src</td><td>initial dimension </td></tr>
-    <tr><td class="paramname">dim_dst</td><td>target dimension </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>resized array (content is conserved) </dd></dl>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="ad280440ff6bdcc0ea6b562ea64dac59f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int PHRASE_ALLOC_BLOCKSIZE = 256</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a76a85e386f04f821134bdeb2cf7f54c0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int PHRASE_DEFAULT_DIMENSION = 1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 12 2015 22:46:29 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

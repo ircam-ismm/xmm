@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.1-alpha</span>
+   &#160;<span id="projectnumber">0.1-alpha.2</span>
    </div>
   </td>
  </tr>
@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -98,9 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle">
 <div class="title">probabilistic_model.h File Reference</div>  </div>
 </div><!--header-->
@@ -113,156 +112,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_e_m_stop_criterion.html">EMStopCriterion</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop Criterion for the EM algorithm.  <a href="struct_e_m_stop_criterion.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structxmm_1_1_e_m_stop_criterion.html">xmm::EMStopCriterion</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop Criterion for the EM algorithm.  <a href="structxmm_1_1_e_m_stop_criterion.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_probabilistic_model.html">ProbabilisticModel</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic Template for Machine Learning Probabilistic models based on the EM algorithm.  <a href="class_probabilistic_model.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxmm_1_1_probabilistic_model.html">xmm::ProbabilisticModel</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic Template for Machine Learning Probabilistic models based on the EM algorithm.  <a href="classxmm_1_1_probabilistic_model.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a0ea0773178f55e73ebc40bad05153946"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#a0ea0773178f55e73ebc40bad05153946">PREVENT_ATTR_CHANGE</a>()&#160;&#160;&#160;if (is_training()) throw runtime_error(&quot;Cannot set attributes during Training&quot;);</td></tr>
-<tr class="separator:a0ea0773178f55e73ebc40bad05153946"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ab1d11584e349221ce1ccfd39164251ad"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a> { <a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada25328a5918d4be333f9c3aeac1cb2948">TRAINING_RUN</a>, 
-<a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251adaa43b585086e35a5e0f2d389c1cc07d0e">TRAINING_DONE</a>, 
-<a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada79c254231edb6503af11fccc5ec61c89">TRAINING_ERROR</a>, 
-<a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ada623598a8d05182a56ad06fe394e226ad">TRAINING_ABORT</a>
- }</td></tr>
-<tr class="memdesc:ab1d11584e349221ce1ccfd39164251ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags for the Callback called by the training algorithm.  <a href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">More...</a><br /></td></tr>
-<tr class="separator:ab1d11584e349221ce1ccfd39164251ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:aabe75b2910edaae8c4b6c02e9e7f66ce"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#aabe75b2910edaae8c4b6c02e9e7f66ce">EM_MODEL_DEFAULT_EMSTOP_MINSTEPS</a> = 10</td></tr>
-<tr class="separator:aabe75b2910edaae8c4b6c02e9e7f66ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b03c32fed9a82f00a549c5ab4c706f2"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#a7b03c32fed9a82f00a549c5ab4c706f2">EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS</a> = 0</td></tr>
-<tr class="separator:a7b03c32fed9a82f00a549c5ab4c706f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7337897cf1304367aa464054595ca1f"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#aa7337897cf1304367aa464054595ca1f">EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG</a> = 0.01</td></tr>
-<tr class="separator:aa7337897cf1304367aa464054595ca1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d5d632dec85e1df387488629768777f"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#a4d5d632dec85e1df387488629768777f">EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW</a> = 1</td></tr>
-<tr class="separator:a4d5d632dec85e1df387488629768777f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8e26db25419326505bcb0d8ac1c0af6"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="probabilistic__model_8h.html#ad8e26db25419326505bcb0d8ac1c0af6">EM_MODEL_DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS</a> = 100</td></tr>
-<tr class="separator:ad8e26db25419326505bcb0d8ac1c0af6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacexmm"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacexmm.html">xmm</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="a0ea0773178f55e73ebc40bad05153946"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PREVENT_ATTR_CHANGE</td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td>&#160;&#160;&#160;if (is_training()) throw runtime_error(&quot;Cannot set attributes during Training&quot;);</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a class="anchor" id="ab1d11584e349221ce1ccfd39164251ad"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="probabilistic__model_8h.html#ab1d11584e349221ce1ccfd39164251ad">CALLBACK_FLAG</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Flags for the Callback called by the training algorithm. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="ab1d11584e349221ce1ccfd39164251ada25328a5918d4be333f9c3aeac1cb2948"></a>TRAINING_RUN&#160;</td><td class="fielddoc">
-<p>Training is still running </p>
-</td></tr>
-<tr><td class="fieldname"><a class="anchor" id="ab1d11584e349221ce1ccfd39164251adaa43b585086e35a5e0f2d389c1cc07d0e"></a>TRAINING_DONE&#160;</td><td class="fielddoc">
-<p>Training is done without error </p>
-</td></tr>
-<tr><td class="fieldname"><a class="anchor" id="ab1d11584e349221ce1ccfd39164251ada79c254231edb6503af11fccc5ec61c89"></a>TRAINING_ERROR&#160;</td><td class="fielddoc">
-<p>An error occured during training (probably convergence issue) </p>
-</td></tr>
-<tr><td class="fieldname"><a class="anchor" id="ab1d11584e349221ce1ccfd39164251ada623598a8d05182a56ad06fe394e226ad"></a>TRAINING_ABORT&#160;</td><td class="fielddoc">
-<p>The training has been cancelled. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="ad8e26db25419326505bcb0d8ac1c0af6"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int EM_MODEL_DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS = 100</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default absolute maximum number of EM iterations </p>
-
-</div>
-</div>
-<a class="anchor" id="a7b03c32fed9a82f00a549c5ab4c706f2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default value for the maximum number of steps of the EM algorithm </p>
-
-</div>
-</div>
-<a class="anchor" id="aabe75b2910edaae8c4b6c02e9e7f66ce"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int EM_MODEL_DEFAULT_EMSTOP_MINSTEPS = 10</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default value for the minimum number of steps of the EM algorithm </p>
-
-</div>
-</div>
-<a class="anchor" id="aa7337897cf1304367aa464054595ca1f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const double EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG = 0.01</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default value for the percent-change criterion of the EM algorithm </p>
-
-</div>
-</div>
-<a class="anchor" id="a4d5d632dec85e1df387488629768777f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW = 1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default value for the size of the likelihood window used for smoothing likelihoods in performance mode. </p>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 12 2015 22:46:29 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

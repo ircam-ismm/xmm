@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['has_5fchanged',['has_changed',['../class_training_set.html#ae2ef357e5c4deb24a3bee3ea560c2040',1,'TrainingSet']]],
-  ['hierarchicalhmm',['HierarchicalHMM',['../class_hierarchical_h_m_m.html#aeaa2cff5d7892a27c0a589c0fbce4e31',1,'HierarchicalHMM']]],
-  ['hmm',['HMM',['../class_h_m_m.html#a43b31b1ffa21d25dc64b7db3d650b2f5',1,'HMM::HMM(rtml_flags flags=NONE, TrainingSet *trainingSet=NULL, int nbStates=HMM_DEFAULT_NB_STATES, int nbMixtureComponents=GMM_DEFAULT_NB_MIXTURE_COMPONENTS, GaussianDistribution::COVARIANCE_MODE covariance_mode=GaussianDistribution::FULL)'],['../class_h_m_m.html#a260412ec89c6ee31621d922f26e5e64c',1,'HMM::HMM(HMM const &amp;src)']]]
+  ['has_5fchanged',['has_changed',['../classxmm_1_1_training_set.html#a7eec7054c9789867d0038ead05697545',1,'xmm::TrainingSet']]],
+  ['hierarchicalhmm',['HierarchicalHMM',['../classxmm_1_1_hierarchical_h_m_m.html#a08741b985e0572d94513ec8e0e1de483',1,'xmm::HierarchicalHMM::HierarchicalHMM(xmm_flags flags=NONE, TrainingSet *_globalTrainingSet=NULL, GaussianDistribution::COVARIANCE_MODE covariance_mode=GaussianDistribution::FULL)'],['../classxmm_1_1_hierarchical_h_m_m.html#a459c6bee4d89c58eb53b40d14e4945e1',1,'xmm::HierarchicalHMM::HierarchicalHMM(HierarchicalHMM const &amp;src)']]],
+  ['hmm',['HMM',['../classxmm_1_1_h_m_m.html#a1d5ba3e4531d72b7c0f3d72bb38088f8',1,'xmm::HMM::HMM(xmm_flags flags=NONE, TrainingSet *trainingSet=NULL, int nbStates=DEFAULT_NB_STATES, int nbMixtureComponents=GMM::DEFAULT_NB_MIXTURE_COMPONENTS, GaussianDistribution::COVARIANCE_MODE covariance_mode=GaussianDistribution::FULL)'],['../classxmm_1_1_h_m_m.html#a15f2627d5a9a4bea357f62a4996c5176',1,'xmm::HMM::HMM(HMM const &amp;src)']]]
 ];

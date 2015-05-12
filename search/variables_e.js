@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['offset_5fabsolute',['offset_absolute',['../class_gaussian_distribution.html#a6bcec9b9d976659a527117874d9e890d',1,'GaussianDistribution']]],
-  ['offset_5frelative',['offset_relative',['../class_gaussian_distribution.html#aaebf01d2f162e63aa7a744af2cb04b1b',1,'GaussianDistribution']]],
-  ['output_5fvariance',['output_variance',['../class_gaussian_distribution.html#a93131069c1db88779fe86e0c2ed1db4c',1,'GaussianDistribution']]],
-  ['owndata',['ownData',['../class_matrix.html#a95c31a804374ded14e5eaa530a01974a',1,'Matrix']]],
-  ['owns_5fdata',['owns_data',['../class_training_set.html#ab2acfa07710f8e65e461899af3f47974',1,'TrainingSet']]],
-  ['owns_5fdata_5f',['owns_data_',['../class_phrase.html#a0f7ce5ad5ae27023b4cbfab305406e3d',1,'Phrase']]]
+  ['percentchg',['percentChg',['../structxmm_1_1_e_m_stop_criterion.html#a8ab23695f2056f38652cb72b383af707',1,'xmm::EMStopCriterion']]],
+  ['performancemode_5f',['performanceMode_',['../classxmm_1_1_model_group.html#a512ce639c8b634da852d592dbdd2b039',1,'xmm::ModelGroup']]],
+  ['phraselabels',['phraseLabels',['../classxmm_1_1_training_set.html#aae9d63760a2a0035c5f7e9fab5f69219',1,'xmm::TrainingSet']]],
+  ['phrases',['phrases',['../classxmm_1_1_training_set.html#a4fcff8d5ecfe861f7a7e82a2d026565d',1,'xmm::TrainingSet']]],
+  ['previousalpha_5f',['previousAlpha_',['../classxmm_1_1_h_m_m.html#a4b0dc15fbf543df220c5365a936983e2',1,'xmm::HMM']]],
+  ['previousbeta_5f',['previousBeta_',['../classxmm_1_1_h_m_m.html#a52a3e05f98d48a05336fa459f0aaef42',1,'xmm::HMM']]],
+  ['prior',['prior',['../classxmm_1_1_hierarchical_h_m_m.html#a91e110bdcc816fc9cc55112f1dee9e01',1,'xmm::HierarchicalHMM::prior()'],['../classxmm_1_1_h_m_m.html#a25e6803787aede5b956846ee46743335',1,'xmm::HMM::prior()']]]
 ];

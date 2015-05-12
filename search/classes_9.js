@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['trainingset',['TrainingSet',['../class_training_set.html',1,'']]]
+  ['trainingset',['TrainingSet',['../classxmm_1_1_training_set.html',1,'xmm']]]
 ];

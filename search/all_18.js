@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['y',['y',['../struct_ellipse.html#af47bd349755ff162c5c3a9c6101fb753',1,'Ellipse']]]
+  ['y',['y',['../structxmm_1_1_ellipse.html#aee52d02bf008f4f85f0f68d2b9ad6511',1,'xmm::Ellipse']]]
 ];

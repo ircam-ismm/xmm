@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.1-alpha</span>
+   &#160;<span id="projectnumber">0.1-alpha.2</span>
    </div>
   </td>
  </tr>
@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -96,107 +97,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">label.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="label_8h_source.html">label.h</a>&quot;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
-</div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a1995378625f6863f0764c6b5979085f5"><td class="memItemLeft" align="right" valign="top">ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="label_8cpp.html#a1995378625f6863f0764c6b5979085f5">operator&lt;&lt;</a> (std::ostream &amp;stream, <a class="el" href="class_label.html">Label</a> const &amp;l)</td></tr>
-<tr class="separator:a1995378625f6863f0764c6b5979085f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89bb54f4dd90838aaa73325aa41c09f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="label_8cpp.html#a89bb54f4dd90838aaa73325aa41c09f3">is_number</a> (const string &amp;s)</td></tr>
-<tr class="memdesc:a89bb54f4dd90838aaa73325aa41c09f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the string contains an integer.  <a href="#a89bb54f4dd90838aaa73325aa41c09f3">More...</a><br /></td></tr>
-<tr class="separator:a89bb54f4dd90838aaa73325aa41c09f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5fbeae8c9316781f8e45e9709940fc89"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="label_8cpp.html#a5fbeae8c9316781f8e45e9709940fc89">to_int</a> (const string &amp;s)</td></tr>
-<tr class="memdesc:a5fbeae8c9316781f8e45e9709940fc89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get integer from string.  <a href="#a5fbeae8c9316781f8e45e9709940fc89">More...</a><br /></td></tr>
-<tr class="separator:a5fbeae8c9316781f8e45e9709940fc89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a89bb54f4dd90838aaa73325aa41c09f3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool is_number </td>
-          <td>(</td>
-          <td class="paramtype">const string &amp;&#160;</td>
-          <td class="paramname"><em>s</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Check if the string contains an integer. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">s</td><td>std::string to check </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if the string contains an integer </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a1995378625f6863f0764c6b5979085f5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ostream&amp; operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_label.html">Label</a> const &amp;&#160;</td>
-          <td class="paramname"><em>l</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">stream</td><td>output stream </td></tr>
-    <tr><td class="paramname">l</td><td>label </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a5fbeae8c9316781f8e45e9709940fc89"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int to_int </td>
-          <td>(</td>
-          <td class="paramtype">const string &amp;&#160;</td>
-          <td class="paramname"><em>s</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get integer from string. </p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 12 2015 22:46:29 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

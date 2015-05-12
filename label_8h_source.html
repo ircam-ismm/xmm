@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.1-alpha</span>
+   &#160;<span id="projectnumber">0.1-alpha.2</span>
    </div>
   </td>
  </tr>
@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -132,98 +133,121 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> * along with XMM.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#ifndef __mhmm__label__</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#define __mhmm__label__</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#ifndef xmm_lib_label__</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#define xmm_lib_label__</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="mbd__common_8h.html">mbd_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="xmm__common_8h.html">xmm_common.h</a>&quot;</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="json__utilities_8h.html">json_utilities.h</a>&quot;</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">using namespace </span><a class="code" href="namespacestd.html">std</a>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_label.html">   48</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_label.html">Label</a> : <span class="keyword">public</span> <a class="code" href="class_writable.html">Writable</a></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;{</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="class_label.html#a33187ae72bdf82ee444ca9bf5c6273c7a8da3d2ad91938c64965cc0b63016decd">   54</a></span>&#160;    <span class="keyword">enum</span> {INT, SYM} type;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="class_label.html">Label</a>();</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="class_label.html#ae0405d591a2ff63c03b104435e2a3066">   65</a></span>&#160;    <span class="keyword">virtual</span> <a class="code" href="class_label.html#ae0405d591a2ff63c03b104435e2a3066">~Label</a>() {}</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_label.html">Label</a>(<span class="keywordtype">int</span> l);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_label.html">Label</a>(<span class="keywordtype">string</span> l);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_label.html">Label</a>(<span class="keywordtype">char</span>* l);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <a class="code" href="class_label.html">Label</a>(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="class_label.html">Label</a>&amp; operator=(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <a class="code" href="class_label.html">Label</a>&amp; operator=(<span class="keywordtype">int</span> l);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="class_label.html">Label</a>&amp; operator=(<span class="keywordtype">string</span> l);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <a class="code" href="class_label.html">Label</a>&amp; operator=(<span class="keywordtype">char</span>* l);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">bool</span> operator==(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">bool</span> operator!=(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordtype">bool</span> operator&lt;(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordtype">bool</span> operator&lt;=(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordtype">bool</span> operator&gt;(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">bool</span> operator&gt;=(<a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordtype">int</span> getInt() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keywordtype">string</span> getSym() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordtype">void</span> setInt(<span class="keywordtype">int</span> l);</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordtype">bool</span> trySetInt(<span class="keywordtype">string</span> l);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordtype">void</span> setSym(<span class="keywordtype">string</span> l);</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    </div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="keywordtype">void</span> setSym(<span class="keywordtype">char</span>* l);</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    JSONNode to_json() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keywordtype">void</span> from_json(JSONNode root);</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    </div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordtype">string</span> as_string() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    </div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <span class="keyword">friend</span> ostream&amp; <a class="code" href="label_8cpp.html#a1995378625f6863f0764c6b5979085f5">operator&lt;&lt;</a>(std::ostream&amp; stream, <a class="code" href="class_label.html">Label</a> <span class="keyword">const</span>&amp; l);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    </div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00225"></a><span class="lineno"><a class="line" href="class_label.html#affb2f4505898bb40be86bd1517715d71">  225</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_label.html#affb2f4505898bb40be86bd1517715d71">intLabel_</a>;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
-<div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="class_label.html#a6a2c022438018fda41d4c26ef0777c28">  230</a></span>&#160;    <span class="keywordtype">string</span> <a class="code" href="class_label.html#a6a2c022438018fda41d4c26ef0777c28">symLabel_</a>;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;};</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="label_8h.html#a89bb54f4dd90838aaa73325aa41c09f3">is_number</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; s);</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="keywordtype">int</span> <a class="code" href="label_8h.html#a5fbeae8c9316781f8e45e9709940fc89">to_int</a>(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp; s);</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_label_html_affb2f4505898bb40be86bd1517715d71"><div class="ttname"><a href="class_label.html#affb2f4505898bb40be86bd1517715d71">Label::intLabel_</a></div><div class="ttdeci">int intLabel_</div><div class="ttdoc">Integer value. </div><div class="ttdef"><b>Definition:</b> label.h:225</div></div>
-<div class="ttc" id="label_8h_html_a5fbeae8c9316781f8e45e9709940fc89"><div class="ttname"><a href="label_8h.html#a5fbeae8c9316781f8e45e9709940fc89">to_int</a></div><div class="ttdeci">int to_int(const string &amp;s)</div><div class="ttdoc">Get integer from string. </div><div class="ttdef"><b>Definition:</b> label.cpp:242</div></div>
-<div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
-<div class="ttc" id="class_label_html_a6a2c022438018fda41d4c26ef0777c28"><div class="ttname"><a href="class_label.html#a6a2c022438018fda41d4c26ef0777c28">Label::symLabel_</a></div><div class="ttdeci">string symLabel_</div><div class="ttdoc">symbolic value </div><div class="ttdef"><b>Definition:</b> label.h:230</div></div>
-<div class="ttc" id="class_writable_html"><div class="ttname"><a href="class_writable.html">Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> mbd_common.h:114</div></div>
-<div class="ttc" id="label_8h_html_a89bb54f4dd90838aaa73325aa41c09f3"><div class="ttname"><a href="label_8h.html#a89bb54f4dd90838aaa73325aa41c09f3">is_number</a></div><div class="ttdeci">bool is_number(const string &amp;s)</div><div class="ttdoc">Check if the string contains an integer. </div><div class="ttdef"><b>Definition:</b> label.cpp:235</div></div>
-<div class="ttc" id="class_label_html_ae0405d591a2ff63c03b104435e2a3066"><div class="ttname"><a href="class_label.html#ae0405d591a2ff63c03b104435e2a3066">Label::~Label</a></div><div class="ttdeci">virtual ~Label()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> label.h:65</div></div>
-<div class="ttc" id="mbd__common_8h_html"><div class="ttname"><a href="mbd__common_8h.html">mbd_common.h</a></div></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacexmm.html">xmm</a></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classxmm_1_1_label.html">   48</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classxmm_1_1_label.html">Label</a> : <span class="keyword">public</span> <a class="code" href="classxmm_1_1_writable.html">Writable</a></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classxmm_1_1_label.html#ac18bd28519263b4f261ba5c3b3ced978aa7fc8e3882e479ab9ce9ff0fa046e71f">   54</a></span>&#160;        <span class="keyword">enum</span> {<a class="code" href="classxmm_1_1_label.html#ac18bd28519263b4f261ba5c3b3ced978af67786e880c680e64e5f25bc54d8fcbf">INT</a>, <a class="code" href="classxmm_1_1_label.html#ac18bd28519263b4f261ba5c3b3ced978aa7fc8e3882e479ab9ce9ff0fa046e71f">SYM</a>} <a class="code" href="classxmm_1_1_label.html#a27eda6546737c4358909a08cb2ae9ce7">type</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <a class="code" href="classxmm_1_1_label.html#a4ddb4a9276bd8d6a9206aef0c9cf90df">Label</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classxmm_1_1_label.html#a23fcf1ae67a84db86c714045fccca67d">   65</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classxmm_1_1_label.html#a23fcf1ae67a84db86c714045fccca67d">~Label</a>() {}</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classxmm_1_1_label.html#a4ddb4a9276bd8d6a9206aef0c9cf90df">Label</a>(<span class="keywordtype">int</span> l);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classxmm_1_1_label.html#a4ddb4a9276bd8d6a9206aef0c9cf90df">Label</a>(std::string l);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classxmm_1_1_label.html#a4ddb4a9276bd8d6a9206aef0c9cf90df">Label</a>(<span class="keywordtype">char</span>* l);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <a class="code" href="classxmm_1_1_label.html#a4ddb4a9276bd8d6a9206aef0c9cf90df">Label</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <a class="code" href="classxmm_1_1_label.html">Label</a>&amp; <a class="code" href="classxmm_1_1_label.html#a96ecafb53fd197ec8c0985696f551b8f">operator=</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <a class="code" href="classxmm_1_1_label.html">Label</a>&amp; <a class="code" href="classxmm_1_1_label.html#a96ecafb53fd197ec8c0985696f551b8f">operator=</a>(<span class="keywordtype">int</span> l);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <a class="code" href="classxmm_1_1_label.html">Label</a>&amp; <a class="code" href="classxmm_1_1_label.html#a96ecafb53fd197ec8c0985696f551b8f">operator=</a>(std::string l);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <a class="code" href="classxmm_1_1_label.html">Label</a>&amp; <a class="code" href="classxmm_1_1_label.html#a96ecafb53fd197ec8c0985696f551b8f">operator=</a>(<span class="keywordtype">char</span>* l);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#abe491463993941f9050b628632ef8655">operator==</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#ac390ef02a90565deb714bde439d869eb">operator!=</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        </div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#a9bc3250cf92084edcda683fb2778c1b9">operator&lt;</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#a4302a80d6f089fcf2bd8a1d0c70c9258">operator&lt;=</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#a8493e3d944c7017e2f92b6429282f0d2">operator&gt;</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#af565a5f230c5e02223442b72b6f1244d">operator&gt;=</a>(<a class="code" href="classxmm_1_1_label.html">Label</a> <span class="keyword">const</span>&amp; src) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_label.html#a1c2bd777392b7027940c0a412cd83734">getInt</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        std::string <a class="code" href="classxmm_1_1_label.html#aafadff4e13a8c28b1fab196834a12202">getSym</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_label.html#ad100d30191e50f00adc7fae4e1a58853">setInt</a>(<span class="keywordtype">int</span> l);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classxmm_1_1_label.html#a7f8c1ec70b2cceb5e85253f973cffd28">trySetInt</a>(std::string l);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        </div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_label.html#a740c63bd0d17d2f454b43f54869b0758">setSym</a>(std::string l);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        </div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_label.html#a740c63bd0d17d2f454b43f54869b0758">setSym</a>(<span class="keywordtype">char</span>* l);</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        </div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        JSONNode <a class="code" href="classxmm_1_1_label.html#a4ad2869474c383245c4ebd9f38e8ff85">to_json</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classxmm_1_1_label.html#a2069a568a07b3f074b2badc6c2a76669">from_json</a>(JSONNode root);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        std::string <a class="code" href="classxmm_1_1_label.html#ae061f5e2f1b3f827067948a16f7bce5f">as_string</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        </div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keyword">friend</span> std::ostream&amp; <a class="code" href="classxmm_1_1_label.html#ade9b3511d4a895de87f63b37b51f682d">operator&lt;&lt;</a>(std::ostream&amp; stream, <a class="code" href="classxmm_1_1_label.html">xmm::Label</a> <span class="keyword">const</span>&amp; l);</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        </div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00225"></a><span class="lineno"><a class="line" href="classxmm_1_1_label.html#abf17b7ef073c2bb42baf420f2ac0e893">  225</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classxmm_1_1_label.html#abf17b7ef073c2bb42baf420f2ac0e893">intLabel_</a>;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        </div>
+<div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="classxmm_1_1_label.html#a21e9f802a2e30514979fdc612b8614cc">  230</a></span>&#160;        std::string <a class="code" href="classxmm_1_1_label.html#a21e9f802a2e30514979fdc612b8614cc">symLabel_</a>;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    };</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespacexmm.html#a85e2feb6455256853e3f74e7ffd8433c">is_number</a>(<span class="keyword">const</span> std::string&amp; s);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="namespacexmm.html#a275e644ba0f54e55e22959adc8b6c97d">to_int</a>(<span class="keyword">const</span> std::string&amp; s);</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    std::ostream&amp; <a class="code" href="namespacexmm.html#a41f91df38c4b1e8f377e1c68247bdc3c">operator&lt;&lt;</a>(std::ostream&amp; stream, <a class="code" href="classxmm_1_1_label.html">xmm::Label</a> <span class="keyword">const</span>&amp; l);</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;}</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="namespacexmm_html_a85e2feb6455256853e3f74e7ffd8433c"><div class="ttname"><a href="namespacexmm.html#a85e2feb6455256853e3f74e7ffd8433c">xmm::is_number</a></div><div class="ttdeci">bool is_number(const std::string &amp;s)</div><div class="ttdoc">Check if the string contains an integer. </div><div class="ttdef"><b>Definition:</b> label.cpp:250</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a740c63bd0d17d2f454b43f54869b0758"><div class="ttname"><a href="classxmm_1_1_label.html#a740c63bd0d17d2f454b43f54869b0758">xmm::Label::setSym</a></div><div class="ttdeci">void setSym(std::string l)</div><div class="ttdef"><b>Definition:</b> label.cpp:170</div></div>
+<div class="ttc" id="namespacexmm_html_a41f91df38c4b1e8f377e1c68247bdc3c"><div class="ttname"><a href="namespacexmm.html#a41f91df38c4b1e8f377e1c68247bdc3c">xmm::operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;stream, xmm::Label const &amp;l)</div><div class="ttdoc">Insertion operator. </div><div class="ttdef"><b>Definition:</b> label.cpp:241</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_ac390ef02a90565deb714bde439d869eb"><div class="ttname"><a href="classxmm_1_1_label.html#ac390ef02a90565deb714bde439d869eb">xmm::Label::operator!=</a></div><div class="ttdeci">bool operator!=(Label const &amp;src) const </div><div class="ttdoc">Check label inequality. </div><div class="ttdef"><b>Definition:</b> label.cpp:109</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a96ecafb53fd197ec8c0985696f551b8f"><div class="ttname"><a href="classxmm_1_1_label.html#a96ecafb53fd197ec8c0985696f551b8f">xmm::Label::operator=</a></div><div class="ttdeci">Label &amp; operator=(Label const &amp;src)</div><div class="ttdoc">Assignment. </div><div class="ttdef"><b>Definition:</b> label.cpp:66</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_ae061f5e2f1b3f827067948a16f7bce5f"><div class="ttname"><a href="classxmm_1_1_label.html#ae061f5e2f1b3f827067948a16f7bce5f">xmm::Label::as_string</a></div><div class="ttdeci">std::string as_string() const </div><div class="ttdoc">print label as c++ std::string </div><div class="ttdef"><b>Definition:</b> label.cpp:234</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_ade9b3511d4a895de87f63b37b51f682d"><div class="ttname"><a href="classxmm_1_1_label.html#ade9b3511d4a895de87f63b37b51f682d">xmm::Label::operator&lt;&lt;</a></div><div class="ttdeci">friend std::ostream &amp; operator&lt;&lt;(std::ostream &amp;stream, xmm::Label const &amp;l)</div><div class="ttdoc">Insertion operator. </div></div>
+<div class="ttc" id="classxmm_1_1_label_html_af565a5f230c5e02223442b72b6f1244d"><div class="ttname"><a href="classxmm_1_1_label.html#af565a5f230c5e02223442b72b6f1244d">xmm::Label::operator&gt;=</a></div><div class="ttdeci">bool operator&gt;=(Label const &amp;src) const </div><div class="ttdoc">Check label inequality. </div><div class="ttdef"><b>Definition:</b> label.cpp:135</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a27eda6546737c4358909a08cb2ae9ce7"><div class="ttname"><a href="classxmm_1_1_label.html#a27eda6546737c4358909a08cb2ae9ce7">xmm::Label::type</a></div><div class="ttdeci">enum xmm::Label::@0 type</div><div class="ttdoc">Type of the Label: &#39;INT&#39; or &#39;SYM&#39;. </div></div>
+<div class="ttc" id="classxmm_1_1_label_html"><div class="ttname"><a href="classxmm_1_1_label.html">xmm::Label</a></div><div class="ttdoc">Label of a data phrase. </div><div class="ttdef"><b>Definition:</b> label.h:48</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a8493e3d944c7017e2f92b6429282f0d2"><div class="ttname"><a href="classxmm_1_1_label.html#a8493e3d944c7017e2f92b6429282f0d2">xmm::Label::operator&gt;</a></div><div class="ttdeci">bool operator&gt;(Label const &amp;src) const </div><div class="ttdoc">Check label inequality. </div><div class="ttdef"><b>Definition:</b> label.cpp:130</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a1c2bd777392b7027940c0a412cd83734"><div class="ttname"><a href="classxmm_1_1_label.html#a1c2bd777392b7027940c0a412cd83734">xmm::Label::getInt</a></div><div class="ttdeci">int getInt() const </div><div class="ttdef"><b>Definition:</b> label.cpp:140</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_aafadff4e13a8c28b1fab196834a12202"><div class="ttname"><a href="classxmm_1_1_label.html#aafadff4e13a8c28b1fab196834a12202">xmm::Label::getSym</a></div><div class="ttdeci">std::string getSym() const </div><div class="ttdef"><b>Definition:</b> label.cpp:147</div></div>
+<div class="ttc" id="namespacexmm_html_a275e644ba0f54e55e22959adc8b6c97d"><div class="ttname"><a href="namespacexmm.html#a275e644ba0f54e55e22959adc8b6c97d">xmm::to_int</a></div><div class="ttdeci">int to_int(const std::string &amp;s)</div><div class="ttdoc">Get integer from string. </div><div class="ttdef"><b>Definition:</b> label.cpp:257</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a7f8c1ec70b2cceb5e85253f973cffd28"><div class="ttname"><a href="classxmm_1_1_label.html#a7f8c1ec70b2cceb5e85253f973cffd28">xmm::Label::trySetInt</a></div><div class="ttdeci">bool trySetInt(std::string l)</div><div class="ttdef"><b>Definition:</b> label.cpp:160</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a4ddb4a9276bd8d6a9206aef0c9cf90df"><div class="ttname"><a href="classxmm_1_1_label.html#a4ddb4a9276bd8d6a9206aef0c9cf90df">xmm::Label::Label</a></div><div class="ttdeci">Label()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> label.cpp:36</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a4ad2869474c383245c4ebd9f38e8ff85"><div class="ttname"><a href="classxmm_1_1_label.html#a4ad2869474c383245c4ebd9f38e8ff85">xmm::Label::to_json</a></div><div class="ttdeci">JSONNode to_json() const </div><div class="ttdoc">Write to JSON Node. </div><div class="ttdef"><b>Definition:</b> label.cpp:182</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_ac18bd28519263b4f261ba5c3b3ced978af67786e880c680e64e5f25bc54d8fcbf"><div class="ttname"><a href="classxmm_1_1_label.html#ac18bd28519263b4f261ba5c3b3ced978af67786e880c680e64e5f25bc54d8fcbf">xmm::Label::INT</a></div><div class="ttdef"><b>Definition:</b> label.h:54</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_ac18bd28519263b4f261ba5c3b3ced978aa7fc8e3882e479ab9ce9ff0fa046e71f"><div class="ttname"><a href="classxmm_1_1_label.html#ac18bd28519263b4f261ba5c3b3ced978aa7fc8e3882e479ab9ce9ff0fa046e71f">xmm::Label::SYM</a></div><div class="ttdef"><b>Definition:</b> label.h:54</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_abf17b7ef073c2bb42baf420f2ac0e893"><div class="ttname"><a href="classxmm_1_1_label.html#abf17b7ef073c2bb42baf420f2ac0e893">xmm::Label::intLabel_</a></div><div class="ttdeci">int intLabel_</div><div class="ttdoc">Integer value. </div><div class="ttdef"><b>Definition:</b> label.h:225</div></div>
+<div class="ttc" id="classxmm_1_1_writable_html"><div class="ttname"><a href="classxmm_1_1_writable.html">xmm::Writable</a></div><div class="ttdoc">Abstract class for handling JSON + File I/O. </div><div class="ttdef"><b>Definition:</b> xmm_common.h:114</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a4302a80d6f089fcf2bd8a1d0c70c9258"><div class="ttname"><a href="classxmm_1_1_label.html#a4302a80d6f089fcf2bd8a1d0c70c9258">xmm::Label::operator&lt;=</a></div><div class="ttdeci">bool operator&lt;=(Label const &amp;src) const </div><div class="ttdoc">Check label inequality. </div><div class="ttdef"><b>Definition:</b> label.cpp:125</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a9bc3250cf92084edcda683fb2778c1b9"><div class="ttname"><a href="classxmm_1_1_label.html#a9bc3250cf92084edcda683fb2778c1b9">xmm::Label::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(Label const &amp;src) const </div><div class="ttdoc">Check label inequality. </div><div class="ttdef"><b>Definition:</b> label.cpp:114</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a21e9f802a2e30514979fdc612b8614cc"><div class="ttname"><a href="classxmm_1_1_label.html#a21e9f802a2e30514979fdc612b8614cc">xmm::Label::symLabel_</a></div><div class="ttdeci">std::string symLabel_</div><div class="ttdoc">symbolic value </div><div class="ttdef"><b>Definition:</b> label.h:230</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a23fcf1ae67a84db86c714045fccca67d"><div class="ttname"><a href="classxmm_1_1_label.html#a23fcf1ae67a84db86c714045fccca67d">xmm::Label::~Label</a></div><div class="ttdeci">virtual ~Label()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> label.h:65</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_ad100d30191e50f00adc7fae4e1a58853"><div class="ttname"><a href="classxmm_1_1_label.html#ad100d30191e50f00adc7fae4e1a58853">xmm::Label::setInt</a></div><div class="ttdeci">void setInt(int l)</div><div class="ttdef"><b>Definition:</b> label.cpp:154</div></div>
+<div class="ttc" id="xmm__common_8h_html"><div class="ttname"><a href="xmm__common_8h.html">xmm_common.h</a></div></div>
+<div class="ttc" id="classxmm_1_1_label_html_a2069a568a07b3f074b2badc6c2a76669"><div class="ttname"><a href="classxmm_1_1_label.html#a2069a568a07b3f074b2badc6c2a76669">xmm::Label::from_json</a></div><div class="ttdeci">void from_json(JSONNode root)</div><div class="ttdoc">Read from JSON Node. </div><div class="ttdef"><b>Definition:</b> label.cpp:196</div></div>
+<div class="ttc" id="classxmm_1_1_label_html_abe491463993941f9050b628632ef8655"><div class="ttname"><a href="classxmm_1_1_label.html#abe491463993941f9050b628632ef8655">xmm::Label::operator==</a></div><div class="ttdeci">bool operator==(Label const &amp;src) const </div><div class="ttdoc">Check label equality. </div><div class="ttdef"><b>Definition:</b> label.cpp:100</div></div>
+<div class="ttc" id="namespacexmm_html"><div class="ttname"><a href="namespacexmm.html">xmm</a></div><div class="ttdef"><b>Definition:</b> gaussian_distribution.h:39</div></div>
 <div class="ttc" id="json__utilities_8h_html"><div class="ttname"><a href="json__utilities_8h.html">json_utilities.h</a></div></div>
-<div class="ttc" id="class_label_html"><div class="ttname"><a href="class_label.html">Label</a></div><div class="ttdoc">Label of a data phrase. </div><div class="ttdef"><b>Definition:</b> label.h:48</div></div>
-<div class="ttc" id="label_8cpp_html_a1995378625f6863f0764c6b5979085f5"><div class="ttname"><a href="label_8cpp.html#a1995378625f6863f0764c6b5979085f5">operator&lt;&lt;</a></div><div class="ttdeci">ostream &amp; operator&lt;&lt;(std::ostream &amp;stream, Label const &amp;l)</div><div class="ttdef"><b>Definition:</b> label.cpp:226</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 12 2015 22:46:29 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['writable',['Writable',['../class_writable.html',1,'']]]
+  ['writable',['Writable',['../classxmm_1_1_writable.html',1,'xmm']]]
 ];

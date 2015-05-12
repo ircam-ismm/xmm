@@ -1,18 +1,18 @@
 var searchData=
 [
-  ['_7egaussiandistribution',['~GaussianDistribution',['../class_gaussian_distribution.html#a57228b67f4d4846c20c41f90a86cb622',1,'GaussianDistribution']]],
-  ['_7egmm',['~GMM',['../class_g_m_m.html#ad6cdf92d962cf8dcb0d87ba74467d8ec',1,'GMM']]],
-  ['_7ehierarchicalhmm',['~HierarchicalHMM',['../class_hierarchical_h_m_m.html#a51e533521558e6a88907558ac0c75ea9',1,'HierarchicalHMM']]],
-  ['_7ehmm',['~HMM',['../class_h_m_m.html#a5d2c896836f25b589072a7b96d5eff23',1,'HMM']]],
-  ['_7ejsonexception',['~JSONException',['../class_j_s_o_n_exception.html#a884c9e5d633ca83a90a444cd308c7cdd',1,'JSONException']]],
-  ['_7ekmeans',['~KMeans',['../class_k_means.html#a63e21569b60978c8dfca1fc468d12f19',1,'KMeans']]],
-  ['_7elabel',['~Label',['../class_label.html#ae0405d591a2ff63c03b104435e2a3066',1,'Label']]],
-  ['_7elistener',['~Listener',['../class_listener.html#a3556fba341ebacbce35064875e6a394a',1,'Listener']]],
-  ['_7ematrix',['~Matrix',['../class_matrix.html#ab469241cd172c916061168a60eb6daaa',1,'Matrix']]],
-  ['_7emodelgroup',['~ModelGroup',['../class_model_group.html#a55d01f865be1a1b20270de8b07120c03',1,'ModelGroup']]],
-  ['_7ephrase',['~Phrase',['../class_phrase.html#a0d411fb8f195e517ebbea60e2c65ce0b',1,'Phrase']]],
-  ['_7eprobabilisticmodel',['~ProbabilisticModel',['../class_probabilistic_model.html#ae07dc7fba95749e0cf32e912a9a9d316',1,'ProbabilisticModel']]],
-  ['_7eringbuffer',['~RingBuffer',['../class_ring_buffer.html#a0f490d4f0a4d5f6a2c85aac1e3382b8a',1,'RingBuffer']]],
-  ['_7etrainingset',['~TrainingSet',['../class_training_set.html#a07f47976722dabab7aab0e9248b59f3d',1,'TrainingSet']]],
-  ['_7ewritable',['~Writable',['../class_writable.html#abccd2c97e25dd870bd6764998418607a',1,'Writable']]]
+  ['_7egaussiandistribution',['~GaussianDistribution',['../classxmm_1_1_gaussian_distribution.html#ae612ab73232c56e58de3be835e9e458a',1,'xmm::GaussianDistribution']]],
+  ['_7egmm',['~GMM',['../classxmm_1_1_g_m_m.html#acaae3aa8b729d163d78db3b40b8981b2',1,'xmm::GMM']]],
+  ['_7ehierarchicalhmm',['~HierarchicalHMM',['../classxmm_1_1_hierarchical_h_m_m.html#a1cedc42e131e6b661f14c578616a4fbf',1,'xmm::HierarchicalHMM']]],
+  ['_7ehmm',['~HMM',['../classxmm_1_1_h_m_m.html#a8816adbe1568fc7d5fee133027d0c645',1,'xmm::HMM']]],
+  ['_7ejsonexception',['~JSONException',['../classxmm_1_1_j_s_o_n_exception.html#a93ff68f7664fa0ded3beb72561acdbc1',1,'xmm::JSONException']]],
+  ['_7ekmeans',['~KMeans',['../classxmm_1_1_k_means.html#a72a18f24dac8b1de2f8f4ce3b5166190',1,'xmm::KMeans']]],
+  ['_7elabel',['~Label',['../classxmm_1_1_label.html#a23fcf1ae67a84db86c714045fccca67d',1,'xmm::Label']]],
+  ['_7elistener',['~Listener',['../classxmm_1_1_listener.html#a84c4e81e74da7fa69310dd7bddf1e327',1,'xmm::Listener']]],
+  ['_7ematrix',['~Matrix',['../classxmm_1_1_matrix.html#a556359b5510efe0c5ed155163a2661b3',1,'xmm::Matrix']]],
+  ['_7emodelgroup',['~ModelGroup',['../classxmm_1_1_model_group.html#a57e6096ecb94964120bf3b8e3cc4b506',1,'xmm::ModelGroup']]],
+  ['_7ephrase',['~Phrase',['../classxmm_1_1_phrase.html#a13af657884c5b9bdb386e655b6627588',1,'xmm::Phrase']]],
+  ['_7eprobabilisticmodel',['~ProbabilisticModel',['../classxmm_1_1_probabilistic_model.html#a598457bb16171ae62b2bf0293f2c0d3f',1,'xmm::ProbabilisticModel']]],
+  ['_7eringbuffer',['~RingBuffer',['../classxmm_1_1_ring_buffer.html#a58b6aaab6149cfdc8f1cd46b8ef6a469',1,'xmm::RingBuffer']]],
+  ['_7etrainingset',['~TrainingSet',['../classxmm_1_1_training_set.html#a7917499004818cb2fb7be5fe4ced10dc',1,'xmm::TrainingSet']]],
+  ['_7ewritable',['~Writable',['../classxmm_1_1_writable.html#a61b812aaf24a2fb79250b94128e68492',1,'xmm::Writable']]]
 ];

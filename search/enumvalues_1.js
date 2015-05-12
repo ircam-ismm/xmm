@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['diagonal',['DIAGONAL',['../class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985aba3e1b9da9ea86ea25b460b1e56668f1',1,'GaussianDistribution']]]
+  ['diagonal',['DIAGONAL',['../classxmm_1_1_gaussian_distribution.html#a49246cdf33ce1ce901d0170e412c3923a6ea28abcfbe615cd6af76b78099f6a99',1,'xmm::GaussianDistribution']]]
 ];

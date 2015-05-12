@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['regression_5festimator',['REGRESSION_ESTIMATOR',['../hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84',1,'hmm.h']]]
+  ['regression_5festimator',['REGRESSION_ESTIMATOR',['../classxmm_1_1_h_m_m.html#a753ba0731478c35d827b498cd5aadea0',1,'xmm::HMM']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['full',['FULL',['../class_gaussian_distribution.html#a89d1430baf88acbd85e072a20aa8c985a33df6894f38a937e470cce46aaa632de',1,'GaussianDistribution::FULL()'],['../hmm_8h.html#aaee94970ca1d34b71fd89fdc986fca84ad08f8ac0aa8dfb59589824359772459e',1,'FULL():&#160;hmm.h']]]
+  ['full',['FULL',['../classxmm_1_1_gaussian_distribution.html#a49246cdf33ce1ce901d0170e412c3923ab7e5ab239d33258af954d84f84ee0ff6',1,'xmm::GaussianDistribution::FULL()'],['../classxmm_1_1_h_m_m.html#a753ba0731478c35d827b498cd5aadea0a2af85977caaf0d860641ff4e609ef848',1,'xmm::HMM::FULL()']]]
 ];

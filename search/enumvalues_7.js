@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mixture',['MIXTURE',['../class_model_group.html#a7ffaa4599a9e164784ec5da074d8f2b4ab067c95c079c8f64207044679539e7d5',1,'ModelGroup']]]
+  ['mixture',['MIXTURE',['../classxmm_1_1_model_group.html#a867f4efa2b2544470d18501899ff4a1ca6ff415c215e0b58310061b01cfadd5cb',1,'xmm::ModelGroup']]]
 ];

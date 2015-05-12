@@ -33,7 +33,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">XMM — Probabilistic Models for Motion Recognition and Mapping
-   &#160;<span id="projectnumber">0.1-alpha</span>
+   &#160;<span id="projectnumber">0.1-alpha.2</span>
    </div>
   </td>
  </tr>
@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -97,7 +98,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle">
 <div class="title">json_utilities.h File Reference</div>  </div>
 </div><!--header-->
@@ -113,457 +115,59 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_j_s_o_n_exception.html">JSONException</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple Exception class for handling JSON I/O errors.  <a href="class_j_s_o_n_exception.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxmm_1_1_j_s_o_n_exception.html">xmm::JSONException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple Exception class for handling JSON I/O errors.  <a href="classxmm_1_1_j_s_o_n_exception.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacexmm"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacexmm.html">xmm</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td colspan="2"><div class="groupHeader">JSON conversion to/from arrays and vectors</div></td></tr>
-<tr class="memitem:a6769bf7ca1cda05f9ab45bb4bf9fe10e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6769bf7ca1cda05f9ab45bb4bf9fe10e"><td class="memTemplItemLeft" align="right" valign="top">JSONNode&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a6769bf7ca1cda05f9ab45bb4bf9fe10e">array2json</a> (T const *a, int n, string name=&quot;array&quot;)</td></tr>
-<tr class="separator:a6769bf7ca1cda05f9ab45bb4bf9fe10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b78def9eaea3d8dafe72a906ccbcd1d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a0b78def9eaea3d8dafe72a906ccbcd1d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a0b78def9eaea3d8dafe72a906ccbcd1d">json2array</a> (JSONNode root, T *a, int n)</td></tr>
-<tr class="separator:a0b78def9eaea3d8dafe72a906ccbcd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a889103ba3b68e9c74159bef87db98b13"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:a889103ba3b68e9c74159bef87db98b13"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a889103ba3b68e9c74159bef87db98b13">json2array</a> (JSONNode root, float *a, int n)</td></tr>
-<tr class="separator:a889103ba3b68e9c74159bef87db98b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b45a94632a17a7d0424a134b3f176cd"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:a8b45a94632a17a7d0424a134b3f176cd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a8b45a94632a17a7d0424a134b3f176cd">json2array</a> (JSONNode root, double *a, int n)</td></tr>
-<tr class="separator:a8b45a94632a17a7d0424a134b3f176cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27aa002be107925b8d58b0f8978f5595"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:a27aa002be107925b8d58b0f8978f5595"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a27aa002be107925b8d58b0f8978f5595">json2array</a> (JSONNode root, bool *a, int n)</td></tr>
-<tr class="separator:a27aa002be107925b8d58b0f8978f5595"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9590c97c5aa72ed8a68963cc8c826ef"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:ae9590c97c5aa72ed8a68963cc8c826ef"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#ae9590c97c5aa72ed8a68963cc8c826ef">json2array</a> (JSONNode root, string *a, int n)</td></tr>
-<tr class="separator:ae9590c97c5aa72ed8a68963cc8c826ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47e37d43ad077333cc109c1be6963aea"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a47e37d43ad077333cc109c1be6963aea"><td class="memTemplItemLeft" align="right" valign="top">JSONNode&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a47e37d43ad077333cc109c1be6963aea">vector2json</a> (vector&lt; T &gt; const &amp;a, string name=&quot;array&quot;)</td></tr>
-<tr class="separator:a47e37d43ad077333cc109c1be6963aea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a541dfc80b4ef5734f2db441c6132818a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a541dfc80b4ef5734f2db441c6132818a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a541dfc80b4ef5734f2db441c6132818a">json2vector</a> (JSONNode root, vector&lt; T &gt; &amp;a, int n)</td></tr>
-<tr class="separator:a541dfc80b4ef5734f2db441c6132818a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af28f5f1942e18e644844da0915efa931"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:af28f5f1942e18e644844da0915efa931"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#af28f5f1942e18e644844da0915efa931">json2vector</a> (JSONNode root, vector&lt; float &gt; &amp;a, int n)</td></tr>
-<tr class="separator:af28f5f1942e18e644844da0915efa931"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4ebbae788e574b0bf953d123092603a"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:af4ebbae788e574b0bf953d123092603a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#af4ebbae788e574b0bf953d123092603a">json2vector</a> (JSONNode root, vector&lt; double &gt; &amp;a, int n)</td></tr>
-<tr class="separator:af4ebbae788e574b0bf953d123092603a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1559de5e78182c22e3f4377562aa811f"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:a1559de5e78182c22e3f4377562aa811f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a1559de5e78182c22e3f4377562aa811f">json2vector</a> (JSONNode root, vector&lt; bool &gt; &amp;a, int n)</td></tr>
-<tr class="separator:a1559de5e78182c22e3f4377562aa811f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a161d0faa6d1c39c3b7f23ebb85e9a53b"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
-<tr class="memitem:a161d0faa6d1c39c3b7f23ebb85e9a53b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="json__utilities_8h.html#a161d0faa6d1c39c3b7f23ebb85e9a53b">json2vector</a> (JSONNode root, vector&lt; string &gt; &amp;a, int n)</td></tr>
-<tr class="separator:a161d0faa6d1c39c3b7f23ebb85e9a53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7816616bcc0ef48dd1662f597432dc4"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ae7816616bcc0ef48dd1662f597432dc4"><td class="memTemplItemLeft" align="right" valign="top">JSONNode&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#ae7816616bcc0ef48dd1662f597432dc4">xmm::array2json</a> (T const *a, int n, std::string name=&quot;array&quot;)</td></tr>
+<tr class="separator:ae7816616bcc0ef48dd1662f597432dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdc05581313cc515a06b276dba157a29"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acdc05581313cc515a06b276dba157a29"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#acdc05581313cc515a06b276dba157a29">xmm::json2array</a> (JSONNode root, T *a, int n)</td></tr>
+<tr class="separator:acdc05581313cc515a06b276dba157a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1cb72335154e73b11766cd01effb1b2"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:af1cb72335154e73b11766cd01effb1b2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#af1cb72335154e73b11766cd01effb1b2">xmm::json2array</a> (JSONNode root, float *a, int n)</td></tr>
+<tr class="separator:af1cb72335154e73b11766cd01effb1b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a917c174988e7a19959c9ea7e481f0787"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:a917c174988e7a19959c9ea7e481f0787"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a917c174988e7a19959c9ea7e481f0787">xmm::json2array</a> (JSONNode root, double *a, int n)</td></tr>
+<tr class="separator:a917c174988e7a19959c9ea7e481f0787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaf7e27611a47a5dfcc72519555d1102"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:adaf7e27611a47a5dfcc72519555d1102"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#adaf7e27611a47a5dfcc72519555d1102">xmm::json2array</a> (JSONNode root, bool *a, int n)</td></tr>
+<tr class="separator:adaf7e27611a47a5dfcc72519555d1102"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ccf2d2f3d40d77bb4a5a32f345960e7"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:a5ccf2d2f3d40d77bb4a5a32f345960e7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a5ccf2d2f3d40d77bb4a5a32f345960e7">xmm::json2array</a> (JSONNode root, std::string *a, int n)</td></tr>
+<tr class="separator:a5ccf2d2f3d40d77bb4a5a32f345960e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a779e747257c09bfdae6b7d16cc4a11"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8a779e747257c09bfdae6b7d16cc4a11"><td class="memTemplItemLeft" align="right" valign="top">JSONNode&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a8a779e747257c09bfdae6b7d16cc4a11">xmm::vector2json</a> (std::vector&lt; T &gt; const &amp;a, std::string name=&quot;array&quot;)</td></tr>
+<tr class="separator:a8a779e747257c09bfdae6b7d16cc4a11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64aab0516672140a85134d1f7fd3a825"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a64aab0516672140a85134d1f7fd3a825"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a64aab0516672140a85134d1f7fd3a825">xmm::json2vector</a> (JSONNode root, std::vector&lt; T &gt; &amp;a, int n)</td></tr>
+<tr class="separator:a64aab0516672140a85134d1f7fd3a825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16aca48311668776348252b46ee0cc9e"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:a16aca48311668776348252b46ee0cc9e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a16aca48311668776348252b46ee0cc9e">xmm::json2vector</a> (JSONNode root, std::vector&lt; float &gt; &amp;a, int n)</td></tr>
+<tr class="separator:a16aca48311668776348252b46ee0cc9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d0b05e645632d4f0558525390ca6fc"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:aa3d0b05e645632d4f0558525390ca6fc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#aa3d0b05e645632d4f0558525390ca6fc">xmm::json2vector</a> (JSONNode root, std::vector&lt; double &gt; &amp;a, int n)</td></tr>
+<tr class="separator:aa3d0b05e645632d4f0558525390ca6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c605dcb5e9c45752d761d402e54eb53"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:a4c605dcb5e9c45752d761d402e54eb53"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a4c605dcb5e9c45752d761d402e54eb53">xmm::json2vector</a> (JSONNode root, std::vector&lt; bool &gt; &amp;a, int n)</td></tr>
+<tr class="separator:a4c605dcb5e9c45752d761d402e54eb53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fd5d9498b6d895dfbece153c05d2912"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:a2fd5d9498b6d895dfbece153c05d2912"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacexmm.html#a2fd5d9498b6d895dfbece153c05d2912">xmm::json2vector</a> (JSONNode root, std::vector&lt; std::string &gt; &amp;a, int n)</td></tr>
+<tr class="separator:a2fd5d9498b6d895dfbece153c05d2912"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a6769bf7ca1cda05f9ab45bb4bf9fe10e"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">JSONNode array2json </td>
-          <td>(</td>
-          <td class="paramtype">T const *&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>name</em> = <code>&quot;array&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a0b78def9eaea3d8dafe72a906ccbcd1d"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2array </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a889103ba3b68e9c74159bef87db98b13"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2array </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float *&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a8b45a94632a17a7d0424a134b3f176cd"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2array </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a27aa002be107925b8d58b0f8978f5595"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2array </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool *&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae9590c97c5aa72ed8a68963cc8c826ef"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2array </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string *&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a541dfc80b4ef5734f2db441c6132818a"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2vector </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af28f5f1942e18e644844da0915efa931"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2vector </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; float &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af4ebbae788e574b0bf953d123092603a"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2vector </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a1559de5e78182c22e3f4377562aa811f"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2vector </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; bool &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a161d0faa6d1c39c3b7f23ebb85e9a53b"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void json2vector </td>
-          <td>(</td>
-          <td class="paramtype">JSONNode&#160;</td>
-          <td class="paramname"><em>root</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vector&lt; string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a47e37d43ad077333cc109c1be6963aea"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">JSONNode vector2json </td>
-          <td>(</td>
-          <td class="paramtype">vector&lt; T &gt; const &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>name</em> = <code>&quot;array&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 27 2015 12:31:00 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 12 2015 22:46:29 for XMM — Probabilistic Models for Motion Recognition and Mapping by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

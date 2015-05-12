@@ -1,14 +1,22 @@
 var searchData=
 [
-  ['percentchg',['percentChg',['../struct_e_m_stop_criterion.html#a52ea74d6c015feee2d2006a11fb63201',1,'EMStopCriterion']]],
-  ['performancemode_5f',['performanceMode_',['../class_model_group.html#a72cb7b74e8cbd1af95f0c267a8fdde36',1,'ModelGroup']]],
-  ['phrase_5falloc_5fblocksize',['PHRASE_ALLOC_BLOCKSIZE',['../phrase_8h.html#ad280440ff6bdcc0ea6b562ea64dac59f',1,'phrase.h']]],
-  ['phrase_5fdefault_5fdimension',['PHRASE_DEFAULT_DIMENSION',['../phrase_8h.html#a76a85e386f04f821134bdeb2cf7f54c0',1,'phrase.h']]],
-  ['phraselabels',['phraseLabels',['../class_training_set.html#aa16cfb688f50279895cd8a6c0e68e84c',1,'TrainingSet']]],
-  ['phrases',['phrases',['../class_training_set.html#a1e565c58f0439fa299d787af52e88324',1,'TrainingSet']]],
-  ['play_5fem_5fmax_5flog_5flik_5fpercent_5fchg',['PLAY_EM_MAX_LOG_LIK_PERCENT_CHG',['../hmm_8h.html#a3240cea35f4cd0621c3236e4a5ebd48a',1,'hmm.h']]],
-  ['play_5fem_5fsteps',['PLAY_EM_STEPS',['../hmm_8h.html#a8cb19cec085d4421bca670ecd97f437f',1,'hmm.h']]],
-  ['previousalpha_5f',['previousAlpha_',['../class_h_m_m.html#a5f0ba18de1dd7d63b05ec30ff7d3ee27',1,'HMM']]],
-  ['previousbeta_5f',['previousBeta_',['../class_h_m_m.html#acecff0bc82aa191b147328c04a089db1',1,'HMM']]],
-  ['prior',['prior',['../class_hierarchical_h_m_m.html#ac8b775f9cb7c48897450b98dad82f52a',1,'HierarchicalHMM::prior()'],['../class_h_m_m.html#a636706a3e860b98d4dbd144653267cb0',1,'HMM::prior()']]]
+  ['referencemodel_5f',['referenceModel_',['../classxmm_1_1_model_group.html#a36b4548dccf5d897a7b45c35dc74e4ae',1,'xmm::ModelGroup']]],
+  ['regression_5festimator_5f',['regression_estimator_',['../classxmm_1_1_h_m_m.html#a5f16b50d1eb221b62c05ff132958b5db',1,'xmm::HMM']]],
+  ['results_5fdistances',['results_distances',['../classxmm_1_1_k_means.html#a9de879c687a51f4441949e622446533b',1,'xmm::KMeans']]],
+  ['results_5fexit_5flikelihood',['results_exit_likelihood',['../classxmm_1_1_h_m_m.html#a768180b84d6d08e17d3b6109a7688466',1,'xmm::HMM']]],
+  ['results_5fexit_5fratio',['results_exit_ratio',['../classxmm_1_1_h_m_m.html#ab593244706fb3b27d6fa1347b5db95c5',1,'xmm::HMM']]],
+  ['results_5finstant_5flikelihood',['results_instant_likelihood',['../classxmm_1_1_probabilistic_model.html#a43d2268224422c9367d550cf8587b6cb',1,'xmm::ProbabilisticModel']]],
+  ['results_5finstant_5flikelihoods',['results_instant_likelihoods',['../classxmm_1_1_model_group.html#af547a7e1ec77c20861707cec1e325fc2',1,'xmm::ModelGroup']]],
+  ['results_5flikeliest',['results_likeliest',['../classxmm_1_1_model_group.html#a5c1fcd6c56248fd54d92b679328c4259',1,'xmm::ModelGroup::results_likeliest()'],['../classxmm_1_1_k_means.html#a4e701e846af292762aa49db7b6633185',1,'xmm::KMeans::results_likeliest()']]],
+  ['results_5flikeliest_5fstate',['results_likeliest_state',['../classxmm_1_1_h_m_m.html#a66c18d0ae55e9ada488ead0e26cce466',1,'xmm::HMM']]],
+  ['results_5flog_5flikelihood',['results_log_likelihood',['../classxmm_1_1_probabilistic_model.html#a07cf44f7b7fff180d697f1bffe6a16c2',1,'xmm::ProbabilisticModel']]],
+  ['results_5flog_5flikelihoods',['results_log_likelihoods',['../classxmm_1_1_model_group.html#a95936ebd040a2c57697fb11eb0dc96b9',1,'xmm::ModelGroup']]],
+  ['results_5fnormalized_5finstant_5flikelihoods',['results_normalized_instant_likelihoods',['../classxmm_1_1_model_group.html#abf9328fd83c72d104bc2087e5d03f7fa',1,'xmm::ModelGroup']]],
+  ['results_5fnormalized_5flikelihoods',['results_normalized_likelihoods',['../classxmm_1_1_model_group.html#aeb53f083a18337abdfe425b36d9ba6e5',1,'xmm::ModelGroup']]],
+  ['results_5foutput_5fvariance',['results_output_variance',['../classxmm_1_1_model_group.html#a64eedd2af7561b4c09342c0cb0820a43',1,'xmm::ModelGroup::results_output_variance()'],['../classxmm_1_1_probabilistic_model.html#a5d70448090d2313a8649892377a45234',1,'xmm::ProbabilisticModel::results_output_variance()']]],
+  ['results_5fpredicted_5foutput',['results_predicted_output',['../classxmm_1_1_model_group.html#af1a7a149f9dfffee5fac19039d49a87d',1,'xmm::ModelGroup::results_predicted_output()'],['../classxmm_1_1_probabilistic_model.html#a40b584c54eada36c550edfb44d0cf81b',1,'xmm::ProbabilisticModel::results_predicted_output()']]],
+  ['results_5fprogress',['results_progress',['../classxmm_1_1_h_m_m.html#a6d6005455d457eb5778c5fcf060ef02c',1,'xmm::HMM']]],
+  ['results_5fwindow_5fmaxindex',['results_window_maxindex',['../classxmm_1_1_h_m_m.html#a8848efa7a83b6520a4a668a4a306fdb5',1,'xmm::HMM']]],
+  ['results_5fwindow_5fminindex',['results_window_minindex',['../classxmm_1_1_h_m_m.html#a4056c57e524e9e171da3c0e3f00a8a22',1,'xmm::HMM']]],
+  ['results_5fwindow_5fnormalization_5fconstant',['results_window_normalization_constant',['../classxmm_1_1_h_m_m.html#a5e46f7b74e6ddcf10de106a8f543c9c4',1,'xmm::HMM']]]
 ];
