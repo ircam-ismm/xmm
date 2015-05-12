@@ -31,11 +31,11 @@
 		0B20E0CB1A9A65E300E89497 /* label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AC1947718400E0D3C4 /* label.cpp */; };
 		0B20E0CC1A9A65E300E89497 /* json_utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* json_utilities.cpp */; };
 		0B20E0CE1A9A65E300E89497 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0AA1A9A637800E89497 /* libjson.a */; };
+		0B7F43321B02578F0022F998 /* model_conversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE31B1AD16613007431E3 /* model_conversion.cpp */; };
+		0B7F43331B02578F0022F998 /* gaussian_covariance_mode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */; };
+		0B7F43341B02578F0022F998 /* model_extraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* model_extraction.cpp */; };
 		0B9FE3171AD162E4007431E3 /* main_xmm_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */; };
 		0B9FE31F1AD1E9F1007431E3 /* libxmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0D31A9A65E300E89497 /* libxmm.a */; };
-		0BA61E1D1AFB987F00D73E3F /* model_conversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE31B1AD16613007431E3 /* model_conversion.cpp */; };
-		0BA61E1E1AFB987F00D73E3F /* gaussian_covariance_mode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */; };
-		0BA61E1F1AFB987F00D73E3F /* model_extraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* model_extraction.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,7 +103,7 @@
 		0B4909AC1947718400E0D3C4 /* label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = label.cpp; sourceTree = "<group>"; };
 		0B4909AD1947718400E0D3C4 /* label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = label.h; sourceTree = "<group>"; };
 		0B4909AE1947718400E0D3C4 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
-		0B4909AF1947718400E0D3C4 /* mbd_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mbd_common.h; sourceTree = "<group>"; };
+		0B4909AF1947718400E0D3C4 /* xmm_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmm_common.h; sourceTree = "<group>"; };
 		0B4909B01947718400E0D3C4 /* model_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_group.h; sourceTree = "<group>"; };
 		0B4909B11947718400E0D3C4 /* phrase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = phrase.cpp; sourceTree = "<group>"; };
 		0B4909B21947718400E0D3C4 /* phrase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = phrase.h; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 		0B4909A71947718400E0D3C4 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				0B4909AF1947718400E0D3C4 /* mbd_common.h */,
+				0B4909AF1947718400E0D3C4 /* xmm_common.h */,
 				0BF757B71A9B83E600B8C4BC /* doxygen_main.h */,
 				0B4909AE1947718400E0D3C4 /* matrix.h */,
 				0B4909B51947718400E0D3C4 /* ringbuffer.h */,
@@ -507,9 +507,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B9FE3171AD162E4007431E3 /* main_xmm_tests.cpp in Sources */,
-				0BA61E1D1AFB987F00D73E3F /* model_conversion.cpp in Sources */,
-				0BA61E1F1AFB987F00D73E3F /* model_extraction.cpp in Sources */,
-				0BA61E1E1AFB987F00D73E3F /* gaussian_covariance_mode.cpp in Sources */,
+				0B7F43321B02578F0022F998 /* model_conversion.cpp in Sources */,
+				0B7F43341B02578F0022F998 /* model_extraction.cpp in Sources */,
+				0B7F43331B02578F0022F998 /* gaussian_covariance_mode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,6 +757,8 @@
 		0BD1C5C417D9E3BA0061535A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++98";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CMAKE = /usr/local/bin/cmake;
 				CURRENT_PROJECT_VERSION = "$(XMM_VERSION_MAJOR).$(XMM_VERSION_MINOR).$(XMM_VERSION_PATCH)";
 				DEPLOYMENT_LOCATION = YES;
@@ -766,7 +768,7 @@
 					"$(inherited)",
 					USE_PTHREAD,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-lpthread";
 			};
 			name = Debug;
@@ -774,6 +776,8 @@
 		0BD1C5C517D9E3BA0061535A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++98";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CMAKE = /usr/local/bin/cmake;
 				CURRENT_PROJECT_VERSION = "$(XMM_VERSION_MAJOR).$(XMM_VERSION_MINOR).$(XMM_VERSION_PATCH)";
 				DEPLOYMENT_LOCATION = YES;
@@ -782,7 +786,7 @@
 					NDEBUG,
 					USE_PTHREAD,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-lpthread";
 			};
 			name = Release;

@@ -30,8 +30,8 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef mhmm_json_utilities_h
-#define mhmm_json_utilities_h
+#ifndef xmm_lib_json_utilities_h
+#define xmm_lib_json_utilities_h
 
 #include <iostream>
 #include <sstream>
@@ -40,180 +40,179 @@
 #include <vector>
 #include "libjson.h"
 
-using namespace std;
-
-/**
- * @ingroup Utilities
- * @class JSONException
- * @brief Simple Exception class for handling JSON I/O errors
- */
-class JSONException : public exception
+namespace xmm
 {
-public:
     /**
-     * @brief Default Constructor
-     * @param message error message
-     * @param nodename name of the JSON node where the error occurred
+     * @ingroup Utilities
+     * @class JSONException
+     * @brief Simple Exception class for handling JSON I/O errors
      */
-    JSONException(string message, string nodename="")
-    : message_(message)
+    class JSONException : public std::exception
     {
-        nodename_.push_back(nodename);
-    }
-    
-    /**
-     * @brief Constructor From exception message
-     * @param src Source Exception
-     * @param nodename name of the
-     */
-    explicit JSONException(exception const& src, string nodename)
-    : message_(src.what())
-    {
-        nodename_.push_back(nodename);
-    }
-    
-    /**
-     * @brief Constructor From exception message
-     * @param src Source Exception
-     * @param nodename name of the
-     */
-    explicit JSONException(JSONException const& src, string nodename)
-    {
-        this->_copy(this, src);
-        nodename_.push_back(nodename);
-    }
-    
-    /**
-     * @brief Copy Constructor
-     * @param src Source JSON exception
-     */
-    JSONException(JSONException const& src)
-    {
-        this->_copy(this, src);
-    }
-    
-    /**
-     * @brief Assigment
-     * @param src Source JSON exception
-     */
-    JSONException& operator=(JSONException const& src)
-    {
-        if(this != &src)
+    public:
+        /**
+         * @brief Default Constructor
+         * @param message error message
+         * @param nodename name of the JSON node where the error occurred
+         */
+        JSONException(std::string message, std::string nodename="")
+        : message_(message)
         {
-            _copy(this, src);
+            nodename_.push_back(nodename);
         }
-        return *this;
-    }
+        
+        /**
+         * @brief Constructor From exception message
+         * @param src Source Exception
+         * @param nodename name of the
+         */
+        explicit JSONException(exception const& src, std::string nodename)
+        : message_(src.what())
+        {
+            nodename_.push_back(nodename);
+        }
+        
+        /**
+         * @brief Constructor From exception message
+         * @param src Source Exception
+         * @param nodename name of the
+         */
+        explicit JSONException(JSONException const& src, std::string nodename)
+        {
+            this->_copy(this, src);
+            nodename_.push_back(nodename);
+        }
+        
+        /**
+         * @brief Copy Constructor
+         * @param src Source JSON exception
+         */
+        JSONException(JSONException const& src)
+        {
+            this->_copy(this, src);
+        }
+        
+        /**
+         * @brief Assigment
+         * @param src Source JSON exception
+         */
+        JSONException& operator=(JSONException const& src)
+        {
+            if(this != &src)
+            {
+                _copy(this, src);
+            }
+            return *this;
+        }
+        
+        /**
+         * @brief Copy between two JSON exceptions
+         * @param dst destination JSON exception
+         * @param src Source JSON exception
+         */
+        virtual void _copy(JSONException *dst,
+                           JSONException const& src)
+        
+        {
+            dst->message_ = src.message_;
+            dst->nodename_ = src.nodename_;
+        }
+        
+        /**
+         * @brief Destructor
+         */
+        virtual ~JSONException() throw()
+        {}
+        
+        /**
+         * @brief Get exception message
+         * @return exception message
+         */
+        virtual const char * what() const throw()
+        {
+            std::stringstream fullmsg;
+            fullmsg << "Error reading JSON, Message: " + message_ + " // (Node List: ";
+            for (unsigned int i = static_cast<unsigned int>(nodename_.size()) - 1 ; i > 0 ; --i)
+                fullmsg << nodename_[i] << " > ";
+            fullmsg << nodename_[0];
+            fullmsg << ")";
+            return strdup(fullmsg.str().c_str());
+        }
+        
+    private:
+        std::string message_;
+        std::vector<std::string> nodename_;
+    };
     
+    /*@{*/
     /**
-     * @brief Copy between two JSON exceptions
-     * @param dst destination JSON exception
-     * @param src Source JSON exception
+     * @name JSON conversion to/from arrays and vectors
      */
-    virtual void _copy(JSONException *dst,
-                       JSONException const& src)
-    
+    template <typename T>
+    JSONNode array2json(T const* a, int n, std::string name="array")
     {
-        dst->message_ = src.message_;
-        dst->nodename_ = src.nodename_;
+        JSONNode json_data(JSON_ARRAY);
+        json_data.set_name(name);
+        for (int i=0 ; i<n ; i++) {
+            json_data.push_back(JSONNode("", a[i]));
+        }
+        return json_data;
     }
     
-    /**
-     * @brief Destructor
-     */
-    virtual ~JSONException() throw()
-    {}
-    
-    /**
-     * @brief Get exception message
-     * @return exception message
-     */
-    virtual const char * what() const throw()
+    template <typename T>
+    void json2array(JSONNode root, T* a, int n)
     {
-        stringstream fullmsg;
-        fullmsg << "Error reading JSON, Message: " + message_ + " // (Node List: ";
-        for (unsigned int i = static_cast<unsigned int>(nodename_.size()) - 1 ; i > 0 ; --i)
-            fullmsg << nodename_[i] << " > ";
-        fullmsg << nodename_[0];
-        fullmsg << ")";
-        return strdup(fullmsg.str().c_str());
+        if (root.type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
+        unsigned int i = 0;
+        for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
+        {
+            if (i >= n)
+                throw JSONException("JSON 2 Array: Index out of bounds");
+            if (array_it->type() != JSON_NUMBER)
+                throw JSONException("JSON 2 Vector: Wrong type");
+            a[i++] = array_it->as_int();
+        }
     }
     
-private:
-    string message_;
-    vector<string> nodename_;
-};
-
-/*@{*/
-/**
- * @name JSON conversion to/from arrays and vectors
- */
-template <typename T>
-JSONNode array2json(T const* a, int n, string name="array")
-{
-	JSONNode json_data(JSON_ARRAY);
-	json_data.set_name(name);
-	for (int i=0 ; i<n ; i++) {
-		json_data.push_back(JSONNode("", a[i]));
-	}
-	return json_data;
-}
-
-template <typename T>
-void json2array(JSONNode root, T* a, int n)
-{
-    // Get Dimensions
-    if (root.type() != JSON_ARRAY)
-        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
+    template <> void json2array(JSONNode root, float* a, int n);
+    template <> void json2array(JSONNode root, double* a, int n);
+    template <> void json2array(JSONNode root, bool* a, int n);
+    template <> void json2array(JSONNode root, std::string* a, int n);
+    
+    template <typename T>
+    JSONNode vector2json(std::vector<T> const& a, std::string name="array")
     {
-        if (i >= n)
-            throw JSONException("JSON 2 Array: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw JSONException("JSON 2 Vector: Wrong type");
-        a[i++] = array_it->as_int();
+        JSONNode json_data(JSON_ARRAY);
+        json_data.set_name(name);
+        for (size_t i=0 ; i<a.size() ; i++) {
+            json_data.push_back(JSONNode("", a[i]));
+        }
+        return json_data;
     }
-}
-
-template <> void json2array(JSONNode root, float* a, int n);
-template <> void json2array(JSONNode root, double* a, int n);
-template <> void json2array(JSONNode root, bool* a, int n);
-template <> void json2array(JSONNode root, string* a, int n);
-
-template <typename T>
-JSONNode vector2json(vector<T> const& a, string name="array")
-{
-	JSONNode json_data(JSON_ARRAY);
-	json_data.set_name(name);
-	for (size_t i=0 ; i<a.size() ; i++) {
-		json_data.push_back(JSONNode("", a[i]));
-	}
-	return json_data;
-}
-
-template <typename T>
-void json2vector(JSONNode root, vector<T>& a, int n)
-{
-    // Get Dimensions
-    if (root.type() != JSON_ARRAY)
-        throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
-    unsigned int i = 0;
-    for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
+    
+    template <typename T>
+    void json2vector(JSONNode root, std::vector<T>& a, int n)
     {
-        if (i >= n)
-            throw JSONException("JSON 2 Vector: Index out of bounds");
-        if (array_it->type() != JSON_NUMBER)
-            throw JSONException("JSON 2 Vector: Wrong type");
-        a[i++] = array_it->as_int();
+        if (root.type() != JSON_ARRAY)
+            throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
+        unsigned int i = 0;
+        for (JSONNode::const_iterator array_it = root.begin(); array_it != root.end(); ++array_it)
+        {
+            if (i >= n)
+                throw JSONException("JSON 2 Vector: Index out of bounds");
+            if (array_it->type() != JSON_NUMBER)
+                throw JSONException("JSON 2 Vector: Wrong type");
+            a[i++] = array_it->as_int();
+        }
     }
+    
+    template <> void json2vector(JSONNode root, std::vector<float>& a, int n);
+    template <> void json2vector(JSONNode root, std::vector<double>& a, int n);
+    template <> void json2vector(JSONNode root, std::vector<bool>& a, int n);
+    template <> void json2vector(JSONNode root, std::vector<std::string>& a, int n);
+    
+    /*@}*/
 }
-
-template <> void json2vector(JSONNode root, vector<float>& a, int n);
-template <> void json2vector(JSONNode root, vector<double>& a, int n);
-template <> void json2vector(JSONNode root, vector<bool>& a, int n);
-template <> void json2vector(JSONNode root, vector<string>& a, int n);
-
-/*@}*/
 
 #endif

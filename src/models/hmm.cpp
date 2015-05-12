@@ -33,11 +33,9 @@
 #include <cmath>
 #include "hmm.h"
 
-using namespace std;
-
 #pragma mark -
 #pragma mark Constructors
-HMM::HMM(rtml_flags flags,
+xmm::HMM::HMM(xmm_flags flags,
          TrainingSet *trainingSet,
          int nbStates,
          int nbMixtureComponents,
@@ -45,24 +43,24 @@ HMM::HMM(rtml_flags flags,
 : ProbabilisticModel(flags, trainingSet),
 nbStates_(nbStates),
 nbMixtureComponents_(nbMixtureComponents),
-varianceOffset_relative_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE),
-varianceOffset_absolute_(GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE),
+varianceOffset_relative_(GaussianDistribution::DEFAULT_VARIANCE_OFFSET_RELATIVE()),
+varianceOffset_absolute_(GaussianDistribution::DEFAULT_VARIANCE_OFFSET_ABSOLUTE()),
 covariance_mode_(covariance_mode),
 regression_estimator_(FULL),
 transitionMode_(LEFT_RIGHT),
-estimateMeans_(HMM_DEFAULT_ESTIMATEMEANS)
+estimateMeans_(DEFAULT_ESTIMATEMEANS)
 {
     is_hierarchical_ = (flags & HIERARCHICAL);
     allocate();
     initParametersToDefault();
 }
 
-HMM::HMM(HMM const& src)
+xmm::HMM::HMM(HMM const& src)
 {
     _copy(this, src);
 }
 
-HMM& HMM::operator=(HMM const& src)
+xmm::HMM& xmm::HMM::operator=(HMM const& src)
 {
     if(this != &src)
     {
@@ -71,7 +69,7 @@ HMM& HMM::operator=(HMM const& src)
     return *this;
 }
 
-void HMM::_copy(HMM *dst,
+void xmm::HMM::_copy(HMM *dst,
                 HMM const& src)
 {
     ProbabilisticModel::_copy(dst, src);
@@ -89,6 +87,7 @@ void HMM::_copy(HMM *dst,
     dst->previousBeta_.resize(dst->nbStates_);
     
     dst->transitionMode_ = src.transitionMode_;
+    dst->covariance_mode_ = src.covariance_mode_;
     dst->transition = src.transition;
     dst->prior = src.prior;
     dst->exitProbabilities_ = src.exitProbabilities_;
@@ -97,7 +96,7 @@ void HMM::_copy(HMM *dst,
 }
 
 
-HMM::~HMM()
+xmm::HMM::~HMM()
 {
 }
 
@@ -105,8 +104,9 @@ HMM::~HMM()
 #pragma mark Parameters initialization
 
 
-void HMM::allocate()
+void xmm::HMM::allocate()
 {
+    check_training();
     if (transitionMode_ == ERGODIC) {
         prior.resize(nbStates_);
         transition.resize(nbStates_*nbStates_);
@@ -130,14 +130,14 @@ void HMM::allocate()
 }
 
 
-void HMM::evaluateNbStates(int factor)
+void xmm::HMM::evaluateNbStates(int factor)
 {
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
     this->set_nbStates(((*this->trainingSet)(0))->second->length() / factor);
 }
 
 
-void HMM::initParametersToDefault()
+void xmm::HMM::initParametersToDefault()
 {
     if (transitionMode_ == ERGODIC) {
         setErgodic();
@@ -150,7 +150,7 @@ void HMM::initParametersToDefault()
 }
 
 
-void HMM::initMeansWithAllPhrases()
+void xmm::HMM::initMeansWithAllPhrases()
 {
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
     int nbPhrases = this->trainingSet->size();
@@ -159,7 +159,7 @@ void HMM::initMeansWithAllPhrases()
         for (int d=0; d<dimension_; d++)
             states[n].components[0].mean[d] = 0.0;
     
-    vector<int> factor(nbStates_, 0);
+    std::vector<int> factor(nbStates_, 0);
     for (int i=0; i<nbPhrases; i++) {
         int step = ((*this->trainingSet)(i))->second->length() / nbStates_;
         int offset(0);
@@ -180,7 +180,7 @@ void HMM::initMeansWithAllPhrases()
 }
 
 
-void HMM::initCovariances_fullyObserved()
+void xmm::HMM::initCovariances_fullyObserved()
 {
     // TODO: simplify with covariance symmetricity.
     if (!this->trainingSet || this->trainingSet->is_empty()) return;
@@ -194,8 +194,8 @@ void HMM::initCovariances_fullyObserved()
             states[n].components[0].covariance.assign(dimension_, 0.0);
     }
     
-    vector<int> factor(nbStates_, 0);
-    vector<double> othermeans(nbStates_*dimension_, 0.0);
+    std::vector<int> factor(nbStates_, 0);
+    std::vector<double> othermeans(nbStates_*dimension_, 0.0);
     for (int i=0; i<nbPhrases; i++) {
         int step = ((*this->trainingSet)(i))->second->length() / nbStates_;
         int offset(0);
@@ -243,7 +243,7 @@ void HMM::initCovariances_fullyObserved()
     }
 }
 
-void HMM::initMeansCovariancesWithGMMEM()
+void xmm::HMM::initMeansCovariancesWithGMMEM()
 {
     int nbPhrases = this->trainingSet->size();
     for (unsigned int n=0; n<nbStates_; n++) {
@@ -270,7 +270,7 @@ void HMM::initMeansCovariancesWithGMMEM()
     }
 }
 
-void HMM::setErgodic()
+void xmm::HMM::setErgodic()
 {
     for (int i=0 ; i<nbStates_; i++) {
         prior[i] = 1/(float)nbStates_;
@@ -281,7 +281,7 @@ void HMM::setErgodic()
 }
 
 
-void HMM::setLeftRight()
+void xmm::HMM::setLeftRight()
 {
     transition.assign(nbStates_*2, 0.5);
     transition[(nbStates_-1)*2] = 1.;
@@ -289,7 +289,7 @@ void HMM::setLeftRight()
 }
 
 
-void HMM::normalizeTransitions()
+void xmm::HMM::normalizeTransitions()
 {
     double norm_transition;
     if (transitionMode_ == ERGODIC) {
@@ -307,8 +307,6 @@ void HMM::normalizeTransitions()
     } else {
         for (int i=0; i<nbStates_; i++) {
             norm_transition = transition[i*2] + transition[i*2+1];
-            // norm_transition = transition[i*2];
-            // norm_transition += transition[i*2+1];
             transition[i*2] /= norm_transition;
             transition[i*2+1] /= norm_transition;
         }
@@ -317,25 +315,25 @@ void HMM::normalizeTransitions()
 
 #pragma mark -
 #pragma mark Accessors
-void HMM::set_trainingSet(TrainingSet *trainingSet)
+void xmm::HMM::set_trainingSet(TrainingSet *trainingSet)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     for (int i=0; i<nbStates_; i++) {
         states[i].set_trainingSet(trainingSet);
     }
     ProbabilisticModel::set_trainingSet(trainingSet);
 }
 
-int HMM::get_nbStates() const
+int xmm::HMM::get_nbStates() const
 {
     return nbStates_;
 }
 
 
-void HMM::set_nbStates(int nbStates)
+void xmm::HMM::set_nbStates(int nbStates)
 {
-    PREVENT_ATTR_CHANGE();
-    if (nbStates < 1) throw invalid_argument("Number of states must be > 0");;
+    prevent_attribute_change();
+    if (nbStates < 1) throw std::invalid_argument("Number of states must be > 0");;
     if (nbStates == nbStates_) return;
     
     nbStates_ = nbStates;
@@ -345,16 +343,16 @@ void HMM::set_nbStates(int nbStates)
 }
 
 
-int HMM::get_nbMixtureComponents() const
+int xmm::HMM::get_nbMixtureComponents() const
 {
     return nbMixtureComponents_;
 }
 
 
-void HMM::set_nbMixtureComponents(int nbMixtureComponents)
+void xmm::HMM::set_nbMixtureComponents(int nbMixtureComponents)
 {
-    PREVENT_ATTR_CHANGE();
-    if (nbMixtureComponents < 1) throw invalid_argument("The number of Gaussian mixture components must be > 0");;
+    prevent_attribute_change();
+    if (nbMixtureComponents < 1) throw std::invalid_argument("The number of Gaussian mixture components must be > 0");;
     if (nbMixtureComponents == nbMixtureComponents_) return;
     
     for (int i=0; i<nbStates_; i++) {
@@ -367,21 +365,21 @@ void HMM::set_nbMixtureComponents(int nbMixtureComponents)
 }
 
 
-double HMM::get_varianceOffset_relative() const
+double xmm::HMM::get_varianceOffset_relative() const
 {
     return varianceOffset_relative_;
 }
 
 
-double HMM::get_varianceOffset_absolute() const
+double xmm::HMM::get_varianceOffset_absolute() const
 {
     return varianceOffset_absolute_;
 }
 
 
-void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
+void xmm::HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     for (int i=0; i<nbStates_; i++) {
         states[i].set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
@@ -389,13 +387,14 @@ void HMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     varianceOffset_absolute_ = varianceOffset_absolute;
 }
 
-GaussianDistribution::COVARIANCE_MODE HMM::get_covariance_mode() const
+xmm::GaussianDistribution::COVARIANCE_MODE xmm::HMM::get_covariance_mode() const
 {
     return covariance_mode_;
 }
 
-void HMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+void xmm::HMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
 {
+    prevent_attribute_change();
     if (covariance_mode == covariance_mode_) return;
     covariance_mode_ = covariance_mode;
     for (unsigned int i=0; i<nbStates_; ++i) {
@@ -403,18 +402,18 @@ void HMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_m
     }
 }
 
-REGRESSION_ESTIMATOR HMM::get_regression_estimator() const
+xmm::HMM::REGRESSION_ESTIMATOR xmm::HMM::get_regression_estimator() const
 {
     return regression_estimator_;
 }
 
 
-void HMM::set_regression_estimator(REGRESSION_ESTIMATOR regression_estimator)
+void xmm::HMM::set_regression_estimator(xmm::HMM::REGRESSION_ESTIMATOR regression_estimator)
 {
     regression_estimator_ = regression_estimator;
 }
 
-string HMM::get_transitionMode() const
+std::string xmm::HMM::get_transitionMode() const
 {
     if (transitionMode_ == ERGODIC) {
         return "ergodic";
@@ -424,9 +423,9 @@ string HMM::get_transitionMode() const
 }
 
 
-void HMM::set_transitionMode(string transMode_str)
+void xmm::HMM::set_transitionMode(std::string transMode_str)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     if (!transMode_str.compare("ergodic")) {
         if (transitionMode_ == ERGODIC)
             return;
@@ -436,16 +435,14 @@ void HMM::set_transitionMode(string transMode_str)
             return;
         transitionMode_ = LEFT_RIGHT;
     } else {
-        throw invalid_argument("Wrong Transition mode. choose 'ergodic' or 'left-right'");
+        throw std::invalid_argument("Wrong Transition mode. choose 'ergodic' or 'left-right'");
     }
     allocate();
 }
 
 #pragma mark -
 #pragma mark Forward-Backward algorithm
-
-
-double HMM::forward_init(const float* observation,
+double xmm::HMM::forward_init(const float* observation,
                          const float* observation_output)
 {
     double norm_const(0.);
@@ -487,7 +484,7 @@ double HMM::forward_init(const float* observation,
 }
 
 
-double HMM::forward_update(const float* observation,
+double xmm::HMM::forward_update(const float* observation,
                            const float* observation_output)
 {
     double norm_const(0.);
@@ -526,14 +523,14 @@ double HMM::forward_update(const float* observation,
     }
 }
 
-void HMM::backward_init(double ct)
+void xmm::HMM::backward_init(double ct)
 {
     for (int i=0 ; i<nbStates_ ; i++)
         beta_[i] = ct;
 }
 
 
-void HMM::backward_update(double ct,
+void xmm::HMM::backward_update(double ct,
                           const float* observation,
                           const float* observation_output)
 {
@@ -573,7 +570,7 @@ void HMM::backward_update(double ct,
             }
         }
         beta_[i] *= ct;
-        if (isnan(beta_[i]) || isinf(abs(beta_[i]))) {
+        if (std::isnan(beta_[i]) || std::isinf(fabs(beta_[i]))) {
             beta_[i] = 1e100;
         }
     }
@@ -581,10 +578,9 @@ void HMM::backward_update(double ct,
 
 #pragma mark -
 #pragma mark Training algorithm
-void HMM::train_EM_init()
+void xmm::HMM::train_EM_init()
 {
     initParametersToDefault();
-    
     if (!this->trainingSet || this->trainingSet->size() == 0)
         return;
     
@@ -631,7 +627,7 @@ void HMM::train_EM_init()
 }
 
 
-void HMM::train_EM_terminate()
+void xmm::HMM::train_EM_terminate()
 {
     normalizeTransitions();
     gammaSequence_.clear();
@@ -645,7 +641,7 @@ void HMM::train_EM_terminate()
 }
 
 
-double HMM::train_EM_update()
+double xmm::HMM::train_EM_update()
 {
     double log_prob(0.);
     
@@ -686,7 +682,7 @@ double HMM::train_EM_update()
 
 
 
-double HMM::baumWelch_forward_update(vector<double>::iterator observation_likelihoods)
+double xmm::HMM::baumWelch_forward_update(std::vector<double>::iterator observation_likelihoods)
 {
     double norm_const(0.);
     previousAlpha_ = alpha;
@@ -718,7 +714,7 @@ double HMM::baumWelch_forward_update(vector<double>::iterator observation_likeli
 }
 
 
-void HMM::baumWelch_backward_update(double ct, vector<double>::iterator observation_likelihoods)
+void xmm::HMM::baumWelch_backward_update(double ct, std::vector<double>::iterator observation_likelihoods)
 {
     previousBeta_ = beta_;
     for (int i=0 ; i<nbStates_; i++) {
@@ -734,22 +730,22 @@ void HMM::baumWelch_backward_update(double ct, vector<double>::iterator observat
             }
         }
         beta_[i] *= ct;
-        if (isnan(beta_[i]) || isinf(abs(beta_[i]))) {
+        if (std::isnan(beta_[i]) || std::isinf(fabs(beta_[i]))) {
             beta_[i] = 1e100;
         }
     }
 }
 
-double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
+double xmm::HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
 {
     int T = currentPhrase->length();
     
-    vector<double> ct(T);
-    vector<double>::iterator alpha_seq_it = alpha_seq_.begin();
+    std::vector<double> ct(T);
+    std::vector<double>::iterator alpha_seq_it = alpha_seq_.begin();
     
     double log_prob;
     
-    vector<double> observation_probabilities(nbStates_ * T);
+    std::vector<double> observation_probabilities(nbStates_ * T);
     for (unsigned int t=0; t<T; ++t) {
         for (unsigned int i=0; i<nbStates_; i++) {
             if (bimodal_) {
@@ -858,7 +854,7 @@ double HMM::baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex)
     return log_prob;
 }
 
-void HMM::baumWelch_gammaSum()
+void xmm::HMM::baumWelch_gammaSum()
 {
     for (int i=0; i<nbStates_; i++) {
         gammaSum_[i] = 0.;
@@ -884,7 +880,7 @@ void HMM::baumWelch_gammaSum()
 }
 
 
-void HMM::baumWelch_estimateMixtureCoefficients()
+void xmm::HMM::baumWelch_estimateMixtureCoefficients()
 {
     int phraseLength;
     int phraseIndex(0);
@@ -908,7 +904,7 @@ void HMM::baumWelch_estimateMixtureCoefficients()
 }
 
 
-void HMM::baumWelch_estimateMeans()
+void xmm::HMM::baumWelch_estimateMeans()
 {
     int phraseLength;
     
@@ -942,15 +938,15 @@ void HMM::baumWelch_estimateMeans()
                 if (gammaSumPerMixture_[i*nbMixtureComponents_+c] > 0) {
                     states[i].components[c].mean[d] /= gammaSumPerMixture_[i*nbMixtureComponents_+c];
                 }
-                if (isnan(states[i].components[c].mean[d]))
-                    throw runtime_error("Convergence Error");
+                if (std::isnan(states[i].components[c].mean[d]))
+                    throw std::runtime_error("Convergence Error");
             }
         }
     }
 }
 
 
-void HMM::baumWelch_estimateCovariances()
+void xmm::HMM::baumWelch_estimateCovariances()
 {
     int phraseLength;
     
@@ -1003,7 +999,7 @@ void HMM::baumWelch_estimateCovariances()
 }
 
 
-void HMM::baumWelch_estimatePrior()
+void xmm::HMM::baumWelch_estimatePrior()
 {
     // Set prior vector to 0
     for (int i=0; i<nbStates_; i++)
@@ -1030,7 +1026,7 @@ void HMM::baumWelch_estimatePrior()
 }
 
 
-void HMM::baumWelch_estimateTransitions()
+void xmm::HMM::baumWelch_estimateTransitions()
 {
     // Set prior vector and transition matrix to 0
     if (transitionMode_ == ERGODIC) {
@@ -1048,11 +1044,11 @@ void HMM::baumWelch_estimateTransitions()
         for (int i=0; i<nbStates_; i++) {
             // Experimental: A bit of regularization (sometimes avoids numerical errors)
             if (transitionMode_ == LEFT_RIGHT) {
-                transition[i*2] += HMM_TRANSITION_REGULARIZATION;
+                transition[i*2] += TRANSITION_REGULARIZATION();
                 if (i<nbStates_-1)
-                    transition[i*2+1] += HMM_TRANSITION_REGULARIZATION;
+                    transition[i*2+1] += TRANSITION_REGULARIZATION();
                 else
-                    transition[i*2] += HMM_TRANSITION_REGULARIZATION;
+                    transition[i*2] += TRANSITION_REGULARIZATION();
             }
             // End Regularization
             if (transitionMode_ == ERGODIC) {
@@ -1080,20 +1076,20 @@ void HMM::baumWelch_estimateTransitions()
     if (transitionMode_ == ERGODIC) {
         for (int i=0; i<nbStates_; i++) {
             for (int j=0; j<nbStates_; j++) {
-                transition[i*nbStates_+j] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
-                if (isnan(transition[i*nbStates_+j]))
-                    throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+                transition[i*nbStates_+j] /= (gammaSum_[i] + 2.*TRANSITION_REGULARIZATION());
+                if (std::isnan(transition[i*nbStates_+j]))
+                    throw std::runtime_error("Convergence Error. Check your training data or increase the variance offset");
             }
         }
     } else {
         for (int i=0; i<nbStates_; i++) {
-            transition[i*2] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
-            if (isnan(transition[i*2]))
-                throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+            transition[i*2] /= (gammaSum_[i] + 2.*TRANSITION_REGULARIZATION());
+            if (std::isnan(transition[i*2]))
+                throw std::runtime_error("Convergence Error. Check your training data or increase the variance offset");
             if (i<nbStates_-1) {
-                transition[i*2+1] /= (gammaSum_[i] + 2.*HMM_TRANSITION_REGULARIZATION);
-                if (isnan(transition[i*2+1]))
-                    throw runtime_error("Convergence Error. Check your training data or increase the variance offset");
+                transition[i*2+1] /= (gammaSum_[i] + 2.*TRANSITION_REGULARIZATION());
+                if (std::isnan(transition[i*2+1]))
+                    throw std::runtime_error("Convergence Error. Check your training data or increase the variance offset");
             }
         }
     }
@@ -1103,8 +1099,9 @@ void HMM::baumWelch_estimateTransitions()
 #pragma mark Performance
 
 
-void HMM::performance_init()
+void xmm::HMM::performance_init()
 {
+    check_training();
     ProbabilisticModel::performance_init();
     forwardInitialized_ = false;
     if (is_hierarchical_) {
@@ -1120,8 +1117,9 @@ void HMM::performance_init()
 }
 
 
-void HMM::addCyclicTransition(double proba)
+void xmm::HMM::addCyclicTransition(double proba)
 {
+    check_training();
     if (transitionMode_ == ERGODIC) {
         if (nbStates_ > 1)
             transition[(nbStates_-1)*nbStates_] = proba;
@@ -1132,8 +1130,9 @@ void HMM::addCyclicTransition(double proba)
 }
 
 
-double HMM::performance_update(vector<float> const& observation)
+double xmm::HMM::performance_update(std::vector<float> const& observation)
 {
+    check_training();
     double ct;
     
     if (forwardInitialized_) {
@@ -1156,7 +1155,7 @@ double HMM::performance_update(vector<float> const& observation)
     return results_instant_likelihood;
 }
 
-unsigned int argmax(vector<double> const& v)
+unsigned int argmax(std::vector<double> const& v)
 {
     unsigned int amax(-1);
     if (v.size() == 0)
@@ -1171,8 +1170,9 @@ unsigned int argmax(vector<double> const& v)
     return amax;
 }
 
-void HMM::updateAlphaWindow()
+void xmm::HMM::updateAlphaWindow()
 {
+    check_training();
     results_likeliest_state = 0;
     // Get likeliest State
     double best_alpha(is_hierarchical_ ? (alpha_h[0][0] + alpha_h[1][0]) : alpha[0]);
@@ -1201,13 +1201,14 @@ void HMM::updateAlphaWindow()
     }
 }
 
-void HMM::regression(vector<float> const& observation_input,
-                     vector<float>& predicted_output)
+void xmm::HMM::regression(std::vector<float> const& observation_input,
+                          std::vector<float>& predicted_output)
 {
+    check_training();
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.assign(dimension_output, 0.0);
     results_output_variance.assign(dimension_output, 0.0);
-    vector<float> tmp_predicted_output(dimension_output);
+    std::vector<float> tmp_predicted_output(dimension_output);
     
     if (regression_estimator_ == LIKELIEST) {
         states[results_likeliest_state].likelihood(observation_input);
@@ -1238,7 +1239,7 @@ void HMM::regression(vector<float> const& observation_input,
     }
 }
 
-void HMM::updateTimeProgression()
+void xmm::HMM::updateTimeProgression()
 {
     results_progress = 0.0;
     for (int i=results_window_minindex; i<results_window_maxindex; ++i) {
@@ -1265,8 +1266,9 @@ void HMM::updateTimeProgression()
 #pragma mark File IO
 
 
-JSONNode HMM::to_json() const
+JSONNode xmm::HMM::to_json() const
 {
+    check_training();
     JSONNode json_hmm(JSON_NODE);
     json_hmm.set_name("HMM");
     
@@ -1305,8 +1307,9 @@ JSONNode HMM::to_json() const
 }
 
 
-void HMM::from_json(JSONNode root)
+void xmm::HMM::from_json(JSONNode root)
 {
+    check_training();
     try {
         if (root.type() != JSON_NODE)
             throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
@@ -1423,9 +1426,9 @@ void HMM::from_json(JSONNode root)
         } else {
             try {
                 json2vector(*root_it, transition, nbStates_*2);
-            } catch (exception& e) {
-                cout << "warning: hazardous reading from previous file version" << endl;
-                vector<double> deprec_trans(nbStates_*nbStates_);
+            } catch (std::exception& e) {
+                std::cout << "warning: hazardous reading from previous file version" << std::endl;
+                std::vector<double> deprec_trans(nbStates_*nbStates_);
                 json2vector(*root_it, deprec_trans, nbStates_*nbStates_);
                 for (unsigned int i=0; i<nbStates_-1; ++i) {
                     transition[i*2] = deprec_trans[i*nbStates_+i];
@@ -1458,7 +1461,7 @@ void HMM::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
     
@@ -1468,43 +1471,42 @@ void HMM::from_json(JSONNode root)
 #pragma mark -
 #pragma mark Exit Probabilities
 
-void HMM::updateExitProbabilities(float *exitProbabilities)
+void xmm::HMM::updateExitProbabilities(float *exitProbabilities)
 {
     if (!is_hierarchical_)
-        throw runtime_error("Model is Not hierarchical: method cannot be used");
+        throw std::runtime_error("Model is Not hierarchical: method cannot be used");
     if (exitProbabilities == NULL) {
         exitProbabilities_.resize(this->nbStates_, 0.0);
-        exitProbabilities_[this->nbStates_-1] = HMM_DEFAULT_EXITPROBABILITY_LAST_STATE;
+        exitProbabilities_[this->nbStates_-1] = DEFAULT_EXITPROBABILITY_LAST_STATE();
     } else {
         exitProbabilities_.resize(this->nbStates_, 0.0);
         for (int i=0 ; i < this->nbStates_ ; i++)
             try {
                 exitProbabilities_[i] = exitProbabilities[i];
-            } catch (exception &e) {
-                throw invalid_argument("Wrong format for exit probabilities");
+            } catch (std::exception &e) {
+                throw std::invalid_argument("Wrong format for exit probabilities");
             }
     }
 }
 
 
-void HMM::addExitPoint(int stateIndex, float proba)
+void xmm::HMM::addExitPoint(int stateIndex, float proba)
 {
     if (!is_hierarchical_)
-        throw runtime_error("Model is Not hierarchical: method cannot be used");
+        throw std::runtime_error("Model is Not hierarchical: method cannot be used");
     if (stateIndex >= this->nbStates_)
-        throw out_of_range("State index out of bounds");
+        throw std::out_of_range("State index out of bounds");
     exitProbabilities_[stateIndex] = proba;
 }
 
 #pragma mark > Conversion & Extraction
-void HMM::make_bimodal(unsigned int dimension_input)
+void xmm::HMM::make_bimodal(unsigned int dimension_input)
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (bimodal_)
-        throw runtime_error("The model is already bimodal");
+        throw std::runtime_error("The model is already bimodal");
     if (dimension_input >= dimension_)
-        throw out_of_range("Request input dimension exceeds the current dimension");
+        throw std::out_of_range("Request input dimension exceeds the current dimension");
     set_trainingSet(NULL);
     flags_ = flags_ | BIMODAL;
     bimodal_ = true;
@@ -1516,12 +1518,11 @@ void HMM::make_bimodal(unsigned int dimension_input)
     results_output_variance.resize(dimension_ - dimension_input_);
 }
 
-void HMM::make_unimodal()
+void xmm::HMM::make_unimodal()
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model is already unimodal");
+        throw std::runtime_error("The model is already unimodal");
     set_trainingSet(NULL);
     flags_ = NONE;
     bimodal_ = false;
@@ -1533,15 +1534,14 @@ void HMM::make_unimodal()
     results_output_variance.clear();
 }
 
-HMM HMM::extract_submodel(vector<unsigned int>& columns) const
+xmm::HMM xmm::HMM::extract_submodel(std::vector<unsigned int>& columns) const
 {
-    if (is_training())
-        throw runtime_error("Cannot extract model during Training");
+    check_training();
     if (columns.size() > dimension_)
-        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+        throw std::out_of_range("requested number of columns exceeds the dimension of the current model");
     for (unsigned int column=0; column<columns.size(); ++column) {
         if (columns[column] >= dimension_)
-            throw out_of_range("Some column indices exceeds the dimension of the current model");
+            throw std::out_of_range("Some column indices exceeds the dimension of the current model");
     }
     HMM target_model(*this);
     size_t new_dim = columns.size();
@@ -1562,33 +1562,36 @@ HMM HMM::extract_submodel(vector<unsigned int>& columns) const
     return target_model;
 }
 
-HMM HMM::extract_submodel_input() const
+xmm::HMM xmm::HMM::extract_submodel_input() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_input(dimension_input_);
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_input(dimension_input_);
     for (unsigned int i=0; i<dimension_input_; ++i) {
         columns_input[i] = i;
     }
     return extract_submodel(columns_input);
 }
 
-HMM HMM::extract_submodel_output() const
+xmm::HMM xmm::HMM::extract_submodel_output() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_output(dimension_ - dimension_input_);
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_output(dimension_ - dimension_input_);
     for (unsigned int i=dimension_input_; i<dimension_; ++i) {
         columns_output[i-dimension_input_] = i;
     }
     return extract_submodel(columns_output);
 }
 
-HMM HMM::extract_inverse_model() const
+xmm::HMM xmm::HMM::extract_inverse_model() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns(dimension_);
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns(dimension_);
     for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
         columns[i] = i+dimension_input_;
     }

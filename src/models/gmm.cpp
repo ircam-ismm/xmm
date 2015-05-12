@@ -34,7 +34,7 @@
 #include "kmeans.h"
 
 #pragma mark > Constructors and Utilities
-GMM::GMM(rtml_flags flags,
+xmm::GMM::GMM(xmm_flags flags,
          TrainingSet *trainingSet,
          int nbMixtureComponents,
          double varianceOffset_relative,
@@ -51,12 +51,12 @@ GMM::GMM(rtml_flags flags,
 }
 
 
-GMM::GMM(GMM const& src) : ProbabilisticModel(src)
+xmm::GMM::GMM(GMM const& src) : ProbabilisticModel(src)
 {
     _copy(this, src);
 }
 
-GMM& GMM::operator=(GMM const& src)
+xmm::GMM& xmm::GMM::operator=(GMM const& src)
 {
     if(this != &src)
     {
@@ -65,7 +65,7 @@ GMM& GMM::operator=(GMM const& src)
     return *this;
 };
 
-GMM::~GMM()
+xmm::GMM::~GMM()
 {
     components.clear();
     mixtureCoeffs.clear();
@@ -73,25 +73,25 @@ GMM::~GMM()
 }
 
 #pragma mark > Accessors & Attributes
-int GMM::get_nbMixtureComponents() const
+int xmm::GMM::get_nbMixtureComponents() const
 {
     return nbMixtureComponents_;
 }
 
-double GMM::get_varianceOffset_relative() const
+double xmm::GMM::get_varianceOffset_relative() const
 {
     return varianceOffset_relative_;
 }
 
-double GMM::get_varianceOffset_absolute() const
+double xmm::GMM::get_varianceOffset_absolute() const
 {
     return varianceOffset_absolute_;
 }
 
-void GMM::set_nbMixtureComponents(int nbMixtureComponents)
+void xmm::GMM::set_nbMixtureComponents(int nbMixtureComponents)
 {
-    PREVENT_ATTR_CHANGE();
-    if (nbMixtureComponents < 1) throw invalid_argument("Number of mixture components must be > 0");
+    prevent_attribute_change();
+    if (nbMixtureComponents < 1) throw std::invalid_argument("Number of mixture components must be > 0");
     if (nbMixtureComponents == nbMixtureComponents_) return;
     
     nbMixtureComponents_ = nbMixtureComponents;
@@ -99,11 +99,11 @@ void GMM::set_nbMixtureComponents(int nbMixtureComponents)
     this->trained = false;
 }
 
-void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
+void xmm::GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     if (varianceOffset_relative <= 0. || varianceOffset_absolute <= 0.)
-        throw invalid_argument("Variance offsets must be > 0");
+        throw std::invalid_argument("Variance offsets must be > 0");
     
     varianceOffset_relative_ = varianceOffset_relative;
     varianceOffset_absolute_ = varianceOffset_absolute;
@@ -113,13 +113,14 @@ void GMM::set_varianceOffset(double varianceOffset_relative, double varianceOffs
     }
 }
 
-GaussianDistribution::COVARIANCE_MODE GMM::get_covariance_mode() const
+xmm::GaussianDistribution::COVARIANCE_MODE xmm::GMM::get_covariance_mode() const
 {
     return covariance_mode_;
 }
 
-void GMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+void xmm::GMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
 {
+    prevent_attribute_change();
     if (covariance_mode == covariance_mode_) return;
     covariance_mode_ = covariance_mode;
     for (unsigned int c=0; c<nbMixtureComponents_; ++c) {
@@ -128,12 +129,14 @@ void GMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_m
 }
 
 #pragma mark > Performance
-void GMM::performance_init()
+void xmm::GMM::performance_init()
 {
+    ProbabilisticModel::performance_init();
 }
 
-double GMM::performance_update(vector<float> const& observation)
+double xmm::GMM::performance_update(std::vector<float> const& observation)
 {
+    check_training();
     double instantaneous_likelihood = likelihood(observation);
     if (bimodal_)
     {
@@ -143,7 +146,7 @@ double GMM::performance_update(vector<float> const& observation)
 }
 
 #pragma mark > Training
-void GMM::train_EM_init()
+void xmm::GMM::train_EM_init()
 {
     initParametersToDefault();
     initMeansWithKMeans();
@@ -153,8 +156,9 @@ void GMM::train_EM_init()
 }
 
 #pragma mark > JSON I/O
-JSONNode GMM::to_json() const
+JSONNode xmm::GMM::to_json() const
 {
+    check_training();
     JSONNode json_gmm(JSON_NODE);
     json_gmm.set_name("GMM");
     
@@ -184,8 +188,9 @@ JSONNode GMM::to_json() const
     return json_gmm;
 }
 
-void GMM::from_json(JSONNode root)
+void xmm::GMM::from_json(JSONNode root)
 {
+    check_training();
     try {
         if (root.type() != JSON_NODE)
             throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
@@ -257,7 +262,7 @@ void GMM::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
     
@@ -266,14 +271,13 @@ void GMM::from_json(JSONNode root)
 
 
 #pragma mark > Conversion & Extraction
-void GMM::make_bimodal(unsigned int dimension_input)
+void xmm::GMM::make_bimodal(unsigned int dimension_input)
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (bimodal_)
-        throw runtime_error("The model is already bimodal");
+        throw std::runtime_error("The model is already bimodal");
     if (dimension_input >= dimension_)
-        throw out_of_range("Request input dimension exceeds the current dimension");
+        throw std::out_of_range("Request input dimension exceeds the current dimension");
     set_trainingSet(NULL);
     flags_ = BIMODAL;
     bimodal_ = true;
@@ -285,12 +289,11 @@ void GMM::make_bimodal(unsigned int dimension_input)
     results_output_variance.resize(dimension_ - dimension_input_);
 }
 
-void GMM::make_unimodal()
+void xmm::GMM::make_unimodal()
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model is already unimodal");
+        throw std::runtime_error("The model is already unimodal");
     set_trainingSet(NULL);
     flags_ = NONE;
     bimodal_ = false;
@@ -302,15 +305,14 @@ void GMM::make_unimodal()
     results_output_variance.clear();
 }
 
-GMM GMM::extract_submodel(vector<unsigned int>& columns) const
+xmm::GMM xmm::GMM::extract_submodel(std::vector<unsigned int>& columns) const
 {
-    if (is_training())
-        throw runtime_error("Cannot extract model during Training");
+    check_training();
     if (columns.size() > dimension_)
-        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+        throw std::out_of_range("requested number of columns exceeds the dimension of the current model");
     for (unsigned int column=0; column<columns.size(); ++column) {
         if (columns[column] >= dimension_)
-            throw out_of_range("Some column indices exceeds the dimension of the current model");
+            throw std::out_of_range("Some column indices exceeds the dimension of the current model");
     }
     size_t new_dim =columns.size();
     GMM target_model(*this);
@@ -333,33 +335,36 @@ GMM GMM::extract_submodel(vector<unsigned int>& columns) const
     return target_model;
 }
 
-GMM GMM::extract_submodel_input() const
+xmm::GMM xmm::GMM::extract_submodel_input() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_input(dimension_input_);
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_input(dimension_input_);
     for (unsigned int i=0; i<dimension_input_; ++i) {
         columns_input[i] = i;
     }
     return extract_submodel(columns_input);
 }
 
-GMM GMM::extract_submodel_output() const
+xmm::GMM xmm::GMM::extract_submodel_output() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_output(dimension_ - dimension_input_);
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_output(dimension_ - dimension_input_);
     for (unsigned int i=dimension_input_; i<dimension_; ++i) {
         columns_output[i-dimension_input_] = i;
     }
     return extract_submodel(columns_output);
 }
 
-GMM GMM::extract_inverse_model() const
+xmm::GMM xmm::GMM::extract_inverse_model() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns(dimension_);
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns(dimension_);
     for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
         columns[i] = i+dimension_input_;
     }
@@ -372,7 +377,7 @@ GMM GMM::extract_inverse_model() const
 }
 
 #pragma mark > Utilities
-void GMM::_copy(GMM *dst, GMM const& src)
+void xmm::GMM::_copy(GMM *dst, GMM const& src)
 {
     ProbabilisticModel::_copy(dst, src);
     dst->nbMixtureComponents_ = src.nbMixtureComponents_;
@@ -384,7 +389,7 @@ void GMM::_copy(GMM *dst, GMM const& src)
     dst->components = src.components;
 }
 
-void GMM::allocate()
+void xmm::GMM::allocate()
 {
     mixtureCoeffs.resize(nbMixtureComponents_);
     beta.resize(nbMixtureComponents_);
@@ -397,7 +402,7 @@ void GMM::allocate()
                                            covariance_mode_));
 }
 
-double GMM::obsProb(const float* observation, int mixtureComponent)
+double xmm::GMM::obsProb(const float* observation, int mixtureComponent)
 {
     double p(0.);
     
@@ -407,18 +412,18 @@ double GMM::obsProb(const float* observation, int mixtureComponent)
         }
     } else {
         if (mixtureComponent >= nbMixtureComponents_)
-            throw out_of_range("The index of the Gaussian Mixture Component is out of bounds");
+            throw std::out_of_range("The index of the Gaussian Mixture Component is out of bounds");
         p = mixtureCoeffs[mixtureComponent] * components[mixtureComponent].likelihood(observation);
     }
     
     return p;
 }
 
-double GMM::obsProb_input(const float* observation_input,
+double xmm::GMM::obsProb_input(const float* observation_input,
                           int mixtureComponent)
 {
     if (!bimodal_)
-        throw runtime_error("Model is not bimodal. Use the function 'obsProb'");
+        throw std::runtime_error("Model is not bimodal. Use the function 'obsProb'");
     double p(0.);
     
     if (mixtureComponent < 0) {
@@ -433,12 +438,12 @@ double GMM::obsProb_input(const float* observation_input,
     return p;
 }
 
-double GMM::obsProb_bimodal(const float* observation_input,
+double xmm::GMM::obsProb_bimodal(const float* observation_input,
                             const float* observation_output,
                             int mixtureComponent)
 {
     if (!bimodal_)
-        throw runtime_error("Model is not bimodal. Use the function 'obsProb'");
+        throw std::runtime_error("Model is not bimodal. Use the function 'obsProb'");
     double p(0.);
     
     if (mixtureComponent < 0) {
@@ -454,7 +459,7 @@ double GMM::obsProb_bimodal(const float* observation_input,
 }
 
 #pragma mark > Training
-void GMM::initMeansWithKMeans()
+void xmm::GMM::initMeansWithKMeans()
 {
     if (!this->trainingSet || this->trainingSet->is_empty())
         return;
@@ -469,7 +474,7 @@ void GMM::initMeansWithKMeans()
     delete kmeans;
 }
 
-void GMM::initCovariances_fullyObserved()
+void xmm::GMM::initCovariances_fullyObserved()
 {
     // TODO: simplify with covariance symmetricity
     // TODO: If Kmeans, covariances from cluster members
@@ -484,8 +489,8 @@ void GMM::initCovariances_fullyObserved()
             components[n].covariance.assign(dimension_, 0.0);
     }
     
-    vector<double> gmeans(nbMixtureComponents_*dimension_, 0.0);
-    vector<int> factor(nbMixtureComponents_, 0);
+    std::vector<double> gmeans(nbMixtureComponents_*dimension_, 0.0);
+    std::vector<int> factor(nbMixtureComponents_, 0);
     for (int i=0; i<nbPhrases; i++) {
         int step = ((*this->trainingSet)(i))->second->length() / nbMixtureComponents_;
         int offset(0);
@@ -532,7 +537,7 @@ void GMM::initCovariances_fullyObserved()
     }
 }
 
-double GMM::train_EM_update()
+double xmm::GMM::train_EM_update()
 {
     double log_prob(0.);
     
@@ -540,8 +545,8 @@ double GMM::train_EM_update()
     for (phrase_iterator it = this->trainingSet->begin(); it != this->trainingSet->end(); ++it)
         totalLength += it->second->length();
     
-    vector< vector<double> > p(nbMixtureComponents_);
-    vector<double> E(nbMixtureComponents_, 0.0);
+    std::vector< std::vector<double> > p(nbMixtureComponents_);
+    std::vector<double> E(nbMixtureComponents_, 0.0);
     for (int c=0; c<nbMixtureComponents_; c++) {
         p[c].resize(totalLength);
         E[c] = 0.;
@@ -563,7 +568,7 @@ double GMM::train_EM_update()
                     p[c][tbase+t] = obsProb(it->second->get_dataPointer(t), c);
                 }
                 
-                if (p[c][tbase+t] == 0. || isnan(p[c][tbase+t]) || isinf(p[c][tbase+t])) {
+                if (p[c][tbase+t] == 0. || std::isnan(p[c][tbase+t]) || std::isinf(p[c][tbase+t])) {
                     p[c][tbase+t] = 1e-100;
                 }
                 norm_const += p[c][tbase+t];
@@ -646,9 +651,9 @@ double GMM::train_EM_update()
     return log_prob;
 }
 
-void GMM::initParametersToDefault()
+void xmm::GMM::initParametersToDefault()
 {
-    vector<float> global_trainingdata_var(dimension_, 1.0);
+    std::vector<float> global_trainingdata_var(dimension_, 1.0);
     if (this->trainingSet)
         global_trainingdata_var = this->trainingSet->variance();
     
@@ -669,7 +674,7 @@ void GMM::initParametersToDefault()
     }
 }
 
-void GMM::normalizeMixtureCoeffs()
+void xmm::GMM::normalizeMixtureCoeffs()
 {
     double norm_const(0.);
     for (int c=0; c<nbMixtureComponents_; c++) {
@@ -686,14 +691,14 @@ void GMM::normalizeMixtureCoeffs()
     }
 }
 
-void GMM::addCovarianceOffset()
+void xmm::GMM::addCovarianceOffset()
 {
     for (mixture_iterator component = components.begin() ; component != components.end(); ++component) {
         component->addOffset();
     }
 }
 
-void GMM::updateInverseCovariances()
+void xmm::GMM::updateInverseCovariances()
 {
     try {
         for (mixture_iterator component = components.begin() ; component != components.end() ; ++component) {
@@ -701,18 +706,20 @@ void GMM::updateInverseCovariances()
             if (bimodal_)
                 component->updateOutputVariances();
         }
-    } catch (exception& e) {
-        throw runtime_error("Matrix inversion error: varianceoffset must be too small");
+    } catch (std::exception& e) {
+        throw std::runtime_error("Matrix inversion error: varianceoffset must be too small");
     }
 }
 
 #pragma mark > Performance
-void GMM::regression(vector<float> const& observation_input, vector<float>& predicted_output)
+void xmm::GMM::regression(std::vector<float> const& observation_input,
+                          std::vector<float>& predicted_output)
 {
+    check_training();
     int dimension_output = dimension_ - dimension_input_;
     predicted_output.assign(dimension_output, 0.0);
     results_output_variance.assign(dimension_output, 0.0);
-    vector<float> tmp_predicted_output(dimension_output, 0.0);
+    std::vector<float> tmp_predicted_output(dimension_output, 0.0);
     
     for (int c=0; c<nbMixtureComponents_; c++) {
         components[c].regression(observation_input, tmp_predicted_output);
@@ -724,8 +731,10 @@ void GMM::regression(vector<float> const& observation_input, vector<float>& pred
     }
 }
 
-double GMM::likelihood(vector<float> const& observation, vector<float> const& observation_output)
+double xmm::GMM::likelihood(std::vector<float> const& observation,
+                            std::vector<float> const& observation_output)
 {
+    check_training();
     double likelihood(0.);
     for (int c=0; c<nbMixtureComponents_; c++) {
         if (bimodal_) {

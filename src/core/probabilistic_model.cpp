@@ -35,21 +35,24 @@
 
 #pragma mark -
 #pragma mark Constructors
-ProbabilisticModel::ProbabilisticModel(rtml_flags flags,
+xmm::ProbabilisticModel::ProbabilisticModel(xmm_flags flags,
                                        TrainingSet *trainingSet)
 : trainingSet(trainingSet),
   trained(false),
   trainingProgression(0),
   flags_(flags),
   bimodal_(flags & BIMODAL),
-  trainingCallbackFunction_(NULL),
-  is_training_(false)
+  trainingCallbackFunction_(NULL)
+#ifdef USE_PTHREAD
+  ,is_training_(false),
+  cancel_training_(false)
+#endif
 {
     if (this->trainingSet) {
         if (bimodal_ && !trainingSet->is_bimodal())
-            throw runtime_error("This model is bimodal but the training set is not. Can't Connect.");
+            throw std::runtime_error("This model is bimodal but the training set is not. Can't Connect.");
         if (!bimodal_ && trainingSet->is_bimodal())
-            throw runtime_error("This model is not bimodal but the training set is. Can't Connect.");
+            throw std::runtime_error("This model is not bimodal but the training set is. Can't Connect.");
         this->trainingSet->add_listener(this);
         dimension_ = this->trainingSet->dimension();
         if (bimodal_)
@@ -63,21 +66,21 @@ ProbabilisticModel::ProbabilisticModel(rtml_flags flags,
     }
     results_instant_likelihood = 0.0;
     results_log_likelihood = 0.0;
-    stopcriterion.minSteps = EM_MODEL_DEFAULT_EMSTOP_MINSTEPS;
-    stopcriterion.maxSteps = EM_MODEL_DEFAULT_EMSTOP_MAXSTEPS;
-    stopcriterion.percentChg = EM_MODEL_DEFAULT_EMSTOP_PERCENT_CHG;
-    likelihoodBuffer_.resize(EM_MODEL_DEFAULT_LIKELIHOOD_WINDOW);
+    stopcriterion.minSteps = DEFAULT_EMSTOP_MINSTEPS;
+    stopcriterion.maxSteps = DEFAULT_EMSTOP_MAXSTEPS;
+    stopcriterion.percentChg = DEFAULT_EMSTOP_PERCENT_CHG();
+    likelihoodBuffer_.resize(DEFAULT_LIKELIHOOD_WINDOW);
 #ifdef USE_PTHREAD
     pthread_mutex_init(&trainingMutex, NULL);
 #endif
 }
 
-ProbabilisticModel::ProbabilisticModel(ProbabilisticModel const& src)
+xmm::ProbabilisticModel::ProbabilisticModel(ProbabilisticModel const& src)
 {
     this->_copy(this, src);
 }
 
-ProbabilisticModel& ProbabilisticModel::operator=(ProbabilisticModel const& src)
+xmm::ProbabilisticModel& xmm::ProbabilisticModel::operator=(ProbabilisticModel const& src)
 {
     if(this != &src)
     {
@@ -88,12 +91,14 @@ ProbabilisticModel& ProbabilisticModel::operator=(ProbabilisticModel const& src)
     return *this;
 };
 
-void ProbabilisticModel::_copy(ProbabilisticModel *dst,
+void xmm::ProbabilisticModel::_copy(ProbabilisticModel *dst,
                                ProbabilisticModel const& src)
 {
+#ifdef USE_PTHREAD
     if (src.is_training())
-        throw runtime_error("Cannot copy model during Training");
+        throw std::runtime_error("Cannot copy model during Training");
     dst->is_training_ = false;
+#endif
     dst->flags_ = src.flags_;
     dst->trained = src.trained;
     dst->trainingCallbackFunction_ = src.trainingCallbackFunction_;
@@ -113,30 +118,35 @@ void ProbabilisticModel::_copy(ProbabilisticModel *dst,
         dst->trainingSet->add_listener(dst);
 }
 
-ProbabilisticModel::~ProbabilisticModel()
+xmm::ProbabilisticModel::~ProbabilisticModel()
 {
+#ifdef USE_PTHREAD
+    while (this->is_training()) {}
+#endif
     if (this->trainingSet)
         this->trainingSet->remove_listener(this);
 }
 
 #pragma mark -
 #pragma mark Accessors
-bool ProbabilisticModel::is_training() const
+#ifdef USE_PTHREAD
+bool xmm::ProbabilisticModel::is_training() const
 {
     return is_training_;
 }
+#endif
 
-void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
+void xmm::ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     if (this->trainingSet)
         this->trainingSet->remove_listener(this);
     this->trainingSet = trainingSet;
     if (this->trainingSet) {
         if (bimodal_ && !trainingSet->is_bimodal())
-            throw runtime_error("This model is bimodal but the training set is not. Can't Connect.");
+            throw std::runtime_error("This model is bimodal but the training set is not. Can't Connect.");
         if (!bimodal_ && trainingSet->is_bimodal())
-            throw runtime_error("This model is not bimodal but the training set is. Can't Connect.");
+            throw std::runtime_error("This model is not bimodal but the training set is. Can't Connect.");
         this->trainingSet->add_listener(this);
         dimension_ = this->trainingSet->dimension();
         if (bimodal_)
@@ -147,8 +157,12 @@ void ProbabilisticModel::set_trainingSet(TrainingSet *trainingSet)
     }
 }
 
-void ProbabilisticModel::notify(string attribute)
+void xmm::ProbabilisticModel::notify(std::string attribute)
 {
+#ifdef USE_PTHREAD
+    if (is_training())
+        throw std::runtime_error("Cannot receive notifications during Training");
+#endif
     if (!trainingSet) return;
     if (attribute == "dimension") {
         dimension_ = trainingSet->dimension();
@@ -172,43 +186,43 @@ void ProbabilisticModel::notify(string attribute)
     }
 }
 
-unsigned int ProbabilisticModel::dimension() const
+unsigned int xmm::ProbabilisticModel::dimension() const
 {
     return dimension_;
 }
 
-unsigned int ProbabilisticModel::dimension_input() const
+unsigned int xmm::ProbabilisticModel::dimension_input() const
 {
     if (!bimodal_)
-        throw runtime_error("The model is not bimodal");
+        throw std::runtime_error("The model is not bimodal");
     return dimension_input_;
 }
 
-unsigned int ProbabilisticModel::get_likelihoodwindow() const
+unsigned int xmm::ProbabilisticModel::get_likelihoodwindow() const
 {
     return likelihoodBuffer_.size();
 }
 
-void ProbabilisticModel::set_likelihoodwindow(unsigned int likelihoodwindow)
+void xmm::ProbabilisticModel::set_likelihoodwindow(unsigned int likelihoodwindow)
 {
-    if (likelihoodwindow < 1) throw invalid_argument("Likelihood Buffer size must be > 1");
+    if (likelihoodwindow < 1) throw std::invalid_argument("Likelihood Buffer size must be > 1");
     likelihoodBuffer_.resize(likelihoodwindow);
 }
 
-vector<string> const& ProbabilisticModel::get_column_names() const
+std::vector<std::string> const& xmm::ProbabilisticModel::get_column_names() const
 {
     return column_names_;
 }
 
 #pragma mark -
 #pragma mark Training
-void* ProbabilisticModel::train_func(void *context)
+void* xmm::ProbabilisticModel::train_func(void *context)
 {
     ((ProbabilisticModel *)context)->train();
     return NULL;
 }
 
-void ProbabilisticModel::train()
+void xmm::ProbabilisticModel::train()
 {
 #ifdef USE_PTHREAD
     pthread_mutex_lock(&trainingMutex);
@@ -218,42 +232,42 @@ void ProbabilisticModel::train()
     if (!this->trainingSet || this->trainingSet->is_empty())
         trainingError = true;
     
-    is_training_ = true;
-    
+    if (check_and_cancel_training())
+        return;
     if (!trainingError) {
         try {
             this->train_EM_init();
-        } catch (exception &e) {
+        } catch (std::exception &e) {
             trainingError = true;
         }
     }
     
-    trainingLogLikelihood = log(0.);
+    trainingLogLikelihood = -std::numeric_limits<double>::max();
     trainingNbIterations = 0;
     double old_log_prob = trainingLogLikelihood;
     
     while (!train_EM_hasConverged(trainingNbIterations, trainingLogLikelihood, old_log_prob))
     {
+        if (check_and_cancel_training())
+            return;
         old_log_prob = trainingLogLikelihood;
         if (!trainingError) {
             try {
                 trainingLogLikelihood = this->train_EM_update();
-            } catch (exception &e) {
+            } catch (std::exception &e) {
                 trainingError = true;
             }
         }
         
-        if (isnan(100.*fabs((trainingLogLikelihood-old_log_prob)/old_log_prob)) && (trainingNbIterations > 1))
+        if (std::isnan(100.*fabs((trainingLogLikelihood-old_log_prob)/old_log_prob)) && (trainingNbIterations > 1))
             trainingError = true;
         
         if (trainingError) {
 #ifdef USE_PTHREAD
+            is_training_ = false;
             pthread_mutex_unlock(&trainingMutex);
             if (this->trainingCallbackFunction_) {
-                pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
                 this->trainingCallbackFunction_(this, TRAINING_ERROR, this->trainingExtradata_);
-                pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-                pthread_testcancel();
             }
 #else
             if (this->trainingCallbackFunction_) {
@@ -272,10 +286,7 @@ void ProbabilisticModel::train()
         
 #ifdef USE_PTHREAD
         if (this->trainingCallbackFunction_) {
-            pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
             this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
-            pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-            pthread_testcancel();
         }
 #else
         if (this->trainingCallbackFunction_) {
@@ -284,6 +295,8 @@ void ProbabilisticModel::train()
 #endif
     }
     
+    if (check_and_cancel_training())
+        return;
     this->train_EM_terminate();
     
 #ifdef USE_PTHREAD
@@ -291,9 +304,9 @@ void ProbabilisticModel::train()
 #endif
 }
 
-bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
+bool xmm::ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double old_log_prob) const
 {
-    if (step >= EM_MODEL_DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS)
+    if (step >= DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS)
         return true;
     if (stopcriterion.maxSteps >= stopcriterion.minSteps)
         return (step >= stopcriterion.maxSteps);
@@ -301,18 +314,15 @@ bool ProbabilisticModel::train_EM_hasConverged(int step, double log_prob, double
         return (step >= stopcriterion.minSteps) && (100.*fabs((log_prob - old_log_prob) / log_prob) <= stopcriterion.percentChg);
 }
 
-void ProbabilisticModel::train_EM_terminate()
+void xmm::ProbabilisticModel::train_EM_terminate()
 {
     this->trained = true;
     this->trainingSet->set_unchanged();
-    this->is_training_ = false;
     
 #ifdef USE_PTHREAD
+    this->is_training_ = false;
     if (trainingCallbackFunction_) {
-        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
         trainingCallbackFunction_(this, TRAINING_DONE, trainingExtradata_);
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-        pthread_testcancel();
     }
 #else
     if (trainingCallbackFunction_) {
@@ -322,34 +332,44 @@ void ProbabilisticModel::train_EM_terminate()
 }
 
 #ifdef USE_PTHREAD
-void ProbabilisticModel::abortTraining(pthread_t this_thread)
+bool xmm::ProbabilisticModel::abortTraining(pthread_t this_thread)
 {
-    if (!is_training_)
-        return;
-    if (pthread_cancel(this_thread))
-        throw runtime_error("Error Canceling the training thread");
-    void *status;
-    if (pthread_join(this_thread, &status))
-        throw runtime_error("Error Joining the training thread after cancel");
-    pthread_mutex_unlock(&trainingMutex);
-    is_training_ = false;
-    if (trainingCallbackFunction_) {
-        trainingCallbackFunction_(this, TRAINING_ABORT, trainingExtradata_);
+    if (is_training()) {
+        cancel_training_ = true;
+        return true;
     }
+    return false;
 }
 #endif
 
-void ProbabilisticModel::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata)
+bool xmm::ProbabilisticModel::check_and_cancel_training()
 {
-    PREVENT_ATTR_CHANGE();
+#ifdef USE_PTHREAD
+    if (!cancel_training_)
+        return false;
+    pthread_mutex_unlock(&trainingMutex);
+    if (this->trainingCallbackFunction_) {
+        this->trainingCallbackFunction_(this, TRAINING_ABORT, this->trainingExtradata_);
+    }
+    is_training_ = false;
+    return true;
+#else
+    return false;
+#endif
+}
+
+void xmm::ProbabilisticModel::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata)
+{
+    prevent_attribute_change();
     trainingExtradata_ = extradata;
     trainingCallbackFunction_ = callback;
 }
 
 #pragma mark -
 #pragma mark Likelihood Buffer
-void ProbabilisticModel::updateLikelihoodBuffer(double instantLikelihood)
+void xmm::ProbabilisticModel::updateLikelihoodBuffer(double instantLikelihood)
 {
+    check_training();
     likelihoodBuffer_.push(log(instantLikelihood));
     results_instant_likelihood = instantLikelihood;
     results_log_likelihood = 0.0;
@@ -362,10 +382,11 @@ void ProbabilisticModel::updateLikelihoodBuffer(double instantLikelihood)
 
 #pragma mark -
 #pragma mark Performance
-void ProbabilisticModel::performance_init()
+void xmm::ProbabilisticModel::performance_init()
 {
+    check_training();
     if (!this->trained)
-        throw runtime_error("Cannot play: model has not been trained");
+        throw std::runtime_error("Cannot play: model has not been trained");
     likelihoodBuffer_.clear();
     if (bimodal_) {
         results_predicted_output.resize(dimension_ - dimension_input_);
@@ -375,8 +396,9 @@ void ProbabilisticModel::performance_init()
 
 #pragma mark -
 #pragma mark File IO
-JSONNode ProbabilisticModel::to_json() const
+JSONNode xmm::ProbabilisticModel::to_json() const
 {
+    check_training();
     JSONNode json_model(JSON_NODE);
     json_model.set_name("ProbabilisticModel");
     
@@ -397,8 +419,9 @@ JSONNode ProbabilisticModel::to_json() const
     return json_model;
 }
 
-void ProbabilisticModel::from_json(JSONNode root)
+void xmm::ProbabilisticModel::from_json(JSONNode root)
 {
+    check_training();
     try {
         if (root.type() != JSON_NODE)
             throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
@@ -410,7 +433,7 @@ void ProbabilisticModel::from_json(JSONNode root)
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type for node 'flags': was expecting 'JSON_NUMBER'", root_it->name());
-        if (this->flags_ != static_cast<rtml_flags>(root_it->as_int())) {
+        if (this->flags_ != static_cast<xmm_flags>(root_it->as_int())) {
             throw JSONException("The flags of the model to read does not match the flags the current instance.", root.name());
         }
         
@@ -466,7 +489,7 @@ void ProbabilisticModel::from_json(JSONNode root)
         JSONNode json_stopcriterion = *root_it;
         JSONNode::const_iterator crit_it = json_stopcriterion.begin();
         
-        if (crit_it == root.end())
+        if (crit_it == json_stopcriterion.end())
             throw JSONException("JSON Node is incomplete", crit_it->name());
         if (crit_it->name() != "minsteps")
             throw JSONException("Wrong name: was expecting 'minsteps'", crit_it->name());
@@ -475,7 +498,7 @@ void ProbabilisticModel::from_json(JSONNode root)
         stopcriterion.minSteps = static_cast<unsigned int>(crit_it->as_int());
         crit_it++;
         
-        if (crit_it == root.end())
+        if (crit_it == json_stopcriterion.end())
             throw JSONException("JSON Node is incomplete", crit_it->name());
         if (crit_it->name() != "maxsteps")
             throw JSONException("Wrong name: was expecting 'maxsteps'", crit_it->name());
@@ -484,7 +507,7 @@ void ProbabilisticModel::from_json(JSONNode root)
         stopcriterion.maxSteps = static_cast<unsigned int>(crit_it->as_int());
         crit_it++;
         
-        if (crit_it == root.end())
+        if (crit_it == json_stopcriterion.end())
             throw JSONException("JSON Node is incomplete", crit_it->name());
         if (crit_it->name() != "percentchg")
             throw JSONException("Wrong name: was expecting 'percentchg'", crit_it->name());
@@ -502,7 +525,7 @@ void ProbabilisticModel::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }

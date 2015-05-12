@@ -31,7 +31,7 @@
  */
 
 #include "kmeans.h"
-#include <limits.h>
+#include <limits>
 
 #ifdef WIN32
 static long random() {return rand();}
@@ -41,15 +41,14 @@ static long random() {return rand();}
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-KMeans::KMeans(TrainingSet *trainingSet,
+xmm::KMeans::KMeans(TrainingSet *trainingSet,
                int nbClusters)
 : trainingSet(trainingSet),
   trainingInitType(RANDOM),
   nbClusters_(nbClusters > 0 ? nbClusters : 1),
   dimension_(1),
-  is_training_(false),
-  training_maxIterations_(KMEANS_DEFAULT_MAX_ITERATIONS),
-  training_relativeDistanceThreshold_(KMEANS_DEFAULT_RELATIVE_VARIATION_THRESHOLD),
+  training_maxIterations_(DEFAULT_MAX_ITERATIONS),
+  training_relativeDistanceThreshold_(DEFAULT_RELATIVE_VARIATION_THRESHOLD()),
   trainingCallbackFunction_(NULL)
 {
     if (this->trainingSet)
@@ -57,14 +56,14 @@ KMeans::KMeans(TrainingSet *trainingSet,
     centers.resize(nbClusters*dimension_, 0.0);
 }
 
-KMeans::KMeans(KMeans const& src)
+xmm::KMeans::KMeans(KMeans const& src)
 {
     this->nbClusters_ = src.nbClusters_;
     this->dimension_ = src.dimension_;
     this->centers = src.centers;
 }
 
-KMeans& KMeans::operator=(KMeans const& src)
+xmm::KMeans& xmm::KMeans::operator=(KMeans const& src)
 {
     if(this != &src)
     {
@@ -75,12 +74,12 @@ KMeans& KMeans::operator=(KMeans const& src)
     return *this;
 }
 
-KMeans::~KMeans()
+xmm::KMeans::~KMeans()
 {
     centers.clear();
 }
 
-void KMeans::notify(string attribute)
+void xmm::KMeans::notify(std::string attribute)
 {
     if (!trainingSet) return;
     if (attribute == "dimension") {
@@ -96,78 +95,57 @@ void KMeans::notify(string attribute)
 #pragma mark > Accessors
 #pragma mark -
 #pragma mark Accessors
-bool KMeans::is_training() const
+void xmm::KMeans::set_trainingSet(TrainingSet *trainingSet)
 {
-    return is_training_;
-}
-
-void KMeans::set_trainingSet(TrainingSet *trainingSet)
-{
-    PREVENT_ATTR_CHANGE();
     this->trainingSet = trainingSet;
 }
 
-unsigned int KMeans::get_nbClusters()
+unsigned int xmm::KMeans::get_nbClusters()
 {
     return nbClusters_;
 }
 
-void KMeans::set_nbClusters(unsigned int nbClusters)
+void xmm::KMeans::set_nbClusters(unsigned int nbClusters)
 {
     nbClusters_ = nbClusters;
     centers.resize(nbClusters * dimension_, 0.0);
 }
 
-unsigned int KMeans::get_training_maxIterations() const
+unsigned int xmm::KMeans::get_training_maxIterations() const
 {
     return training_maxIterations_;
 }
 
-void KMeans::set_training_maxIterations(unsigned int maxIterations)
+void xmm::KMeans::set_training_maxIterations(unsigned int maxIterations)
 {
     training_maxIterations_ = maxIterations;
 }
 
-unsigned int KMeans::get_training_relativeDistanceThreshold() const
+unsigned int xmm::KMeans::get_training_relativeDistanceThreshold() const
 {
     return training_relativeDistanceThreshold_;
 }
 
-void KMeans::set_training_relativeDistanceThreshold(float threshold)
+void xmm::KMeans::set_training_relativeDistanceThreshold(float threshold)
 {
     training_relativeDistanceThreshold_ = threshold;
 }
 
-unsigned int KMeans::dimension() const
+unsigned int xmm::KMeans::dimension() const
 {
     return dimension_;
 }
 
 #pragma mark > Training
-void KMeans::train()
+void xmm::KMeans::train()
 {
-#ifdef USE_PTHREAD
-    pthread_mutex_lock(&trainingMutex);
-#endif
     if (!this->trainingSet || this->trainingSet->is_empty())
     {
-#ifdef USE_PTHREAD
-        pthread_mutex_unlock(&trainingMutex);
         if (this->trainingCallbackFunction_) {
-            pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-            this->trainingCallbackFunction_(this, TRAINING_ERROR, this->trainingExtradata_);
-            pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-            pthread_testcancel();
+            this->trainingCallbackFunction_(this, ProbabilisticModel::TRAINING_ERROR, this->trainingExtradata_);
         }
-#else
-        if (this->trainingCallbackFunction_) {
-            this->trainingCallbackFunction_(this, TRAINING_ERROR, this->trainingExtradata_);
-        }
-#endif
         return;
     }
-    
-    is_training_ = true;
     
     dimension_ = trainingSet->dimension();
     centers.resize(nbClusters_ * dimension_, 0.0);
@@ -176,21 +154,11 @@ void KMeans::train()
     else
         initClustersWithFirstPhrase();
     
-    //    for (vector<float>::iterator it=centers.begin(); it!=centers.end(); ++it) {
-    //        cout << *it << " ";
-    //    }
-    //    cout << endl;
-    
     trainingNbIterations = 0;
     for (trainingNbIterations=0; trainingNbIterations<training_maxIterations_; ++trainingNbIterations) {
-        vector<float> previous_centers = centers;
+        std::vector<float> previous_centers = centers;
         
         updateCenters(previous_centers);
-        
-        //        for (vector<float>::iterator it=centers.begin(); it!=centers.end(); ++it) {
-        //            cout << *it << " ";
-        //        }
-        //        cout << endl;
         
         float meanClusterDistance(0.0);
         float maxRelativeCenterVariation(0.0);
@@ -209,39 +177,17 @@ void KMeans::train()
         if (maxRelativeCenterVariation < training_relativeDistanceThreshold_)
             break;
         
-#ifdef USE_PTHREAD
         if (this->trainingCallbackFunction_) {
-            pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-            this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
-            pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-            pthread_testcancel();
+            this->trainingCallbackFunction_(this, ProbabilisticModel::TRAINING_RUN, this->trainingExtradata_);
         }
-#else
-        if (this->trainingCallbackFunction_) {
-            this->trainingCallbackFunction_(this, TRAINING_RUN, this->trainingExtradata_);
-        }
-#endif
     }
     
-#ifdef USE_PTHREAD
     if (trainingCallbackFunction_) {
-        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        trainingCallbackFunction_(this, TRAINING_DONE, trainingExtradata_);
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-        pthread_testcancel();
+        trainingCallbackFunction_(this, ProbabilisticModel::TRAINING_DONE, trainingExtradata_);
     }
-#else
-    if (trainingCallbackFunction_) {
-        trainingCallbackFunction_(this, TRAINING_DONE, trainingExtradata_);
-    }
-#endif
-    
-#ifdef USE_PTHREAD
-    pthread_mutex_unlock(&trainingMutex);
-#endif
 }
 
-void KMeans::initClustersWithFirstPhrase()
+void xmm::KMeans::initClustersWithFirstPhrase()
 {
     if (!this->trainingSet || this->trainingSet->is_empty())
         return;
@@ -262,11 +208,11 @@ void KMeans::initClustersWithFirstPhrase()
 }
 
 
-void KMeans::randomizeClusters()
+void xmm::KMeans::randomizeClusters()
 {
-    vector<float> trainingSetVariance(dimension_, 1.);
+    std::vector<float> trainingSetVariance(dimension_, 1.);
     if (trainingSet)
-        vector<float> trainingSetVariance = trainingSet->variance();
+        std::vector<float> trainingSetVariance = trainingSet->variance();
     for (unsigned int k=0; k<nbClusters_; ++k) {
         for (unsigned int d=0; d<dimension_; ++d) {
             centers[k*dimension_ + d] = trainingSetVariance[d] * (2. * random() / float(RAND_MAX) - 1.);
@@ -274,16 +220,16 @@ void KMeans::randomizeClusters()
     }
 }
 
-void KMeans::updateCenters(vector<float>& previous_centers)
+void xmm::KMeans::updateCenters(std::vector<float>& previous_centers)
 {
     unsigned int phraseIndex(0);
     centers.assign(nbClusters_*dimension_, 0.0);
-    vector<unsigned int> numFramesPerCluster(nbClusters_, 0);
+    std::vector<unsigned int> numFramesPerCluster(nbClusters_, 0);
     for (TrainingSet::phrase_iterator it=trainingSet->begin(); it!=trainingSet->end(); ++it, ++phraseIndex) {
         for (unsigned int t=0; t<it->second->length(); ++t) {
             float min_distance;
             if (trainingSet->is_bimodal()) {
-                vector<float> frame(dimension_);
+                std::vector<float> frame(dimension_);
                 for (unsigned int d=0; d<dimension_; ++d) {
                     frame[d] = it->second->at(t, d);
                 }
@@ -299,7 +245,7 @@ void KMeans::updateCenters(vector<float>& previous_centers)
             for (unsigned int k=1; k<nbClusters_; ++k) {
                 float distance;
                 if (trainingSet->is_bimodal()) {
-                    vector<float> frame(dimension_);
+                    std::vector<float> frame(dimension_);
                     for (unsigned int d=0; d<dimension_; ++d) {
                         frame[d] = it->second->at(t, d);
                     }
@@ -331,47 +277,24 @@ void KMeans::updateCenters(vector<float>& previous_centers)
     }
 }
 
-void* KMeans::train_func(void *context)
+void xmm::KMeans::set_trainingCallback(void (*callback)(void *srcModel, ProbabilisticModel::CALLBACK_FLAG state, void* extradata), void* extradata)
 {
-    ((KMeans *)context)->train();
-    return NULL;
-}
-
-#ifdef USE_PTHREAD
-void KMeans::abortTraining(pthread_t this_thread)
-{
-    if (!is_training_)
-        return;
-    pthread_cancel(this_thread);
-    void *status;
-    pthread_join(this_thread, &status);
-    pthread_mutex_unlock(&trainingMutex);
-    is_training_ = false;
-    if (trainingCallbackFunction_) {
-        trainingCallbackFunction_(this, TRAINING_ABORT, trainingExtradata_);
-    }
-}
-#endif
-
-void KMeans::set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata)
-{
-    PREVENT_ATTR_CHANGE();
     trainingExtradata_ = extradata;
     trainingCallbackFunction_ = callback;
 }
 
 #pragma mark > Performance
-void KMeans::performance_init()
+void xmm::KMeans::performance_init()
 {
     results_distances.resize(nbClusters_, 0.0);
 }
 
-void KMeans::performance_update(vector<float> const& observation)
+void xmm::KMeans::performance_update(std::vector<float> const& observation)
 {
     if (observation.size() != dimension_)
-        throw runtime_error("Dimensions Don't Agree");
+        throw std::runtime_error("Dimensions Don't Agree");
     results_likeliest = 0;
-    float minDistance(numeric_limits<float>::max());
+    float minDistance(std::numeric_limits<float>::max());
     for (unsigned int k=0; k<nbClusters_; ++k) {
         results_distances[k] = euclidian_distance(&observation[0], &centers[k*dimension_], dimension_);
         if (results_distances[k] < minDistance) {
@@ -383,7 +306,7 @@ void KMeans::performance_update(vector<float> const& observation)
 
 #pragma mark -
 #pragma mark File IO
-JSONNode KMeans::to_json() const
+JSONNode xmm::KMeans::to_json() const
 {
     JSONNode json_model(JSON_NODE);
     json_model.set_name("KMeans");
@@ -395,7 +318,7 @@ JSONNode KMeans::to_json() const
     return json_model;
 }
 
-void KMeans::from_json(JSONNode root)
+void xmm::KMeans::from_json(JSONNode root)
 {
     try {
         if (root.type() != JSON_NODE)
@@ -427,17 +350,17 @@ void KMeans::from_json(JSONNode root)
         json2vector(*root_it, centers, nbClusters_);
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }
 
 # pragma mark > Utility
-template <typename numType>
-numType euclidian_distance(const numType* vector1,
-                           const numType* vector2,
-                           unsigned int dimension) {
-    numType distance(0.0);
+template <typename T>
+T xmm::euclidian_distance(const T* vector1,
+                          const T* vector2,
+                          unsigned int dimension) {
+    T distance(0.0);
     for (unsigned int d=0; d<dimension; d++) {
         distance += (vector1[d] - vector2[d]) * (vector1[d] - vector2[d]);
     }

@@ -37,11 +37,11 @@
 #include <ctime>
 
 TEST_CASE( "Diagonal covariance (unimodal)", "[GaussianDistribution]" ) {
-    GaussianDistribution a(NONE,
-                           3,
-                           0,
-                           0.0034,
-                           0.0123);
+    xmm::GaussianDistribution a(xmm::NONE,
+                                3,
+                                0,
+                                0.0034,
+                                0.0123);
     a.mean[0] = 0.2;
     a.mean[1] = 0.3;
     a.mean[2] = 0.1;
@@ -59,15 +59,15 @@ TEST_CASE( "Diagonal covariance (unimodal)", "[GaussianDistribution]" ) {
     observation[0] = 0.7;
     observation[1] = 0.;
     observation[2] = -0.3;
-    GaussianDistribution b(a);
-    CHECK_NOTHROW(b.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    xmm::GaussianDistribution b(a);
+    CHECK_NOTHROW(b.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     CHECK(a.mean == b.mean);
     CHECK(a.covariance[0] == b.covariance[0]);
     CHECK(a.covariance[4] == b.covariance[1]);
     CHECK(a.covariance[8] == b.covariance[2]);
     double likelihood_b = b.likelihood(observation);
-    GaussianDistribution c(b);
-    CHECK_NOTHROW(c.set_covariance_mode(GaussianDistribution::FULL));
+    xmm::GaussianDistribution c(b);
+    CHECK_NOTHROW(c.set_covariance_mode(xmm::GaussianDistribution::FULL));
     CHECK(a.mean == c.mean);
     CHECK_FALSE(a.covariance == c.covariance);
     CHECK(c.covariance[0] == b.covariance[0]);
@@ -80,11 +80,11 @@ TEST_CASE( "Diagonal covariance (unimodal)", "[GaussianDistribution]" ) {
 
 
 TEST_CASE( "Diagonal covariance (bimodal)", "[GaussianDistribution]" ) {
-    GaussianDistribution a(BIMODAL,
-                           3,
-                           2,
-                           0.0034,
-                           0.0123);
+    xmm::GaussianDistribution a(xmm::BIMODAL,
+                                3,
+                                2,
+                                0.0034,
+                                0.0123);
     a.mean[0] = 0.2;
     a.mean[1] = 0.3;
     a.mean[2] = 0.1;
@@ -102,14 +102,14 @@ TEST_CASE( "Diagonal covariance (bimodal)", "[GaussianDistribution]" ) {
     observation[0] = 0.7;
     observation[1] = 0.;
     observation[2] = -0.3;
-    GaussianDistribution b(a);
-    CHECK_NOTHROW(b.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    xmm::GaussianDistribution b(a);
+    CHECK_NOTHROW(b.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     CHECK(a.mean == b.mean);
     CHECK(a.covariance[0] == b.covariance[0]);
     CHECK(a.covariance[4] == b.covariance[1]);
     CHECK(a.covariance[8] == b.covariance[2]);
-    GaussianDistribution c(b);
-    CHECK_NOTHROW(c.set_covariance_mode(GaussianDistribution::FULL));
+    xmm::GaussianDistribution c(b);
+    CHECK_NOTHROW(c.set_covariance_mode(xmm::GaussianDistribution::FULL));
     CHECK(a.mean == c.mean);
     CHECK_FALSE(a.covariance == c.covariance);
     CHECK(c.covariance[0] == b.covariance[0]);
@@ -121,20 +121,20 @@ TEST_CASE( "Diagonal covariance (bimodal)", "[GaussianDistribution]" ) {
 }
 
 TEST_CASE( "GMM with Diagonal covariance (unimodal)", "[GMM]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
         observation[2] = pow(float(i)/100., 3.);
         ts.recordPhrase(0, observation);
     }
-    GMM a(NONE, &ts);
+    xmm::GMM a(xmm::NONE, &ts);
     a.set_nbMixtureComponents(3);
     a.train();
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     a.performance_init();
-    vector<double> log_likelihood(100, 0.0);
+    std::vector<double> log_likelihood(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -142,9 +142,9 @@ TEST_CASE( "GMM with Diagonal covariance (unimodal)", "[GMM]" ) {
         a.performance_update(observation);
         log_likelihood[i] = a.results_log_likelihood;
     }
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::FULL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::FULL));
     a.performance_init();
-    vector<double> log_likelihood2(100, 0.0);
+    std::vector<double> log_likelihood2(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -153,15 +153,15 @@ TEST_CASE( "GMM with Diagonal covariance (unimodal)", "[GMM]" ) {
         log_likelihood2[i] = a.results_log_likelihood;
     }
     CHECK_VECTOR_APPROX(log_likelihood, log_likelihood2);
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     JSONNode a_json = a.to_json();
-    GMM b;
+    xmm::GMM b;
     b.from_json(a_json);
 }
 
 TEST_CASE( "GMMGroup with Diagonal covariance (unimodal)", "[GMMGroup]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -169,16 +169,16 @@ TEST_CASE( "GMMGroup with Diagonal covariance (unimodal)", "[GMMGroup]" ) {
         ts.recordPhrase(0, observation);
         ts.recordPhrase(1, observation);
     }
-    Label label_a(static_cast<string>("a"));
-    Label label_b(static_cast<string>("b"));
+    xmm::Label label_a(static_cast<std::string>("a"));
+    xmm::Label label_b(static_cast<std::string>("b"));
     ts.setPhraseLabel(0, label_a);
     ts.setPhraseLabel(1, label_b);
-    GMMGroup a(NONE, &ts);
+    xmm::GMMGroup a(xmm::NONE, &ts);
     a.set_nbMixtureComponents(3);
     a.train();
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     a.performance_init();
-    vector<double> log_likelihood(100, 0.0);
+    std::vector<double> log_likelihood(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -186,9 +186,9 @@ TEST_CASE( "GMMGroup with Diagonal covariance (unimodal)", "[GMMGroup]" ) {
         a.performance_update(observation);
         log_likelihood[i] = a.results_log_likelihoods[0];
     }
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::FULL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::FULL));
     a.performance_init();
-    vector<double> log_likelihood2(100, 0.0);
+    std::vector<double> log_likelihood2(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -200,20 +200,20 @@ TEST_CASE( "GMMGroup with Diagonal covariance (unimodal)", "[GMMGroup]" ) {
 }
 
 TEST_CASE( "HMM with Diagonal covariance (unimodal)", "[HMM]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
         observation[2] = pow(float(i)/100., 3.);
         ts.recordPhrase(0, observation);
     }
-    HMM a(NONE, &ts);
+    xmm::HMM a(xmm::NONE, &ts);
     a.set_nbStates(3);
     a.train();
-    a.set_covariance_mode(GaussianDistribution::DIAGONAL);
+    a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL);
     a.performance_init();
-    vector<double> log_likelihood(100, 0.0);
+    std::vector<double> log_likelihood(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -221,9 +221,9 @@ TEST_CASE( "HMM with Diagonal covariance (unimodal)", "[HMM]" ) {
         a.performance_update(observation);
         log_likelihood[i] = a.results_log_likelihood;
     }
-    a.set_covariance_mode(GaussianDistribution::FULL);
+    a.set_covariance_mode(xmm::GaussianDistribution::FULL);
     a.performance_init();
-    vector<double> log_likelihood2(100, 0.0);
+    std::vector<double> log_likelihood2(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -232,15 +232,15 @@ TEST_CASE( "HMM with Diagonal covariance (unimodal)", "[HMM]" ) {
         log_likelihood2[i] = a.results_log_likelihood;
     }
     CHECK_VECTOR_APPROX(log_likelihood, log_likelihood2);
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     JSONNode a_json = a.to_json();
-    HMM b;
+    xmm::HMM b;
     b.from_json(a_json);
 }
 
 TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[HierarchicalHMM]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -248,16 +248,16 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
         ts.recordPhrase(0, observation);
         ts.recordPhrase(1, observation);
     }
-    Label label_a(static_cast<string>("a"));
-    Label label_b(static_cast<string>("b"));
+    xmm::Label label_a(static_cast<std::string>("a"));
+    xmm::Label label_b(static_cast<std::string>("b"));
     ts.setPhraseLabel(0, label_a);
     ts.setPhraseLabel(1, label_b);
-    HierarchicalHMM a(NONE, &ts);
+    xmm::HierarchicalHMM a(xmm::NONE, &ts);
     a.set_nbStates(3);
     a.train();
-    a.set_covariance_mode(GaussianDistribution::DIAGONAL);
+    a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL);
     a.performance_init();
-    vector<double> log_likelihood(100, 0.0);
+    std::vector<double> log_likelihood(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -265,9 +265,9 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
         a.performance_update(observation);
         log_likelihood[i] = a.results_log_likelihoods[0];
     }
-    a.set_covariance_mode(GaussianDistribution::FULL);
+    a.set_covariance_mode(xmm::GaussianDistribution::FULL);
     a.performance_init();
-    vector<double> log_likelihood2(100, 0.0);
+    std::vector<double> log_likelihood2(100, 0.0);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -276,15 +276,15 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
         log_likelihood2[i] = a.results_log_likelihoods[0];
     }
     CHECK_VECTOR_APPROX(log_likelihood, log_likelihood2);
-    CHECK_NOTHROW(a.set_covariance_mode(GaussianDistribution::DIAGONAL));
+    CHECK_NOTHROW(a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL));
     JSONNode a_json = a.to_json();
-    HierarchicalHMM b;
+    xmm::HierarchicalHMM b;
     b.from_json(a_json);
 }
 
 //TEST_CASE( "Computation Time with Diagonal covariance", "[GaussianDistribution]" ) {
 //    unsigned int dimension(300);
-//    GaussianDistribution a(NONE, dimension);
+//    xmm::GaussianDistribution a(xmm::NONE, dimension);
 //    for (unsigned int i=0; i<dimension; ++i) {
 //        a.mean[i] = double(rand()) / RAND_MAX;
 //        for (unsigned int j=0; j<dimension; ++j)
@@ -304,8 +304,8 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
 //    clock_t end = clock();
 //    double elapsed_ms = 1000. * double(end - begin) / CLOCKS_PER_SEC;
 //    cout << "Evalution time (full covariance) = " << elapsed_ms << endl;
-//    
-//    a.set_covariance_mode(GaussianDistribution::DIAGONAL);
+//
+//    a.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL);
 //    begin = clock();
 //    for (unsigned int t=0; t<num_iterations; ++t) {
 //        a.likelihood(observation);
@@ -313,11 +313,11 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
 //    end = clock();
 //    elapsed_ms = 1000. * double(end - begin) / CLOCKS_PER_SEC;
 //    cout << "Evalution time (Diagonal covariance) = " << elapsed_ms << endl;
-//    
+//
 //    delete [] observation;
-//    
+//
 //    dimension = 30;
-//    TrainingSet ts(NONE, dimension);
+//    xmm::TrainingSet ts(xmm::NONE, dimension);
 //    vector<float> observation_(dimension);
 //    for (unsigned int i=0; i<100; i++) {
 //        for (unsigned int d=0; d<dimension; ++d) {
@@ -325,15 +325,15 @@ TEST_CASE( "HierarchicalHMM with Diagonal covariance (unimodal)", "[Hierarchical
 //        }
 //        ts.recordPhrase(0, observation_);
 //    }
-//    HMM hmm(NONE, &ts);
+//    HMM hmm(xmm::NONE, &ts);
 //    hmm.set_nbStates(30);
 //    begin = clock();
 //    hmm.train();
 //    end = clock();
 //    elapsed_ms = 1000. * double(end - begin) / CLOCKS_PER_SEC;
 //    cout << "HMM training time (full covariance) = " << elapsed_ms << endl;
-//    
-//    hmm.set_covariance_mode(GaussianDistribution::DIAGONAL);
+//
+//    hmm.set_covariance_mode(xmm::GaussianDistribution::DIAGONAL);
 //    begin = clock();
 //    hmm.train();
 //    end = clock();

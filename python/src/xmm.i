@@ -28,7 +28,7 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-%module(docstring="Multimodal Hidden Markov Models Library") xmm
+%module(docstring="XMM — Probabilistic Models for Motion Recognition and Mapping") xmm
 
 #pragma SWIG nowarn=362,503
 
@@ -36,7 +36,7 @@
     #define SWIG_FILE_WITH_INIT
     #include <fstream>
     #include <sstream>
-	#include "mbd_common.h"
+	#include "xmm_common.h"
     #include "phrase.h"
     #include "label.h"
 	#include "training_set.h"
@@ -58,7 +58,7 @@
     try {
         $action
     }
-    catch (exception const& e) {
+    catch (std::exception const& e) {
         PyErr_SetString(PyExc_IndexError,e.what());
         SWIG_fail;
     }
@@ -77,17 +77,17 @@ namespace std {
     %template(vectord) vector<double>;
     %template(vectorf) vector<float>;
     %template(vectors) vector<string>;
-    %template(vectorl) vector<Label>;
-    %template(setl) set<Label>;
-    %template(vectorgauss) vector<GaussianDistribution>;
-    %template(vectorgmm) vector<GMM>;
-    %template(vectorhmm) vector<HMM>;
-    %template(mapgmm) map<Label, GMM>;
-    %template(maphmm) map<Label, HMM>;
+    %template(vectorl) vector<xmm::Label>;
+    %template(setl) set<xmm::Label>;
+    %template(vectorgauss) vector<xmm::GaussianDistribution>;
+    %template(vectorgmm) vector<xmm::GMM>;
+    %template(vectorhmm) vector<xmm::HMM>;
+    %template(mapgmm) map<xmm::Label, xmm::GMM>;
+    %template(maphmm) map<xmm::Label, xmm::HMM>;
 };
 
 %include ../xmm_doc.i
-%include "mbd_common.h"
+%include "xmm_common.h"
 %include "phrase.h"
 %include "label.h"
 %include "training_set.h"
@@ -98,8 +98,8 @@ namespace std {
 %include "hmm.h"
 %include "model_group.h"
 
-%template(_MODELGROUP_GMM) ModelGroup<GMM>;
-%template(_MODELGROUP_HMM) ModelGroup<HMM>;
+%template(_MODELGROUP_GMM) xmm::ModelGroup<xmm::GMM>;
+%template(_MODELGROUP_HMM) xmm::ModelGroup<xmm::HMM>;
 
 %include "gmm_group.h"
 %include "hierarchical_hmm.h"

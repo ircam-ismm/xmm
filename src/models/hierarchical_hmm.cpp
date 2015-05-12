@@ -34,17 +34,45 @@
 
 #pragma mark -
 #pragma mark Constructors
-HierarchicalHMM::HierarchicalHMM(rtml_flags flags,
+xmm::HierarchicalHMM::HierarchicalHMM(xmm_flags flags,
                                  TrainingSet *_globalTrainingSet,
                                  GaussianDistribution::COVARIANCE_MODE covariance_mode)
 : ModelGroup< HMM >(flags|HIERARCHICAL, _globalTrainingSet),
-  incrementalLearning_(HHMM_DEFAULT_INCREMENTALLEARNING),
+  incrementalLearning_(DEFAULT_INCREMENTALLEARNING),
   forwardInitialized_(false)
 {
     set_covariance_mode(covariance_mode);
 }
 
-HierarchicalHMM::~HierarchicalHMM()
+xmm::HierarchicalHMM::HierarchicalHMM(HierarchicalHMM const& src)
+{
+    this->_copy(this, src);
+}
+
+xmm::HierarchicalHMM& xmm::HierarchicalHMM::operator=(HierarchicalHMM const& src)
+{
+    if(this != &src)
+    {
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->remove_listener(this);
+        _copy(this, src);
+    }
+    return *this;
+}
+
+void xmm::HierarchicalHMM::_copy(HierarchicalHMM *dst, HierarchicalHMM const& src)
+{
+    ModelGroup<HMM>::_copy(dst, src);
+    dst->prior = src.prior;
+    dst->exitTransition = src.exitTransition;
+    dst->transition = src.transition;
+    dst->incrementalLearning_ = src.incrementalLearning_;
+    dst->forwardInitialized_ = src.forwardInitialized_;
+    dst->V1_ = src.V1_;
+    dst->V2_ = src.V2_;
+}
+
+xmm::HierarchicalHMM::~HierarchicalHMM()
 {
     prior.clear();
     transition.clear();
@@ -53,7 +81,7 @@ HierarchicalHMM::~HierarchicalHMM()
     V2_.clear();
 }
 
-void HierarchicalHMM::clear()
+void xmm::HierarchicalHMM::clear()
 {
     ModelGroup<HMM>::clear();
     prior.clear();
@@ -63,116 +91,117 @@ void HierarchicalHMM::clear()
 
 #pragma mark -
 #pragma mark Get & Set
-int HierarchicalHMM::get_nbStates() const
+int xmm::HierarchicalHMM::get_nbStates() const
 {
     return this->referenceModel_.get_nbStates();
 }
 
-void HierarchicalHMM::set_nbStates(int nbStates_)
+void xmm::HierarchicalHMM::set_nbStates(int nbStates_)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.set_nbStates(nbStates_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.set_nbStates(nbStates_);
     }
 }
 
-int HierarchicalHMM::get_nbMixtureComponents() const
+int xmm::HierarchicalHMM::get_nbMixtureComponents() const
 {
     return this->referenceModel_.get_nbMixtureComponents();
 }
 
-void HierarchicalHMM::set_nbMixtureComponents(int nbMixtureComponents_)
+void xmm::HierarchicalHMM::set_nbMixtureComponents(int nbMixtureComponents_)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.set_nbMixtureComponents(nbMixtureComponents_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.set_nbMixtureComponents(nbMixtureComponents_);
     }
 }
 
-double HierarchicalHMM::get_varianceOffset_relative() const
+double xmm::HierarchicalHMM::get_varianceOffset_relative() const
 {
     return this->referenceModel_.get_varianceOffset_relative();
 }
 
-double HierarchicalHMM::get_varianceOffset_absolute() const
+double xmm::HierarchicalHMM::get_varianceOffset_absolute() const
 {
     return this->referenceModel_.get_varianceOffset_absolute();
 }
 
-void HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
+void xmm::HierarchicalHMM::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
 }
 
-GaussianDistribution::COVARIANCE_MODE HierarchicalHMM::get_covariance_mode() const
+xmm::GaussianDistribution::COVARIANCE_MODE xmm::HierarchicalHMM::get_covariance_mode() const
 {
     return this->referenceModel_.get_covariance_mode();
 }
 
-void HierarchicalHMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+void xmm::HierarchicalHMM::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     if (covariance_mode == get_covariance_mode()) return;
     try {
         this->referenceModel_.set_covariance_mode(covariance_mode);
-    } catch (exception& e) {
+    } catch (std::exception& e) {
         if (strncmp(e.what(), "Non-invertible matrix", 21) != 0)
-            throw runtime_error(e.what());
+            throw std::runtime_error(e.what());
     }
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_covariance_mode(covariance_mode);
     }
 }
 
-REGRESSION_ESTIMATOR HierarchicalHMM::get_regression_estimator() const
+xmm::HMM::REGRESSION_ESTIMATOR xmm::HierarchicalHMM::get_regression_estimator() const
 {
     return this->referenceModel_.get_regression_estimator();
 }
 
-void HierarchicalHMM::set_regression_estimator(REGRESSION_ESTIMATOR regression_estimator)
+void xmm::HierarchicalHMM::set_regression_estimator(xmm::HMM::REGRESSION_ESTIMATOR regression_estimator)
 {
+    prevent_attribute_change();
     this->referenceModel_.set_regression_estimator(regression_estimator);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_regression_estimator(regression_estimator);
     }
 }
 
-bool HierarchicalHMM::get_estimateMeans() const
+bool xmm::HierarchicalHMM::get_estimateMeans() const
 {
     return this->referenceModel_.estimateMeans_;
 }
 
-void HierarchicalHMM::set_estimateMeans(bool _estimateMeans)
+void xmm::HierarchicalHMM::set_estimateMeans(bool _estimateMeans)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.estimateMeans_ = _estimateMeans;
     for (model_iterator it = this->models.begin() ; it != this->models.end() ; it++)
         it->second.estimateMeans_ = _estimateMeans;
 }
 
-string HierarchicalHMM::get_transitionMode() const
+std::string xmm::HierarchicalHMM::get_transitionMode() const
 {
     return this->referenceModel_.get_transitionMode();
 }
 
-void HierarchicalHMM::set_transitionMode(string transMode_str)
+void xmm::HierarchicalHMM::set_transitionMode(std::string transMode_str)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.set_transitionMode(transMode_str);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.set_transitionMode(transMode_str);
     }
 }
 
-void HierarchicalHMM::addExitPoint(int state, float proba)
+void xmm::HierarchicalHMM::addExitPoint(int state, float proba)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.addExitPoint(state, proba);
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++) {
         it->second.addExitPoint(state, proba);
@@ -180,9 +209,9 @@ void HierarchicalHMM::addExitPoint(int state, float proba)
 }
 
 
-string HierarchicalHMM::get_learningMode() const
+std::string xmm::HierarchicalHMM::get_learningMode() const
 {
-    string learningMode;
+    std::string learningMode;
     if (incrementalLearning_) {
         learningMode = "incremental";
     } else {
@@ -192,20 +221,20 @@ string HierarchicalHMM::get_learningMode() const
 }
 
 
-void HierarchicalHMM::set_learningMode(string learningMode)
+void xmm::HierarchicalHMM::set_learningMode(std::string learningMode)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     if (learningMode == "incremental") {
         incrementalLearning_ = true;
     } else if (learningMode == "ergodic") {
         incrementalLearning_ = false;
     } else {
-        throw invalid_argument("'learningMode' should be 'incremental' or 'ergodic'");
+        throw std::invalid_argument("'learningMode' should be 'incremental' or 'ergodic'");
     }
 }
 
 
-void HierarchicalHMM::get_prior(vector<double>& prior) const
+void xmm::HierarchicalHMM::get_prior(std::vector<double>& prior) const
 {
     prior.resize(this->size());
     int l(0);
@@ -215,22 +244,21 @@ void HierarchicalHMM::get_prior(vector<double>& prior) const
 }
 
 
-void HierarchicalHMM::set_prior(vector<double> const& prior)
+void xmm::HierarchicalHMM::set_prior(std::vector<double> const& prior)
 {
-    PREVENT_ATTR_CHANGE();
     try {
         int l(0);
         for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it) {
-            this->prior[it->first] = max(prior[l++], 0.0);
+            this->prior[it->first] = std::max(prior[l++], 0.0);
         }
         this->normalizeTransitions();
-    } catch (exception &e) {
-        throw invalid_argument("Wrong format for prior");
+    } catch (std::exception &e) {
+        throw std::invalid_argument("Wrong format for prior");
     }
 }
 
 
-void HierarchicalHMM::get_transition(vector<double>& trans) const
+void xmm::HierarchicalHMM::get_transition(std::vector<double>& trans) const
 {
     unsigned int nbPrimitives = this->size();
     trans.resize(nbPrimitives*nbPrimitives);
@@ -244,24 +272,23 @@ void HierarchicalHMM::get_transition(vector<double>& trans) const
 }
 
 
-void HierarchicalHMM::set_transition(vector<double> const& trans)
+void xmm::HierarchicalHMM::set_transition(std::vector<double> const& trans)
 {
-    PREVENT_ATTR_CHANGE();
     try {
         int l(0);
         for (model_iterator srcit = this->models.begin(); srcit != this->models.end(); ++srcit) {
             for (model_iterator dstit = this->models.begin(); dstit != this->models.end(); ++dstit) {
-                this->transition[srcit->first][dstit->first] = max(trans[l++], 0.0);
+                this->transition[srcit->first][dstit->first] = std::max(trans[l++], 0.0);
             }
         }
         this->normalizeTransitions();
-    } catch (exception &e) {
-        throw invalid_argument("Wrong format for transition");
+    } catch (std::exception &e) {
+        throw std::invalid_argument("Wrong format for transition");
     }
 }
 
 
-void HierarchicalHMM::get_exitTransition(vector<double>& exittrans) const
+void xmm::HierarchicalHMM::get_exitTransition(std::vector<double>& exittrans) const
 {
     exittrans.resize(this->size());
     int l(0);
@@ -273,22 +300,21 @@ void HierarchicalHMM::get_exitTransition(vector<double>& exittrans) const
 }
 
 
-void HierarchicalHMM::set_exitTransition(vector<double> const& exittrans)
+void xmm::HierarchicalHMM::set_exitTransition(std::vector<double> const& exittrans)
 {
-    PREVENT_ATTR_CHANGE();
     try {
         int l(0);
         for (model_iterator it = this->models.begin() ; it != this->models.end() ; ++it) {
-            this->exitTransition[it->first] = max(exittrans[l++], 0.0);
+            this->exitTransition[it->first] = std::max(exittrans[l++], 0.0);
         }
         this->normalizeTransitions();
-    } catch (exception &e) {
-        throw invalid_argument("Wrong format for prior");
+    } catch (std::exception &e) {
+        throw std::invalid_argument("Wrong format for prior");
     }
 }
 
 
-void HierarchicalHMM::normalizeTransitions()
+void xmm::HierarchicalHMM::normalizeTransitions()
 {
     double sumPrior(0.0);
     for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; ++srcit)
@@ -306,10 +332,9 @@ void HierarchicalHMM::normalizeTransitions()
 }
 
 
-void HierarchicalHMM::setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba)
+void xmm::HierarchicalHMM::setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba)
 {
-    PREVENT_ATTR_CHANGE();
-    transition[srcSegmentLabel][dstSegmentLabel] = min(proba, 1.);
+    transition[srcSegmentLabel][dstSegmentLabel] = std::min(proba, 1.);
     normalizeTransitions();
 }
 
@@ -317,7 +342,7 @@ void HierarchicalHMM::setOneTransition(Label srcSegmentLabel, Label dstSegmentLa
 #pragma mark High level parameters: update and estimation
 
 
-void HierarchicalHMM::updateTransitionParameters()
+void xmm::HierarchicalHMM::updateTransitionParameters()
 {
     if (this->size() == prior.size()) // number of primitives has not changed
         return;
@@ -334,7 +359,7 @@ void HierarchicalHMM::updateTransitionParameters()
 }
 
 
-void HierarchicalHMM::updatePrior_incremental()
+void xmm::HierarchicalHMM::updatePrior_incremental()
 {
     unsigned long oldNbPrim = prior.size();
     unsigned long nbPrimitives = this->size();
@@ -344,10 +369,10 @@ void HierarchicalHMM::updatePrior_incremental()
         for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
             if (prior.find(it->first) == prior.end())
             {
-                prior[it->first] += double(HHMM_DEFAULT_REGULARIZATIONFACTOR);
-                prior[it->first] /= double(nbPrimitives + HHMM_DEFAULT_REGULARIZATIONFACTOR) ;
+                prior[it->first] += double(DEFAULT_REGULARIZATIONFACTOR);
+                prior[it->first] /= double(nbPrimitives + DEFAULT_REGULARIZATIONFACTOR) ;
             } else {
-                prior[it->first] = 1. / double(nbPrimitives + HHMM_DEFAULT_REGULARIZATIONFACTOR);
+                prior[it->first] = 1. / double(nbPrimitives + DEFAULT_REGULARIZATIONFACTOR);
             }
     } else {
         for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
@@ -357,7 +382,7 @@ void HierarchicalHMM::updatePrior_incremental()
 }
 
 
-void HierarchicalHMM::updateTransition_incremental()
+void xmm::HierarchicalHMM::updateTransition_incremental()
 {
     unsigned long oldNbPrim = prior.size();
     unsigned long nbPrimitives = this->size();
@@ -370,25 +395,25 @@ void HierarchicalHMM::updateTransition_incremental()
             {
                 if (transition.find(srcit->first) == transition.end() || transition[srcit->first].find(dstit->first) == transition[srcit->first].end())
                 {
-                    transition[srcit->first][dstit->first] = 1/double(nbPrimitives+HHMM_DEFAULT_REGULARIZATIONFACTOR);
+                    transition[srcit->first][dstit->first] = 1/double(nbPrimitives+DEFAULT_REGULARIZATIONFACTOR);
                 } else {
-                    transition[srcit->first][dstit->first] += double(HHMM_DEFAULT_REGULARIZATIONFACTOR);
-                    transition[srcit->first][dstit->first] /= double(nbPrimitives+HHMM_DEFAULT_REGULARIZATIONFACTOR);
+                    transition[srcit->first][dstit->first] += double(DEFAULT_REGULARIZATIONFACTOR);
+                    transition[srcit->first][dstit->first] /= double(nbPrimitives+DEFAULT_REGULARIZATIONFACTOR);
                 }
             }
             
             if (exitTransition.find(srcit->first) == exitTransition.end())
             {
-                exitTransition[srcit->first] = 1/double(nbPrimitives+HHMM_DEFAULT_REGULARIZATIONFACTOR);
+                exitTransition[srcit->first] = 1/double(nbPrimitives+DEFAULT_REGULARIZATIONFACTOR);
             } else {
-                exitTransition[srcit->first] += double(HHMM_DEFAULT_REGULARIZATIONFACTOR);
-                exitTransition[srcit->first] /= double(nbPrimitives+HHMM_DEFAULT_REGULARIZATIONFACTOR);
+                exitTransition[srcit->first] += double(DEFAULT_REGULARIZATIONFACTOR);
+                exitTransition[srcit->first] /= double(nbPrimitives+DEFAULT_REGULARIZATIONFACTOR);
             }
         }
     } else {
         for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; ++srcit)
         {
-            exitTransition[srcit->first] = HHMM_DEFAULT_EXITTRANSITION;
+            exitTransition[srcit->first] = DEFAULT_EXITTRANSITION();
             
             for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; ++dstit)
                 transition[srcit->first][dstit->first] = 1/(double)nbPrimitives;
@@ -397,7 +422,7 @@ void HierarchicalHMM::updateTransition_incremental()
 }
 
 
-void HierarchicalHMM::updatePrior_ergodic()
+void xmm::HierarchicalHMM::updatePrior_ergodic()
 {
     int nbPrimitives = this->size();
     for (const_model_iterator it = this->models.begin() ; it != this->models.end() ; ++it)
@@ -405,26 +430,26 @@ void HierarchicalHMM::updatePrior_ergodic()
 }
 
 
-void HierarchicalHMM::updateTransition_ergodic()
+void xmm::HierarchicalHMM::updateTransition_ergodic()
 {
     int nbPrimitives = this->size();
     for (const_model_iterator srcit = this->models.begin() ; srcit != this->models.end() ; ++srcit)
     {
-        exitTransition[srcit->first] = HHMM_DEFAULT_EXITTRANSITION;
+        exitTransition[srcit->first] = DEFAULT_EXITTRANSITION();
         for (const_model_iterator dstit = this->models.begin() ; dstit != this->models.end() ; ++dstit)
             transition[srcit->first][dstit->first] =  1/double(nbPrimitives);
     }
 }
 
 
-void HierarchicalHMM::updateExitProbabilities()
+void xmm::HierarchicalHMM::updateExitProbabilities()
 {
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.updateExitProbabilities();
     }
 }
 
-void HierarchicalHMM::updateTrainingSet(Label const& label)
+void xmm::HierarchicalHMM::updateTrainingSet(Label const& label)
 {
     ModelGroup<HMM>::updateTrainingSet(label);
     updateTransitionParameters();
@@ -432,8 +457,9 @@ void HierarchicalHMM::updateTrainingSet(Label const& label)
 
 #pragma mark -
 #pragma mark Forward Algorithm
-void HierarchicalHMM::forward_init(vector<float> const& observation)
+void xmm::HierarchicalHMM::forward_init(std::vector<float> const& observation)
 {
+    check_training();
     double norm_const(0.0) ;
     
     for (model_iterator it=this->models.begin(); it != this->models.end(); it++)
@@ -445,7 +471,7 @@ void HierarchicalHMM::forward_init(vector<float> const& observation)
         }
         
         // Compute Emission probability and initialize on the first state of the primitive
-        if (it->second.transitionMode_ == ERGODIC) {
+        if (it->second.transitionMode_ == HMM::ERGODIC) {
             for (int i=0 ; i<it->second.nbStates_ ; i++) {
                 if (bimodal_) {
                     it->second.alpha_h[0][i] = it->second.prior[i] * it->second.states[i].obsProb_input(&observation[0]);
@@ -478,13 +504,14 @@ void HierarchicalHMM::forward_init(vector<float> const& observation)
     forwardInitialized_ = true;
 }
 
-void HierarchicalHMM::forward_update(vector<float> const& observation)
+void xmm::HierarchicalHMM::forward_update(std::vector<float> const& observation)
 {
+    check_training();
     double norm_const(0.0) ;
     
     // Frontier Algorithm: variables
     double tmp(0);
-    vector<double> front; // frontier variable : intermediate computation variable
+    std::vector<double> front; // frontier variable : intermediate computation variable
     
     // Intermediate variables: compute the sum of probabilities of making a transition to a new primitive
     likelihoodAlpha(1, V1_);
@@ -499,7 +526,7 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
         //    --------------------------------------
         front.assign(N, 0.0) ;
         
-        if (dstit->second.transitionMode_ == ERGODIC) {
+        if (dstit->second.transitionMode_ == HMM::ERGODIC) {
             for (int k=0 ; k<N ; ++k)
             {
                 for (unsigned int j=0; j<N; ++j) {
@@ -572,7 +599,7 @@ void HierarchicalHMM::forward_update(vector<float> const& observation)
 }
 
 
-void HierarchicalHMM::likelihoodAlpha(int exitNum, vector<double> &likelihoodVector) const
+void xmm::HierarchicalHMM::likelihoodAlpha(int exitNum, std::vector<double> &likelihoodVector) const
 {
     if (exitNum<0) { // Likelihood over all exit states
         int l(0);
@@ -599,7 +626,7 @@ void HierarchicalHMM::likelihoodAlpha(int exitNum, vector<double> &likelihoodVec
 }
 
 
-void HierarchicalHMM::remove(Label const& label)
+void xmm::HierarchicalHMM::remove(Label const& label)
 {
     ModelGroup<HMM>::remove(label);
     updateTransitionParameters();
@@ -607,16 +634,18 @@ void HierarchicalHMM::remove(Label const& label)
 
 #pragma mark -
 #pragma mark Playing
-void HierarchicalHMM::performance_init()
+void xmm::HierarchicalHMM::performance_init()
 {
+    check_training();
     ModelGroup<HMM>::performance_init();
     V1_.resize(this->size()) ;
     V2_.resize(this->size()) ;
     forwardInitialized_ = false;
 }
 
-void HierarchicalHMM::performance_update(vector<float> const& observation)
+void xmm::HierarchicalHMM::performance_update(std::vector<float> const& observation)
 {
+    check_training();
     if (forwardInitialized_) {
         this->forward_update(observation);
     } else {
@@ -665,8 +694,9 @@ void HierarchicalHMM::performance_update(vector<float> const& observation)
 
 #pragma mark -
 #pragma mark File IO
-JSONNode HierarchicalHMM::to_json() const
+JSONNode xmm::HierarchicalHMM::to_json() const
 {
+    check_training();
     JSONNode json_hhmm(JSON_NODE);
     json_hhmm.set_name("HierarchicalHMM");
     json_hhmm.push_back(JSONNode("bimodal", bimodal_));
@@ -730,8 +760,9 @@ JSONNode HierarchicalHMM::to_json() const
 }
 
 
-void HierarchicalHMM::from_json(JSONNode root)
+void xmm::HierarchicalHMM::from_json(JSONNode root)
 {
+    check_training();
     try {
         if (root.type() != JSON_NODE)
             throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
@@ -776,7 +807,7 @@ void HierarchicalHMM::from_json(JSONNode root)
             throw JSONException("Wrong type for node 'EMStopCriterion': was expecting 'JSON_NODE'", root_it->name());
         JSONNode json_stopcriterion = *root_it;
         JSONNode::const_iterator crit_it = json_stopcriterion.begin();
-        if (crit_it == root.end())
+        if (crit_it == json_stopcriterion.end())
             throw JSONException("JSON Node is incomplete", crit_it->name());
         if (crit_it->name() != "minsteps")
             throw JSONException("Wrong name: was expecting 'minsteps'", crit_it->name());
@@ -785,7 +816,7 @@ void HierarchicalHMM::from_json(JSONNode root)
         set_EM_minSteps(static_cast<unsigned int>(crit_it->as_int()));
         crit_it++;
         
-        if (crit_it == root.end())
+        if (crit_it == json_stopcriterion.end())
             throw JSONException("JSON Node is incomplete", crit_it->name());
         if (crit_it->name() != "maxsteps")
             throw JSONException("Wrong name: was expecting 'maxsteps'", crit_it->name());
@@ -794,7 +825,7 @@ void HierarchicalHMM::from_json(JSONNode root)
         set_EM_maxSteps(static_cast<unsigned int>(crit_it->as_int()));
         crit_it++;
         
-        if (crit_it == root.end())
+        if (crit_it == json_stopcriterion.end())
             throw JSONException("JSON Node is incomplete", crit_it->name());
         if (crit_it->name() != "percentchg")
             throw JSONException("Wrong name: was expecting 'percentchg'", crit_it->name());
@@ -882,7 +913,7 @@ void HierarchicalHMM::from_json(JSONNode root)
             throw JSONException("JSON Node is incomplete", root_it->name());
         if (root_it->type() != JSON_NUMBER)
             throw JSONException("Wrong type for node 'regression_estimator': was expecting 'JSON_NUMBER'", root_it->name());
-        set_regression_estimator(REGRESSION_ESTIMATOR(root_it->as_int()));
+        set_regression_estimator(xmm::HMM::REGRESSION_ESTIMATOR(root_it->as_int()));
         
         // Get Models
         models.clear();
@@ -976,24 +1007,23 @@ void HierarchicalHMM::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }
 
 #pragma mark > Conversion & Extraction
-void HierarchicalHMM::make_bimodal(unsigned int dimension_input)
+void xmm::HierarchicalHMM::make_bimodal(unsigned int dimension_input)
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (bimodal_)
-        throw runtime_error("The model is already bimodal");
+        throw std::runtime_error("The model is already bimodal");
     if (dimension_input >= dimension())
-        throw out_of_range("Request input dimension exceeds the current dimension");
+        throw std::out_of_range("Request input dimension exceeds the current dimension");
     
     try {
         this->referenceModel_.make_bimodal(dimension_input);
-    } catch (exception const& e) {
+    } catch (std::exception const& e) {
     }
     bimodal_ = true;
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -1004,12 +1034,11 @@ void HierarchicalHMM::make_bimodal(unsigned int dimension_input)
     results_output_variance.resize(dimension() - this->dimension_input());
 }
 
-void HierarchicalHMM::make_unimodal()
+void xmm::HierarchicalHMM::make_unimodal()
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model is already unimodal");
+        throw std::runtime_error("The model is already unimodal");
     this->referenceModel_.make_unimodal();
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.make_unimodal();
@@ -1020,19 +1049,17 @@ void HierarchicalHMM::make_unimodal()
     bimodal_ = false;
 }
 
-HierarchicalHMM HierarchicalHMM::extract_submodel(vector<unsigned int>& columns) const
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extract_submodel(std::vector<unsigned int>& columns) const
 {
-    if (is_training())
-        throw runtime_error("Cannot extract model during Training");
+    check_training();
     if (columns.size() > this->dimension())
-        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+        throw std::out_of_range("requested number of columns exceeds the dimension of the current model");
     for (unsigned int column=0; column<columns.size(); ++column) {
         if (columns[column] >= this->dimension())
-            throw out_of_range("Some column indices exceeds the dimension of the current model");
+            throw std::out_of_range("Some column indices exceeds the dimension of the current model");
     }
     HierarchicalHMM target_model(*this);
     target_model.set_trainingSet(NULL);
-    target_model.set_trainingCallback(monitor_training, (void*)this);
     target_model.bimodal_ = false;
     target_model.referenceModel_ = this->referenceModel_.extract_submodel(columns);
     for (model_iterator it=target_model.models.begin(); it != target_model.models.end(); ++it) {
@@ -1041,33 +1068,36 @@ HierarchicalHMM HierarchicalHMM::extract_submodel(vector<unsigned int>& columns)
     return target_model;
 }
 
-HierarchicalHMM HierarchicalHMM::extract_submodel_input() const
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extract_submodel_input() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_input(dimension_input());
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_input(dimension_input());
     for (unsigned int i=0; i<dimension_input(); ++i) {
         columns_input[i] = i;
     }
     return extract_submodel(columns_input);
 }
 
-HierarchicalHMM HierarchicalHMM::extract_submodel_output() const
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extract_submodel_output() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_output(dimension() - dimension_input());
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_output(dimension() - dimension_input());
     for (unsigned int i=dimension_input(); i<dimension(); ++i) {
         columns_output[i-dimension_input()] = i;
     }
     return extract_submodel(columns_output);
 }
 
-HierarchicalHMM HierarchicalHMM::extract_inverse_model() const
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extract_inverse_model() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns(dimension());
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns(dimension());
     for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
         columns[i] = i+dimension_input();
     }

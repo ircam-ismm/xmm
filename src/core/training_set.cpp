@@ -33,9 +33,9 @@
 
 #pragma mark -
 #pragma mark Constructors
-TrainingSet::TrainingSet(rtml_flags flags,
-                         unsigned int dimension,
-                         unsigned int dimension_input)
+xmm::TrainingSet::TrainingSet(xmm_flags flags,
+                              unsigned int dimension,
+                              unsigned int dimension_input)
 {
     flags_ = flags;
     locked_ = false;
@@ -48,19 +48,19 @@ TrainingSet::TrainingSet(rtml_flags flags,
     dimension_input_ = bimodal_ ? dimension_input : 0;
 }
 
-TrainingSet::TrainingSet(TrainingSet const& src)
+xmm::TrainingSet::TrainingSet(TrainingSet const& src)
 {
     _copy(this, src);
 }
 
-TrainingSet& TrainingSet::operator=(TrainingSet const& src)
+xmm::TrainingSet& xmm::TrainingSet::operator=(TrainingSet const& src)
 {
     if(this != &src)
         _copy(this, src);
     return *this;
 }
 
-void TrainingSet::_copy(TrainingSet *dst, TrainingSet const& src)
+void xmm::TrainingSet::_copy(TrainingSet *dst, TrainingSet const& src)
 {
     dst->clear();
     dst->flags_ = src.flags_;
@@ -79,81 +79,90 @@ void TrainingSet::_copy(TrainingSet *dst, TrainingSet const& src)
     dst->subTrainingSets_ = src.subTrainingSets_;
 }
 
-TrainingSet::~TrainingSet()
+xmm::TrainingSet::~TrainingSet()
 {
     if (!locked_) {
         for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it)
             delete it->second;
     }
-    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
-        (*listen_it)->notify("destruction");
+    while (1) {
+        if (listeners_.size() == 0)
+            break;
+        try {
+            (*listeners_.begin())->notify("destruction");
+            listeners_.erase(listeners_.begin());
+        } catch (std::exception& e) {
+        }
     }
-    listeners_.clear();
+//    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+//        (*listen_it)->notify("destruction");
+//    }
+//    listeners_.clear();
     subTrainingSets_.clear();
     phrases.clear();
     phraseLabels.clear();
     allLabels.clear();
 }
 
-void TrainingSet::lock()
+void xmm::TrainingSet::lock()
 {
     locked_ = true;
 }
 
 #pragma mark -
 #pragma mark Accessors & tests
-bool TrainingSet::is_bimodal() const
+bool xmm::TrainingSet::is_bimodal() const
 {
     return bimodal_;
 }
 
-bool TrainingSet::is_empty() const
+bool xmm::TrainingSet::is_empty() const
 {
     return phrases.empty();
 }
 
-unsigned int TrainingSet::size() const
+unsigned int xmm::TrainingSet::size() const
 {
     return static_cast<unsigned int>(phrases.size());
 }
 
-bool TrainingSet::has_changed()
+bool xmm::TrainingSet::has_changed()
 {
     return has_changed_;
 }
 
-void TrainingSet::set_unchanged()
+void xmm::TrainingSet::set_unchanged()
 {
     has_changed_ = false;
 }
 
-void TrainingSet::add_listener(Listener* listener)
+void xmm::TrainingSet::add_listener(Listener* listener)
 {
     listeners_.insert(listener);
 }
 
-void TrainingSet::remove_listener(Listener* listener)
+void xmm::TrainingSet::remove_listener(Listener* listener)
 {
     listeners_.erase(listener);
 }
 
-unsigned int TrainingSet::dimension()
+unsigned int xmm::TrainingSet::dimension()
 {
     return dimension_;
 }
 
-unsigned int TrainingSet::dimension_input()
+unsigned int xmm::TrainingSet::dimension_input()
 {
     return dimension_input_;
 }
 
-void TrainingSet::set_dimension(unsigned int dimension)
+void xmm::TrainingSet::set_dimension(unsigned int dimension)
 {
     if (dimension == dimension_)
         return;
     
     if (dimension < 1)
-        throw domain_error("the dimension of a phrase must be striclty positive");
+        throw std::domain_error("the dimension of a phrase must be striclty positive");
     
     column_names_.resize(dimension);
     dimension_ = dimension;
@@ -161,62 +170,62 @@ void TrainingSet::set_dimension(unsigned int dimension)
         p->second->set_dimension(dimension_);
     }
     
-    for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
+    for (std::map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
         it->second.set_dimension(dimension_);
     
-    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+    for (std::set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
         (*listen_it)->notify("dimension");
     }
 }
 
-void TrainingSet::set_dimension_input(unsigned int dimension_input)
+void xmm::TrainingSet::set_dimension_input(unsigned int dimension_input)
 {
     if (!bimodal_)
-        throw runtime_error("the training set is not bimodal_");
+        throw std::runtime_error("the training set is not bimodal_");
     
     if (dimension_input == dimension_input_)
         return;
     
     if (dimension_input >= dimension_)
-        throw invalid_argument("The dimension of the input modality must not exceed the total dimension.");
+        throw std::invalid_argument("The dimension of the input modality must not exceed the total dimension.");
     
     dimension_input_ = dimension_input;
     for (phrase_iterator p = phrases.begin(); p != phrases.end(); p++) {
         p->second->set_dimension_input(dimension_input_);
     }
     
-    for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
+    for (std::map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
         it->second.set_dimension_input(dimension_input_);
     
-    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+    for (std::set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
         (*listen_it)->notify("dimension_input");
     }
 }
 
-void TrainingSet::set_column_names(vector<string>& colnames)
+void xmm::TrainingSet::set_column_names(std::vector<std::string>& colnames)
 {
     if (colnames.size() < column_names_.size())
-        throw domain_error("number of labels inferior to the dimension of the training set");
+        throw std::domain_error("number of labels inferior to the dimension of the training set");
     column_names_ = colnames;
     
     for (phrase_iterator p = phrases.begin(); p != phrases.end(); p++) {
         p->second->column_names_ = column_names_;
     }
     
-    for (map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
+    for (std::map<Label, TrainingSet>::iterator it = subTrainingSets_.begin() ; it != subTrainingSets_.end() ; ++it)
         it->second.set_column_names(column_names_);
     
-    for (set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
+    for (std::set<Listener *>::iterator listen_it = listeners_.begin(); listen_it != listeners_.end(); ++listen_it) {
         (*listen_it)->notify("column_names");
     }
 }
 
-vector<string> const& TrainingSet::get_column_names() const
+std::vector<std::string> const& xmm::TrainingSet::get_column_names() const
 {
     return column_names_;
 }
 
-bool TrainingSet::operator==(TrainingSet const &src)
+bool xmm::TrainingSet::operator==(TrainingSet const &src)
 {
     if (this->owns_data != src.owns_data)
         return false;
@@ -249,34 +258,34 @@ bool TrainingSet::operator==(TrainingSet const &src)
     return true;
 }
 
-bool TrainingSet::operator!=(TrainingSet const &src)
+bool xmm::TrainingSet::operator!=(TrainingSet const &src)
 {
     return !operator==(src);
 }
 
 #pragma mark -
 #pragma mark Access Phrases
-TrainingSet::phrase_iterator TrainingSet::begin()
+xmm::TrainingSet::phrase_iterator xmm::TrainingSet::begin()
 {
     return phrases.begin();
 }
 
-TrainingSet::phrase_iterator TrainingSet::end()
+xmm::TrainingSet::phrase_iterator xmm::TrainingSet::end()
 {
     return phrases.end();
 }
 
-TrainingSet::const_phrase_iterator TrainingSet::cbegin() const
+xmm::TrainingSet::const_phrase_iterator xmm::TrainingSet::cbegin() const
 {
     return phrases.begin();
 }
 
-TrainingSet::const_phrase_iterator TrainingSet::cend() const
+xmm::TrainingSet::const_phrase_iterator xmm::TrainingSet::cend() const
 {
     return phrases.end();
 }
 
-TrainingSet::phrase_iterator TrainingSet::operator()(int n)
+xmm::TrainingSet::phrase_iterator xmm::TrainingSet::operator()(int n)
 {
     phrase_iterator pp = phrases.begin();
     for (int i=0; i<n; i++) {
@@ -287,7 +296,7 @@ TrainingSet::phrase_iterator TrainingSet::operator()(int n)
 
 #pragma mark -
 #pragma mark Connect Phrases
-void TrainingSet::connect(int phraseIndex, float *pointer_to_data, unsigned int length)
+void xmm::TrainingSet::connect(int phraseIndex, float *pointer_to_data, unsigned int length)
 {
     if (this->phrases.find(phraseIndex) == this->phrases.end()) {
         resetPhrase(phraseIndex);
@@ -297,7 +306,7 @@ void TrainingSet::connect(int phraseIndex, float *pointer_to_data, unsigned int 
     has_changed_ = true;
 }
 
-void TrainingSet::connect(int phraseIndex,
+void xmm::TrainingSet::connect(int phraseIndex,
                           float *pointer_to_data_input,
                           float *pointer_to_data_output,
                           unsigned int length)
@@ -312,7 +321,7 @@ void TrainingSet::connect(int phraseIndex,
 
 #pragma mark -
 #pragma mark Record training Data
-void TrainingSet::recordPhrase(int phraseIndex, vector<float> const& observation)
+void xmm::TrainingSet::recordPhrase(int phraseIndex, std::vector<float> const& observation)
 {
     if (this->phrases.find(phraseIndex) == this->phrases.end()) {
         resetPhrase(phraseIndex);
@@ -322,7 +331,7 @@ void TrainingSet::recordPhrase(int phraseIndex, vector<float> const& observation
     has_changed_ = true;
 }
 
-void TrainingSet::recordPhrase_input(int phraseIndex, vector<float> const& observation)
+void xmm::TrainingSet::recordPhrase_input(int phraseIndex, std::vector<float> const& observation)
 {
     if (this->phrases.find(phraseIndex) == this->phrases.end()) {
         resetPhrase(phraseIndex);
@@ -332,7 +341,7 @@ void TrainingSet::recordPhrase_input(int phraseIndex, vector<float> const& obser
     has_changed_ = true;
 }
 
-void TrainingSet::recordPhrase_output(int phraseIndex, vector<float> const& observation)
+void xmm::TrainingSet::recordPhrase_output(int phraseIndex, std::vector<float> const& observation)
 {
     if (this->phrases.find(phraseIndex) == this->phrases.end()) {
         resetPhrase(phraseIndex);
@@ -342,7 +351,7 @@ void TrainingSet::recordPhrase_output(int phraseIndex, vector<float> const& obse
     has_changed_ = true;
 }
 
-void TrainingSet::resetPhrase(int phraseIndex)
+void xmm::TrainingSet::resetPhrase(int phraseIndex)
 {
     if (this->phrases.find(phraseIndex) != this->phrases.end())
         delete phrases[phraseIndex];
@@ -351,7 +360,7 @@ void TrainingSet::resetPhrase(int phraseIndex)
     has_changed_ = true;
 }
 
-void TrainingSet::deletePhrase(int phraseIndex)
+void xmm::TrainingSet::deletePhrase(int phraseIndex)
 {
     if (!locked_)
         delete phrases[phraseIndex];
@@ -361,7 +370,7 @@ void TrainingSet::deletePhrase(int phraseIndex)
     has_changed_ = true;
 }
 
-void TrainingSet::deletePhrasesOfClass(Label const& label)
+void xmm::TrainingSet::deletePhrasesOfClass(Label const& label)
 {
     bool contLoop(true);
     while (contLoop) {
@@ -377,7 +386,7 @@ void TrainingSet::deletePhrasesOfClass(Label const& label)
     
 }
 
-void TrainingSet::deleteEmptyPhrases()
+void xmm::TrainingSet::deleteEmptyPhrases()
 {
     for (phrase_iterator it=phrases.begin(); it != phrases.end(); ++it) {
         if (it->second->is_empty()) {
@@ -386,7 +395,7 @@ void TrainingSet::deleteEmptyPhrases()
     }
 }
 
-void TrainingSet::clear()
+void xmm::TrainingSet::clear()
 {
     if (!locked_) {
         for (phrase_iterator it = this->begin(); it != this->end(); ++it) {
@@ -403,41 +412,41 @@ void TrainingSet::clear()
 
 #pragma mark -
 #pragma mark Handle Class Labels
-void TrainingSet::setDefaultLabel(Label const& defLabel)
+void xmm::TrainingSet::setDefaultLabel(Label const& defLabel)
 {
     defaultLabel_ = defLabel;
 }
 
-void TrainingSet::setPhraseLabelToDefault(int phraseIndex)
+void xmm::TrainingSet::setPhraseLabelToDefault(int phraseIndex)
 {
     setPhraseLabel(phraseIndex, defaultLabel_);
 }
 
-void TrainingSet::setPhraseLabel(int phraseIndex, Label const& label)
+void xmm::TrainingSet::setPhraseLabel(int phraseIndex, Label const& label)
 {
     if (this->phrases.find(phraseIndex) == this->phrases.end())
-        throw out_of_range("Training set: phrase does not exist");
+        throw std::out_of_range("Training set: phrase does not exist");
     
     phraseLabels[phraseIndex] = label;
     updateLabelList();
     has_changed_ = true;
 }
 
-Label TrainingSet::getPhraseLabel(int phraseIndex)
+xmm::Label xmm::TrainingSet::getPhraseLabel(int phraseIndex)
 {
     return phraseLabels[phraseIndex];
 }
 
-TrainingSet* TrainingSet::getSubTrainingSetForClass(Label const& label)
+xmm::TrainingSet* xmm::TrainingSet::getSubTrainingSetForClass(xmm::Label const& label)
 {
     updateSubTrainingSet(label);
-    map<Label, TrainingSet>::iterator it = subTrainingSets_.find(label);
+    std::map<Label, TrainingSet>::iterator it = subTrainingSets_.find(label);
     if (it == subTrainingSets_.end())
-        throw out_of_range("Class " + label.as_string() + " does not exist");
+        throw std::out_of_range("Class " + label.as_string() + " does not exist");
     return &(it->second);
 }
 
-void TrainingSet::updateSubTrainingSet(Label const& label)
+void xmm::TrainingSet::updateSubTrainingSet(Label const& label)
 {
     subTrainingSets_[label] = TrainingSet(flags_, dimension_, dimension_input_);
     subTrainingSets_[label].setDefaultLabel(label);
@@ -453,15 +462,15 @@ void TrainingSet::updateSubTrainingSet(Label const& label)
     }
 }
 
-void TrainingSet::updateSubTrainingSets()
+void xmm::TrainingSet::updateSubTrainingSets()
 {
     subTrainingSets_.clear();
-    for (set<Label>::iterator label_it = allLabels.begin(); label_it != allLabels.end(); ++label_it) {
+    for (std::set<Label>::iterator label_it = allLabels.begin(); label_it != allLabels.end(); ++label_it) {
         updateSubTrainingSet(*label_it);
     }
 }
 
-void TrainingSet::updateLabelList()
+void xmm::TrainingSet::updateLabelList()
 {
     allLabels.clear();
     for (label_iterator it=phraseLabels.begin(); it != phraseLabels.end(); ++it) {
@@ -471,9 +480,9 @@ void TrainingSet::updateLabelList()
 
 #pragma mark -
 #pragma mark Moments
-vector<float> TrainingSet::mean() const
+std::vector<float> xmm::TrainingSet::mean() const
 {
-    vector<float> mean(dimension_, 0.0);
+    std::vector<float> mean(dimension_, 0.0);
     unsigned int total_length(0);
     for (const_phrase_iterator it = this->cbegin(); it != this->cend(); ++it)
     {
@@ -491,10 +500,10 @@ vector<float> TrainingSet::mean() const
     return mean;
 }
 
-vector<float> TrainingSet::variance() const
+std::vector<float> xmm::TrainingSet::variance() const
 {
-    vector<float> variance(dimension_);
-    vector<float> _mean = mean();
+    std::vector<float> variance(dimension_);
+    std::vector<float> _mean = mean();
     unsigned int total_length(0);
     for (const_phrase_iterator it = this->cbegin(); it != this->cend(); ++it)
     {
@@ -514,7 +523,7 @@ vector<float> TrainingSet::variance() const
 
 #pragma mark -
 #pragma mark File IO
-JSONNode TrainingSet::to_json() const
+JSONNode xmm::TrainingSet::to_json() const
 {
     JSONNode json_ts(JSON_NODE);
     json_ts.set_name("TrainingSet");
@@ -545,10 +554,10 @@ JSONNode TrainingSet::to_json() const
     return json_ts;
 }
 
-void TrainingSet::from_json(JSONNode root)
+void xmm::TrainingSet::from_json(JSONNode root)
 {
     if (!owns_data)
-        throw runtime_error("Cannot read Training Set with Shared memory");
+        throw std::runtime_error("Cannot read Training Set with Shared memory");
     
     try {
         if (root.type() != JSON_NODE)
@@ -655,7 +664,7 @@ void TrainingSet::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }

@@ -30,382 +30,386 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __mhmm__gaussian_distribution__
-#define __mhmm__gaussian_distribution__
+#ifndef xmm_lib_gaussian_distribution__
+#define xmm_lib_gaussian_distribution__
 
 #include "json_utilities.h"
-#include "mbd_common.h"
+#include "xmm_common.h"
 
-/**
- * default offset for covariance matrix
- */
-const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE = 1.e-2;
-const double GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE = 1.e-3;
-
-/**
- * @ingroup Utilities
- * @struct Ellipse
- * @brief Simple structure for storing Ellipse parameters
- */
-typedef struct Ellipse {
-    /**
-     * @brief x center position
-     */
-    float x;
-    
-    /**
-     * @brief y center position
-     */
-    float y;
-    
-    /**
-     * @brief width: minor axis length
-     */
-    float width;
-    
-    /**
-     * @brief height: major axis length
-     */
-    float height;
-    
-    /**
-     * @brief angle (radians)
-     */
-    float angle;
-} t_ellipse;
-
-/**
- * @ingroup Core
- * @class GaussianDistribution
- * @brief Multivariate Gaussian Distribution
- * @details Full covariance, optionally multimodal with support for regression
- */
-class GaussianDistribution : public Writable
+namespace xmm
 {
-public:
-    
     /**
-     * @brief Covariance Mode
+     * @ingroup Utilities
+     * @struct Ellipse
+     * @brief Simple structure for storing Ellipse parameters
      */
-    enum COVARIANCE_MODE {
+    struct Ellipse {
         /**
-         * @brief Full covariance
+         * @brief x center position
          */
-        FULL = 0,
+        float x;
         
         /**
-         * @brief Diagonal covariance (diagonal matrix)
+         * @brief y center position
          */
-        DIAGONAL = 1
+        float y;
+        
+        /**
+         * @brief width: minor axis length
+         */
+        float width;
+        
+        /**
+         * @brief height: major axis length
+         */
+        float height;
+        
+        /**
+         * @brief angle (radians)
+         */
+        float angle;
     };
     
+    /**
+     * @ingroup Core
+     * @class GaussianDistribution
+     * @brief Multivariate Gaussian Distribution
+     * @details Full covariance, optionally multimodal with support for regression
+     */
+    class GaussianDistribution : public Writable
+    {
+    public:
+        
+        /**
+         * default offset for covariance matrix
+         */
+        static const double DEFAULT_VARIANCE_OFFSET_RELATIVE() { return 1.e-2; }
+        static const double DEFAULT_VARIANCE_OFFSET_ABSOLUTE() { return 1.e-3; }
+        
+        /**
+         * @brief Covariance Mode
+         */
+        enum COVARIANCE_MODE {
+            /**
+             * @brief Full covariance
+             */
+            FULL = 0,
+            
+            /**
+             * @brief Diagonal covariance (diagonal matrix)
+             */
+            DIAGONAL = 1
+        };
+        
 #pragma mark > Constructors
-    /*@{*/
-    /** @name Constructors */
-    /**
-     * @brief Default Constructor
-     * @param flags construction flags. Use the flag 'BIMODAL' for use with regression.
-     * @param dimension dimension of the distribution
-     * @param offset_relative Offset added to diagonal covariance (proportional to variance)
-     * @param offset_absolute Offset added to diagonal covariance (minimum value)
-     * @param dimension_input dimension of the input modality in bimodal mode.
-     * @param covariance_mode covariance mode (full vs diagonal)
-     */
-    GaussianDistribution(rtml_flags flags = NONE,
-                         unsigned int dimension=1,
-                         unsigned int dimension_input = 0,
-                         double offset_relative = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_RELATIVE,
-                         double offset_absolute = GAUSSIAN_DEFAULT_VARIANCE_OFFSET_ABSOLUTE,
-                         COVARIANCE_MODE covariance_mode = FULL);
-    
-    /**
-     * @brief Copy constructor
-     * @param src source distribution
-     */
-    GaussianDistribution(GaussianDistribution const& src);
-    
-    /**
-     * @brief Assignment
-     * @param src source distribution
-     */
-    GaussianDistribution& operator=(GaussianDistribution const& src);
-    
-    /**
-     * @brief Copy between 2 Gaussian Distributions
-     * @param dst destination distribution
-     * @param src source distribution
-     */
-    void _copy(GaussianDistribution *dst, GaussianDistribution const& src);
-    
-    /**
-     * @brief Destructor
-     */
-    virtual ~GaussianDistribution();
-    
-    /*@}*/
-    
+        /*@{*/
+        /** @name Constructors */
+        /**
+         * @brief Default Constructor
+         * @param flags construction flags. Use the flag 'BIMODAL' for use with regression.
+         * @param dimension dimension of the distribution
+         * @param offset_relative Offset added to diagonal covariance (proportional to variance)
+         * @param offset_absolute Offset added to diagonal covariance (minimum value)
+         * @param dimension_input dimension of the input modality in bimodal mode.
+         * @param covariance_mode covariance mode (full vs diagonal)
+         */
+        GaussianDistribution(xmm_flags flags = NONE,
+                             unsigned int dimension=1,
+                             unsigned int dimension_input = 0,
+                             double offset_relative = DEFAULT_VARIANCE_OFFSET_RELATIVE(),
+                             double offset_absolute = DEFAULT_VARIANCE_OFFSET_ABSOLUTE(),
+                             COVARIANCE_MODE covariance_mode = FULL);
+        
+        /**
+         * @brief Copy constructor
+         * @param src source distribution
+         */
+        GaussianDistribution(GaussianDistribution const& src);
+        
+        /**
+         * @brief Assignment
+         * @param src source distribution
+         */
+        GaussianDistribution& operator=(GaussianDistribution const& src);
+        
+        /**
+         * @brief Copy between 2 Gaussian Distributions
+         * @param dst destination distribution
+         * @param src source distribution
+         */
+        void _copy(GaussianDistribution *dst, GaussianDistribution const& src);
+        
+        /**
+         * @brief Destructor
+         */
+        virtual ~GaussianDistribution();
+        
+        /*@}*/
+        
 #pragma mark > Accessors
-    /*@{*/
-    /** @name Accessors */
-    /**
-     * @brief Get Dimension of the distribution
-     * @return dimension
-     */
-    unsigned int dimension() const;
-    
-    /**
-     * @brief Set Dimension of the distribution
-     */
-    void set_dimension(unsigned int dimension);
-    
-    /**
-     * @brief Get Dimension of the input modality
-     * @return dimension
-     */
-    unsigned int dimension_input() const;
-    
-    /**
-     * @brief Set Dimension of the input modality
-     * @param dimension_input dimension of the input modality
-     * @throws out_of_range if the dimension is superior to the total dimension
-     */
-    void set_dimension_input(unsigned int dimension_input);
-    
-    /**
-     * @brief get the current covariance mode
-     */
-    COVARIANCE_MODE get_covariance_mode() const;
-    
-    /**
-     * @brief set the covariance mode
-     * @param covariance_mode target covariance mode
-     */
-    void set_covariance_mode(COVARIANCE_MODE covariance_mode);
-    
-    /*@}*/
-
+        /*@{*/
+        /** @name Accessors */
+        /**
+         * @brief Get Dimension of the distribution
+         * @return dimension
+         */
+        unsigned int dimension() const;
+        
+        /**
+         * @brief Set Dimension of the distribution
+         */
+        void set_dimension(unsigned int dimension);
+        
+        /**
+         * @brief Get Dimension of the input modality
+         * @return dimension
+         */
+        unsigned int dimension_input() const;
+        
+        /**
+         * @brief Set Dimension of the input modality
+         * @param dimension_input dimension of the input modality
+         * @throws out_of_range if the dimension is superior to the total dimension
+         */
+        void set_dimension_input(unsigned int dimension_input);
+        
+        /**
+         * @brief get the current covariance mode
+         */
+        COVARIANCE_MODE get_covariance_mode() const;
+        
+        /**
+         * @brief set the covariance mode
+         * @param covariance_mode target covariance mode
+         */
+        void set_covariance_mode(COVARIANCE_MODE covariance_mode);
+        
+        /*@}*/
+        
 #pragma mark > Likelihood & Regression
-    /*@{*/
-    /** @name Likelihood & Regression */
-    /**
-     * @brief Get Likelihood of a data vector
-     * @param observation data observation (must be of size @a dimension)
-     * @return likelihood
-     * @throws runtime_error if the Covariance Matrix is not invertible
-     */
-    double likelihood(const float* observation) const;
-    
-    /**
-     * @brief Get Likelihood of a data vector for input modality
-     * @param observation_input observation (must be of size @a dimension_input)
-     * @return likelihood
-     * @throws runtime_error if the Covariance Matrix of the input modality is not invertible
-     * @throws runtime_error if the model is not bimodal
-     */
-    double likelihood_input(const float* observation_input) const;
-    
-    /**
-     * @brief Get Likelihood of a data vector for bimodal mode
-     * @param observation_input observation of the input modality
-     * @param observation_output observation of the output modality
-     * @throws runtime_error if the Covariance Matrix is not invertible
-     * @throws runtime_error if the model is not bimodal
-     * @return likelihood
-     */
-    double likelihood_bimodal(const float* observation_input, const float* observation_output) const;
-    
-    /**
-     * @brief Linear Regression using the Gaussian Distribution (covariance-based)
-     * @param observation_input input observation (must be of size: @a dimension_input)
-     * @param predicted_output predicted output vector (size: dimension-dimension_input)
-     * @throws runtime_error if the model is not bimodal
-     */
-    void regression(vector<float> const& observation_input, vector<float>& predicted_output) const;
-    
-    /*@}*/
-
+        /*@{*/
+        /** @name Likelihood & Regression */
+        /**
+         * @brief Get Likelihood of a data vector
+         * @param observation data observation (must be of size @a dimension)
+         * @return likelihood
+         * @throws runtime_error if the Covariance Matrix is not invertible
+         */
+        double likelihood(const float* observation) const;
+        
+        /**
+         * @brief Get Likelihood of a data vector for input modality
+         * @param observation_input observation (must be of size @a dimension_input)
+         * @return likelihood
+         * @throws runtime_error if the Covariance Matrix of the input modality is not invertible
+         * @throws runtime_error if the model is not bimodal
+         */
+        double likelihood_input(const float* observation_input) const;
+        
+        /**
+         * @brief Get Likelihood of a data vector for bimodal mode
+         * @param observation_input observation of the input modality
+         * @param observation_output observation of the output modality
+         * @throws runtime_error if the Covariance Matrix is not invertible
+         * @throws runtime_error if the model is not bimodal
+         * @return likelihood
+         */
+        double likelihood_bimodal(const float* observation_input, const float* observation_output) const;
+        
+        /**
+         * @brief Linear Regression using the Gaussian Distribution (covariance-based)
+         * @param observation_input input observation (must be of size: @a dimension_input)
+         * @param predicted_output predicted output vector (size: dimension-dimension_input)
+         * @throws runtime_error if the model is not bimodal
+         */
+        void regression(std::vector<float> const& observation_input, std::vector<float>& predicted_output) const;
+        
+        /*@}*/
+        
 #pragma mark > JSON I/O
-    /*@{*/
-    /** @name JSON I/O */
-    /**
-     * @brief Write to JSON Node
-     * @return The JSON Node containing the Gaussian Distribution parameters
-     */
-    JSONNode to_json() const;
-    
-    /**
-     * @brief Write to JSON Node
-     * @details allocate model parameters and updates inverse Covariances
-     * @param root JSON Node containing model information and parameters
-     * @throws JSONException if the JSONNode has a wrong format
-     */
-    void from_json(JSONNode root);
-    
-    /*@}*/
-
+        /*@{*/
+        /** @name JSON I/O */
+        /**
+         * @brief Write to JSON Node
+         * @return The JSON Node containing the Gaussian Distribution parameters
+         */
+        JSONNode to_json() const;
+        
+        /**
+         * @brief Write to JSON Node
+         * @details allocate model parameters and updates inverse Covariances
+         * @param root JSON Node containing model information and parameters
+         * @throws JSONException if the JSONNode has a wrong format
+         */
+        void from_json(JSONNode root);
+        
+        /*@}*/
+        
 #pragma mark > Utilities
-    /*@{*/
-    /** @name Utilities */
-    /**
-     * @brief Resize Mean and Covariance Vectors to appropriate dimension.
-     */
-    void allocate();
-    
-    /**
-     * @brief Add @a offset to the diagonal of the covariance matrix
-     * @details Ensures convergence + generalization on few examples
-     */
-    void addOffset();
-    
-    /**
-     * @brief Compute inverse covariance matrix
-     * @throws runtime_error if the covariance matrix is not invertible
-     */
-    void updateInverseCovariance();
-    
-    /**
-     * @brief Compute the conditional variance vector of the output modality
-     * (conditioned over the input).
-     * @throws runtime_error if the model is not bimodal
-     */
-    void updateOutputVariances();
-    
-    /**
-     * @brief Compute the 95% Confidence Interval ellipse of the Gaussian
-     * @details the ellipse is 2D, and is therefore projected over 2 axes
-     * @param dimension1 index of the first axis
-     * @param dimension2 index of the second axis
-     * @throws out_of_range if the dimensions are out of bounds
-     * @return ellipse parameters
-     */
-    t_ellipse ellipse(unsigned int dimension1,
-                      unsigned int dimension2);
-    
-    /**
-     * @brief Convert to bimodal distribution in place
-     * @param dimension_input dimension of the input modality
-     * @throws runtime_error if the model is already bimodal
-     * @throws out_of_range if the requested input dimension is too large
-     */
-    void make_bimodal(unsigned int dimension_input);
-    
-    /**
-     * @brief Convert to unimodal distribution in place
-     * @throws runtime_error if the model is already unimodal
-     */
-    void make_unimodal();
-    
-    /**
-     * @brief extract a sub-distribution with the given columns
-     * @param columns columns indices in the target order
-     * @throws runtime_error if the model is training
-     * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
-     * @return a Gaussian Distribution from the current model considering only the target columns
-     */
-    GaussianDistribution extract_submodel(vector<unsigned int>& columns) const;
-    
-    /**
-     * @brief extract the sub-distribution of the input modality
-     * @throws runtime_error if the model is training or if it is not bimodal
-     * @return a unimodal Gaussian Distribution of the input modality from the current bimodal model
-     */
-    GaussianDistribution extract_submodel_input() const;
-    
-    /**
-     * @brief extract the sub-distribution of the output modality
-     * @throws runtime_error if the model is training or if it is not bimodal
-     * @return a unimodal Gaussian Distribution of the output modality from the current bimodal model
-     */
-    GaussianDistribution extract_submodel_output() const;
-    
-    /**
-     * @brief extract the model with reversed input and output modalities
-     * @throws runtime_error if the model is training or if it is not bimodal
-     * @return a bimodal Gaussian Distribution  that swaps the input and output modalities
-     */
-    GaussianDistribution extract_inverse_model() const;
-    
-    /*@}*/
-    
+        /*@{*/
+        /** @name Utilities */
+        /**
+         * @brief Resize Mean and Covariance Vectors to appropriate dimension.
+         */
+        void allocate();
+        
+        /**
+         * @brief Add @a offset to the diagonal of the covariance matrix
+         * @details Ensures convergence + generalization on few examples
+         */
+        void addOffset();
+        
+        /**
+         * @brief Compute inverse covariance matrix
+         * @throws runtime_error if the covariance matrix is not invertible
+         */
+        void updateInverseCovariance();
+        
+        /**
+         * @brief Compute the conditional variance vector of the output modality
+         * (conditioned over the input).
+         * @throws runtime_error if the model is not bimodal
+         */
+        void updateOutputVariances();
+        
+        /**
+         * @brief Compute the 95% Confidence Interval ellipse of the Gaussian
+         * @details the ellipse is 2D, and is therefore projected over 2 axes
+         * @param dimension1 index of the first axis
+         * @param dimension2 index of the second axis
+         * @throws out_of_range if the dimensions are out of bounds
+         * @return ellipse parameters
+         */
+        Ellipse ellipse(unsigned int dimension1,
+                        unsigned int dimension2);
+        
+        /**
+         * @brief Convert to bimodal distribution in place
+         * @param dimension_input dimension of the input modality
+         * @throws runtime_error if the model is already bimodal
+         * @throws out_of_range if the requested input dimension is too large
+         */
+        void make_bimodal(unsigned int dimension_input);
+        
+        /**
+         * @brief Convert to unimodal distribution in place
+         * @throws runtime_error if the model is already unimodal
+         */
+        void make_unimodal();
+        
+        /**
+         * @brief extract a sub-distribution with the given columns
+         * @param columns columns indices in the target order
+         * @throws runtime_error if the model is training
+         * @throws out_of_range if the number or indices of the requested columns exceeds the current dimension
+         * @return a Gaussian Distribution from the current model considering only the target columns
+         */
+        GaussianDistribution extract_submodel(std::vector<unsigned int>& columns) const;
+        
+        /**
+         * @brief extract the sub-distribution of the input modality
+         * @throws runtime_error if the model is training or if it is not bimodal
+         * @return a unimodal Gaussian Distribution of the input modality from the current bimodal model
+         */
+        GaussianDistribution extract_submodel_input() const;
+        
+        /**
+         * @brief extract the sub-distribution of the output modality
+         * @throws runtime_error if the model is training or if it is not bimodal
+         * @return a unimodal Gaussian Distribution of the output modality from the current bimodal model
+         */
+        GaussianDistribution extract_submodel_output() const;
+        
+        /**
+         * @brief extract the model with reversed input and output modalities
+         * @throws runtime_error if the model is training or if it is not bimodal
+         * @return a bimodal Gaussian Distribution  that swaps the input and output modalities
+         */
+        GaussianDistribution extract_inverse_model() const;
+        
+        /*@}*/
+        
 #pragma mark -
 #pragma mark === Public Attributes ===
-    /** @name Public Attributes */
-    
-    /**
-     * @brief Mean of the Gaussian Distribution
-     */
-    vector<double> mean;
-    
-    /**
-     * @brief Covariance Matrix of the Gaussian Distribution
-     */
-    vector<double> covariance;
-    
-    /**
-     * @brief Offset added to diagonal covariance (proportional to variance)
-     */
-    double offset_relative;
-    
-    /**
-     * @brief Offset added to diagonal covariance (minimum value)
-     */
-    double offset_absolute;
-    
-    /**
-     * @brief Scaling of each dimension of the Gaussian Distribution (used of variance offsets)
-     */
-    vector<float> scale;
-    
-    /**
-     * @brief Conditional Output Variance
-     * updated when covariances matrices are inverted.
-     */
-    vector<double> output_variance;
-    
+        /** @name Public Attributes */
+        
+        /**
+         * @brief Mean of the Gaussian Distribution
+         */
+        std::vector<double> mean;
+        
+        /**
+         * @brief Covariance Matrix of the Gaussian Distribution
+         */
+        std::vector<double> covariance;
+        
+        /**
+         * @brief Offset added to diagonal covariance (proportional to variance)
+         */
+        double offset_relative;
+        
+        /**
+         * @brief Offset added to diagonal covariance (minimum value)
+         */
+        double offset_absolute;
+        
+        /**
+         * @brief Scaling of each dimension of the Gaussian Distribution (used of variance offsets)
+         */
+        std::vector<float> scale;
+        
+        /**
+         * @brief Conditional Output Variance
+         * updated when covariances matrices are inverted.
+         */
+        std::vector<double> output_variance;
+        
 #pragma mark -
 #pragma mark === Private Attributes ===
 #ifndef XMM_TESTING
-private:
+    private:
 #endif
-    /**
-     * @brief Defines if regression parameters need to be computed
-     */
-    bool bimodal_;
+        /**
+         * @brief Defines if regression parameters need to be computed
+         */
+        bool bimodal_;
+        
+        /**
+         * @brief Dimension of the distribution
+         */
+        unsigned int dimension_;
+        
+        /**
+         * @brief Dimension of the input modality
+         */
+        unsigned int dimension_input_;
+        
+        /**
+         * @brief Determinant of the covariance matrix
+         */
+        double covarianceDeterminant;
+        
+        /**
+         * @brief Inverse covariance matrix
+         */
+        std::vector<double> inverseCovariance_;
+        
+        /**
+         * @brief Determinant of the covariance matrix of the input modality
+         */
+        double covarianceDeterminant_input_;
+        
+        /**
+         * @brief Inverse covariance matrix of the input modality
+         */
+        std::vector<double> inverseCovariance_input_;
+        
+        /**
+         * @brief Covariance Mode
+         */
+        COVARIANCE_MODE covariance_mode_;
+    };
     
-    /**
-     * @brief Dimension of the distribution
-     */
-    unsigned int dimension_;
-    
-    /**
-     * @brief Dimension of the input modality
-     */
-    unsigned int dimension_input_;
-    
-    /**
-     * @brief Determinant of the covariance matrix
-     */
-    double covarianceDeterminant;
-    
-    /**
-     * @brief Inverse covariance matrix
-     */
-    vector<double> inverseCovariance_;
-    
-    /**
-     * @brief Determinant of the covariance matrix of the input modality
-     */
-    double covarianceDeterminant_input_;
-    
-    /**
-     * @brief Inverse covariance matrix of the input modality
-     */
-    vector<double> inverseCovariance_input_;
-    
-    /**
-     * @brief Covariance Mode
-     */
-    COVARIANCE_MODE covariance_mode_;
-};
+}
 
 #endif

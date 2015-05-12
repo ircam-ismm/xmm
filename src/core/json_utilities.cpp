@@ -33,7 +33,7 @@
 #include "json_utilities.h"
 
 template <>
-void json2array(JSONNode root, float* a, int n)
+void xmm::json2array(JSONNode root, float* a, int n)
 {
     if (root.type() != JSON_ARRAY)
         throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
@@ -49,7 +49,7 @@ void json2array(JSONNode root, float* a, int n)
 }
 
 template <>
-void json2array(JSONNode root, double* a, int n)
+void xmm::json2array(JSONNode root, double* a, int n)
 {
     if (root.type() != JSON_ARRAY)
         throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
@@ -65,7 +65,7 @@ void json2array(JSONNode root, double* a, int n)
 }
 
 template <>
-void json2array(JSONNode root, bool* a, int n)
+void xmm::json2array(JSONNode root, bool* a, int n)
 {
     if (root.type() != JSON_ARRAY)
         throw JSONException("Wrong type: was expecting 'JSON_ARRAY'", root.name());
@@ -81,7 +81,7 @@ void json2array(JSONNode root, bool* a, int n)
 }
 
 template <>
-void json2array(JSONNode root, string* a, int n)
+void xmm::json2array(JSONNode root, std::string* a, int n)
 {
     // Get Dimensions
     if (root.type() != JSON_ARRAY)
@@ -98,7 +98,7 @@ void json2array(JSONNode root, string* a, int n)
 }
 
 template <>
-void json2vector(JSONNode root, vector<float>& a, int n)
+void xmm::json2vector(JSONNode root, std::vector<float>& a, int n)
 {
     // Get Dimensions
     if (root.type() != JSON_ARRAY)
@@ -115,7 +115,7 @@ void json2vector(JSONNode root, vector<float>& a, int n)
 }
 
 template <>
-void json2vector(JSONNode root, vector<double>& a, int n)
+void xmm::json2vector(JSONNode root, std::vector<double>& a, int n)
 {
     // Get Dimensions
     if (root.type() != JSON_ARRAY)
@@ -132,7 +132,7 @@ void json2vector(JSONNode root, vector<double>& a, int n)
 }
 
 template <>
-void json2vector(JSONNode root, vector<bool>& a, int n)
+void xmm::json2vector(JSONNode root, std::vector<bool>& a, int n)
 {
     // Get Dimensions
     if (root.type() != JSON_ARRAY)
@@ -149,7 +149,7 @@ void json2vector(JSONNode root, vector<bool>& a, int n)
 }
 
 template <>
-void json2vector(JSONNode root, vector<string>& a, int n)
+void xmm::json2vector(JSONNode root, std::vector<std::string>& a, int n)
 {
     // Get Dimensions
     if (root.type() != JSON_ARRAY)

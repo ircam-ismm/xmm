@@ -36,7 +36,7 @@
 #include "xmm.h"
 
 TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal", "[GaussianDistribution]" ) {
-    GaussianDistribution a(NONE,
+    xmm::GaussianDistribution a(xmm::NONE,
                            3,
                            0,
                            0.0034,
@@ -54,7 +54,7 @@ TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal", "[GaussianDistrib
     a.covariance[7] = 0.7;
     a.covariance[8] = 1.5;
     a.updateInverseCovariance();
-    GaussianDistribution b(a);
+    xmm::GaussianDistribution b(a);
     CHECK_THROWS(b.make_unimodal());
     CHECK_NOTHROW(b.make_bimodal(2));
     CHECK(b.bimodal_);
@@ -66,7 +66,7 @@ TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal", "[GaussianDistrib
     CHECK(a.mean == b.mean);
     CHECK(a.covariance == b.covariance);
     CHECK(a.inverseCovariance_ == b.inverseCovariance_);
-    vector<double> invcov(9);
+    std::vector<double> invcov(9);
     invcov[0] = 0.79037801;
     invcov[1] = 0.06872852;
     invcov[2] = -0.13745704;
@@ -77,7 +77,7 @@ TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal", "[GaussianDistrib
     invcov[7] = -0.4467354;
     invcov[8] = 0.89347079;
     CHECK_VECTOR_APPROX(b.inverseCovariance_, invcov);
-    vector<double> invcov_input(4);
+    std::vector<double> invcov_input(4);
     invcov_input[0] = 0.76923077;
     invcov_input[1] = 0.;
     invcov_input[2] = 0.;
@@ -87,7 +87,7 @@ TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal", "[GaussianDistrib
 }
 
 TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal", "[GaussianDistribution]" ) {
-    GaussianDistribution a(BIMODAL,
+    xmm::GaussianDistribution a(xmm::BIMODAL,
                            3,
                            2,
                            0.0034,
@@ -105,7 +105,7 @@ TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal", "[GaussianDistrib
     a.covariance[7] = 0.7;
     a.covariance[8] = 1.5;
     a.updateInverseCovariance();
-    GaussianDistribution b(a);
+    xmm::GaussianDistribution b(a);
     CHECK_THROWS(b.make_bimodal(2));
     CHECK_NOTHROW(b.make_unimodal());
     CHECK(a.bimodal_);
@@ -117,7 +117,7 @@ TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal", "[GaussianDistrib
     CHECK(a.mean == b.mean);
     CHECK(a.covariance == b.covariance);
     CHECK(a.inverseCovariance_ == b.inverseCovariance_);
-    vector<double> invcov(9);
+    std::vector<double> invcov(9);
     invcov[0] = 0.79037801;
     invcov[1] = 0.06872852;
     invcov[2] = -0.13745704;
@@ -128,7 +128,7 @@ TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal", "[GaussianDistrib
     invcov[7] = -0.4467354;
     invcov[8] = 0.89347079;
     CHECK_VECTOR_APPROX(b.inverseCovariance_, invcov);
-    vector<double> invcov_input(4);
+    std::vector<double> invcov_input(4);
     invcov_input[0] = 0.76923077;
     invcov_input[1] = 0.;
     invcov_input[2] = 0.;
@@ -139,23 +139,23 @@ TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal", "[GaussianDistrib
 }
 
 TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
         observation[2] = pow(float(i)/100., 3.);
         ts.recordPhrase(0, observation);
     }
-    GMM a(NONE, &ts);
+    xmm::GMM a(xmm::NONE, &ts);
     a.set_nbMixtureComponents(3);
     a.train();
-    vector<float> mixtureCoeffs(3);
+    std::vector<float> mixtureCoeffs(3);
     mixtureCoeffs[0] = 3.819443583488e-01;
     mixtureCoeffs[1] = 3.171715140343e-01;
     mixtureCoeffs[2] = 3.008841276169e-01;
     CHECK_VECTOR_APPROX(a.mixtureCoeffs, mixtureCoeffs);
-    vector<double> cov_c0(9);
+    std::vector<double> cov_c0(9);
     cov_c0[0] = 1.398498568044e-02;
     cov_c0[1] = 5.041130937517e-03;
     cov_c0[2] = 1.792829737244e-03;
@@ -168,7 +168,7 @@ TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
     CHECK_VECTOR_APPROX(a.components[0].covariance, cov_c0);
     CHECK_FALSE(a.bimodal_);
     CHECK(a.components[0].inverseCovariance_input_.size() == 0);
-    GMM b(a);
+    xmm::GMM b(a);
     b.make_bimodal(2);
     CHECK(b.bimodal_);
     CHECK(a.mixtureCoeffs == b.mixtureCoeffs);
@@ -179,7 +179,7 @@ TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
         CHECK(a.components[i].inverseCovariance_input_.size() == 0);
         CHECK(b.components[i].inverseCovariance_input_.size() == 4);
     }
-    vector<double> invcov_c0_input(4);
+    std::vector<double> invcov_c0_input(4);
     invcov_c0_input[0] = 171.77395895;
     invcov_c0_input[1] = -278.16304982;
     invcov_c0_input[2] = -278.16304982;
@@ -188,23 +188,23 @@ TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
 }
 
 TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
-    TrainingSet ts(BIMODAL, 3, 2);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
         observation[2] = pow(float(i)/100., 3.);
         ts.recordPhrase(0, observation);
     }
-    GMM a(BIMODAL, &ts);
+    xmm::GMM a(xmm::BIMODAL, &ts);
     a.set_nbMixtureComponents(3);
     a.train();
-    vector<float> mixtureCoeffs(3);
+    std::vector<float> mixtureCoeffs(3);
     mixtureCoeffs[0] = 3.819443583488e-01;
     mixtureCoeffs[1] = 3.171715140343e-01;
     mixtureCoeffs[2] = 3.008841276169e-01;
     CHECK_VECTOR_APPROX(a.mixtureCoeffs, mixtureCoeffs);
-    vector<double> cov_c0(9);
+    std::vector<double> cov_c0(9);
     cov_c0[0] = 1.398498568044e-02;
     cov_c0[1] = 5.041130937517e-03;
     cov_c0[2] = 1.792829737244e-03;
@@ -216,7 +216,7 @@ TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
     cov_c0[8] = 1.306463534393e-03;
     CHECK_VECTOR_APPROX(a.components[0].covariance, cov_c0);
     CHECK(a.bimodal_);
-    GMM b(a);
+    xmm::GMM b(a);
     CHECK_THROWS(b.make_bimodal(2));
     CHECK_NOTHROW(b.make_unimodal());
     CHECK_FALSE(b.bimodal_);
@@ -228,7 +228,7 @@ TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
         CHECK(b.components[i].inverseCovariance_input_.size() == 0);
         CHECK(a.components[i].inverseCovariance_input_.size() == 4);
     }
-    vector<double> invcov_c0_input(4);
+    std::vector<double> invcov_c0_input(4);
     invcov_c0_input[0] = 171.77395895;
     invcov_c0_input[1] = -278.16304982;
     invcov_c0_input[2] = -278.16304982;
@@ -237,8 +237,8 @@ TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
 }
 
 TEST_CASE( "Convert GMMGroup: unimodal->bimodal", "[GMMGroup]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -246,21 +246,21 @@ TEST_CASE( "Convert GMMGroup: unimodal->bimodal", "[GMMGroup]" ) {
         ts.recordPhrase(0, observation);
         ts.recordPhrase(1, observation);
     }
-    Label label_a(static_cast<string>("a"));
-    Label label_b(static_cast<string>("b"));
+    xmm::Label label_a(static_cast<std::string>("a"));
+    xmm::Label label_b(static_cast<std::string>("b"));
     ts.setPhraseLabel(0, label_a);
     ts.setPhraseLabel(1, label_b);
-    GMMGroup a(NONE, &ts);
+    xmm::GMMGroup a(xmm::NONE, &ts);
     a.set_nbMixtureComponents(3);
     a.train();
     CHECK_FALSE(a.bimodal_);
-    vector<float> mixtureCoeffs(3);
+    std::vector<float> mixtureCoeffs(3);
     mixtureCoeffs[0] = 3.819443583488e-01;
     mixtureCoeffs[1] = 3.171715140343e-01;
     mixtureCoeffs[2] = 3.008841276169e-01;
     CHECK_VECTOR_APPROX(a.models[label_a].mixtureCoeffs, mixtureCoeffs);
     CHECK_VECTOR_APPROX(a.models[label_b].mixtureCoeffs, mixtureCoeffs);
-    vector<double> cov_c0(9);
+    std::vector<double> cov_c0(9);
     cov_c0[0] = 1.398498568044e-02;
     cov_c0[1] = 5.041130937517e-03;
     cov_c0[2] = 1.792829737244e-03;
@@ -272,7 +272,7 @@ TEST_CASE( "Convert GMMGroup: unimodal->bimodal", "[GMMGroup]" ) {
     cov_c0[8] = 1.306463534393e-03;
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
     CHECK(a.models[label_a].components[0].inverseCovariance_input_.size() == 0);
-    GMMGroup b(a);
+    xmm::GMMGroup b(a);
     CHECK_THROWS(b.make_unimodal());
     CHECK_NOTHROW(b.make_bimodal(2));
     CHECK(b.bimodal_);
@@ -284,7 +284,7 @@ TEST_CASE( "Convert GMMGroup: unimodal->bimodal", "[GMMGroup]" ) {
         CHECK(a.models[label_a].components[i].inverseCovariance_input_.size() == 0);
         CHECK(b.models[label_a].components[i].inverseCovariance_input_.size() == 4);
     }
-    vector<double> invcov_c0_input(4);
+    std::vector<double> invcov_c0_input(4);
     invcov_c0_input[0] = 171.77395895;
     invcov_c0_input[1] = -278.16304982;
     invcov_c0_input[2] = -278.16304982;
@@ -294,8 +294,8 @@ TEST_CASE( "Convert GMMGroup: unimodal->bimodal", "[GMMGroup]" ) {
 }
 
 TEST_CASE( "Convert GMMGroup: bimodal->unimodal", "[GMMGroup]" ) {
-    TrainingSet ts(BIMODAL, 3, 2);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -303,21 +303,21 @@ TEST_CASE( "Convert GMMGroup: bimodal->unimodal", "[GMMGroup]" ) {
         ts.recordPhrase(0, observation);
         ts.recordPhrase(1, observation);
     }
-    Label label_a(static_cast<string>("a"));
-    Label label_b(static_cast<string>("b"));
+    xmm::Label label_a(static_cast<std::string>("a"));
+    xmm::Label label_b(static_cast<std::string>("b"));
     ts.setPhraseLabel(0, label_a);
     ts.setPhraseLabel(1, label_b);
-    GMMGroup a(BIMODAL, &ts);
+    xmm::GMMGroup a(xmm::BIMODAL, &ts);
     a.set_nbMixtureComponents(3);
     a.train();
     CHECK(a.bimodal_);
-    vector<float> mixtureCoeffs(3);
+    std::vector<float> mixtureCoeffs(3);
     mixtureCoeffs[0] = 3.819443583488e-01;
     mixtureCoeffs[1] = 3.171715140343e-01;
     mixtureCoeffs[2] = 3.008841276169e-01;
     CHECK_VECTOR_APPROX(a.models[label_a].mixtureCoeffs, mixtureCoeffs);
     CHECK_VECTOR_APPROX(a.models[label_b].mixtureCoeffs, mixtureCoeffs);
-    vector<double> cov_c0(9);
+    std::vector<double> cov_c0(9);
     cov_c0[0] = 1.398498568044e-02;
     cov_c0[1] = 5.041130937517e-03;
     cov_c0[2] = 1.792829737244e-03;
@@ -328,7 +328,7 @@ TEST_CASE( "Convert GMMGroup: bimodal->unimodal", "[GMMGroup]" ) {
     cov_c0[7] = 7.901977752380e-04;
     cov_c0[8] = 1.306463534393e-03;
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
-    GMMGroup b(a);
+    xmm::GMMGroup b(a);
     CHECK_THROWS(b.make_bimodal(2));
     CHECK_NOTHROW(b.make_unimodal());
     CHECK_FALSE(b.bimodal_);
@@ -340,7 +340,7 @@ TEST_CASE( "Convert GMMGroup: bimodal->unimodal", "[GMMGroup]" ) {
         CHECK(b.models[label_a].components[i].inverseCovariance_input_.size() == 0);
         CHECK(a.models[label_a].components[i].inverseCovariance_input_.size() == 4);
     }
-    vector<double> invcov_c0_input(4);
+    std::vector<double> invcov_c0_input(4);
     invcov_c0_input[0] = 171.77395895;
     invcov_c0_input[1] = -278.16304982;
     invcov_c0_input[2] = -278.16304982;
@@ -350,18 +350,18 @@ TEST_CASE( "Convert GMMGroup: bimodal->unimodal", "[GMMGroup]" ) {
 }
 
 TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
         observation[2] = pow(float(i)/100., 3.);
         ts.recordPhrase(0, observation);
     }
-    HMM a(NONE, &ts);
+    xmm::HMM a(xmm::NONE, &ts);
     a.set_nbStates(3);
     a.train();
-    vector<float> transition(6);
+    std::vector<float> transition(6);
     transition[0] = 9.710567593575e-01;
     transition[1] = 2.894317358732e-02;
     transition[2] = 9.693398475647e-01;
@@ -369,7 +369,7 @@ TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
     transition[4] = 1;
     transition[5] = 0;
     CHECK_VECTOR_APPROX(a.transition, transition);
-    vector<double> covariance_state0(9);
+    std::vector<double> covariance_state0(9);
     covariance_state0[0] = 1.105028519640e-02,
     covariance_state0[1] = 3.397482636225e-03;
     covariance_state0[2] = 1.045622665096e-03;
@@ -382,7 +382,7 @@ TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
     CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
     CHECK_FALSE(a.bimodal_);
     CHECK(a.states[0].components[0].inverseCovariance_input_.size() == 0);
-    HMM b(a);
+    xmm::HMM b(a);
     b.make_bimodal(2);
     CHECK(b.bimodal_);
     CHECK(a.prior == b.prior);
@@ -394,7 +394,7 @@ TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
         CHECK(a.states[i].components[0].inverseCovariance_input_.size() == 0);
         CHECK(b.states[i].components[0].inverseCovariance_input_.size() == 4);
     }
-    vector<double> invcov_state0_input(4);
+    std::vector<double> invcov_state0_input(4);
     invcov_state0_input[0] = 170.12232422;
     invcov_state0_input[1] = -258.98593022;
     invcov_state0_input[2] = -258.98593022;
@@ -403,18 +403,18 @@ TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
 }
 
 TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
-    TrainingSet ts(BIMODAL, 3, 2);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
         observation[2] = pow(float(i)/100., 3.);
         ts.recordPhrase(0, observation);
     }
-    HMM a(BIMODAL, &ts);
+    xmm::HMM a(xmm::BIMODAL, &ts);
     a.set_nbStates(3);
     a.train();
-    vector<float> transition(6);
+    std::vector<float> transition(6);
     transition[0] = 9.710567593575e-01;
     transition[1] = 2.894317358732e-02;
     transition[2] = 9.693398475647e-01;
@@ -422,7 +422,7 @@ TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
     transition[4] = 1;
     transition[5] = 0;
     CHECK_VECTOR_APPROX(a.transition, transition);
-    vector<double> covariance_state0(9);
+    std::vector<double> covariance_state0(9);
     covariance_state0[0] = 1.105028519640e-02,
     covariance_state0[1] = 3.397482636225e-03;
     covariance_state0[2] = 1.045622665096e-03;
@@ -433,7 +433,7 @@ TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
     covariance_state0[7] = 3.960464278701e-04;
     covariance_state0[8] = 1.131260901171e-03;
     CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
-    vector<double> invcov_state0_input(4);
+    std::vector<double> invcov_state0_input(4);
     invcov_state0_input[0] = 170.12232422;
     invcov_state0_input[1] = -258.98593022;
     invcov_state0_input[2] = -258.98593022;
@@ -441,7 +441,7 @@ TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
     CHECK_VECTOR_APPROX(a.states[0].components[0].inverseCovariance_input_, invcov_state0_input);
     CHECK(a.bimodal_);
     CHECK(a.states[0].components[0].inverseCovariance_input_.size() == 4);
-    HMM b(a);
+    xmm::HMM b(a);
     CHECK_THROWS(b.make_bimodal(2););
     CHECK_NOTHROW(b.make_unimodal());
     CHECK_FALSE(b.bimodal_);
@@ -458,8 +458,8 @@ TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
 
 
 TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
-    TrainingSet ts(NONE, 3);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::NONE, 3);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -467,14 +467,14 @@ TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
         ts.recordPhrase(0, observation);
         ts.recordPhrase(1, observation);
     }
-    Label label_a(static_cast<string>("a"));
-    Label label_b(static_cast<string>("b"));
+    xmm::Label label_a(static_cast<std::string>("a"));
+    xmm::Label label_b(static_cast<std::string>("b"));
     ts.setPhraseLabel(0, label_a);
     ts.setPhraseLabel(1, label_b);
-    HierarchicalHMM a(NONE, &ts);
+    xmm::HierarchicalHMM a(xmm::NONE, &ts);
     a.set_nbStates(3);
     a.train();
-    vector<float> transition(6);
+    std::vector<float> transition(6);
     transition[0] = 9.710567593575e-01;
     transition[1] = 2.894317358732e-02;
     transition[2] = 9.693398475647e-01;
@@ -482,7 +482,7 @@ TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
     transition[4] = 1;
     transition[5] = 0;
     CHECK_VECTOR_APPROX(a.models[label_a].transition, transition);
-    vector<double> covariance_state0(9);
+    std::vector<double> covariance_state0(9);
     covariance_state0[0] = 1.105028519640e-02,
     covariance_state0[1] = 3.397482636225e-03;
     covariance_state0[2] = 1.045622665096e-03;
@@ -495,7 +495,7 @@ TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
     CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
     CHECK_FALSE(a.bimodal_);
     CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size() == 0);
-    HierarchicalHMM b(a);
+    xmm::HierarchicalHMM b(a);
     b.make_bimodal(2);
     CHECK(b.bimodal_);
     CHECK(a.models[label_a].prior == b.models[label_a].prior);
@@ -507,7 +507,7 @@ TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
         CHECK(a.models[label_a].states[i].components[0].inverseCovariance_input_.size() == 0);
         CHECK(b.models[label_a].states[i].components[0].inverseCovariance_input_.size() == 4);
     }
-    vector<double> invcov_state0_input(4);
+    std::vector<double> invcov_state0_input(4);
     invcov_state0_input[0] = 170.12232422;
     invcov_state0_input[1] = -258.98593022;
     invcov_state0_input[2] = -258.98593022;
@@ -516,8 +516,8 @@ TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
 }
 
 TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]" ) {
-    TrainingSet ts(BIMODAL, 3, 2);
-    vector<float> observation(3);
+    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
+    std::vector<float> observation(3);
     for (unsigned int i=0; i<100; i++) {
         observation[0] = float(i)/100.;
         observation[1] = pow(float(i)/100., 2.);
@@ -525,14 +525,14 @@ TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]" ) {
         ts.recordPhrase(0, observation);
         ts.recordPhrase(1, observation);
     }
-    Label label_a(static_cast<string>("a"));
-    Label label_b(static_cast<string>("b"));
+    xmm::Label label_a(static_cast<std::string>("a"));
+    xmm::Label label_b(static_cast<std::string>("b"));
     ts.setPhraseLabel(0, label_a);
     ts.setPhraseLabel(1, label_b);
-    HierarchicalHMM a(BIMODAL, &ts);
+    xmm::HierarchicalHMM a(xmm::BIMODAL, &ts);
     a.set_nbStates(3);
     a.train();
-    vector<float> transition(6);
+    std::vector<float> transition(6);
     transition[0] = 9.710567593575e-01;
     transition[1] = 2.894317358732e-02;
     transition[2] = 9.693398475647e-01;
@@ -540,7 +540,7 @@ TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]" ) {
     transition[4] = 1;
     transition[5] = 0;
     CHECK_VECTOR_APPROX(a.models[label_a].transition, transition);
-    vector<double> covariance_state0(9);
+    std::vector<double> covariance_state0(9);
     covariance_state0[0] = 1.105028519640e-02,
     covariance_state0[1] = 3.397482636225e-03;
     covariance_state0[2] = 1.045622665096e-03;
@@ -551,7 +551,7 @@ TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]" ) {
     covariance_state0[7] = 3.960464278701e-04;
     covariance_state0[8] = 1.131260901171e-03;
     CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
-    vector<double> invcov_state0_input(4);
+    std::vector<double> invcov_state0_input(4);
     invcov_state0_input[0] = 170.12232422;
     invcov_state0_input[1] = -258.98593022;
     invcov_state0_input[2] = -258.98593022;
@@ -559,7 +559,7 @@ TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]" ) {
     CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].inverseCovariance_input_, invcov_state0_input);
     CHECK(a.bimodal_);
     CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size() == 4);
-    HierarchicalHMM b(a);
+    xmm::HierarchicalHMM b(a);
     CHECK_THROWS(b.make_bimodal(2););
     CHECK_NOTHROW(b.make_unimodal());
     CHECK_FALSE(b.bimodal_);

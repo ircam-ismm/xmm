@@ -34,7 +34,7 @@
 
 #pragma mark -
 #pragma mark Constructor
-GMMGroup::GMMGroup(rtml_flags flags,
+xmm::GMMGroup::GMMGroup(xmm_flags flags,
                    TrainingSet *_globalTrainingSet,
                    GaussianDistribution::COVARIANCE_MODE covariance_mode)
 : ModelGroup< GMM >(flags, _globalTrainingSet)
@@ -43,55 +43,77 @@ GMMGroup::GMMGroup(rtml_flags flags,
     set_covariance_mode(covariance_mode);
 }
 
+xmm::GMMGroup::GMMGroup(GMMGroup const& src)
+{
+    this->_copy(this, src);
+}
+
+xmm::GMMGroup& xmm::GMMGroup::operator=(GMMGroup const& src)
+{
+    if(this != &src)
+    {
+        if (this->globalTrainingSet)
+            this->globalTrainingSet->remove_listener(this);
+        _copy(this, src);
+    }
+    return *this;
+}
+
+void xmm::GMMGroup::_copy(GMMGroup *dst, GMMGroup const& src)
+{
+    ModelGroup<GMM>::_copy(dst, src);
+}
+
+
 #pragma mark -
 #pragma mark Get & Set
-int GMMGroup::get_nbMixtureComponents() const
+int xmm::GMMGroup::get_nbMixtureComponents() const
 {
     return this->referenceModel_.get_nbMixtureComponents();
 }
 
-void GMMGroup::set_nbMixtureComponents(int nbMixtureComponents_)
+void xmm::GMMGroup::set_nbMixtureComponents(int nbMixtureComponents_)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.set_nbMixtureComponents(nbMixtureComponents_);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_nbMixtureComponents(nbMixtureComponents_);
     }
 }
 
-double GMMGroup::get_varianceOffset_relative() const
+double xmm::GMMGroup::get_varianceOffset_relative() const
 {
     return this->referenceModel_.get_varianceOffset_relative();
 }
 
-double GMMGroup::get_varianceOffset_absolute() const
+double xmm::GMMGroup::get_varianceOffset_absolute() const
 {
     return this->referenceModel_.get_varianceOffset_absolute();
 }
 
-void GMMGroup::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
+void xmm::GMMGroup::set_varianceOffset(double varianceOffset_relative, double varianceOffset_absolute)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     this->referenceModel_.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_varianceOffset(varianceOffset_relative, varianceOffset_absolute);
     }
 }
 
-GaussianDistribution::COVARIANCE_MODE GMMGroup::get_covariance_mode() const
+xmm::GaussianDistribution::COVARIANCE_MODE xmm::GMMGroup::get_covariance_mode() const
 {
     return this->referenceModel_.get_covariance_mode();
 }
 
-void GMMGroup::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
+void xmm::GMMGroup::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode)
 {
-    PREVENT_ATTR_CHANGE();
+    prevent_attribute_change();
     if (covariance_mode == get_covariance_mode()) return;
     try {
         this->referenceModel_.set_covariance_mode(covariance_mode);
-    } catch (exception& e) {
+    } catch (std::exception& e) {
         if (strncmp(e.what(), "Non-invertible matrix", 21) != 0)
-            throw runtime_error(e.what());
+            throw std::runtime_error(e.what());
     }
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.set_covariance_mode(covariance_mode);
@@ -100,8 +122,9 @@ void GMMGroup::set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covaria
 
 #pragma mark -
 #pragma mark Performance
-void GMMGroup::performance_update(vector<float> const& observation)
+void xmm::GMMGroup::performance_update(std::vector<float> const& observation)
 {
+    check_training();
     int i(0);
     for (model_iterator it = this->models.begin(); it != this->models.end(); ++it) {
         results_instant_likelihoods[i] = it->second.performance_update(observation);
@@ -139,8 +162,9 @@ void GMMGroup::performance_update(vector<float> const& observation)
 
 #pragma mark -
 #pragma mark File IO
-JSONNode GMMGroup::to_json() const
+JSONNode xmm::GMMGroup::to_json() const
 {
+    check_training();
     JSONNode json_ccmodels(JSON_NODE);
     json_ccmodels.set_name("GMMGroup");
     json_ccmodels.push_back(JSONNode("bimodal", bimodal_));
@@ -169,8 +193,9 @@ JSONNode GMMGroup::to_json() const
     return json_ccmodels;
 }
 
-void GMMGroup::from_json(JSONNode root)
+void xmm::GMMGroup::from_json(JSONNode root)
 {
+    check_training();
     try {
         if (root.type() != JSON_NODE)
             throw JSONException("Wrong type: was expecting 'JSON_NODE'", root.name());
@@ -294,24 +319,23 @@ void GMMGroup::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }
 
 #pragma mark > Conversion & Extraction
-void GMMGroup::make_bimodal(unsigned int dimension_input)
+void xmm::GMMGroup::make_bimodal(unsigned int dimension_input)
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (bimodal_)
-        throw runtime_error("The model is already bimodal");
+        throw std::runtime_error("The model is already bimodal");
     if (dimension_input >= dimension())
-        throw out_of_range("Request input dimension exceeds the current dimension");
+        throw std::out_of_range("Request input dimension exceeds the current dimension");
     
     try {
         this->referenceModel_.make_bimodal(dimension_input);
-    } catch (exception const& e) {
+    } catch (std::exception const& e) {
     }
     bimodal_ = true;
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -322,12 +346,11 @@ void GMMGroup::make_bimodal(unsigned int dimension_input)
     results_output_variance.resize(dimension() - this->dimension_input());
 }
 
-void GMMGroup::make_unimodal()
+void xmm::GMMGroup::make_unimodal()
 {
-    if (is_training())
-        throw runtime_error("Cannot convert model during Training");
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model is already unimodal");
+        throw std::runtime_error("The model is already unimodal");
     this->referenceModel_.make_unimodal();
     for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
         it->second.make_unimodal();
@@ -338,19 +361,17 @@ void GMMGroup::make_unimodal()
     bimodal_ = false;
 }
 
-GMMGroup GMMGroup::extract_submodel(vector<unsigned int>& columns) const
+xmm::GMMGroup xmm::GMMGroup::extract_submodel(std::vector<unsigned int>& columns) const
 {
-    if (is_training())
-        throw runtime_error("Cannot extract model during Training");
+    check_training();
     if (columns.size() > this->dimension())
-        throw out_of_range("requested number of columns exceeds the dimension of the current model");
+        throw std::out_of_range("requested number of columns exceeds the dimension of the current model");
     for (unsigned int column=0; column<columns.size(); ++column) {
         if (columns[column] >= this->dimension())
-            throw out_of_range("Some column indices exceeds the dimension of the current model");
+            throw std::out_of_range("Some column indices exceeds the dimension of the current model");
     }
     GMMGroup target_model(*this);
     target_model.set_trainingSet(NULL);
-    target_model.set_trainingCallback(monitor_training, (void*)this);
     target_model.bimodal_ = false;
     target_model.referenceModel_ = this->referenceModel_.extract_submodel(columns);
     for (model_iterator it=target_model.models.begin(); it != target_model.models.end(); ++it) {
@@ -361,33 +382,36 @@ GMMGroup GMMGroup::extract_submodel(vector<unsigned int>& columns) const
     return target_model;
 }
 
-GMMGroup GMMGroup::extract_submodel_input() const
+xmm::GMMGroup xmm::GMMGroup::extract_submodel_input() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_input(dimension_input());
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_input(dimension_input());
     for (unsigned int i=0; i<dimension_input(); ++i) {
         columns_input[i] = i;
     }
     return extract_submodel(columns_input);
 }
 
-GMMGroup GMMGroup::extract_submodel_output() const
+xmm::GMMGroup xmm::GMMGroup::extract_submodel_output() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns_output(dimension() - dimension_input());
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_output(dimension() - dimension_input());
     for (unsigned int i=dimension_input(); i<dimension(); ++i) {
         columns_output[i-dimension_input()] = i;
     }
     return extract_submodel(columns_output);
 }
 
-GMMGroup GMMGroup::extract_inverse_model() const
+xmm::GMMGroup xmm::GMMGroup::extract_inverse_model() const
 {
+    check_training();
     if (!bimodal_)
-        throw runtime_error("The model needs to be bimodal");
-    vector<unsigned int> columns(dimension());
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns(dimension());
     for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
         columns[i] = i+dimension_input();
     }

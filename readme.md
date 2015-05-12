@@ -59,6 +59,7 @@ The full documentation is available on Github Pages: http://ircam-rnd.github.io/
 ### Dependencies
 
 The library depends on the <a href="http://libjson.sourceforge.net/">libjson</a> c++ library for JSON file I/O. A modified version of the library is distributed with this source code.
+The library depends on the <a href="https://github.com/philsquared/Catch">Catch</a> unit-test framework.
 The library uses PTHREADS for parallel training of models with multiple classes.
 
 ### Compiling as a static/dynamic library

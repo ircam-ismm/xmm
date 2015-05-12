@@ -33,7 +33,7 @@
 #include "phrase.h"
 
 #pragma mark Constructors
-Phrase::Phrase(rtml_flags flags,
+xmm::Phrase::Phrase(xmm_flags flags,
                unsigned int dimension,
                unsigned int dimension_input)
 : owns_data_(!(flags & SHARED_MEMORY)),
@@ -52,19 +52,19 @@ Phrase::Phrase(rtml_flags flags,
         data[1] = NULL;
 }
 
-Phrase::Phrase(Phrase const& src)
+xmm::Phrase::Phrase(Phrase const& src)
 {
     _copy(this, src);
 }
 
-Phrase& Phrase::operator=(Phrase const& src)
+xmm::Phrase& xmm::Phrase::operator=(Phrase const& src)
 {
     if(this != &src)
         _copy(this, src);
     return *this;
 }
 
-void Phrase::_copy(Phrase *dst, Phrase const& src)
+void xmm::Phrase::_copy(Phrase *dst, Phrase const& src)
 {
     if (owns_data_) {
         
@@ -72,14 +72,14 @@ void Phrase::_copy(Phrase *dst, Phrase const& src)
             if (bimodal_)
                 try {
                     delete[] dst->data[1];
-                } catch (exception& e) {}
+                } catch (std::exception& e) {}
             try {
                 delete[] dst->data[0];
-            } catch (exception& e) {}
+            } catch (std::exception& e) {}
         }
         try {
             delete[] dst->data;
-        } catch (exception& e) {}
+        } catch (std::exception& e) {}
         dst->data = NULL;
     }
     dst->owns_data_ = src.owns_data_;
@@ -99,11 +99,11 @@ void Phrase::_copy(Phrase *dst, Phrase const& src)
         if (dst->max_length_ > 0) {
             unsigned int modality_dim = dst->bimodal_ ? dst->dimension_input_ : dst->dimension_;
             dst->data[0] = new float[dst->max_length_ * modality_dim];
-            copy(src.data[0], src.data[0] + dst->max_length_ * modality_dim, dst->data[0]);
+            std::copy(src.data[0], src.data[0] + dst->max_length_ * modality_dim, dst->data[0]);
             if (bimodal_) {
                 modality_dim = dst->dimension_ - dst->dimension_input_;
                 dst->data[1] = new float[dst->max_length_ * modality_dim];
-                copy(src.data[1], src.data[1] + dst->max_length_ * modality_dim, dst->data[1]);
+                std::copy(src.data[1], src.data[1] + dst->max_length_ * modality_dim, dst->data[1]);
             }
         }
     }
@@ -115,7 +115,7 @@ void Phrase::_copy(Phrase *dst, Phrase const& src)
     }
 }
 
-Phrase::~Phrase()
+xmm::Phrase::~Phrase()
 {
     if (owns_data_) {
         if (bimodal_) {
@@ -135,12 +135,12 @@ Phrase::~Phrase()
 }
 
 #pragma mark Tests
-bool Phrase::is_empty() const
+bool xmm::Phrase::is_empty() const
 {
     return is_empty_;
 }
 
-bool Phrase::operator==(Phrase const& src)
+bool xmm::Phrase::operator==(Phrase const& src)
 {
     if (this->length_ != src.length_) return false;
     if (this->dimension_ != src.dimension_) return false;
@@ -160,18 +160,18 @@ bool Phrase::operator==(Phrase const& src)
     return true;
 }
 
-bool Phrase::operator!=(Phrase const& src)
+bool xmm::Phrase::operator!=(Phrase const& src)
 {
     return !(operator==(src));
 }
 
 #pragma mark Accessors
-unsigned int Phrase::length() const
+unsigned int xmm::Phrase::length() const
 {
     return length_;
 }
 
-void Phrase::trim(unsigned int phraseLength)
+void xmm::Phrase::trim(unsigned int phraseLength)
 {
     if (length_ > phraseLength) {
         length_ = phraseLength;
@@ -180,45 +180,45 @@ void Phrase::trim(unsigned int phraseLength)
     }
 }
 
-void Phrase::trim()
+void xmm::Phrase::trim()
 {
     if (bimodal_)
         length_ = (length_output_ > length_input_) ? length_input_ : length_output_;
 }
 
-unsigned int Phrase::dimension() const
+unsigned int xmm::Phrase::dimension() const
 {
     return dimension_;
 }
 
-unsigned int Phrase::dimension_input() const
+unsigned int xmm::Phrase::dimension_input() const
 {
     if (!bimodal_)
-        throw runtime_error("Phrase is not Bimodal");
+        throw std::runtime_error("Phrase is not Bimodal");
     return dimension_input_;
 }
 
-unsigned int Phrase::dimension_output() const
+unsigned int xmm::Phrase::dimension_output() const
 {
     if (!bimodal_)
-        throw runtime_error("Phrase is not Bimodal");
+        throw std::runtime_error("Phrase is not Bimodal");
     return dimension_ - dimension_input_;
 }
 
-void Phrase::set_dimension(unsigned int dimension)
+void xmm::Phrase::set_dimension(unsigned int dimension)
 {
     if (dimension == dimension_)
         return;
     
     if (dimension < 1)
-        throw domain_error("the dimension of a phrase must be striclty positive");
+        throw std::domain_error("the dimension of a phrase must be striclty positive");
     
     unsigned int modality(0);
     unsigned int modalitydim_src(dimension_);
     unsigned int modalitydim_dst(dimension);
     if (bimodal_) {
         if (dimension < 2)
-            throw domain_error("the dimension of bimodal_ phrase must be > 2");
+            throw std::domain_error("the dimension of bimodal_ phrase must be > 2");
         modality = 1;
         modalitydim_src -= this->dimension_input_;
         modalitydim_dst -= this->dimension_input_;
@@ -233,16 +233,16 @@ void Phrase::set_dimension(unsigned int dimension)
     this->dimension_ = dimension;
 }
 
-void Phrase::set_dimension_input(unsigned int dimension_input)
+void xmm::Phrase::set_dimension_input(unsigned int dimension_input)
 {
     if (!bimodal_)
-        throw runtime_error("the phrase is not bimodal_");
+        throw std::runtime_error("the phrase is not bimodal_");
     
     if (dimension_input == dimension_input_)
         return;
     
     if (dimension_input >= dimension_)
-        throw invalid_argument("The dimension of the input modality must not exceed the total dimension.");
+        throw std::invalid_argument("The dimension of the input modality must not exceed the total dimension.");
     
     if (owns_data_) {
         data[0] = reallocate(data[0],
@@ -253,21 +253,21 @@ void Phrase::set_dimension_input(unsigned int dimension_input)
 }
 
 #pragma mark Connect (shared data)
-void Phrase::connect(float *pointer_to_data,
+void xmm::Phrase::connect(float *pointer_to_data,
              unsigned int length)
 {
-    if (owns_data_) throw runtime_error("Cannot connect a phrase with own data");
-    if (bimodal_) throw runtime_error("Cannot connect a single array, use 'connect_input' and 'connect_output'");
+    if (owns_data_) throw std::runtime_error("Cannot connect a phrase with own data");
+    if (bimodal_) throw std::runtime_error("Cannot connect a single array, use 'connect_input' and 'connect_output'");
     
     data[0] = pointer_to_data;
     length_ = length;
     is_empty_ = false;
 }
 
-void Phrase::connect(float *pointer_to_data_input, float *pointer_to_data_output, unsigned int length)
+void xmm::Phrase::connect(float *pointer_to_data_input, float *pointer_to_data_output, unsigned int length)
 {
-    if (owns_data_) throw runtime_error("Cannot connect a phrase with own data");
-    if (!bimodal_) throw runtime_error("This phrase is unimodal, use 'connect'");
+    if (owns_data_) throw std::runtime_error("Cannot connect a phrase with own data");
+    if (!bimodal_) throw std::runtime_error("This phrase is unimodal, use 'connect'");
     
     data[0] = pointer_to_data_input;
     data[1] = pointer_to_data_output;
@@ -277,11 +277,11 @@ void Phrase::connect(float *pointer_to_data_input, float *pointer_to_data_output
     is_empty_ = false;
 }
 
-void Phrase::connect_input(float *pointer_to_data,
+void xmm::Phrase::connect_input(float *pointer_to_data,
                    unsigned int length)
 {
-    if (owns_data_) throw runtime_error("Cannot connect a phrase with own data");
-    if (!bimodal_) throw runtime_error("This phrase is unimodal, use 'connect'");
+    if (owns_data_) throw std::runtime_error("Cannot connect a phrase with own data");
+    if (!bimodal_) throw std::runtime_error("This phrase is unimodal, use 'connect'");
     
     data[0] = pointer_to_data;
     length_input_ = length;
@@ -289,11 +289,11 @@ void Phrase::connect_input(float *pointer_to_data,
     is_empty_ = false;
 }
 
-void Phrase::connect_output(float *pointer_to_data,
+void xmm::Phrase::connect_output(float *pointer_to_data,
                     unsigned int length)
 {
-    if (owns_data_) throw runtime_error("Cannot connect a phrase with own data");
-    if (!bimodal_) throw runtime_error("This phrase is unimodal, use 'connect'");
+    if (owns_data_) throw std::runtime_error("Cannot connect a phrase with own data");
+    if (!bimodal_) throw std::runtime_error("This phrase is unimodal, use 'connect'");
     
     data[1] = pointer_to_data;
     length_output_ = length;
@@ -301,9 +301,9 @@ void Phrase::connect_output(float *pointer_to_data,
     is_empty_ = false;
 }
 
-void Phrase::disconnect()
+void xmm::Phrase::disconnect()
 {
-    if (owns_data_) throw runtime_error("Cannot disconnect a phrase with own data");
+    if (owns_data_) throw std::runtime_error("Cannot disconnect a phrase with own data");
     data[0] = NULL;
     if (bimodal_)
         data[1] = NULL;
@@ -314,13 +314,13 @@ void Phrase::disconnect()
 }
 
 #pragma mark Record (Own Data)
-void Phrase::record(vector<float> const& observation)
+void xmm::Phrase::record(std::vector<float> const& observation)
 {
-    if (!owns_data_) throw runtime_error("Cannot record in shared data phrase");
+    if (!owns_data_) throw std::runtime_error("Cannot record in shared data phrase");
     if (bimodal_ && length_input_ != length_output_)
-        throw runtime_error("Cannot record bimodal_ phrase in synchronous mode: modalities have different length");
+        throw std::runtime_error("Cannot record bimodal_ phrase in synchronous mode: modalities have different length");
     if (observation.size() != dimension_)
-        throw invalid_argument("Observation has wrong dimension");
+        throw std::invalid_argument("Observation has wrong dimension");
     
     if (length_ >= max_length_ || max_length_ == 0) {
         reallocate_length();
@@ -345,12 +345,12 @@ void Phrase::record(vector<float> const& observation)
     is_empty_ = false;
 }
 
-void Phrase::record_input(vector<float> const& observation)
+void xmm::Phrase::record_input(std::vector<float> const& observation)
 {
-    if (!owns_data_) throw runtime_error("Cannot record in shared data phrase");
-    if (!bimodal_) throw runtime_error("this phrase is unimodal, use 'record'");
+    if (!owns_data_) throw std::runtime_error("Cannot record in shared data phrase");
+    if (!bimodal_) throw std::runtime_error("this phrase is unimodal, use 'record'");
     if (observation.size() != dimension_input_)
-        throw invalid_argument("Observation has wrong dimension");
+        throw std::invalid_argument("Observation has wrong dimension");
 
     if (length_input_ >= max_length_ || max_length_ == 0) {
         reallocate_length();
@@ -364,13 +364,13 @@ void Phrase::record_input(vector<float> const& observation)
     is_empty_ = false;
 }
 
-void Phrase::record_output(vector<float> const& observation)
+void xmm::Phrase::record_output(std::vector<float> const& observation)
 {
-    if (!owns_data_) throw runtime_error("Cannot record in shared data phrase");
-    if (!bimodal_) throw runtime_error("this phrase is unimodal, use 'record'");
+    if (!owns_data_) throw std::runtime_error("Cannot record in shared data phrase");
+    if (!bimodal_) throw std::runtime_error("this phrase is unimodal, use 'record'");
     
     if (observation.size() != dimension_ - dimension_input_)
-        throw invalid_argument("Observation has wrong dimension");
+        throw std::invalid_argument("Observation has wrong dimension");
 
     if (length_output_ >= max_length_ || max_length_ == 0) {
         reallocate_length();
@@ -384,24 +384,24 @@ void Phrase::record_output(vector<float> const& observation)
     is_empty_ = false;
 }
 
-void Phrase::reallocate_length()
+void xmm::Phrase::reallocate_length()
 {
     unsigned int modality_dim = bimodal_ ? dimension_input_ : dimension_;
     data[0] = reallocate<float>(data[0],
                                 max_length_ * modality_dim,
-                                (max_length_ + PHRASE_ALLOC_BLOCKSIZE) * modality_dim);
+                                (max_length_ + ALLOC_BLOCKSIZE) * modality_dim);
     if (bimodal_) {
         modality_dim = dimension_ - dimension_input_;
         data[1] = reallocate<float>(data[1],
                                     max_length_ * modality_dim,
-                                    (max_length_ + PHRASE_ALLOC_BLOCKSIZE) * modality_dim);
+                                    (max_length_ + ALLOC_BLOCKSIZE) * modality_dim);
     }
-    max_length_ += PHRASE_ALLOC_BLOCKSIZE;
+    max_length_ += ALLOC_BLOCKSIZE;
 }
 
-void Phrase::clear()
+void xmm::Phrase::clear()
 {
-    if (!owns_data_) throw runtime_error("Cannot clear a shared data phrase");
+    if (!owns_data_) throw std::runtime_error("Cannot clear a shared data phrase");
     
     length_ = 0;
     length_input_ = 0;
@@ -410,12 +410,12 @@ void Phrase::clear()
 }
 
 #pragma mark Access Data
-float Phrase::at(unsigned int index, unsigned int dim) const
+float xmm::Phrase::at(unsigned int index, unsigned int dim) const
 {
     if (index >= length_)
-        throw out_of_range("Phrase: index out of bounds");
+        throw std::out_of_range("Phrase: index out of bounds");
     if (dim >= dimension_)
-        throw out_of_range("Phrase: dimension out of bounds");
+        throw std::out_of_range("Phrase: dimension out of bounds");
     if (bimodal_) {
         if (dim < dimension_input_)
             return data[0][index * dimension_input_ + dim];
@@ -425,34 +425,34 @@ float Phrase::at(unsigned int index, unsigned int dim) const
     }
 }
 
-float Phrase::operator()(unsigned int index, unsigned int dim) const
+float xmm::Phrase::operator()(unsigned int index, unsigned int dim) const
 {
     return at(index, dim);
 }
 
-float* Phrase::get_dataPointer(unsigned int index) const
+float* xmm::Phrase::get_dataPointer(unsigned int index) const
 {
-    if (index >= length_) throw out_of_range("Phrase: index out of bounds");
-    if (bimodal_) throw runtime_error("this phrase is bimodal_, use 'get_dataPointer_input' and 'get_dataPointer_output'");
+    if (index >= length_) throw std::out_of_range("Phrase: index out of bounds");
+    if (bimodal_) throw std::runtime_error("this phrase is bimodal_, use 'get_dataPointer_input' and 'get_dataPointer_output'");
     return data[0] + index * dimension_;
 }
 
-float* Phrase::get_dataPointer_input(unsigned int index) const
+float* xmm::Phrase::get_dataPointer_input(unsigned int index) const
 {
-    if (index >= length_) throw out_of_range("Phrase: index out of bounds");
-    if (!bimodal_) throw runtime_error("this phrase is unimodal, use 'get_dataPointer'");
+    if (index >= length_) throw std::out_of_range("Phrase: index out of bounds");
+    if (!bimodal_) throw std::runtime_error("this phrase is unimodal, use 'get_dataPointer'");
     return data[0] + index * dimension_input_;
 }
 
-float* Phrase::get_dataPointer_output(unsigned int index) const
+float* xmm::Phrase::get_dataPointer_output(unsigned int index) const
 {
-    if (index >= length_) throw out_of_range("Phrase: index out of bounds");
-    if (!bimodal_) throw runtime_error("this phrase is unimodal, use 'get_dataPointer'");
+    if (index >= length_) throw std::out_of_range("Phrase: index out of bounds");
+    if (!bimodal_) throw std::runtime_error("this phrase is unimodal, use 'get_dataPointer'");
     return data[1] + index * (dimension_ - dimension_input_);
 }
 
 #pragma mark JSON I/O
-JSONNode Phrase::to_json() const
+JSONNode xmm::Phrase::to_json() const
 {
     JSONNode json_phrase(JSON_NODE);
     json_phrase.set_name("Phrase");
@@ -472,10 +472,10 @@ JSONNode Phrase::to_json() const
     return json_phrase;
 }
 
-void Phrase::from_json(JSONNode root)
+void xmm::Phrase::from_json(JSONNode root)
 {
     if (!owns_data_)
-        throw runtime_error("Cannot read Phrase with Shared memory");
+        throw std::runtime_error("Cannot read Phrase with Shared memory");
     
     try {
         if (root.type() != JSON_NODE)
@@ -569,15 +569,15 @@ void Phrase::from_json(JSONNode root)
         
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }
 
 #pragma mark Moments
-vector<float> Phrase::mean() const
+std::vector<float> xmm::Phrase::mean() const
 {
-    vector<float> mean(dimension_);
+    std::vector<float> mean(dimension_);
     for (unsigned int d=0; d<dimension_; d++) {
         mean[d] = 0.;
         for (unsigned int t=0; t<length_; t++) {
@@ -588,10 +588,10 @@ vector<float> Phrase::mean() const
     return mean;
 }
 
-vector<float> Phrase::variance() const
+std::vector<float> xmm::Phrase::variance() const
 {
-    vector<float> variance(dimension_);
-    vector<float> _mean = mean();
+    std::vector<float> variance(dimension_);
+    std::vector<float> _mean = mean();
     for (unsigned int d=0; d<dimension_; d++) {
         variance[d] = 0.;
         for (unsigned int t=0; t<length_; t++) {

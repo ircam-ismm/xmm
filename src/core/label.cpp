@@ -33,22 +33,37 @@
 #include "label.h"
 #include <sstream>
 
-Label::Label() : type(INT), intLabel_(0), symLabel_("")
+xmm::Label::Label()
+: type(INT),
+  intLabel_(0),
+  symLabel_("")
 {}
 
-Label::Label(int l) : type(INT), intLabel_(l), symLabel_("")
+xmm::Label::Label(int l)
+: type(INT),
+  intLabel_(l),
+  symLabel_("")
 {}
 
-Label::Label(string l) : type(SYM), intLabel_(0), symLabel_(l)
+xmm::Label::Label(std::string l)
+: type(SYM),
+  intLabel_(0),
+  symLabel_(l)
 {}
 
-Label::Label(char* l) : type(SYM), intLabel_(0), symLabel_(l)
+xmm::Label::Label(char* l)
+: type(SYM),
+  intLabel_(0),
+  symLabel_(l)
 {}
 
-Label::Label(Label const& src) : type(src.type), intLabel_(src.intLabel_), symLabel_(src.symLabel_)
+xmm::Label::Label(Label const& src)
+: type(src.type),
+  intLabel_(src.intLabel_),
+  symLabel_(src.symLabel_)
 {}
 
-Label& Label::operator=(Label const& src)
+xmm::Label& xmm::Label::operator=(Label const& src)
 {
     if (this != &src) {
         this->type = src.type;
@@ -58,7 +73,7 @@ Label& Label::operator=(Label const& src)
     return *this;
 }
 
-Label& Label::operator=(int l)
+xmm::Label& xmm::Label::operator=(int l)
 {
     this->type = INT;
     this->intLabel_ = l;
@@ -66,7 +81,7 @@ Label& Label::operator=(int l)
     return *this;
 }
 
-Label& Label::operator=(string l)
+xmm::Label& xmm::Label::operator=(std::string l)
 {
     this->type = SYM;
     this->intLabel_ = 0;
@@ -74,7 +89,7 @@ Label& Label::operator=(string l)
     return *this;
 }
 
-Label& Label::operator=(char* l)
+xmm::Label& xmm::Label::operator=(char* l)
 {
     this->type = SYM;
     this->intLabel_ = 0;
@@ -82,7 +97,7 @@ Label& Label::operator=(char* l)
     return *this;
 }
 
-bool Label::operator==(Label const& src) const
+bool xmm::Label::operator==(Label const& src) const
 {
     if (!(this->type == src.type))
         return false;
@@ -91,12 +106,12 @@ bool Label::operator==(Label const& src) const
     return (this->symLabel_ == src.symLabel_);
 }
 
-bool Label::operator!=(Label const& src) const
+bool xmm::Label::operator!=(Label const& src) const
 {
     return !operator==(src);
 }
 
-bool Label::operator<(Label const& src) const
+bool xmm::Label::operator<(Label const& src) const
 {
     if (src.type == type) {
         if (type == INT)
@@ -107,42 +122,42 @@ bool Label::operator<(Label const& src) const
     }
 }
 
-bool Label::operator<=(Label const& src) const
+bool xmm::Label::operator<=(Label const& src) const
 {
     return (operator<(src) || operator==(src));
 }
 
-bool Label::operator>(Label const& src) const
+bool xmm::Label::operator>(Label const& src) const
 {
     return !operator<=(src);
 }
 
-bool Label::operator>=(Label const& src) const
+bool xmm::Label::operator>=(Label const& src) const
 {
     return !operator<(src);
 }
 
-int Label::getInt() const
+int xmm::Label::getInt() const
 {
     if (type != INT)
-        throw runtime_error("Can't get INT from SYM label");
+        throw std::runtime_error("Can't get INT from SYM label");
     return intLabel_;
 }
 
-string Label::getSym() const
+std::string xmm::Label::getSym() const
 {
     if (type != SYM)
-        throw runtime_error("Can't get SYM from INT label");
+        throw std::runtime_error("Can't get SYM from INT label");
     return symLabel_;
 }
 
-void Label::setInt(int l)
+void xmm::Label::setInt(int l)
 {
     type = INT;
     intLabel_ = l;
 }
 
-bool Label::trySetInt(string l)
+bool xmm::Label::trySetInt(std::string l)
 {
     if (is_number(l)) {
         setInt(to_int(l));
@@ -152,22 +167,22 @@ bool Label::trySetInt(string l)
 }
 
 
-void Label::setSym(string l)
+void xmm::Label::setSym(std::string l)
 {
     type = SYM;
     symLabel_ = l;
 }
 
-void Label::setSym(char* l)
+void xmm::Label::setSym(char* l)
 {
     type = SYM;
     symLabel_ = l;
 }
 
-JSONNode Label::to_json() const 
+JSONNode xmm::Label::to_json() const
 {
     JSONNode json_label(JSON_NODE);
-	json_label.set_name("label");
+    json_label.set_name("label");
     if (type == INT) {
         json_label.push_back(JSONNode("type", "INT"));
         json_label.push_back(JSONNode("value", intLabel_));
@@ -175,10 +190,10 @@ JSONNode Label::to_json() const
         json_label.push_back(JSONNode("type", "SYM"));
         json_label.push_back(JSONNode("value", symLabel_));
     }
-	return json_label;
+    return json_label;
 }
 
-void Label::from_json(JSONNode root)
+void xmm::Label::from_json(JSONNode root)
 {
     try {
         if (root.type() != JSON_NODE)
@@ -202,7 +217,7 @@ void Label::from_json(JSONNode root)
             throw JSONException("Wrong name: was expecting 'value'", root_it->name());
         if (type == INT) {
             if (root_it->type() != JSON_NUMBER)
-            throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
+                throw JSONException("Wrong type: was expecting 'JSON_NUMBER'", root_it->name());
             intLabel_ = static_cast<int>(root_it->as_int());
         } else {
             if (root_it->type() != JSON_STRING)
@@ -211,37 +226,37 @@ void Label::from_json(JSONNode root)
         }
     } catch (JSONException &e) {
         throw JSONException(e, root.name());
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         throw JSONException(e, root.name());
     }
 }
 
-string Label::as_string() const
+std::string xmm::Label::as_string() const
 {
-    stringstream ss;
+    std::stringstream ss;
     ss << *this;
     return ss.str();
 }
 
-ostream& operator<<(std::ostream& stream, Label const& l)
+std::ostream& xmm::operator<<(std::ostream& stream, xmm::Label const& l)
 {
-    if (l.type == Label::INT)
+    if (l.type == xmm::Label::INT)
         stream << l.getInt();
     else
         stream << l.getSym();
     return stream;
 }
 
-bool is_number(const string& s)
+bool xmm::is_number(const std::string& s)
 {
-    string::const_iterator it = s.begin();
+    std::string::const_iterator it = s.begin();
     while (it != s.end() && isdigit(*it)) ++it;
     return !s.empty() && it == s.end();
 }
 
-int to_int(const string& s)
+int xmm::to_int(const std::string& s)
 {
-    istringstream myString(s);
+    std::istringstream myString(s);
     int value;
     myString >> value;
     return value;
