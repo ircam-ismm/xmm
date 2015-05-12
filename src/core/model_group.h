@@ -852,7 +852,9 @@ namespace xmm
          */
         virtual void updateTrainingSet(Label const& label)
         {
-            check_training();
+            if (models.find(label) != models.end() && models[label].is_training()) {
+                throw std::runtime_error("The model is already training");
+            }
             if (globalTrainingSet->allLabels.find(label) == globalTrainingSet->allLabels.end())
                 throw std::out_of_range("Class " + label.as_string() + " does not exist");
             
