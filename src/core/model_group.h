@@ -773,8 +773,10 @@ namespace xmm
             
 #ifdef USE_PTHREAD
             dst->training_threads.clear();
+#ifndef WIN32
             dst->main_training_thread = NULL;
-            dst->locked_ = false;
+#endif
+			dst->locked_ = false;
             dst->models_to_train_ = 0;
 #endif
         }
@@ -922,7 +924,7 @@ namespace xmm
         /**
          * @brief Background thread to finalize training of multiple classes
          */
-        pthread_t main_training_thread;
+        pthread_t  main_training_thread;
         
         /**
          * @brief locks the ModelGroup while the models are training

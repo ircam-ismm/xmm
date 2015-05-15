@@ -32,10 +32,12 @@
 
 #include "gaussian_distribution.h"
 #include "matrix.h"
+#include <algorithm>
 
 #ifdef WIN32
+
 #define M_PI 3.14159265358979323846264338328 /**< pi */
-#define max(a,b) (((a) > (b)) ? (a) : (b))
+//#define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
 #pragma mark Constructors

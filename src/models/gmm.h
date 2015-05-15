@@ -35,10 +35,6 @@
 
 #include "gaussian_distribution.h"
 #include "probabilistic_model.h"
-#ifdef WIN32
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#endif
 
 namespace xmm
 {

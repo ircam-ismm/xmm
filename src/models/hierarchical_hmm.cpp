@@ -31,6 +31,7 @@
  */
 
 #include "hierarchical_hmm.h"
+#include <algorithm>
 
 #pragma mark -
 #pragma mark Constructors
