@@ -112,7 +112,8 @@ namespace xmm
             locked_ = false;
             is_joining_ = false;
             models_to_train_ = 0;
-#endif
+			main_training_thread_inited = 0;
+ #endif
         }
         
         /**
@@ -582,7 +583,7 @@ namespace xmm
                 }
             }
             while (is_joining_) {}
-            pthread_join(main_training_thread, NULL);
+            if(main_training_thread_inited) pthread_join(main_training_thread, NULL);
         }
 #endif
         
@@ -599,6 +600,7 @@ namespace xmm
                 if (thismodelgroup->trainingCallbackFunction_ && thismodelgroup->models_to_train_ == 0) {
                     thismodelgroup->is_joining_ = true;
                     pthread_create(&thismodelgroup->main_training_thread, NULL, &ModelGroup<ModelType>::joinTraining, thismodelgroup);
+					thismodelgroup->main_training_thread_inited = 1;
                 }
             }
             if (thismodelgroup->trainingCallbackFunction_)
@@ -637,7 +639,7 @@ namespace xmm
 #ifdef USE_PTHREAD
             if (this->trainingCallbackFunction_) {
                 while (is_joining_) {}
-                pthread_join(main_training_thread, NULL);
+                if(main_training_thread_inited) pthread_join(main_training_thread, NULL);
             }
 #endif
             for (model_iterator it=this->models.begin(); it != this->models.end(); ++it) {
@@ -773,9 +775,9 @@ namespace xmm
             
 #ifdef USE_PTHREAD
             dst->training_threads.clear();
-#ifndef WIN32
-            dst->main_training_thread = NULL;
-#endif
+
+			dst->main_training_thread_inited = 0;
+            //dst->main_training_thread = NULL;
 			dst->locked_ = false;
             dst->models_to_train_ = 0;
 #endif
@@ -803,7 +805,7 @@ namespace xmm
             if (this->is_training())
                 throw std::runtime_error("The model is training");
             while (is_joining_) {}
-            pthread_join(main_training_thread, NULL);
+            if(main_training_thread_inited) pthread_join(main_training_thread, NULL);
 #endif
         }
         
@@ -925,6 +927,7 @@ namespace xmm
          * @brief Background thread to finalize training of multiple classes
          */
         pthread_t  main_training_thread;
+		int main_training_thread_inited;
         
         /**
          * @brief locks the ModelGroup while the models are training
