@@ -28,7 +28,7 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-%module(docstring="XMM — Probabilistic Models for Motion Recognition and Mapping") xmm
+%module(docstring="XMM - Probabilistic Models for Motion Recognition and Mapping") xmm
 
 #pragma SWIG nowarn=362,503
 
