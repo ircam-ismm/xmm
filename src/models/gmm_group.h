@@ -59,8 +59,9 @@ namespace xmm
         typedef std::map<Label, GMM>::const_iterator const_model_iterator;
         
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param globalTrainingSet training set associated with the model
@@ -83,11 +84,12 @@ namespace xmm
          */
         GMMGroup& operator=(GMMGroup const& src);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @brief Get the number of Gaussian mixture Components
          * @return number of Gaussian mixture components
@@ -133,23 +135,27 @@ namespace xmm
          */
         void set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Performance
-        /*@{*/
         /** @name Performance */
-        /**
-         * @brief Main Play function: performs recognition (unimodal mode) and regression (bimodal mode)
-         * @details The predicted output is stored in the observation vector in bimodal mode
-         * @param observation observation vector
-         */
-        void performance_update(std::vector<float> const& observation);
+        ///@{
         
-        /*@}*/
+        /**
+         * @brief Main performance Function: perform joint recognition and mapping
+         * (in the case of a bimodal model)
+         * @param observation observation vector. If the model is bimodal, this should be allocated for
+         * both modalities, and should contain the observation on the input modality. The predicted
+         * output will be appended to the input modality observation
+         */
+        virtual void performance_update(std::vector<float> const& observation);
+        
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing training set information and data
@@ -163,11 +169,11 @@ namespace xmm
          */
         virtual void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Conversion & Extraction
-        /*@{*/
         /** @name Conversion & Extraction */
+        ///@{
         
         /**
          * @brief Convert to bimodal GMMGroup in place
@@ -213,15 +219,19 @@ namespace xmm
          */
         GMMGroup extract_inverse_model() const;
         
-        /*@}*/
+        ///@}
         
     protected:
+        ///@cond DEVDOC
+        
         /**
          * @brief Copy between two Hierarhical HMMs
          * @param src Source Model
          * @param dst Destination Model
          */
         virtual void _copy(GMMGroup *dst, GMMGroup const& src);
+        
+        ///@endcond
     };
     
 }

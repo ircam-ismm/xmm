@@ -85,6 +85,7 @@ namespace xmm
      * @defgroup Utilities Utilities
      */
     
+    ///@cond DEVDOC
     /**
      * @ingroup Utilities
      * @brief Abstract class for handling training set notifications
@@ -115,8 +116,9 @@ namespace xmm
     public:
         virtual ~Writable() {}
         
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing phrase information
@@ -132,11 +134,12 @@ namespace xmm
          */
         virtual void from_json(JSONNode root) = 0;
         
-        /*@}*/
+        ///@}
         
 #ifdef SWIGPYTHON
-        /*@{*/
         /** @name Python File I/O (#ifdef SWIGPYTHON) */
+        ///@{
+        
         /**
          * @brief write method for python wrapping ('write' keyword forbidden, name has to be different)
          * @warning only defined if SWIGPYTHON is defined
@@ -182,9 +185,11 @@ namespace xmm
             std::string tmp = ss.str();
             return tmp;
         }
-        /*@}*/
+        ///@}
 #endif
     };
+    
+    ///@endcond
     
 }
 

@@ -47,14 +47,30 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/core)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/models)
 
+# Doxygen XML documentation
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND)
+    set(XML_DOC_INDEX ${CMAKE_CURRENT_SOURCE_DIR}/_build_tmp/xml/index.xml)
+    add_custom_command(OUTPUT ${XML_DOC_INDEX}
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/src/Doxyfile-Python
+                      DEPENDS ${tracking_source_files}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+    add_custom_target(docpy DEPENDS ${XML_DOC_INDEX})
+endif(DOXYGEN_FOUND)
+
 # Add target for python documentation from doxygen
-set(DOC_DIR ../doc)
 file(
     GLOB_RECURSE
     xmm_header_files
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/*.h
 )
-add_custom_command(OUTPUT xmm_doc.i DEPENDS doc ${xmm_header_files} COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/src/doxy2swig.py ${DOC_DIR}/xml/index.xml ${CMAKE_CURRENT_SOURCE_DIR}/xmm_doc.i)
+add_custom_command(OUTPUT xmm_doc.i
+                   DEPENDS docpy ${xmm_header_files}
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/src/doxy2swig.py ${CMAKE_CURRENT_SOURCE_DIR}/_build_tmp/xml/index.xml ${CMAKE_CURRENT_SOURCE_DIR}/xmm_doc.i)
+
 
 set(CMAKE_SWIG_FLAGS "")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/numpy.i PROPERTIES CPLUSPLUS ON)

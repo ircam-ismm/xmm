@@ -54,11 +54,15 @@ namespace xmm
         friend class HierarchicalHMM;
         
     public:
+        ///@cond DEVDOC
+        
         static const int DEFAULT_NB_STATES = 10;
         static const bool DEFAULT_ESTIMATEMEANS = true;
         
         static const float DEFAULT_EXITPROBABILITY_LAST_STATE() { return 0.1; }
         static const float TRANSITION_REGULARIZATION() { return 1.0e-5; }
+        
+        ///@endcond
         
         /**
          * @enum TRANSITION_MODE
@@ -108,8 +112,9 @@ namespace xmm
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param trainingSet Training set associated with the model
@@ -142,11 +147,12 @@ namespace xmm
          */
         virtual ~HMM();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @brief set the training set associated with the model
          * @details updates the training sets of each GMM
@@ -249,11 +255,12 @@ namespace xmm
          */
         void addExitPoint(int stateIndex, float proba);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Play!
-        /*@{*/
         /** @name Playing */
+        ///@{
+        
         /**
          * @brief Initialize the 'Performance' phase
          */
@@ -267,11 +274,12 @@ namespace xmm
          */
         double performance_update(std::vector<float> const& observation);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing model information and parameters
@@ -286,11 +294,12 @@ namespace xmm
          */
         virtual void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Conversion & Extraction
-        /*@{*/
         /** @name Conversion & Extraction */
+        ///@{
+        
         
         /**
          * @brief Convert to bimodal HMM in place
@@ -336,7 +345,7 @@ namespace xmm
          */
         HMM extract_inverse_model() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public Attributes ===
@@ -391,11 +400,15 @@ namespace xmm
 #ifndef XMM_TESTING
     protected:
 #endif
+        
+        ///@cond DEVDOC
+        
 #pragma mark -
 #pragma mark === Protected Methods ===
-#pragma mark > Copy between models
-        /*@{*/
-        /** @name Copy between models */
+#pragma mark > Utilities
+        /** @name Utilities (protected) */
+        ///@{
+        
         /**
          * @brief Copy between 2 MHMM models (called by copy constructor and assignment methods)
          * @param src Source Model
@@ -404,10 +417,12 @@ namespace xmm
         using ProbabilisticModel::_copy;
         virtual void _copy(HMM *dst, HMM const& src);
         
-        /*@}*/
+        ///@}
+        
 #pragma mark > Parameters initialization
-        /*@{*/
         /** @name Parameters initialization */
+        ///@{
+        
         /**
          * @brief Allocate model parameters
          */
@@ -454,11 +469,12 @@ namespace xmm
          */
         void normalizeTransitions();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Forward-Backward algorithm
-        /*@{*/
         /** @name Forward-Backward Algorithm */
+        ///@{
+        
         /**
          * @brief Initialization of the forward algorithm
          * @param observation observation vector at time t. If the model is bimodal, this vector
@@ -497,11 +513,12 @@ namespace xmm
          */
         void backward_update(double ct, const float* observation, const float* observation_output=NULL);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Training
-        /*@{*/
-        /** @name Training: protected methods */
+        /** @name Training (protected) */
+        ///@{
+        
         /**
          * @brief Initialization of the parameters before training
          */
@@ -570,11 +587,12 @@ namespace xmm
          */
         void baumWelch_estimateTransitions();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Play!
-        /*@{*/
-        /** @name Playing: protected methods */
+        /** @name Playing (protected) */
+        ///@{
+        
         /**
          * @brief Adds a cyclic Transition probability (from last state to first state)
          * @details avoids getting stuck at the end of the model. this method is idle for a hierarchical model.
@@ -604,11 +622,12 @@ namespace xmm
          */
         void updateTimeProgression();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Exit Probabilities
-        /*@{*/
         /** @name Exit Probabilities: update */
+        ///@{
+        
         /**
          * @brief Update the exit probability vector given the probabilities
          * @details this method is only active in 'HIERARCHICAL' mode. The probability
@@ -619,7 +638,7 @@ namespace xmm
          */
         void updateExitProbabilities(float *_exitProbabilities = NULL);
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Protected Attributes ===
@@ -746,8 +765,9 @@ namespace xmm
          * @brief normalization constant of the alpha window (used for regression & time progression)
          */
         double results_window_normalization_constant;
+        
+        ///@endcond
     };
-    
 }
 
 #endif

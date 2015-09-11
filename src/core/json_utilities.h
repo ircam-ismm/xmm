@@ -144,7 +144,7 @@ namespace xmm
         std::vector<std::string> nodename_;
     };
     
-    /*@{*/
+    ///@{
     /**
      * @name JSON conversion to/from arrays and vectors
      */
@@ -212,7 +212,7 @@ namespace xmm
     template <> void json2vector(JSONNode root, std::vector<bool>& a, int n);
     template <> void json2vector(JSONNode root, std::vector<std::string>& a, int n);
     
-    /*@}*/
+    ///@}
 }
 
 #endif

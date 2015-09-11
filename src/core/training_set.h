@@ -76,8 +76,9 @@ namespace xmm
         typedef std::map<int, Label>::const_iterator const_label_iterator;
         
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param dimension total dimension of the training data.
@@ -99,11 +100,25 @@ namespace xmm
          */
         virtual ~TrainingSet();
         
-        /*@}*/
+        ///@}
+
+#pragma mark > Tests
+        /** @name Tests */
+        ///@{
         
-#pragma mark > Accessors & tests
-        /*@{*/
-        /** @name accessors and tests */
+        /**
+         * @brief checks equality
+         * @param src training set to compare
+         * @return true if the training sets are equal (same phrases and labels)
+         */
+        bool operator==(TrainingSet const &src);
+        
+        /**
+         * @brief checks inequality
+         * @see operator==
+         */
+        bool operator!=(TrainingSet const &src);
+        
         /**
          * @brief checks if the training set is bimodal
          * @return true if the training set is bimodal (construction with BIMODAL flag)
@@ -116,22 +131,11 @@ namespace xmm
          */
         bool is_empty() const;
         
-        /**
-         * @brief Size of the training set
-         * @return size of the training set (number of phrases)
-         */
-        unsigned int size() const;
+        ///@}
         
-        /**
-         * @brief check if the training data has changed.
-         * @return true is the training data or attributes have changed
-         */
-        bool has_changed();
-        
-        /**
-         * @brief set the status of the training set to unchanged
-         */
-        void set_unchanged();
+#pragma mark > Monitor Changes
+        /** @name Monitor Changes */
+        ///@{
         
         /**
          * @brief Add a listener to the training set. The listeners are notified when an attribute (e.g. dimension)
@@ -147,17 +151,40 @@ namespace xmm
         void remove_listener(Listener* listener);
         
         /**
+         * @brief check if the training data has changed.
+         * @return true is the training data or attributes have changed
+         */
+        bool has_changed();
+        
+        /**
+         * @brief set the status of the training set to unchanged
+         */
+        void set_unchanged();
+        
+        ///@}
+        
+#pragma mark > Accessors
+        /** @name Accessors */
+        ///@{
+        
+        /**
+         * @brief Size of the training set
+         * @return size of the training set (number of phrases)
+         */
+        unsigned int size() const;
+        
+        /**
          * @brief Get total dimension of the training data
          * @return dimension of the training data
          */
-        unsigned int dimension();
+        unsigned int dimension() const;
         
         /**
          * @brief Get dimension of the input modality in bimodal mode
          * @return dimension of the input modality
          * @throws runtime_error if the phrase is unimodal (no BIMODAL construction flag)
          */
-        unsigned int dimension_input();
+        unsigned int dimension_input() const;
         
         /**
          * @brief Set total dimension of the training data
@@ -177,31 +204,19 @@ namespace xmm
         /**
          * @brief set the column names of the Training Set
          */
-        void set_column_names(std::vector<std::string>& colnames);
+        void set_column_names(std::vector<std::string> const& colnames);
         
         /**
          * @brief get a copy of the column names of the Training Set
          */
         std::vector<std::string> const& get_column_names() const;
         
-        /**
-         * @brief checks equality
-         * @param src training set to compare
-         * @return true if the training sets are equal (same phrases and labels)
-         */
-        bool operator==(TrainingSet const &src);
-        
-        /**
-         * @brief checks inequality
-         * @see operator==
-         */
-        bool operator!=(TrainingSet const &src);
-        
-        /*@}*/
+        ///@}
         
 #pragma mark > Access Phrases
-        /*@{*/
         /** @name Access Phrases */
+        ///@{
+        
         /**
          * @brief iterator to the beginning of phrases
          */
@@ -230,11 +245,12 @@ namespace xmm
          */
         phrase_iterator operator()(int n);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Connect Phrases
-        /*@{*/
         /** @name Connect Phrases */
+        ///@{
+        
         /**
          * @brief Connect a phrase to the training set (unimodal case)
          * @details This method is used in shared memory to pass an array to the training set.
@@ -260,11 +276,12 @@ namespace xmm
          */
         void connect(int phraseIndex, float *pointer_to_data_input, float *pointer_to_data_output, unsigned int length);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Record training Data
-        /*@{*/
         /** @name Record training Data */
+        ///@{
+        
         /**
          * @brief Record training data
          * @details The method appends an observation to the data phrase. The observation need to have a
@@ -336,11 +353,12 @@ namespace xmm
          */
         void clear();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Handle Labels
-        /*@{*/
         /** @name Handle Labels */
+        ///@{
+        
         /**
          * @brief set default phrase label for new phrases
          * @param defLabel default Label
@@ -385,11 +403,12 @@ namespace xmm
          */
         void updateSubTrainingSets();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Moments
-        /*@{*/
         /** @name Moments */
+        ///@{
+        
         /**
          * @brief Compute the global mean of all data phrases along the time axis
          * @return global mean of all phrases (along time axis, full-size)
@@ -402,11 +421,12 @@ namespace xmm
          */
         std::vector<float> variance() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name File IO */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing training set information and data
@@ -420,7 +440,7 @@ namespace xmm
          */
         void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public Attributes ===
@@ -445,8 +465,9 @@ namespace xmm
 #pragma mark -
 #pragma mark === Private Methods ===
 #pragma mark > between Training Sets
-        /*@{*/
-        /** @name Copy between Training Sets */
+        /** @name Utilities (protected) */
+        ///@{
+        
         /**
          * @brief Copy between Training Sets
          * @param dst destination Training Set
@@ -454,21 +475,17 @@ namespace xmm
          */
         void _copy(TrainingSet *dst, TrainingSet const& src);
         
-        /*@}*/
-        
-#pragma mark > Lock
-        /*@{*/
-        /** @name Lock */
         /**
          * @brief Lock training set to keep the phrases from being deleted at destruction
          */
         void lock();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Handle Labels
-        /*@{*/
         /** @name Handle Labels: protected methods */
+        ///@{
+        
         /**
          * @brief update the sub-training set for a given label
          */
@@ -479,7 +496,7 @@ namespace xmm
          */
         void updateLabelList();
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Private Attributes ===

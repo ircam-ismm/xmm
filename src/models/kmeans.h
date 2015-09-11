@@ -45,8 +45,12 @@ namespace xmm
      */
     class KMeans : public Listener, public Writable {
     public:
+        ///@cond DEVDOC
+        
         static const unsigned int DEFAULT_MAX_ITERATIONS = 50;
         static const float DEFAULT_RELATIVE_VARIATION_THRESHOLD() { return 1e-20; }
+        
+        ///@endcond
         
         /**
          * @enum TRAINING_INIT
@@ -67,8 +71,9 @@ namespace xmm
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param trainingSet training set associated with the model
@@ -92,12 +97,12 @@ namespace xmm
          * @brief Destructor
          */
         virtual ~KMeans();
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
-
+        ///@{
+        
         /**
          * @brief set the training set associated with the model
          * @details updates the dimensions of the model
@@ -147,11 +152,12 @@ namespace xmm
          * @param threshold relative distance Threshold for training
          */
         void set_training_relativeDistanceThreshold(float threshold);
-        /*@}*/
+        ///@}
         
 #pragma mark > Training
-        /*@{*/
         /** @name Training */
+        ///@{
+        
         /**
          * @brief Main training method
          */
@@ -169,11 +175,12 @@ namespace xmm
          */
         void set_trainingCallback(void (*callback)(void *srcModel, ProbabilisticModel::CALLBACK_FLAG state, void* extradata), void* extradata);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Performance
-        /*@{*/
         /** @name Performance */
+        ///@{
+        
         /**
          * @brief Initialize the 'Performance' phase: prepare model for performance.
          */
@@ -185,11 +192,12 @@ namespace xmm
          */
         void performance_update(std::vector<float> const& observation);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing training set information and data
@@ -203,15 +211,10 @@ namespace xmm
          */
         void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public Attributes ===
-        /**
-         * Pointer to the training set.
-         */
-        TrainingSet *trainingSet;
-        
         /**
          * Centers of the Clusters
          */
@@ -238,6 +241,8 @@ namespace xmm
         KMeans::TRAINING_INIT trainingInitType;
         
     protected:
+        ///@cond DEVDOC
+        
 #pragma mark -
 #pragma mark === Protected Methods ===
         /**
@@ -248,8 +253,9 @@ namespace xmm
         void notify(std::string attribute);
         
 #pragma mark > training
-        /*@{*/
-        /** @name Training: internal methods */
+        /** @name Training (protected) */
+        ///@{
+        
         /**
          * @brief Initialize the clusters using a regular segmentation
          * of the first phrase of the training set
@@ -263,10 +269,15 @@ namespace xmm
          */
         void updateCenters(std::vector<float>& previous_centers);
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Protected Attributes ===
+        /**
+         * Pointer to the training set.
+         */
+        TrainingSet *trainingSet;
+        
         /**
          * Number of Clusters
          */
@@ -298,7 +309,11 @@ namespace xmm
          * @brief Extra data to pass in argument to the callback function
          */
         void *trainingExtradata_;
+        
+        ///@endcond
     };
+    
+    ///@cond DEVDOC
     
     /**
      * @brief Simple Euclidian distance measure
@@ -311,6 +326,8 @@ namespace xmm
     T euclidian_distance(const T* vector1,
                          const T* vector2,
                          unsigned int dimension);
+    
+    ///@endcond
     
 }
 

@@ -79,12 +79,17 @@ namespace xmm
     class GaussianDistribution : public Writable
     {
     public:
+        ///@cond DEVDOC
         
         /**
          * default offset for covariance matrix
          */
+        ///@{
         static const double DEFAULT_VARIANCE_OFFSET_RELATIVE() { return 1.e-2; }
         static const double DEFAULT_VARIANCE_OFFSET_ABSOLUTE() { return 1.e-3; }
+        ///@}
+        
+        ///@endcond
         
         /**
          * @brief Covariance Mode
@@ -102,8 +107,9 @@ namespace xmm
         };
         
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Default Constructor
          * @param flags construction flags. Use the flag 'BIMODAL' for use with regression.
@@ -133,22 +139,16 @@ namespace xmm
         GaussianDistribution& operator=(GaussianDistribution const& src);
         
         /**
-         * @brief Copy between 2 Gaussian Distributions
-         * @param dst destination distribution
-         * @param src source distribution
-         */
-        void _copy(GaussianDistribution *dst, GaussianDistribution const& src);
-        
-        /**
          * @brief Destructor
          */
         virtual ~GaussianDistribution();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @brief Get Dimension of the distribution
          * @return dimension
@@ -184,11 +184,12 @@ namespace xmm
          */
         void set_covariance_mode(COVARIANCE_MODE covariance_mode);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Likelihood & Regression
-        /*@{*/
         /** @name Likelihood & Regression */
+        ///@{
+        
         /**
          * @brief Get Likelihood of a data vector
          * @param observation data observation (must be of size @a dimension)
@@ -224,11 +225,12 @@ namespace xmm
          */
         void regression(std::vector<float> const& observation_input, std::vector<float>& predicted_output) const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return The JSON Node containing the Gaussian Distribution parameters
@@ -243,15 +245,11 @@ namespace xmm
          */
         void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Utilities
-        /*@{*/
         /** @name Utilities */
-        /**
-         * @brief Resize Mean and Covariance Vectors to appropriate dimension.
-         */
-        void allocate();
+        ///@{
         
         /**
          * @brief Add @a offset to the diagonal of the covariance matrix
@@ -282,6 +280,12 @@ namespace xmm
          */
         Ellipse ellipse(unsigned int dimension1,
                         unsigned int dimension2);
+        
+        ///@}
+        
+#pragma mark > Conversion & Extraction
+        /** @name Conversion & Extraction */
+        ///@{
         
         /**
          * @brief Convert to bimodal distribution in place
@@ -327,12 +331,10 @@ namespace xmm
          */
         GaussianDistribution extract_inverse_model() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public Attributes ===
-        /** @name Public Attributes */
-        
         /**
          * @brief Mean of the Gaussian Distribution
          */
@@ -364,11 +366,26 @@ namespace xmm
          */
         std::vector<double> output_variance;
         
-#pragma mark -
-#pragma mark === Private Attributes ===
 #ifndef XMM_TESTING
     private:
 #endif
+#pragma mark -
+#pragma mark === Private Methods ===
+#pragma mark > Utilities
+        /**
+         * @brief Copy between 2 Gaussian Distributions
+         * @param dst destination distribution
+         * @param src source distribution
+         */
+        void _copy(GaussianDistribution *dst, GaussianDistribution const& src);
+        
+        /**
+         * @brief Resize Mean and Covariance Vectors to appropriate dimension.
+         */
+        void allocate();
+        
+#pragma mark -
+#pragma mark === Private Attributes ===
         /**
          * @brief Defines if regression parameters need to be computed
          */

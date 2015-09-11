@@ -74,11 +74,12 @@ In the root directory, type the following command to generate the Makefiles:
 ```
 cmake . -G"Unix Makefiles"
 ```
-The following commands can be used to build the static library, run the unit tests, and generate the documentation:
+The following commands can be used to build the static library, run the unit tests, and generate the developer documentation or api documentation:
 ```
 make
 make test
 make doc
+make docapi
 ```
 #### Usage
 

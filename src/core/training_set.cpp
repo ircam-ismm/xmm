@@ -146,12 +146,12 @@ void xmm::TrainingSet::remove_listener(Listener* listener)
     listeners_.erase(listener);
 }
 
-unsigned int xmm::TrainingSet::dimension()
+unsigned int xmm::TrainingSet::dimension() const
 {
     return dimension_;
 }
 
-unsigned int xmm::TrainingSet::dimension_input()
+unsigned int xmm::TrainingSet::dimension_input() const
 {
     return dimension_input_;
 }
@@ -202,7 +202,7 @@ void xmm::TrainingSet::set_dimension_input(unsigned int dimension_input)
     }
 }
 
-void xmm::TrainingSet::set_column_names(std::vector<std::string>& colnames)
+void xmm::TrainingSet::set_column_names(std::vector<std::string> const& colnames)
 {
     if (colnames.size() < column_names_.size())
         throw std::domain_error("number of labels inferior to the dimension of the training set");

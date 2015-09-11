@@ -67,6 +67,8 @@ namespace xmm
         double percentChg;
     };
     
+    ///@internal
+    
     /**
      * @ingroup Core
      * @class ProbabilisticModel
@@ -111,6 +113,8 @@ namespace xmm
             TRAINING_ALLDONE
         };
         
+        ///@cond DEVDOC
+        
         /**
          * Default value for the minimum number of steps of the EM algorithm
          */
@@ -137,11 +141,14 @@ namespace xmm
          */
         static const int DEFAULT_EMSTOP_ABSOLUTEMAXSTEPS = 100;
         
+        ///@endcond
+        
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param trainingSet training set associated with the model
@@ -166,11 +173,12 @@ namespace xmm
          * @brief Destructor
          */
         virtual ~ProbabilisticModel();
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @brief Checks if the model is training
          * @return true if the model is training
@@ -217,11 +225,12 @@ namespace xmm
          */
         std::vector<std::string> const& get_column_names() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Training
-        /*@{*/
         /** @name Training */
+        ///@{
+        
         /**
          * @brief Main training method based on the EM algorithm
          * @details the method performs a loop over the pure virtual method train_EM_update() until convergence.
@@ -246,7 +255,7 @@ namespace xmm
          */
         void set_trainingCallback(void (*callback)(void *srcModel, CALLBACK_FLAG state, void* extradata), void* extradata);
         
-        /*@}*/
+        ///@}
         
         /**
          * @brief Function pointer for parallel training
@@ -255,8 +264,9 @@ namespace xmm
         static void* train_func(void *context);
         
 #pragma mark > Performance
-        /*@{*/
         /** @name Performance */
+        ///@{
+        
         /**
          * @brief Initialize the 'Performance' phase: prepare model for performance.
          */
@@ -270,11 +280,12 @@ namespace xmm
          */
         virtual double performance_update(std::vector<float> const& observation) = 0;
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing training set information and data
@@ -288,7 +299,7 @@ namespace xmm
          */
         virtual void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
         
 #pragma mark -
@@ -349,20 +360,20 @@ namespace xmm
 #ifndef XMM_TESTING
     protected:
 #endif
+        ///@cond DEVDOC
+        
 #pragma mark -
 #pragma mark === Protected Methods ===
-        /*@{*/
-        /** @name Copy between models */
+        /** @name Utilities (protected) */
+        ///@{
+        
         /**
          * @brief Copy between two models
          * @param src Source Model
          * @param dst Destination Model
          */
         virtual void _copy(ProbabilisticModel *dst, ProbabilisticModel const& src);
-        /*@}*/
         
-        /*@{*/
-        /** @name Utility */
         /**
          * @brief Prevents the attribute for being changed during training.
          * @throws runtime_error if the model is training.
@@ -407,10 +418,11 @@ namespace xmm
          */
         virtual void allocate() = 0;
         
-        /*@}*/
+        ///@}
         
-        /*@{*/
-        /** @name Training: internal methods */
+        /** @name Training (protected) */
+        ///@{
+        
         /**
          * @brief Initialize the training algorithm
          */
@@ -442,7 +454,7 @@ namespace xmm
          */
         bool check_and_cancel_training();
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Protected Attributes ===
@@ -503,8 +515,10 @@ namespace xmm
          */
         bool cancel_training_;
 #endif
+        ///@endcond
     };
     
+    ///@endinternal
 }
 
 #endif

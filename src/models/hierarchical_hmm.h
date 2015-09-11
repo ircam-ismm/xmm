@@ -48,6 +48,8 @@ namespace xmm
     public:
 #pragma mark -
 #pragma mark === Public Interface ===
+        ///@cond DEVDOC
+        
         /**
          * @brief Default exit transition for the highest level
          */
@@ -64,6 +66,8 @@ namespace xmm
          */
         static const bool DEFAULT_REGULARIZATIONFACTOR = false;
         
+        ///@endcond
+        
         /**
          * @brief Iterator over models
          */
@@ -75,8 +79,9 @@ namespace xmm
         typedef std::map<Label, HMM>::const_iterator const_model_iterator;
         
 #pragma mark > Constructor
-        /*@{*/
         /** @name Constructor */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param flags Construction flags
@@ -110,11 +115,12 @@ namespace xmm
          */
         virtual void clear();
         
-        /*@}*/
+        ///@}
         
 #pragma mark
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @brief Get the Number of hidden states of the model
          * @return number of hidden states
@@ -278,11 +284,12 @@ namespace xmm
          */
         void setOneTransition(Label srcSegmentLabel, Label dstSegmentLabel, double proba);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Training
-        /*@{*/
         /** @name Training */
+        ///@{
+        
         /**
          * @brief Remove Specific model
          * @details The method updates the transition parameters
@@ -291,11 +298,12 @@ namespace xmm
          */
         virtual void remove(Label const& label);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Performance
-        /*@{*/
         /** @name Performance */
+        ///@{
+        
         /**
          * @brief Initialize performance mode
          */
@@ -310,11 +318,12 @@ namespace xmm
          */
         virtual void performance_update(std::vector<float> const& observation);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing training set information and data
@@ -328,11 +337,11 @@ namespace xmm
          */
         virtual void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Conversion & Extraction
-        /*@{*/
         /** @name Conversion & Extraction */
+        ///@{
         
         /**
          * @brief Convert to bimodal HierarchicalHMM in place
@@ -378,7 +387,7 @@ namespace xmm
          */
         HierarchicalHMM extract_inverse_model() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public attributes ===
@@ -398,6 +407,8 @@ namespace xmm
         std::map<Label, std::map<Label, double> > transition;
         
     protected:
+        ///@cond DEVDOC
+        
 #pragma mark -
 #pragma mark === Protected Methods ===
         /**
@@ -408,8 +419,9 @@ namespace xmm
         virtual void _copy(HierarchicalHMM *dst, HierarchicalHMM const& src);
         
 #pragma mark > High level parameters: update and estimation
-        /*@{*/
         /** @name High level parameters: update and estimation */
+        ///@{
+        
         /**
          * @brief update high-level parameters when a new primitive is learned
          * @details  updated parameters: prior probabilities + transition matrix
@@ -450,11 +462,12 @@ namespace xmm
          */
         void normalizeTransitions();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Forward Algorithm
-        /*@{*/
         /** @name Forward Algorithm */
+        ///@{
+        
         /**
          * @brief Initialization of the Forward Algorithm for the hierarchical HMM.
          * see: Jules Françoise. Realtime Segmentation and Recognition of Gestures using Hierarchical Markov Models. Master’s Thesis, Université Pierre et Marie Curie, Ircam, 2011. [http://articles.ircam.fr/textes/Francoise11a/index.pdf]
@@ -483,7 +496,7 @@ namespace xmm
          */
         void likelihoodAlpha(int exitNum, std::vector<double> &likelihoodVector) const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Protected Attributes ===
@@ -506,8 +519,9 @@ namespace xmm
          * @brief intermediate Forward variable (used in Frontier algorithm)
          */
         std::vector<double> V2_;
+        
+        ///@endcond
     };
-    
 }
 
 #endif

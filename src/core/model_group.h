@@ -41,8 +41,8 @@
 
 namespace xmm
 {
-#pragma mark -
-#pragma mark Class Definition
+    ///@internal
+    
     /**
      * @ingroup Core
      * @class ModelGroup
@@ -88,8 +88,9 @@ namespace xmm
         typedef typename  std::map<int, Label>::iterator labels_iterator;
         
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param globalTrainingSet global training set: contains all phrases for each model
@@ -149,11 +150,12 @@ namespace xmm
                 this->globalTrainingSet->remove_listener(this);
         }
         
-        /*@}*/
+        ///@}
         
 #pragma mark Tests & Utilies
-        /*@{*/
         /** @name Tests & Utilies */
+        ///@{
+        
 #ifdef USE_PTHREAD
         /**
          * @brief Check if at least 1 model is still training
@@ -233,11 +235,12 @@ namespace xmm
         }
         
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @brief Set pointer to the global training set
          * @param globalTrainingSet pointer to the global training set
@@ -413,11 +416,12 @@ namespace xmm
             return this->referenceModel_.get_column_names();
         }
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Training
-        /*@{*/
         /** @name Training */
+        ///@{
+        
         /**
          * @brief Train a specific model
          * @details  The model is trained even if the dataset has not changed
@@ -625,11 +629,12 @@ namespace xmm
             trainingCallbackFunction_ = callback;
         }
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Performance
-        /*@{*/
         /** @name Performance */
+        ///@{
+        
         /**
          * @brief Initialize Performance
          */
@@ -656,6 +661,15 @@ namespace xmm
                 results_output_variance.resize(dimension() - dimension_input());
             }
         }
+        
+        /**
+         * @brief Main performance Function: perform joint recognition and mapping
+         * (in the case of a bimodal model)
+         * @param observation observation vector. If the model is bimodal, this should be allocated for
+         * both modalities, and should contain the observation on the input modality. The predicted
+         * output will be appended to the input modality observation
+         */
+        virtual void performance_update(std::vector<float> const& observation) = 0;
         
         /**
          * @brief Update the results (Likelihoods)
@@ -688,7 +702,7 @@ namespace xmm
             }
         }
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public attributes ===
@@ -742,6 +756,9 @@ namespace xmm
 #ifndef XMM_TESTING
     protected:
 #endif
+        
+        ///@cond DEVDOC
+        
 #pragma mark -
 #pragma mark === Protected Methods ===
         /**
@@ -946,8 +963,11 @@ namespace xmm
          */
         unsigned int models_to_train_;
 #endif
+        
+        ///@endcond
     };
     
+    ///@endinternal
 }
 
 #endif

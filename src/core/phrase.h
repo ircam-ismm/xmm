@@ -58,15 +58,19 @@ namespace xmm
     class Phrase : public Writable
     {
     public:
+        ///@cond DEVDOC
         
         static const unsigned int DEFAULT_DIMENSION = 1;
         static const unsigned int ALLOC_BLOCKSIZE = 256;
         
+        ///@endcond
+        
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Phrase Constructor
          *
@@ -97,11 +101,12 @@ namespace xmm
          */
         virtual ~Phrase();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Tests
-        /*@{*/
         /** @name Tests */
+        ///@{
+        
         /**
          * @brief Checks if the phrase is empty (length 0)
          */
@@ -121,11 +126,12 @@ namespace xmm
          */
         bool operator!=(Phrase const& src);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
+        
         /**
          * @return length of the phrase
          */
@@ -172,11 +178,12 @@ namespace xmm
          */
         void set_dimension_input(unsigned int dimension_input);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Connect (shared data)
-        /*@{*/
         /** @name Connect (shared data) */
+        ///@{
+        
         /**
          * @brief Connect a unimodal phrase to a shared container
          * @warning This method is only usable in Shared Memory (construction with SHARED_MEMORY flag)
@@ -221,11 +228,12 @@ namespace xmm
          */
         void disconnect();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Record (own Data)
-        /*@{*/
         /** @name Record (own Data) */
+        ///@{
+        
         /**
          * @brief Record observation
          * @details Appends the observation vector observation to the data array.\n
@@ -263,11 +271,12 @@ namespace xmm
          */
         void clear();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Access Data
-        /*@{*/
         /** @name Access Data */
+        ///@{
+        
         /**
          * @brief Access data at a given time index and dimension.
          * @param index time index
@@ -314,11 +323,12 @@ namespace xmm
          */
         float* get_dataPointer_output(unsigned int index) const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O  */
+        ///@{
+        
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing phrase information
@@ -332,11 +342,12 @@ namespace xmm
          */
         void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Moments
-        /*@{*/
         /** @name Moments */
+        ///@{
+        
         /**
          * @brief Compute the mean of the data phrase along the time axis
          * @return mean of the phrase (along time axis, full-size)
@@ -349,34 +360,33 @@ namespace xmm
          */
         std::vector<float> variance() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public Attributes ===
-        /*@{*/
         /** @name Public Attributes */
+        ///@{
         
         /**
          * @brief labels of the columns of the phrase (e.g. descriptor names)
          */
         std::vector<std::string> column_names_;
         
-        /*@}*/
+        ///@}
         
     private:
+        ///@cond DEVDOC
+        
 #pragma mark -
 #pragma mark === Private Methods ===
-        /*@{*/
-        /** @name Copy Between models */
+        /** @name utilities (protected) */
+        ///@{
+        
         /**
          Copy from a Phrase (called by copy constructor and assignment)
          */
         void _copy(Phrase *dst, Phrase const& src);
         
-        /*@}*/
-        
-        /*@{*/
-        /** @name Memory allocation */
         /**
          * @brief Memory Allocation
          * @details used record mode (no SHARED_MEMORY flag), the data vector is reallocated
@@ -384,7 +394,7 @@ namespace xmm
          */
         void reallocate_length();
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Private Attributes ===
@@ -438,6 +448,8 @@ namespace xmm
          * @details data has a size 1 in unimodal mode, 2 in bimodal mode.
          */
         float **data;
+        
+        ///@endcond
     };
     
 #pragma mark -
@@ -463,7 +475,6 @@ namespace xmm
         delete[] src;
         return dst;
     }
-    
 }
 
 #endif

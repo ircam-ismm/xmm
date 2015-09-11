@@ -54,7 +54,9 @@ namespace xmm
         friend class HMM;
         friend class HierarchicalHMM;
         
+        ///@cond DEVDOC
         static const int DEFAULT_NB_MIXTURE_COMPONENTS = 1;
+        ///@endcond
         
         /**
          * @brief Iterator over the phrases of the training set.
@@ -69,8 +71,9 @@ namespace xmm
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-        /*@{*/
         /** @name Constructors */
+        ///@{
+        
         /**
          * @brief Constructor
          * @param flags Construction Flags: use 'BIMODAL' for use with Gaussian Mixture Regression.
@@ -104,11 +107,11 @@ namespace xmm
          */
         virtual ~GMM();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Accessors
-        /*@{*/
         /** @name Accessors */
+        ///@{
         /**
          * @brief Get the number of Gaussian mixture Components
          * @return number of Gaussian mixture components
@@ -154,11 +157,11 @@ namespace xmm
          */
         void set_covariance_mode(GaussianDistribution::COVARIANCE_MODE covariance_mode);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Performance
-        /*@{*/
         /** @name Performance */
+        ///@{
         /**
          * @brief Initialize performance mode
          */
@@ -172,11 +175,11 @@ namespace xmm
          */
         double performance_update(std::vector<float> const& observation);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > JSON I/O
-        /*@{*/
         /** @name JSON I/O */
+        ///@{
         /**
          * @brief Write to JSON Node
          * @return JSON Node containing model information and parameters
@@ -191,11 +194,11 @@ namespace xmm
          */
         virtual void from_json(JSONNode root);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Conversion & Extraction
-        /*@{*/
         /** @name Conversion & Extraction */
+        ///@{
         
         /**
          * @brief Convert to bimodal GMM in place
@@ -241,7 +244,7 @@ namespace xmm
          */
         GMM extract_inverse_model() const;
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Public attributes ===
@@ -261,11 +264,12 @@ namespace xmm
         std::vector<double> beta;
         
     protected:
+        ///@cond DEVDOC
 #pragma mark -
 #pragma mark === Protected Methods ===
 #pragma mark > Utilities
-        /*@{*/
-        /** @name Copy between models */
+        /** @name Utilities (protected) */
+        ///@{
         /**
          * @brief Copy between 2 GMMs
          * @param dst Destination GMM
@@ -274,10 +278,6 @@ namespace xmm
         using ProbabilisticModel::_copy;
         virtual void _copy(GMM *dst, GMM const& src);
         
-        /*@}*/
-        
-        /*@{*/
-        /** @name Utilities */
         /**
          @brief Allocate model parameters
          */
@@ -317,11 +317,11 @@ namespace xmm
          */
         double obsProb_bimodal(const float* observation_input, const float* observation_output, int mixtureComponent=-1);
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Training
-        /*@{*/
-        /** @name Training: protected methods */
+        /** @name Training (protected) */
+        ///@{
         
         /**
          * @brief Initialize the means of the Gaussian components with a Biased K-means
@@ -369,11 +369,12 @@ namespace xmm
          */
         void updateInverseCovariances();
         
-        /*@}*/
+        ///@}
         
 #pragma mark > Performance
-        /*@{*/
-        /** @name Performance: protected methods */
+        /** @name Performance (protected) */
+        ///@{
+        
         /**
          * @brief Compute likelihood and estimate components probabilities
          * @details If the model is bimodal, the likelihood is computed only on the input modality,
@@ -397,7 +398,7 @@ namespace xmm
         void regression(std::vector<float> const& observation_input,
                         std::vector<float>& predicted_output);
         
-        /*@}*/
+        ///@}
         
 #pragma mark -
 #pragma mark === Protected attributes ===
@@ -419,6 +420,8 @@ namespace xmm
         /**
          * @brief Covariance Mode
          */
+        
+        ///@endcond
     public:
         GaussianDistribution::COVARIANCE_MODE covariance_mode_;
     };

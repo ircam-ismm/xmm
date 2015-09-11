@@ -77,15 +77,27 @@ add_custom_command(TARGET test POST_BUILD COMMAND ${EXECUTABLE_OUTPUT_PATH}/xmm_
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)
+
+find_program(DOTPATH dot)
+if(${DOTPATH} STREQUAL "DOTPATH-NOTFOUND")
+  set(HAS_DOT "")
+else(${DOTPATH} STREQUAL "DOTPATH-NOTFOUND")
+  set(HAS_DOT "-dot")
+endif(${DOTPATH} STREQUAL "DOTPATH-NOTFOUND")
+
 if(DOXYGEN_FOUND)
-    set(XML_DOC_INDEX ${CMAKE_CURRENT_SOURCE_DIR}/doc/xml/index.xml)
-    add_custom_command(OUTPUT ${XML_DOC_INDEX}
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile
-                      DEPENDS ${xmm_source_files}
+    add_custom_target(doc
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile${HAS_DOT}
+                      DEPENDS ${tracking_source_files}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/
-                      COMMENT "Generating API documentation with Doxygen" VERBATIM
-    )
-    add_custom_target(doc DEPENDS ${XML_DOC_INDEX})
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM)
+    add_custom_target(docapi
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile-API
+                      DEPENDS ${tracking_source_files}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM)
+else(DOXYGEN_FOUND)
+    message(STATUS "Doxygen not found, doc will not be included in the Makefile")
 endif(DOXYGEN_FOUND)
 
-set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/doc/html;${CMAKE_CURRENT_SOURCE_DIR}/doc/xml")
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/doc/html")

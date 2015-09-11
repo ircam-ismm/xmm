@@ -217,11 +217,12 @@
  * @code
  * cmake . -G"Unix Makefiles"
  * @endcode
- * The following commands can be used to build the static library, run the unit tests, and generate the documentation:
+ * The following commands can be used to build the static library, run the unit tests, and generate the developer documentation or api documentation:
  * @code
  * make
  * make test
  * make doc
+ * make docapi
  * @endcode
  * 
  * @subsection cppusage Usage

@@ -155,40 +155,40 @@ namespace xmm
         bool operator>=(Label const& src) const;
         
         /**
-         * Get integer label value
+         * @brief Get integer label value
          * @throw runtime_error if label type is not INT
          * @return integer label
          */
         int getInt() const;
         
         /**
-         * Get symbolic label value
+         * @brief Get symbolic label value
          * @throw runtime_error if label type is not SYM
          * @return symbolic label
          */
         std::string getSym() const;
         
         /**
-         * Set integer label value => sets label type to INT
+         * @brief Set integer label value => sets label type to INT
          * @param l integer label
          */
         void setInt(int l);
         
         /**
-         * Try to set an integer from a string that contains one.
+         * @brief Try to set an integer from a string that contains one.
          * @param l integer label stored in a string
          * @return true if the integer label could be set
          */
         bool trySetInt(std::string l);
         
         /**
-         * Set symbolic label value => sets label type to SYM
+         * @brief Set symbolic label value => sets label type to SYM
          * @param l symbolic label
          */
         void setSym(std::string l);
         
         /**
-         * Set symbolic label value => sets label type to SYM
+         * @brief Set symbolic label value => sets label type to SYM
          * @param l symbolic label as C-string
          */
         void setSym(char* l);
@@ -218,6 +218,7 @@ namespace xmm
         friend std::ostream& operator<<(std::ostream& stream, xmm::Label const& l);
         
     protected:
+        ///@cond DEVDOC
         /**
          * @brief Integer value
          * @details [long description]
@@ -228,8 +229,11 @@ namespace xmm
          * @brief symbolic value
          */
         std::string symLabel_;
+        
+        ///@endcond
     };
     
+    ///@cond DEVDOC
     /**
      * @brief Check if the string contains an integer
      * @param s std::string to check
@@ -248,6 +252,8 @@ namespace xmm
      * @param l label
      */
     std::ostream& operator<<(std::ostream& stream, xmm::Label const& l);
+    
+    ///@endcond
 }
 
 #endif
