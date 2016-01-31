@@ -39,7 +39,7 @@ import xmm
 
 def create_training_set():
     """ Create the training set for building a simple GMM recognizer
-    
+
     The training data originates from the help patch: "mubu.gmm.maxhelp".
 
     Returns:
@@ -47,44 +47,36 @@ def create_training_set():
     """
     # Create the training set
     training_set = xmm.TrainingSet()
-    training_set.set_dimension(6) # dimension of data in this example
+    training_set.dimension.set(6) # dimension of data in this example
     # Record data phrases
     for i in range(3):
-        phrase = np.genfromtxt('data/gmm_test_data{}.txt'.format(i+1))
+        phrase = np.genfromtxt('data/gmm_training_data{}.txt'.format(i+1))
+        training_set.addPhrase(i, str(i+1))
         for frame in phrase:
             # Append data frame to the phrase i
-            training_set.recordPhrase(i, frame)
-        # Set phrase label
-        training_set.setPhraseLabel(i, xmm.Label(i+1))
+            training_set.getPhrase(i).record(frame)
     return training_set
 
 
 def gmm_train(training_set, num_gaussians=1, varianceoffset=[1., 0.01]):
     """ Create and Traing a GMM from the given training set
-    
+
     Args:
         training_set -- Unimodal Training Set
         num_gaussians -- Number of Gaussian Components
         varianceoffset -- rel/abs variance offset
-    
+
     Returns:
         gmm -- Trained GMM group
     """
     # Create a GMM Group (handles multiples labels for recognition)
-    gmm = xmm.GMMGroup()
-    # Set pointer to the training set
-    gmm.set_trainingSet(training_set)
+    gmm = xmm.GMM()
     # Set parameters
-    gmm.set_nbMixtureComponents(num_gaussians)
-    gmm.set_varianceOffset(varianceoffset[0], varianceoffset[1])
+    gmm.configuration.gaussians.set(num_gaussians)
+    gmm.configuration.relative_regularization.set(varianceoffset[0])
+    gmm.configuration.absolute_regularization.set(varianceoffset[1])
     # Train all models
-    gmm.train()
-    print "model 1: trained in ", gmm.models[xmm.Label(1)].trainingNbIterations, \
-            "iterations, loglikelihood = ", gmm.models[xmm.Label(1)].trainingLogLikelihood
-    print "model 2: trained in ", gmm.models[xmm.Label(2)].trainingNbIterations, \
-            "iterations, loglikelihood = ", gmm.models[xmm.Label(2)].trainingLogLikelihood
-    print "model 3: trained in ", gmm.models[xmm.Label(3)].trainingNbIterations, \
-            "iterations, loglikelihood = ", gmm.models[xmm.Label(3)].trainingLogLikelihood
+    gmm.train(training_set)
     return gmm
 
 
@@ -98,22 +90,24 @@ def gmm_test_recognition(gmm, likelihood_window=20):
     """
     # read test data (concatenation of 3 test examples labeled 1, 2, 3)
     test_data = np.genfromtxt('data/gmm_test_data1.txt')
-    test_data = np.vstack((test_data, np.genfromtxt('data/gmm_test_data2.txt')))
-    test_data = np.vstack((test_data, np.genfromtxt('data/gmm_test_data3.txt')))
+    test_data = np.vstack((test_data,
+                          np.genfromtxt('data/gmm_test_data2.txt')))
+    test_data = np.vstack((test_data,
+                          np.genfromtxt('data/gmm_test_data3.txt')))
     # Set Size of the likelihood Window (samples)
-    gmm.set_likelihoodwindow(likelihood_window)
+    gmm.shared_parameters.likelihood_window.set(likelihood_window)
     # Initialize performance phase
-    gmm.performance_init()
+    gmm.reset()
     # Create likelihood arrays for recognition
     instantaneous_likelihoods = np.zeros((test_data.shape[0], gmm.size()))
     normalized_likelihoods = np.zeros((test_data.shape[0], gmm.size()))
     log_likelihoods = np.zeros((test_data.shape[0], gmm.size()))
     # Performance: Play test data and record the likelihoods of the modes
     for i in range(test_data.shape[0]):
-        gmm.performance_update(xmm.vectorf(test_data[i, :]))
-        instantaneous_likelihoods[i, :] = np.array(gmm.results_instant_likelihoods)
-        normalized_likelihoods[i, :] = np.array(gmm.results_normalized_likelihoods)
-        log_likelihoods[i, :] = np.array(gmm.results_log_likelihoods)
+        gmm.filter(test_data[i, :])
+        instantaneous_likelihoods[i, :] = np.array(gmm.results.instant_likelihoods)
+        normalized_likelihoods[i, :] = np.array(gmm.results.smoothed_normalized_likelihoods)
+        log_likelihoods[i, :] = np.array(gmm.results.smoothed_log_likelihoods)
     # Plot the likelihoods over time for the test phase
     plt.figure()
     plt.subplot(311)

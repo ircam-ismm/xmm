@@ -36,18 +36,30 @@
     #define SWIG_FILE_WITH_INIT
     #include <fstream>
     #include <sstream>
-	#include "xmm_common.h"
-    #include "phrase.h"
-    #include "label.h"
-	#include "training_set.h"
-	#include "probabilistic_model.h"
-	#include "model_group.h"
-    #include "gaussian_distribution.h"
-	#include "gmm.h"
-	#include "gmm_group.h"
-	#include "hmm.h"
-    #include "hierarchical_hmm.h"
-	#include "kmeans.h"
+    #include "xmmMatrix.hpp"
+    #include "xmmCircularbuffer.hpp"
+    #include "xmmJson.hpp"
+    #include "xmmAttribute.hpp"
+    #include "xmmEvents.hpp"
+    #include "xmmGaussianDistribution.hpp"
+    #include "xmmPhrase.hpp"
+    #include "xmmTrainingSet.hpp"
+    #include "xmmModelSharedParameters.hpp"
+    #include "xmmModelParameters.hpp"
+    #include "xmmModelResults.hpp"
+    #include "xmmModelConfiguration.hpp"
+    #include "xmmModelSingleClass.hpp"
+    #include "xmmModel.hpp"
+    #include "xmmKMeansParameters.hpp"
+    #include "xmmKMeansResults.hpp"
+    #include "xmmKMeans.hpp"
+    #include "xmmGmmParameters.hpp"
+    #include "xmmGmmSingleClass.hpp"
+    #include "xmmGmm.hpp"
+    #include "xmmHmmParameters.hpp"
+    #include "xmmHmmResults.hpp"
+    #include "xmmHmmSingleClass.hpp"
+    #include "xmmHierarchicalHmm.hpp"
 %}
 
 %init %{
@@ -69,37 +81,103 @@
 %include std_string.i
 %include std_map.i
 %include std_set.i
+%include std_shared_ptr.i
 
-%apply (int DIM1, double* IN_ARRAY1) { (int dimension, double *observation) };
-%apply (int DIM1, double* ARGOUT_ARRAY1) { (double *modelLikelihoods, int dimension) };
+//%apply (int DIM1, double* IN_ARRAY1) { (int dimension, double *observation) };
+//%apply (int DIM1, double* ARGOUT_ARRAY1) { (double *modelLikelihoods, int dimension) };
 
 namespace std {
     %template(vectord) vector<double>;
     %template(vectorf) vector<float>;
     %template(vectors) vector<string>;
-    %template(vectorl) vector<xmm::Label>;
-    %template(setl) set<xmm::Label>;
+    %template(sets) set<string>;
     %template(vectorgauss) vector<xmm::GaussianDistribution>;
-    %template(vectorgmm) vector<xmm::GMM>;
-    %template(vectorhmm) vector<xmm::HMM>;
-    %template(mapgmm) map<xmm::Label, xmm::GMM>;
-    %template(maphmm) map<xmm::Label, xmm::HMM>;
+    %template(vectorgmm) vector<xmm::SingleClassGMM>;
+    %template(vectorhmm) vector<xmm::SingleClassHMM>;
+    %template(mapgmm) map<string, xmm::SingleClassGMM>;
+    %template(maphmm) map<string, xmm::SingleClassHMM>;
 };
 
 %include ../xmm_doc.i
-%include "xmm_common.h"
-%include "phrase.h"
-%include "label.h"
-%include "training_set.h"
-%include "probabilistic_model.h"
-%include "gaussian_distribution.h"
-%include "kmeans.h"
-%include "gmm.h"
-%include "hmm.h"
-%include "model_group.h"
 
-%template(_MODELGROUP_GMM) xmm::ModelGroup<xmm::GMM>;
-%template(_MODELGROUP_HMM) xmm::ModelGroup<xmm::HMM>;
+%include "xmmMatrix.hpp"
+%include "xmmCircularbuffer.hpp"
+%include "xmmJson.hpp"
+%include "xmmAttribute.hpp"
 
-%include "gmm_group.h"
-%include "hierarchical_hmm.h"
+%template(Attribute_size_t) xmm::Attribute<std::size_t>;
+%template(Attribute_int) xmm::Attribute<int>;
+%template(Attribute_double) xmm::Attribute<double>;
+%template(Attribute_float) xmm::Attribute<float>;
+%template(Attribute_vectorString) xmm::Attribute<std::vector<std::string>>;
+
+%include "xmmEvents.hpp"
+
+%include "xmmGaussianDistribution.hpp"
+
+%template(Attribute_CovarianceMode) xmm::Attribute<xmm::GaussianDistribution::CovarianceMode>;
+
+%include "xmmPhrase.hpp"
+%include "xmmTrainingSet.hpp"
+
+%shared_ptr(xmm::Writable)
+%shared_ptr(xmm::SharedParameters)
+%include "xmmModelSharedParameters.hpp"
+
+%include "xmmModelParameters.hpp"
+%include "xmmModelResults.hpp"
+%include "xmmModelConfiguration.hpp"
+
+%include "xmmModelSingleClass.hpp"
+
+%template(TrainingEventGenerator) xmm::EventGenerator< xmm::TrainingEvent >;
+
+%include "xmmModel.hpp"
+
+%include "xmmKMeansParameters.hpp"
+
+%template(ClassParametersKMeans) xmm::ClassParameters< xmm::KMeans >;
+
+%include "xmmKMeansResults.hpp"
+
+%template(ResultsKMeans) xmm::Results< xmm::KMeans >;
+
+%include "xmmKMeans.hpp"
+
+%include "xmmGmmParameters.hpp"
+%template(ClassParametersGMM) xmm::ClassParameters< xmm::GMM >;
+%template(ClassResultsGMM) xmm::ClassResults< xmm::GMM >;
+%template(ResultsGMM) xmm::Results< xmm::GMM >;
+%template(ConfigurationGMM) xmm::Configuration< xmm::GMM >;
+
+%include "xmmGmmSingleClass.hpp"
+
+%template(Model_SingleClassGMM_GMM_) xmm::Model< xmm::SingleClassGMM, xmm::GMM >;
+
+%include "xmmGmm.hpp"
+
+%include "xmmHmmParameters.hpp"
+%template(Attribute_TransitionMode) xmm::Attribute<xmm::HMM::TransitionMode>;
+%template(Attribute_RegressionEstimator) xmm::Attribute<xmm::HMM::RegressionEstimator>;
+
+%include "xmmHmmResults.hpp"
+%template(ClassParametersHMM) xmm::ClassParameters< xmm::HMM >;
+%template(ClassResultsHMM) xmm::ClassResults< xmm::HMM >;
+%template(ResultsHMM) xmm::Results< xmm::HMM >;
+%template(ConfigurationHMM) xmm::Configuration< xmm::HMM >;
+%include "xmmHmmSingleClass.hpp"
+
+%template(Model_SingleClassHMM_HMM_) xmm::Model< xmm::SingleClassHMM, xmm::HMM >;
+
+%include "xmmHierarchicalHmm.hpp"
+
+%extend xmm::Configuration<xmm::GMM> {
+    xmm::ClassParameters<xmm::GMM>& __getitem__(std::string label) {
+        return (*($self))[label];
+    }
+}
+%extend xmm::Configuration<xmm::HMM> {
+    xmm::ClassParameters<xmm::HMM>& __getitem__(std::string label) {
+        return (*($self))[label];
+    }
+}

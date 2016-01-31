@@ -1,13 +1,20 @@
 /* The standard CSS for doxygen */
 
 body, table, div, p, dl {
-    /*font: 400 14px/19px 'Merriweather',sans-serif;*/
 	font: 400 14px/19px 'Droid Sans',sans-serif;
 }
 
 body {
     padding: 0 !important;
 }
+
+#top {
+    /*border-bottom: 1px solid #A5A5A5;*/
+    /*background-color: #f35757;*/
+    color: #253555;
+}
+
+#nav-path { display: none; }
 
 /* @group Heading Levels */
 
@@ -274,9 +281,8 @@ body {
 }
 
 div.contents {
-	margin-top: 10px;
-	margin-left: 12px;
-	margin-right: 8px;
+    margin: 0 10%;
+    margin-bottom: 40px;
 }
 
 td.indexkey {
@@ -850,6 +856,7 @@ table.fieldtable {
 
 div.summary
 {
+    display: none;
 	float: right;
 	font-size: 8pt;
 	padding-right: 5px;
@@ -876,16 +883,15 @@ div.ingroups a
 
 div.header
 {
-        background-image:url('nav_h.png');
-        background-repeat:repeat-x;
-	background-color: #F9FAFC;
-	margin:  0px;
+	margin: 0 auto;
 	border-bottom: 1px solid #C4CFE5;
+    width: 80%;
+    max-width: 1024px;
 }
 
 div.headertitle
 {
-	padding: 5px 5px 5px 10px;
+	padding: 10px 0;
 }
 
 dl
@@ -1001,16 +1007,55 @@ dl.section dd {
     padding: 0px;
     margin: 0px;
     width: 100%;
+    text-align: center;
 }
 
-#titlearea table
+#titlearea img
 {
     width: 100%;
 }
 
-#titlearea td
+#titlearea nav
 {
-	padding: 0!important;
+    padding:0 10%;
+    padding: 0;
+    text-align: center;
+    margin-bottom: 10px;
+    background-color: #f35757;
+}
+
+#titlearea nav ul
+{
+    display: inline-block;
+    padding: 0;
+    margin: 0 auto;
+}
+
+#titlearea nav ul li
+{
+    list-style: none;
+    display: inline-block;
+    /*float: left;*/
+    /*width: 20%;*/
+    padding: 10px 20px;
+    text-align: center;
+}
+
+#titlearea nav ul li a
+{
+    color: white;
+    text-decoration: none;
+}
+
+#titlearea nav ul li a:hover
+{
+    color: #333;
+    text-decoration: none;
+}
+
+#navrow1, #navrow2
+{
+    display: none;
 }
 
 .image,
