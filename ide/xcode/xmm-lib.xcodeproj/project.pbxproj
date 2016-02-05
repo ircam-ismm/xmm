@@ -7,66 +7,68 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B20E09A1A9A634700E89497 /* gaussian_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909A81947718400E0D3C4 /* gaussian_distribution.cpp */; };
-		0B20E09B1A9A634700E89497 /* json_utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* json_utilities.cpp */; };
-		0B20E09C1A9A634700E89497 /* label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AC1947718400E0D3C4 /* label.cpp */; };
-		0B20E09D1A9A634700E89497 /* phrase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B11947718400E0D3C4 /* phrase.cpp */; };
-		0B20E09E1A9A634700E89497 /* probabilistic_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B31947718400E0D3C4 /* probabilistic_model.cpp */; };
-		0B20E09F1A9A634700E89497 /* training_set.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B61947718400E0D3C4 /* training_set.cpp */; };
-		0B20E0A01A9A634700E89497 /* gmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B91947718400E0D3C4 /* gmm.cpp */; };
-		0B20E0A11A9A634700E89497 /* gmm_group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BB1947718400E0D3C4 /* gmm_group.cpp */; };
-		0B20E0A21A9A634700E89497 /* hierarchical_hmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BD1947718400E0D3C4 /* hierarchical_hmm.cpp */; };
-		0B20E0A31A9A634700E89497 /* hmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BF1947718400E0D3C4 /* hmm.cpp */; };
-		0B20E0B71A9A64BF00E89497 /* kmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B20E0B51A9A64BB00E89497 /* kmeans.cpp */; };
-		0B20E0BD1A9A65C300E89497 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0AA1A9A637800E89497 /* libjson.a */; };
-		0B20E0C21A9A65E300E89497 /* phrase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B11947718400E0D3C4 /* phrase.cpp */; };
-		0B20E0C31A9A65E300E89497 /* hierarchical_hmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BD1947718400E0D3C4 /* hierarchical_hmm.cpp */; };
-		0B20E0C41A9A65E300E89497 /* kmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B20E0B51A9A64BB00E89497 /* kmeans.cpp */; };
-		0B20E0C51A9A65E300E89497 /* hmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BF1947718400E0D3C4 /* hmm.cpp */; };
-		0B20E0C61A9A65E300E89497 /* gmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B91947718400E0D3C4 /* gmm.cpp */; };
-		0B20E0C71A9A65E300E89497 /* gmm_group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BB1947718400E0D3C4 /* gmm_group.cpp */; };
-		0B20E0C81A9A65E300E89497 /* probabilistic_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B31947718400E0D3C4 /* probabilistic_model.cpp */; };
-		0B20E0C91A9A65E300E89497 /* training_set.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B61947718400E0D3C4 /* training_set.cpp */; };
-		0B20E0CA1A9A65E300E89497 /* gaussian_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909A81947718400E0D3C4 /* gaussian_distribution.cpp */; };
-		0B20E0CB1A9A65E300E89497 /* label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AC1947718400E0D3C4 /* label.cpp */; };
-		0B20E0CC1A9A65E300E89497 /* json_utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* json_utilities.cpp */; };
-		0B20E0CE1A9A65E300E89497 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0AA1A9A637800E89497 /* libjson.a */; };
-		0B7F43321B02578F0022F998 /* model_conversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE31B1AD16613007431E3 /* model_conversion.cpp */; };
-		0B7F43331B02578F0022F998 /* gaussian_covariance_mode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */; };
-		0B7F43341B02578F0022F998 /* model_extraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* model_extraction.cpp */; };
-		0B9FE3171AD162E4007431E3 /* main_xmm_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */; };
+		0B120F601BA2DB9B002460B0 /* xmmAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B120F5E1BA2DB67002460B0 /* xmmAttribute.cpp */; };
+		0B120F611BA2DB9B002460B0 /* xmmAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B120F5E1BA2DB67002460B0 /* xmmAttribute.cpp */; };
+		0B20E09A1A9A634700E89497 /* xmmGaussianDistribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909A81947718400E0D3C4 /* xmmGaussianDistribution.cpp */; };
+		0B20E09B1A9A634700E89497 /* xmmJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* xmmJson.cpp */; };
+		0B20E09E1A9A634700E89497 /* xmmModelSingleClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B31947718400E0D3C4 /* xmmModelSingleClass.cpp */; };
+		0B20E09F1A9A634700E89497 /* xmmTrainingSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B61947718400E0D3C4 /* xmmTrainingSet.cpp */; };
+		0B20E0A01A9A634700E89497 /* xmmGmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B91947718400E0D3C4 /* xmmGmm.cpp */; };
+		0B20E0A21A9A634700E89497 /* xmmHierarchicalHmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BD1947718400E0D3C4 /* xmmHierarchicalHmm.cpp */; };
+		0B20E0B71A9A64BF00E89497 /* xmmKMeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B20E0B51A9A64BB00E89497 /* xmmKMeans.cpp */; };
+		0B20E0C31A9A65E300E89497 /* xmmHierarchicalHmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909BD1947718400E0D3C4 /* xmmHierarchicalHmm.cpp */; };
+		0B20E0C41A9A65E300E89497 /* xmmKMeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B20E0B51A9A64BB00E89497 /* xmmKMeans.cpp */; };
+		0B20E0C61A9A65E300E89497 /* xmmGmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B91947718400E0D3C4 /* xmmGmm.cpp */; };
+		0B20E0C81A9A65E300E89497 /* xmmModelSingleClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B31947718400E0D3C4 /* xmmModelSingleClass.cpp */; };
+		0B20E0C91A9A65E300E89497 /* xmmTrainingSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B61947718400E0D3C4 /* xmmTrainingSet.cpp */; };
+		0B20E0CA1A9A65E300E89497 /* xmmGaussianDistribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909A81947718400E0D3C4 /* xmmGaussianDistribution.cpp */; };
+		0B20E0CC1A9A65E300E89497 /* xmmJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* xmmJson.cpp */; };
+		0B7F43331B02578F0022F998 /* xmmTestsGaussianCovarianceMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */; };
+		0B9FE3171AD162E4007431E3 /* xmmTestsMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */; };
 		0B9FE31F1AD1E9F1007431E3 /* libxmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0D31A9A65E300E89497 /* libxmm.a */; };
+		FA41CAD11C28AA1600905379 /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAC91C28AA0F00905379 /* json_reader.cpp */; };
+		FA41CAD21C28AA1600905379 /* json_value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACB1C28AA0F00905379 /* json_value.cpp */; };
+		FA41CAD31C28AA1600905379 /* json_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACD1C28AA0F00905379 /* json_writer.cpp */; };
+		FA41CAD41C28AA1600905379 /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAC91C28AA0F00905379 /* json_reader.cpp */; };
+		FA41CAD51C28AA1600905379 /* json_value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACB1C28AA0F00905379 /* json_value.cpp */; };
+		FA41CAD61C28AA1600905379 /* json_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACD1C28AA0F00905379 /* json_writer.cpp */; };
+		FA41CAD81C28AD9D00905379 /* xmmTestsJsonIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */; };
+		FA41CADE1C2928BD00905379 /* xmmModelSharedParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CADC1C2928BD00905379 /* xmmModelSharedParameters.cpp */; };
+		FA41CADF1C2928BD00905379 /* xmmModelSharedParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CADC1C2928BD00905379 /* xmmModelSharedParameters.cpp */; };
+		FA41CAE01C2928BD00905379 /* xmmModelSharedParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CADD1C2928BD00905379 /* xmmModelSharedParameters.hpp */; };
+		FA41CAE11C2928BD00905379 /* xmmModelSharedParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CADD1C2928BD00905379 /* xmmModelSharedParameters.hpp */; };
+		FA41CAE61C29D34A00905379 /* xmmModelConfiguration.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAE31C29D34A00905379 /* xmmModelConfiguration.hpp */; };
+		FA41CAE71C29D34A00905379 /* xmmModelConfiguration.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAE31C29D34A00905379 /* xmmModelConfiguration.hpp */; };
+		FA41CAEB1C29EE4E00905379 /* xmmGmmParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAE91C29EE4E00905379 /* xmmGmmParameters.cpp */; };
+		FA41CAEC1C29EE4E00905379 /* xmmGmmParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAE91C29EE4E00905379 /* xmmGmmParameters.cpp */; };
+		FA41CAED1C29EE4E00905379 /* xmmGmmParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAEA1C29EE4E00905379 /* xmmGmmParameters.hpp */; };
+		FA41CAEE1C29EE4E00905379 /* xmmGmmParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAEA1C29EE4E00905379 /* xmmGmmParameters.hpp */; };
+		FA41CAF11C29EFEA00905379 /* xmmGmmSingleClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAEF1C29EFEA00905379 /* xmmGmmSingleClass.cpp */; };
+		FA41CAF21C29EFEA00905379 /* xmmGmmSingleClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAEF1C29EFEA00905379 /* xmmGmmSingleClass.cpp */; };
+		FA41CAF31C29EFEA00905379 /* xmmGmmSingleClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAF01C29EFEA00905379 /* xmmGmmSingleClass.hpp */; };
+		FA41CAF41C29EFEA00905379 /* xmmGmmSingleClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAF01C29EFEA00905379 /* xmmGmmSingleClass.hpp */; };
+		FA41CAF81C29F10F00905379 /* xmmHmmParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAF61C29F10F00905379 /* xmmHmmParameters.cpp */; };
+		FA41CAF91C29F10F00905379 /* xmmHmmParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAF61C29F10F00905379 /* xmmHmmParameters.cpp */; };
+		FA41CAFA1C29F10F00905379 /* xmmHierarchicalHmm.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAF71C29F10F00905379 /* xmmHierarchicalHmm.hpp */; };
+		FA41CAFB1C29F10F00905379 /* xmmHierarchicalHmm.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAF71C29F10F00905379 /* xmmHierarchicalHmm.hpp */; };
+		FA41CB001C29F1FA00905379 /* xmmHmmResults.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAFD1C29F1FA00905379 /* xmmHmmResults.hpp */; };
+		FA41CB011C29F1FA00905379 /* xmmHmmResults.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CAFD1C29F1FA00905379 /* xmmHmmResults.hpp */; };
+		FA41CB041C29F28900905379 /* xmmHmmSingleClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CB021C29F28900905379 /* xmmHmmSingleClass.cpp */; };
+		FA41CB051C29F28900905379 /* xmmHmmSingleClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CB021C29F28900905379 /* xmmHmmSingleClass.cpp */; };
+		FA41CB061C29F28900905379 /* xmmHmmSingleClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CB031C29F28900905379 /* xmmHmmSingleClass.hpp */; };
+		FA41CB071C29F28900905379 /* xmmHmmSingleClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CB031C29F28900905379 /* xmmHmmSingleClass.hpp */; };
+		FA41CB111C2A5AD000905379 /* xmmKMeansParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CB0F1C2A5AD000905379 /* xmmKMeansParameters.cpp */; };
+		FA41CB121C2A5AD000905379 /* xmmKMeansParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CB0F1C2A5AD000905379 /* xmmKMeansParameters.cpp */; };
+		FA41CB131C2A5AD000905379 /* xmmKMeansParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CB101C2A5AD000905379 /* xmmKMeansParameters.hpp */; };
+		FA41CB141C2A5AD000905379 /* xmmKMeansParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CB101C2A5AD000905379 /* xmmKMeansParameters.hpp */; };
+		FA4CD7501C1FA8B000896DB6 /* xmmPhrase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B11947718400E0D3C4 /* xmmPhrase.cpp */; };
+		FA4CD7511C1FA8B100896DB6 /* xmmPhrase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B11947718400E0D3C4 /* xmmPhrase.cpp */; };
+		FA4CD7581C1FFE6F00896DB6 /* xmmTestsModelExtraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */; };
+		FA4CD75F1C21522200896DB6 /* xmmEvents.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA4CD75D1C21522200896DB6 /* xmmEvents.hpp */; };
+		FA4CD7611C21EC9200896DB6 /* xmmTestsMultithreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0B20E0A91A9A637800E89497 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0B20E0A41A9A637800E89497 /* json.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0B89034B18B07E100072CCB0;
-			remoteInfo = json;
-		};
-		0B20E0AB1A9A637800E89497 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0B20E0A41A9A637800E89497 /* json.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0B200D2F1A94ADA700B21549;
-			remoteInfo = "json-dynamic";
-		};
-		0B20E0BB1A9A65BE00E89497 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0B20E0A41A9A637800E89497 /* json.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 0B89034A18B07E100072CCB0;
-			remoteInfo = json;
-		};
-		0B20E0C01A9A65E300E89497 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0B20E0A41A9A637800E89497 /* json.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 0B89034A18B07E100072CCB0;
-			remoteInfo = json;
-		};
 		0B9FE31D1AD1E9EB007431E3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0BD1C5C017D9E3BA0061535A /* Project object */;
@@ -89,55 +91,78 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0B120F5E1BA2DB67002460B0 /* xmmAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmAttribute.cpp; sourceTree = "<group>"; };
+		0B120F5F1BA2DB67002460B0 /* xmmAttribute.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmAttribute.hpp; sourceTree = "<group>"; };
 		0B20E08E1A9A633600E89497 /* libxmm.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxmm.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		0B20E0A41A9A637800E89497 /* json.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = json.xcodeproj; path = ../../dependencies/libjson/ide/json.xcodeproj; sourceTree = "<group>"; };
-		0B20E0B01A9A63EE00E89497 /* libjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libjson.h; path = ../../dependencies/libjson/src/libjson.h; sourceTree = "<group>"; };
-		0B20E0B51A9A64BB00E89497 /* kmeans.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kmeans.cpp; sourceTree = "<group>"; };
-		0B20E0B61A9A64BB00E89497 /* kmeans.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kmeans.h; sourceTree = "<group>"; };
+		0B20E0B51A9A64BB00E89497 /* xmmKMeans.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmKMeans.cpp; sourceTree = "<group>"; };
+		0B20E0B61A9A64BB00E89497 /* xmmKMeans.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmKMeans.hpp; sourceTree = "<group>"; };
 		0B20E0D31A9A65E300E89497 /* libxmm.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libxmm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B20E0D81A9A703C00E89497 /* xmm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xmm.h; sourceTree = "<group>"; };
-		0B4909A81947718400E0D3C4 /* gaussian_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gaussian_distribution.cpp; sourceTree = "<group>"; };
-		0B4909A91947718400E0D3C4 /* gaussian_distribution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gaussian_distribution.h; sourceTree = "<group>"; };
-		0B4909AA1947718400E0D3C4 /* json_utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_utilities.cpp; sourceTree = "<group>"; };
-		0B4909AB1947718400E0D3C4 /* json_utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_utilities.h; sourceTree = "<group>"; };
-		0B4909AC1947718400E0D3C4 /* label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = label.cpp; sourceTree = "<group>"; };
-		0B4909AD1947718400E0D3C4 /* label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = label.h; sourceTree = "<group>"; };
-		0B4909AE1947718400E0D3C4 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
-		0B4909AF1947718400E0D3C4 /* xmm_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmm_common.h; sourceTree = "<group>"; };
-		0B4909B01947718400E0D3C4 /* model_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_group.h; sourceTree = "<group>"; };
-		0B4909B11947718400E0D3C4 /* phrase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = phrase.cpp; sourceTree = "<group>"; };
-		0B4909B21947718400E0D3C4 /* phrase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = phrase.h; sourceTree = "<group>"; };
-		0B4909B31947718400E0D3C4 /* probabilistic_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = probabilistic_model.cpp; sourceTree = "<group>"; };
-		0B4909B41947718400E0D3C4 /* probabilistic_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = probabilistic_model.h; sourceTree = "<group>"; };
-		0B4909B51947718400E0D3C4 /* ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ringbuffer.h; sourceTree = "<group>"; };
-		0B4909B61947718400E0D3C4 /* training_set.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = training_set.cpp; sourceTree = "<group>"; };
-		0B4909B71947718400E0D3C4 /* training_set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = training_set.h; sourceTree = "<group>"; };
-		0B4909B91947718400E0D3C4 /* gmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gmm.cpp; sourceTree = "<group>"; };
-		0B4909BA1947718400E0D3C4 /* gmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gmm.h; sourceTree = "<group>"; };
-		0B4909BB1947718400E0D3C4 /* gmm_group.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gmm_group.cpp; sourceTree = "<group>"; };
-		0B4909BC1947718400E0D3C4 /* gmm_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gmm_group.h; sourceTree = "<group>"; };
-		0B4909BD1947718400E0D3C4 /* hierarchical_hmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hierarchical_hmm.cpp; sourceTree = "<group>"; };
-		0B4909BE1947718400E0D3C4 /* hierarchical_hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hierarchical_hmm.h; sourceTree = "<group>"; };
-		0B4909BF1947718400E0D3C4 /* hmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hmm.cpp; sourceTree = "<group>"; };
-		0B4909C01947718400E0D3C4 /* hmm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmm.h; sourceTree = "<group>"; };
+		0B4909A81947718400E0D3C4 /* xmmGaussianDistribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmGaussianDistribution.cpp; sourceTree = "<group>"; };
+		0B4909A91947718400E0D3C4 /* xmmGaussianDistribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmGaussianDistribution.hpp; sourceTree = "<group>"; };
+		0B4909AA1947718400E0D3C4 /* xmmJson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmJson.cpp; sourceTree = "<group>"; };
+		0B4909AB1947718400E0D3C4 /* xmmJson.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmJson.hpp; sourceTree = "<group>"; };
+		0B4909AE1947718400E0D3C4 /* xmmMatrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmMatrix.hpp; sourceTree = "<group>"; };
+		0B4909B11947718400E0D3C4 /* xmmPhrase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmPhrase.cpp; sourceTree = "<group>"; };
+		0B4909B21947718400E0D3C4 /* xmmPhrase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmPhrase.hpp; sourceTree = "<group>"; };
+		0B4909B31947718400E0D3C4 /* xmmModelSingleClass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmModelSingleClass.cpp; sourceTree = "<group>"; };
+		0B4909B41947718400E0D3C4 /* xmmModelSingleClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmModelSingleClass.hpp; sourceTree = "<group>"; };
+		0B4909B51947718400E0D3C4 /* xmmCircularbuffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmCircularbuffer.hpp; sourceTree = "<group>"; };
+		0B4909B61947718400E0D3C4 /* xmmTrainingSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTrainingSet.cpp; sourceTree = "<group>"; };
+		0B4909B71947718400E0D3C4 /* xmmTrainingSet.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmTrainingSet.hpp; sourceTree = "<group>"; };
+		0B4909B91947718400E0D3C4 /* xmmGmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmGmm.cpp; sourceTree = "<group>"; };
+		0B4909BA1947718400E0D3C4 /* xmmGmm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmGmm.hpp; sourceTree = "<group>"; };
+		0B4909BD1947718400E0D3C4 /* xmmHierarchicalHmm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmHierarchicalHmm.cpp; sourceTree = "<group>"; };
+		0B4909BE1947718400E0D3C4 /* xmmHmmParameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmHmmParameters.hpp; sourceTree = "<group>"; };
 		0B931DBD1AB1B17B00B15F3E /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = ../../readme.md; sourceTree = "<group>"; };
-		0B9FE2F71ACF6893007431E3 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		0B9FE2F81ACF6893007431E3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0B9FE2FA1ACF6893007431E3 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		0B9FE2FB1ACF6893007431E3 /* doxy2swig.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = doxy2swig.py; sourceTree = "<group>"; };
 		0B9FE2FC1ACF6893007431E3 /* numpy.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = numpy.i; sourceTree = "<group>"; };
-		0B9FE2FD1ACF6893007431E3 /* setup.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
-		0B9FE2FE1ACF6893007431E3 /* util.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = util.py; sourceTree = "<group>"; };
 		0B9FE2FF1ACF6893007431E3 /* xmm.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = xmm.i; sourceTree = "<group>"; };
 		0B9FE30A1AD1627E007431E3 /* catch.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = catch.hpp; path = ../dependencies/catch/catch.hpp; sourceTree = "<group>"; };
 		0B9FE30F1AD162A9007431E3 /* xmm_testing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xmm_testing; sourceTree = BUILT_PRODUCTS_DIR; };
-		0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main_xmm_tests.cpp; sourceTree = "<group>"; };
-		0B9FE31B1AD16613007431E3 /* model_conversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_conversion.cpp; sourceTree = "<group>"; };
-		0B9FE3201AD29C9A007431E3 /* catch_utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = catch_utilities.h; sourceTree = "<group>"; };
-		0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gaussian_covariance_mode.cpp; sourceTree = "<group>"; };
+		0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsMain.cpp; sourceTree = "<group>"; };
+		0B9FE31B1AD16613007431E3 /* xmmTestsModelConversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsModelConversion.cpp; sourceTree = "<group>"; };
+		0B9FE3201AD29C9A007431E3 /* xmmTestsUtilities.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xmmTestsUtilities.hpp; sourceTree = "<group>"; };
+		0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsGaussianCovarianceMode.cpp; sourceTree = "<group>"; };
 		0BD1C5E517D9E3D30061535A /* Doxyfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
-		0BF36B561AE82DEA00D81858 /* model_extraction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_extraction.cpp; sourceTree = "<group>"; };
-		0BF757B71A9B83E600B8C4BC /* doxygen_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = doxygen_main.h; sourceTree = "<group>"; };
+		0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsModelExtraction.cpp; sourceTree = "<group>"; };
+		FA41CABF1C28AA0300905379 /* assertions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = assertions.h; path = ../../dependencies/jsoncpp/include/assertions.h; sourceTree = "<group>"; };
+		FA41CAC01C28AA0300905379 /* autolink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = autolink.h; path = ../../dependencies/jsoncpp/include/autolink.h; sourceTree = "<group>"; };
+		FA41CAC11C28AA0300905379 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../dependencies/jsoncpp/include/config.h; sourceTree = "<group>"; };
+		FA41CAC21C28AA0300905379 /* features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = features.h; path = ../../dependencies/jsoncpp/include/features.h; sourceTree = "<group>"; };
+		FA41CAC31C28AA0300905379 /* forwards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = forwards.h; path = ../../dependencies/jsoncpp/include/forwards.h; sourceTree = "<group>"; };
+		FA41CAC41C28AA0300905379 /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json.h; path = ../../dependencies/jsoncpp/include/json.h; sourceTree = "<group>"; };
+		FA41CAC51C28AA0300905379 /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reader.h; path = ../../dependencies/jsoncpp/include/reader.h; sourceTree = "<group>"; };
+		FA41CAC61C28AA0300905379 /* value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = value.h; path = ../../dependencies/jsoncpp/include/value.h; sourceTree = "<group>"; };
+		FA41CAC71C28AA0300905379 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = ../../dependencies/jsoncpp/include/version.h; sourceTree = "<group>"; };
+		FA41CAC81C28AA0300905379 /* writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = writer.h; path = ../../dependencies/jsoncpp/include/writer.h; sourceTree = "<group>"; };
+		FA41CAC91C28AA0F00905379 /* json_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_reader.cpp; path = ../../dependencies/jsoncpp/src/json_reader.cpp; sourceTree = "<group>"; };
+		FA41CACA1C28AA0F00905379 /* json_tool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json_tool.h; path = ../../dependencies/jsoncpp/src/json_tool.h; sourceTree = "<group>"; };
+		FA41CACB1C28AA0F00905379 /* json_value.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_value.cpp; path = ../../dependencies/jsoncpp/src/json_value.cpp; sourceTree = "<group>"; };
+		FA41CACC1C28AA0F00905379 /* json_valueiterator.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = json_valueiterator.inl; path = ../../dependencies/jsoncpp/src/json_valueiterator.inl; sourceTree = "<group>"; };
+		FA41CACD1C28AA0F00905379 /* json_writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_writer.cpp; path = ../../dependencies/jsoncpp/src/json_writer.cpp; sourceTree = "<group>"; };
+		FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsJsonIO.cpp; sourceTree = "<group>"; };
+		FA41CADC1C2928BD00905379 /* xmmModelSharedParameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmModelSharedParameters.cpp; sourceTree = "<group>"; };
+		FA41CADD1C2928BD00905379 /* xmmModelSharedParameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmModelSharedParameters.hpp; sourceTree = "<group>"; };
+		FA41CAE31C29D34A00905379 /* xmmModelConfiguration.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmModelConfiguration.hpp; sourceTree = "<group>"; };
+		FA41CAE91C29EE4E00905379 /* xmmGmmParameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmGmmParameters.cpp; sourceTree = "<group>"; };
+		FA41CAEA1C29EE4E00905379 /* xmmGmmParameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmGmmParameters.hpp; sourceTree = "<group>"; };
+		FA41CAEF1C29EFEA00905379 /* xmmGmmSingleClass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmGmmSingleClass.cpp; sourceTree = "<group>"; };
+		FA41CAF01C29EFEA00905379 /* xmmGmmSingleClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmGmmSingleClass.hpp; sourceTree = "<group>"; };
+		FA41CAF61C29F10F00905379 /* xmmHmmParameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmHmmParameters.cpp; sourceTree = "<group>"; };
+		FA41CAF71C29F10F00905379 /* xmmHierarchicalHmm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmHierarchicalHmm.hpp; sourceTree = "<group>"; };
+		FA41CAFD1C29F1FA00905379 /* xmmHmmResults.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmHmmResults.hpp; sourceTree = "<group>"; };
+		FA41CB021C29F28900905379 /* xmmHmmSingleClass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmHmmSingleClass.cpp; sourceTree = "<group>"; };
+		FA41CB031C29F28900905379 /* xmmHmmSingleClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmHmmSingleClass.hpp; sourceTree = "<group>"; };
+		FA41CB081C29F3AC00905379 /* xmmModelResults.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xmmModelResults.hpp; sourceTree = "<group>"; };
+		FA41CB091C29F43900905379 /* xmmModelParameters.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xmmModelParameters.hpp; sourceTree = "<group>"; };
+		FA41CB0F1C2A5AD000905379 /* xmmKMeansParameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmKMeansParameters.cpp; sourceTree = "<group>"; };
+		FA41CB101C2A5AD000905379 /* xmmKMeansParameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmKMeansParameters.hpp; sourceTree = "<group>"; };
+		FA41CB151C2A5C0600905379 /* xmmKMeansResults.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xmmKMeansResults.hpp; sourceTree = "<group>"; };
+		FA4CD74F1C1FA64200896DB6 /* xmmModel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmModel.hpp; sourceTree = "<group>"; };
+		FA4CD75D1C21522200896DB6 /* xmmEvents.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmEvents.hpp; sourceTree = "<group>"; };
+		FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsMultithreading.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +170,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B20E0BD1A9A65C300E89497 /* libjson.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +177,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B20E0CE1A9A65E300E89497 /* libjson.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,15 +201,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0B20E0A51A9A637800E89497 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				0B20E0AA1A9A637800E89497 /* libjson.a */,
-				0B20E0AC1A9A637800E89497 /* libjson.dylib */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		0B4909A61947718400E0D3C4 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,23 +215,10 @@
 		0B4909A71947718400E0D3C4 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				0B4909AF1947718400E0D3C4 /* xmm_common.h */,
-				0BF757B71A9B83E600B8C4BC /* doxygen_main.h */,
-				0B4909AE1947718400E0D3C4 /* matrix.h */,
-				0B4909B51947718400E0D3C4 /* ringbuffer.h */,
-				0B4909AA1947718400E0D3C4 /* json_utilities.cpp */,
-				0B4909AB1947718400E0D3C4 /* json_utilities.h */,
-				0B4909AC1947718400E0D3C4 /* label.cpp */,
-				0B4909AD1947718400E0D3C4 /* label.h */,
-				0B4909B11947718400E0D3C4 /* phrase.cpp */,
-				0B4909B21947718400E0D3C4 /* phrase.h */,
-				0B4909B61947718400E0D3C4 /* training_set.cpp */,
-				0B4909B71947718400E0D3C4 /* training_set.h */,
-				0B4909B31947718400E0D3C4 /* probabilistic_model.cpp */,
-				0B4909B41947718400E0D3C4 /* probabilistic_model.h */,
-				0B4909B01947718400E0D3C4 /* model_group.h */,
-				0B4909A81947718400E0D3C4 /* gaussian_distribution.cpp */,
-				0B4909A91947718400E0D3C4 /* gaussian_distribution.h */,
+				FA41CB0D1C29F6E800905379 /* common */,
+				FA41CB0C1C29F6D800905379 /* trainingset */,
+				FA41CB0A1C29F4AC00905379 /* model */,
+				FA41CB0B1C29F69000905379 /* distributions */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -225,16 +226,9 @@
 		0B4909B81947718400E0D3C4 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				0B20E0B51A9A64BB00E89497 /* kmeans.cpp */,
-				0B20E0B61A9A64BB00E89497 /* kmeans.h */,
-				0B4909B91947718400E0D3C4 /* gmm.cpp */,
-				0B4909BA1947718400E0D3C4 /* gmm.h */,
-				0B4909BB1947718400E0D3C4 /* gmm_group.cpp */,
-				0B4909BC1947718400E0D3C4 /* gmm_group.h */,
-				0B4909BF1947718400E0D3C4 /* hmm.cpp */,
-				0B4909C01947718400E0D3C4 /* hmm.h */,
-				0B4909BD1947718400E0D3C4 /* hierarchical_hmm.cpp */,
-				0B4909BE1947718400E0D3C4 /* hierarchical_hmm.h */,
+				FA41CB0E1C29F9B800905379 /* kmeans */,
+				FA41CAE81C29EE3600905379 /* gmm */,
+				FA41CAF51C29F0F700905379 /* hmm */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -242,8 +236,6 @@
 		0B9FE2C21ACF6893007431E3 /* python */ = {
 			isa = PBXGroup;
 			children = (
-				0B9FE2F71ACF6893007431E3 /* Makefile */,
-				0B9FE2F81ACF6893007431E3 /* README.md */,
 				0B9FE2F91ACF6893007431E3 /* src */,
 			);
 			name = python;
@@ -256,8 +248,6 @@
 				0B9FE2FA1ACF6893007431E3 /* __init__.py */,
 				0B9FE2FB1ACF6893007431E3 /* doxy2swig.py */,
 				0B9FE2FC1ACF6893007431E3 /* numpy.i */,
-				0B9FE2FD1ACF6893007431E3 /* setup.py */,
-				0B9FE2FE1ACF6893007431E3 /* util.py */,
 				0B9FE2FF1ACF6893007431E3 /* xmm.i */,
 			);
 			path = src;
@@ -267,11 +257,13 @@
 			isa = PBXGroup;
 			children = (
 				0B9FE30A1AD1627E007431E3 /* catch.hpp */,
-				0B9FE3201AD29C9A007431E3 /* catch_utilities.h */,
-				0B9FE3161AD162E4007431E3 /* main_xmm_tests.cpp */,
-				0B9FE31B1AD16613007431E3 /* model_conversion.cpp */,
-				0BAA12F71AED0F86006DA006 /* gaussian_covariance_mode.cpp */,
-				0BF36B561AE82DEA00D81858 /* model_extraction.cpp */,
+				0B9FE3201AD29C9A007431E3 /* xmmTestsUtilities.hpp */,
+				0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */,
+				0B9FE31B1AD16613007431E3 /* xmmTestsModelConversion.cpp */,
+				FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */,
+				FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */,
+				0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */,
+				0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */,
 			);
 			name = test;
 			path = ../../test;
@@ -280,9 +272,8 @@
 		0BD1C5BF17D9E3BA0061535A = {
 			isa = PBXGroup;
 			children = (
+				FA41CABC1C28A9D800905379 /* jsoncpp */,
 				0B931DBD1AB1B17B00B15F3E /* readme.md */,
-				0B20E0A41A9A637800E89497 /* json.xcodeproj */,
-				0B20E0B01A9A63EE00E89497 /* libjson.h */,
 				0BD1C5E417D9E3D20061535A /* doc */,
 				0B9FE2C21ACF6893007431E3 /* python */,
 				0B4909A61947718400E0D3C4 /* src */,
@@ -300,6 +291,132 @@
 			path = ../../doc;
 			sourceTree = "<group>";
 		};
+		FA41CABC1C28A9D800905379 /* jsoncpp */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CABE1C28A9F500905379 /* src */,
+				FA41CABD1C28A9EF00905379 /* include */,
+			);
+			name = jsoncpp;
+			sourceTree = "<group>";
+		};
+		FA41CABD1C28A9EF00905379 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CABF1C28AA0300905379 /* assertions.h */,
+				FA41CAC01C28AA0300905379 /* autolink.h */,
+				FA41CAC11C28AA0300905379 /* config.h */,
+				FA41CAC21C28AA0300905379 /* features.h */,
+				FA41CAC31C28AA0300905379 /* forwards.h */,
+				FA41CAC41C28AA0300905379 /* json.h */,
+				FA41CAC51C28AA0300905379 /* reader.h */,
+				FA41CAC61C28AA0300905379 /* value.h */,
+				FA41CAC71C28AA0300905379 /* version.h */,
+				FA41CAC81C28AA0300905379 /* writer.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		FA41CABE1C28A9F500905379 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CAC91C28AA0F00905379 /* json_reader.cpp */,
+				FA41CACA1C28AA0F00905379 /* json_tool.h */,
+				FA41CACB1C28AA0F00905379 /* json_value.cpp */,
+				FA41CACC1C28AA0F00905379 /* json_valueiterator.inl */,
+				FA41CACD1C28AA0F00905379 /* json_writer.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		FA41CAE81C29EE3600905379 /* gmm */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CAE91C29EE4E00905379 /* xmmGmmParameters.cpp */,
+				FA41CAEA1C29EE4E00905379 /* xmmGmmParameters.hpp */,
+				FA41CAEF1C29EFEA00905379 /* xmmGmmSingleClass.cpp */,
+				FA41CAF01C29EFEA00905379 /* xmmGmmSingleClass.hpp */,
+				0B4909B91947718400E0D3C4 /* xmmGmm.cpp */,
+				0B4909BA1947718400E0D3C4 /* xmmGmm.hpp */,
+			);
+			path = gmm;
+			sourceTree = "<group>";
+		};
+		FA41CAF51C29F0F700905379 /* hmm */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CAF61C29F10F00905379 /* xmmHmmParameters.cpp */,
+				0B4909BE1947718400E0D3C4 /* xmmHmmParameters.hpp */,
+				FA41CAFD1C29F1FA00905379 /* xmmHmmResults.hpp */,
+				FA41CB021C29F28900905379 /* xmmHmmSingleClass.cpp */,
+				FA41CB031C29F28900905379 /* xmmHmmSingleClass.hpp */,
+				0B4909BD1947718400E0D3C4 /* xmmHierarchicalHmm.cpp */,
+				FA41CAF71C29F10F00905379 /* xmmHierarchicalHmm.hpp */,
+			);
+			path = hmm;
+			sourceTree = "<group>";
+		};
+		FA41CB0A1C29F4AC00905379 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CADC1C2928BD00905379 /* xmmModelSharedParameters.cpp */,
+				FA41CADD1C2928BD00905379 /* xmmModelSharedParameters.hpp */,
+				FA41CB091C29F43900905379 /* xmmModelParameters.hpp */,
+				FA41CB081C29F3AC00905379 /* xmmModelResults.hpp */,
+				FA41CAE31C29D34A00905379 /* xmmModelConfiguration.hpp */,
+				0B4909B31947718400E0D3C4 /* xmmModelSingleClass.cpp */,
+				0B4909B41947718400E0D3C4 /* xmmModelSingleClass.hpp */,
+				FA4CD74F1C1FA64200896DB6 /* xmmModel.hpp */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		FA41CB0B1C29F69000905379 /* distributions */ = {
+			isa = PBXGroup;
+			children = (
+				0B4909A81947718400E0D3C4 /* xmmGaussianDistribution.cpp */,
+				0B4909A91947718400E0D3C4 /* xmmGaussianDistribution.hpp */,
+			);
+			path = distributions;
+			sourceTree = "<group>";
+		};
+		FA41CB0C1C29F6D800905379 /* trainingset */ = {
+			isa = PBXGroup;
+			children = (
+				0B4909B11947718400E0D3C4 /* xmmPhrase.cpp */,
+				0B4909B21947718400E0D3C4 /* xmmPhrase.hpp */,
+				0B4909B61947718400E0D3C4 /* xmmTrainingSet.cpp */,
+				0B4909B71947718400E0D3C4 /* xmmTrainingSet.hpp */,
+			);
+			path = trainingset;
+			sourceTree = "<group>";
+		};
+		FA41CB0D1C29F6E800905379 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				0B4909AE1947718400E0D3C4 /* xmmMatrix.hpp */,
+				0B4909B51947718400E0D3C4 /* xmmCircularbuffer.hpp */,
+				0B4909AA1947718400E0D3C4 /* xmmJson.cpp */,
+				0B4909AB1947718400E0D3C4 /* xmmJson.hpp */,
+				0B120F5E1BA2DB67002460B0 /* xmmAttribute.cpp */,
+				0B120F5F1BA2DB67002460B0 /* xmmAttribute.hpp */,
+				FA4CD75D1C21522200896DB6 /* xmmEvents.hpp */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		FA41CB0E1C29F9B800905379 /* kmeans */ = {
+			isa = PBXGroup;
+			children = (
+				FA41CB0F1C2A5AD000905379 /* xmmKMeansParameters.cpp */,
+				FA41CB101C2A5AD000905379 /* xmmKMeansParameters.hpp */,
+				FA41CB151C2A5C0600905379 /* xmmKMeansResults.hpp */,
+				0B20E0B51A9A64BB00E89497 /* xmmKMeans.cpp */,
+				0B20E0B61A9A64BB00E89497 /* xmmKMeans.hpp */,
+			);
+			path = kmeans;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -307,6 +424,15 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA41CAE01C2928BD00905379 /* xmmModelSharedParameters.hpp in Headers */,
+				FA41CAED1C29EE4E00905379 /* xmmGmmParameters.hpp in Headers */,
+				FA41CAFA1C29F10F00905379 /* xmmHierarchicalHmm.hpp in Headers */,
+				FA4CD75F1C21522200896DB6 /* xmmEvents.hpp in Headers */,
+				FA41CAE61C29D34A00905379 /* xmmModelConfiguration.hpp in Headers */,
+				FA41CB131C2A5AD000905379 /* xmmKMeansParameters.hpp in Headers */,
+				FA41CB001C29F1FA00905379 /* xmmHmmResults.hpp in Headers */,
+				FA41CAF31C29EFEA00905379 /* xmmGmmSingleClass.hpp in Headers */,
+				FA41CB061C29F28900905379 /* xmmHmmSingleClass.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +440,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA41CAEE1C29EE4E00905379 /* xmmGmmParameters.hpp in Headers */,
+				FA41CB011C29F1FA00905379 /* xmmHmmResults.hpp in Headers */,
+				FA41CB141C2A5AD000905379 /* xmmKMeansParameters.hpp in Headers */,
+				FA41CAE71C29D34A00905379 /* xmmModelConfiguration.hpp in Headers */,
+				FA41CAF41C29EFEA00905379 /* xmmGmmSingleClass.hpp in Headers */,
+				FA41CB071C29F28900905379 /* xmmHmmSingleClass.hpp in Headers */,
+				FA41CAE11C2928BD00905379 /* xmmModelSharedParameters.hpp in Headers */,
+				FA41CAFB1C29F10F00905379 /* xmmHierarchicalHmm.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +496,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				0B20E0BC1A9A65BE00E89497 /* PBXTargetDependency */,
 			);
 			name = xmm;
 			productName = xmm;
@@ -380,7 +513,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				0B20E0BF1A9A65E300E89497 /* PBXTargetDependency */,
 			);
 			name = "xmm-static";
 			productName = xmm;
@@ -431,12 +563,6 @@
 			mainGroup = 0BD1C5BF17D9E3BA0061535A;
 			productRefGroup = 0B20E08F1A9A633600E89497 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 0B20E0A51A9A637800E89497 /* Products */;
-					ProjectRef = 0B20E0A41A9A637800E89497 /* json.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				0BD1C5F417D9E4410061535A /* python */,
@@ -448,39 +574,29 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		0B20E0AA1A9A637800E89497 /* libjson.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libjson.a;
-			remoteRef = 0B20E0A91A9A637800E89497 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0B20E0AC1A9A637800E89497 /* libjson.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libjson.dylib;
-			remoteRef = 0B20E0AB1A9A637800E89497 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXSourcesBuildPhase section */
 		0B20E08A1A9A633600E89497 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B20E09D1A9A634700E89497 /* phrase.cpp in Sources */,
-				0B20E0A21A9A634700E89497 /* hierarchical_hmm.cpp in Sources */,
-				0B20E0B71A9A64BF00E89497 /* kmeans.cpp in Sources */,
-				0B20E0A31A9A634700E89497 /* hmm.cpp in Sources */,
-				0B20E0A01A9A634700E89497 /* gmm.cpp in Sources */,
-				0B20E0A11A9A634700E89497 /* gmm_group.cpp in Sources */,
-				0B20E09E1A9A634700E89497 /* probabilistic_model.cpp in Sources */,
-				0B20E09F1A9A634700E89497 /* training_set.cpp in Sources */,
-				0B20E09A1A9A634700E89497 /* gaussian_distribution.cpp in Sources */,
-				0B20E09C1A9A634700E89497 /* label.cpp in Sources */,
-				0B20E09B1A9A634700E89497 /* json_utilities.cpp in Sources */,
+				FA41CAD41C28AA1600905379 /* json_reader.cpp in Sources */,
+				FA41CB111C2A5AD000905379 /* xmmKMeansParameters.cpp in Sources */,
+				0B20E0A21A9A634700E89497 /* xmmHierarchicalHmm.cpp in Sources */,
+				0B20E0B71A9A64BF00E89497 /* xmmKMeans.cpp in Sources */,
+				FA41CB041C29F28900905379 /* xmmHmmSingleClass.cpp in Sources */,
+				FA41CAD51C28AA1600905379 /* json_value.cpp in Sources */,
+				FA41CAD61C28AA1600905379 /* json_writer.cpp in Sources */,
+				FA41CADE1C2928BD00905379 /* xmmModelSharedParameters.cpp in Sources */,
+				FA41CAF81C29F10F00905379 /* xmmHmmParameters.cpp in Sources */,
+				FA41CAF11C29EFEA00905379 /* xmmGmmSingleClass.cpp in Sources */,
+				0B20E0A01A9A634700E89497 /* xmmGmm.cpp in Sources */,
+				0B20E09E1A9A634700E89497 /* xmmModelSingleClass.cpp in Sources */,
+				FA4CD7511C1FA8B100896DB6 /* xmmPhrase.cpp in Sources */,
+				0B20E09F1A9A634700E89497 /* xmmTrainingSet.cpp in Sources */,
+				0B20E09A1A9A634700E89497 /* xmmGaussianDistribution.cpp in Sources */,
+				FA41CAEB1C29EE4E00905379 /* xmmGmmParameters.cpp in Sources */,
+				0B120F601BA2DB9B002460B0 /* xmmAttribute.cpp in Sources */,
+				0B20E09B1A9A634700E89497 /* xmmJson.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,17 +604,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B20E0C21A9A65E300E89497 /* phrase.cpp in Sources */,
-				0B20E0C31A9A65E300E89497 /* hierarchical_hmm.cpp in Sources */,
-				0B20E0C41A9A65E300E89497 /* kmeans.cpp in Sources */,
-				0B20E0C51A9A65E300E89497 /* hmm.cpp in Sources */,
-				0B20E0C61A9A65E300E89497 /* gmm.cpp in Sources */,
-				0B20E0C71A9A65E300E89497 /* gmm_group.cpp in Sources */,
-				0B20E0C81A9A65E300E89497 /* probabilistic_model.cpp in Sources */,
-				0B20E0C91A9A65E300E89497 /* training_set.cpp in Sources */,
-				0B20E0CA1A9A65E300E89497 /* gaussian_distribution.cpp in Sources */,
-				0B20E0CB1A9A65E300E89497 /* label.cpp in Sources */,
-				0B20E0CC1A9A65E300E89497 /* json_utilities.cpp in Sources */,
+				FA41CAD11C28AA1600905379 /* json_reader.cpp in Sources */,
+				FA41CB121C2A5AD000905379 /* xmmKMeansParameters.cpp in Sources */,
+				0B20E0C31A9A65E300E89497 /* xmmHierarchicalHmm.cpp in Sources */,
+				0B20E0C41A9A65E300E89497 /* xmmKMeans.cpp in Sources */,
+				FA41CB051C29F28900905379 /* xmmHmmSingleClass.cpp in Sources */,
+				FA41CAD21C28AA1600905379 /* json_value.cpp in Sources */,
+				FA41CAD31C28AA1600905379 /* json_writer.cpp in Sources */,
+				FA41CADF1C2928BD00905379 /* xmmModelSharedParameters.cpp in Sources */,
+				FA41CAF91C29F10F00905379 /* xmmHmmParameters.cpp in Sources */,
+				FA41CAF21C29EFEA00905379 /* xmmGmmSingleClass.cpp in Sources */,
+				0B20E0C61A9A65E300E89497 /* xmmGmm.cpp in Sources */,
+				0B20E0C81A9A65E300E89497 /* xmmModelSingleClass.cpp in Sources */,
+				FA4CD7501C1FA8B000896DB6 /* xmmPhrase.cpp in Sources */,
+				0B20E0C91A9A65E300E89497 /* xmmTrainingSet.cpp in Sources */,
+				0B20E0CA1A9A65E300E89497 /* xmmGaussianDistribution.cpp in Sources */,
+				FA41CAEC1C29EE4E00905379 /* xmmGmmParameters.cpp in Sources */,
+				0B120F611BA2DB9B002460B0 /* xmmAttribute.cpp in Sources */,
+				0B20E0CC1A9A65E300E89497 /* xmmJson.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,26 +629,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B9FE3171AD162E4007431E3 /* main_xmm_tests.cpp in Sources */,
-				0B7F43321B02578F0022F998 /* model_conversion.cpp in Sources */,
-				0B7F43341B02578F0022F998 /* model_extraction.cpp in Sources */,
-				0B7F43331B02578F0022F998 /* gaussian_covariance_mode.cpp in Sources */,
+				FA4CD7611C21EC9200896DB6 /* xmmTestsMultithreading.cpp in Sources */,
+				0B9FE3171AD162E4007431E3 /* xmmTestsMain.cpp in Sources */,
+				FA41CAD81C28AD9D00905379 /* xmmTestsJsonIO.cpp in Sources */,
+				FA4CD7581C1FFE6F00896DB6 /* xmmTestsModelExtraction.cpp in Sources */,
+				0B7F43331B02578F0022F998 /* xmmTestsGaussianCovarianceMode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0B20E0BC1A9A65BE00E89497 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = json;
-			targetProxy = 0B20E0BB1A9A65BE00E89497 /* PBXContainerItemProxy */;
-		};
-		0B20E0BF1A9A65E300E89497 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = json;
-			targetProxy = 0B20E0C01A9A65E300E89497 /* PBXContainerItemProxy */;
-		};
 		0B9FE31E1AD1E9EB007431E3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0B20E0BE1A9A65E300E89497 /* xmm-static */;
@@ -757,8 +871,8 @@
 		0BD1C5C417D9E3BA0061535A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++98";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CMAKE = /usr/local/bin/cmake;
 				CURRENT_PROJECT_VERSION = "$(XMM_VERSION_MAJOR).$(XMM_VERSION_MINOR).$(XMM_VERSION_PATCH)";
 				DEPLOYMENT_LOCATION = YES;
@@ -766,28 +880,22 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					USE_PTHREAD,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-lpthread";
 			};
 			name = Debug;
 		};
 		0BD1C5C517D9E3BA0061535A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++98";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CMAKE = /usr/local/bin/cmake;
 				CURRENT_PROJECT_VERSION = "$(XMM_VERSION_MAJOR).$(XMM_VERSION_MINOR).$(XMM_VERSION_PATCH)";
 				DEPLOYMENT_LOCATION = YES;
 				DOXYGEN = /usr/local/bin/doxygen;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					NDEBUG,
-					USE_PTHREAD,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "-lpthread";
 			};
 			name = Release;
 		};
