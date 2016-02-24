@@ -91,13 +91,7 @@ covariance_determinant_input_(0.)
     
     json2vector(root["mean"], mean, dimension.get());
     json2vector(root["covariance"], covariance, dimension.get() * dimension.get());
-    
-    //updateInverseCovariance();
-    //read from json instead of calling updateInverseCovariance() :
-    json2vector(root["inverse_covariance"], inverse_covariance_, dimension.get() * dimension.get());
-    covariance_determinant_ = root.get("covariance_determinant", 0.).asDouble();
-    json2vector(root["inverse_covariance_input"], inverse_covariance_input_, dimension_input.get() * dimension_input.get());
-    covariance_determinant_input_ = root.get("covariance_determinant_input", 0.).asDouble();
+    updateInverseCovariance();
     
     dimension.onAttributeChange(this, &xmm::GaussianDistribution::onAttributeChange);
     dimension_input.onAttributeChange(this, &xmm::GaussianDistribution::onAttributeChange);
@@ -301,12 +295,7 @@ Json::Value xmm::GaussianDistribution::toJson() const
     root["covariance_mode"] = static_cast<int>(covariance_mode.get());
     root["mean"] = vector2json(mean);
     root["covariance"] = vector2json(covariance);
-
-    root["inverse_covariance"] = vector2json(inverse_covariance_);
-    root["covariance_determinant"] = covariance_determinant_;
-    root["inverse_covariance_input"] = vector2json(inverse_covariance_input_);
-    root["covariance_determinant_input"] = covariance_determinant_input_;
-
+    
     return root;
 }
 
