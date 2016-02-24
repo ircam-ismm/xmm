@@ -87,8 +87,8 @@ locked_(false)
     dimension.set(root.get("dimension", bimodal_ ? 2 : 1).asInt());
     dimension_input.set(root.get("dimension_input", bimodal_ ? 1 : 0).asInt());
     std::vector<std::string> tmpColNames(dimension.get());
-    for (int i=0 ; i<root["colum_names"].size() ; i++) {
-        tmpColNames[i] = root["colum_names"].get(i, "").asString();
+    for (int i=0 ; i<root["column_names"].size() ; i++) {
+        tmpColNames[i] = root["column_names"].get(i, "").asString();
     }
     column_names.set(tmpColNames);
     
@@ -395,7 +395,7 @@ Json::Value xmm::TrainingSet::toJson() const
     root["dimension"] = static_cast<int>(dimension.get());
     root["dimension_input"] = static_cast<int>(dimension_input.get());
     for (int i=0 ; i<dimension.get() ; i++)
-        root["colum_names"][i] = column_names.at(i);
+        root["column_names"][i] = column_names.at(i);
     
     // Add Phrases
     root["phrases"].resize(static_cast<Json::ArrayIndex>(size()));

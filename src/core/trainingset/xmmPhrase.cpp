@@ -117,8 +117,8 @@ max_length_(0)
         data_[1] = NULL;
     
     column_names.resize(dimension.get(), "");
-    for (int i=0 ; i<root["colum_names"].size() ; i++) {
-        column_names[i] = root["colum_names"].get(i, "").asString();
+    for (int i=0 ; i<root["column_names"].size() ; i++) {
+        column_names[i] = root["column_names"].get(i, "").asString();
     }
     
     label.set(root["label"].asString());
@@ -407,7 +407,7 @@ Json::Value xmm::Phrase::toJson() const
     root["length"] = static_cast<int>(length_);
     root["label"] = label.get();
     for (int i=0 ; i<column_names.size() ; i++)
-        root["colum_names"][i] = column_names[i];
+        root["column_names"][i] = column_names[i];
     if (bimodal_) {
         root["data_input"] = array2json(data_[0], length_ * dimension_input.get());
         root["data_output"] = array2json(data_[1], length_ * (dimension.get() - dimension_input.get()));
