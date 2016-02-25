@@ -113,6 +113,7 @@ void xmm::GMM::filter(std::vector<float> const& observation)
     int i(0);
     for (auto &model : models) {
         results.instant_likelihoods[i] = model.second.filter(observation);
+        i++;
     }
     
     updateResults();
