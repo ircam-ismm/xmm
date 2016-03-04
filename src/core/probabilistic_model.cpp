@@ -31,6 +31,7 @@
  */
 
 #include <cmath>
+#include <limits>
 #include "probabilistic_model.h"
 
 #pragma mark -
