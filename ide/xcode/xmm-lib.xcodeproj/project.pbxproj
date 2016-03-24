@@ -259,10 +259,10 @@
 				0B9FE30A1AD1627E007431E3 /* catch.hpp */,
 				0B9FE3201AD29C9A007431E3 /* xmmTestsUtilities.hpp */,
 				0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */,
-				0B9FE31B1AD16613007431E3 /* xmmTestsModelConversion.cpp */,
 				FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */,
 				FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */,
 				0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */,
+				0B9FE31B1AD16613007431E3 /* xmmTestsModelConversion.cpp */,
 				0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */,
 			);
 			name = test;

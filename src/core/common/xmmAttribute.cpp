@@ -34,87 +34,85 @@
 #include <string>
 
 template <>
-void xmm::checkLimits<bool>(bool const& value,
-                            bool const& limit_min,
-                            bool const& limit_max)
-{
-}
+void xmm::checkLimits<bool>(bool const& value, bool const& limit_min,
+                            bool const& limit_max) {}
 
 template <>
 void xmm::checkLimits<std::size_t>(std::size_t const& value,
                                    std::size_t const& limit_min,
-                                   std::size_t const& limit_max)
-{
+                                   std::size_t const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
 void xmm::checkLimits<unsigned char>(unsigned char const& value,
                                      unsigned char const& limit_min,
-                                     unsigned char const& limit_max)
-{
+                                     unsigned char const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
-void xmm::checkLimits<char>(char const& value,
-                            char const& limit_min,
-                            char const& limit_max)
-{
+void xmm::checkLimits<char>(char const& value, char const& limit_min,
+                            char const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
 void xmm::checkLimits<unsigned int>(unsigned int const& value,
                                     unsigned int const& limit_min,
-                                    unsigned int const& limit_max)
-{
+                                    unsigned int const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
-void xmm::checkLimits<int>(int const& value,
-                           int const& limit_min,
-                           int const& limit_max)
-{
+void xmm::checkLimits<int>(int const& value, int const& limit_min,
+                           int const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
-void xmm::checkLimits<long>(long const& value,
-                            long const& limit_min,
-                            long const& limit_max)
-{
+void xmm::checkLimits<long>(long const& value, long const& limit_min,
+                            long const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
-void xmm::checkLimits<float>(float const& value,
-                             float const& limit_min,
-                             float const& limit_max)
-{
+void xmm::checkLimits<float>(float const& value, float const& limit_min,
+                             float const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
-void xmm::checkLimits<double>(double const& value,
-                              double const& limit_min,
-                              double const& limit_max)
-{
+void xmm::checkLimits<double>(double const& value, double const& limit_min,
+                              double const& limit_max) {
     if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +  std::to_string(limit_min) + " ; " + std::to_string(limit_max) + "]");
+        throw std::domain_error("Attribute value out of range. Range: [" +
+                                std::to_string(limit_min) + " ; " +
+                                std::to_string(limit_max) + "]");
 }
 
 template <>
 void xmm::checkLimits<std::string>(std::string const& value,
                                    std::string const& limit_min,
-                                   std::string const& limit_max)
-{
-}
+                                   std::string const& limit_max) {}

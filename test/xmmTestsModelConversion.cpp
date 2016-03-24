@@ -35,7 +35,8 @@
 #define XMM_TESTING
 #include "xmm.h"
 
-//TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal", "[GaussianDistribution]" ) {
+// TEST_CASE( "Convert Gaussian Distribution: unimodal->bimodal",
+// "[GaussianDistribution]" ) {
 //    xmm::GaussianDistribution a(false,
 //                           3,
 //                           0,
@@ -86,7 +87,8 @@
 //    CHECK_VECTOR_APPROX(b.inverseCovariance_input_, invcov_input);
 //}
 //
-//TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal", "[GaussianDistribution]" ) {
+// TEST_CASE( "Convert Gaussian Distribution: bimodal->unimodal",
+// "[GaussianDistribution]" ) {
 //    xmm::GaussianDistribution a(true,
 //                           3,
 //                           2,
@@ -135,10 +137,10 @@
 //    invcov_input[3] = 0.71428571;
 //    CHECK(b.inverseCovariance_input_.empty());
 //    CHECK_VECTOR_APPROX(a.inverseCovariance_input_, invcov_input);
-//    
+//
 //}
 //
-//TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
+// TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
 //    xmm::TrainingSet ts(true, false, 3);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -176,7 +178,8 @@
 //    for (std::size_t i=0; i<3; i++) {
 //        CHECK(a.components[i].mean == b.components[i].mean);
 //        CHECK(a.components[i].covariance == b.components[i].covariance);
-//        CHECK(a.components[i].inverseCovariance_ == b.components[i].inverseCovariance_);
+//        CHECK(a.components[i].inverseCovariance_ ==
+//        b.components[i].inverseCovariance_);
 //        CHECK(a.components[i].inverseCovariance_input_.size() == 0);
 //        CHECK(b.components[i].inverseCovariance_input_.size() == 4);
 //    }
@@ -185,10 +188,11 @@
 //    invcov_c0_input[1] = -278.16304982;
 //    invcov_c0_input[2] = -278.16304982;
 //    invcov_c0_input[3] = 771.67332427;
-//    CHECK_VECTOR_APPROX(b.components[0].inverseCovariance_input_, invcov_c0_input);
+//    CHECK_VECTOR_APPROX(b.components[0].inverseCovariance_input_,
+//    invcov_c0_input);
 //}
 //
-//TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
+// TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
 //    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -226,7 +230,8 @@
 //    for (std::size_t i=0; i<3; i++) {
 //        CHECK(a.components[i].mean == b.components[i].mean);
 //        CHECK(a.components[i].covariance == b.components[i].covariance);
-//        CHECK(a.components[i].inverseCovariance_ == b.components[i].inverseCovariance_);
+//        CHECK(a.components[i].inverseCovariance_ ==
+//        b.components[i].inverseCovariance_);
 //        CHECK(b.components[i].inverseCovariance_input_.size() == 0);
 //        CHECK(a.components[i].inverseCovariance_input_.size() == 4);
 //    }
@@ -235,10 +240,11 @@
 //    invcov_c0_input[1] = -278.16304982;
 //    invcov_c0_input[2] = -278.16304982;
 //    invcov_c0_input[3] = 771.67332427;
-//    CHECK_VECTOR_APPROX(a.components[0].inverseCovariance_input_, invcov_c0_input);
+//    CHECK_VECTOR_APPROX(a.components[0].inverseCovariance_input_,
+//    invcov_c0_input);
 //}
 //
-//TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
+// TEST_CASE( "Convert GMM: unimodal->bimodal", "[GMM]" ) {
 //    xmm::TrainingSet ts(true, false, 3);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -275,29 +281,37 @@
 //    cov_c0[7] = 7.901977752380e-04;
 //    cov_c0[8] = 1.306463534393e-03;
 //    CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
-//    CHECK(a.models[label_a].components[0].inverseCovariance_input_.size() == 0);
+//    CHECK(a.models[label_a].components[0].inverseCovariance_input_.size() ==
+//    0);
 //    xmm::GMM b(a);
 //    CHECK_THROWS(b.makeUnimodal());
 //    CHECK_NOTHROW(b.makeBimodal(2));
 //    CHECK(b.bimodal_);
 //    CHECK(a.models[label_a].mixtureCoeffs == b.models[label_a].mixtureCoeffs);
 //    for (std::size_t i=0; i<3; i++) {
-//        CHECK(a.models[label_a].components[i].mean == b.models[label_a].components[i].mean);
-//        CHECK(a.models[label_a].components[i].covariance == b.models[label_a].components[i].covariance);
-//        CHECK(a.models[label_a].components[i].inverseCovariance_ == b.models[label_a].components[i].inverseCovariance_);
-//        CHECK(a.models[label_a].components[i].inverseCovariance_input_.size() == 0);
-//        CHECK(b.models[label_a].components[i].inverseCovariance_input_.size() == 4);
+//        CHECK(a.models[label_a].components[i].mean ==
+//        b.models[label_a].components[i].mean);
+//        CHECK(a.models[label_a].components[i].covariance ==
+//        b.models[label_a].components[i].covariance);
+//        CHECK(a.models[label_a].components[i].inverseCovariance_ ==
+//        b.models[label_a].components[i].inverseCovariance_);
+//        CHECK(a.models[label_a].components[i].inverseCovariance_input_.size()
+//        == 0);
+//        CHECK(b.models[label_a].components[i].inverseCovariance_input_.size()
+//        == 4);
 //    }
 //    std::vector<double> invcov_c0_input(4);
 //    invcov_c0_input[0] = 171.77395895;
 //    invcov_c0_input[1] = -278.16304982;
 //    invcov_c0_input[2] = -278.16304982;
 //    invcov_c0_input[3] = 771.67332427;
-//    CHECK_VECTOR_APPROX(b.models[label_a].components[0].inverseCovariance_input_, invcov_c0_input);
-//    CHECK_VECTOR_APPROX(b.models[label_b].components[0].inverseCovariance_input_, invcov_c0_input);
+//    CHECK_VECTOR_APPROX(b.models[label_a].components[0].inverseCovariance_input_,
+//    invcov_c0_input);
+//    CHECK_VECTOR_APPROX(b.models[label_b].components[0].inverseCovariance_input_,
+//    invcov_c0_input);
 //}
 //
-//TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
+// TEST_CASE( "Convert GMM: bimodal->unimodal", "[GMM]" ) {
 //    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -340,22 +354,29 @@
 //    CHECK_FALSE(b.bimodal_);
 //    CHECK(a.models[label_a].mixtureCoeffs == b.models[label_a].mixtureCoeffs);
 //    for (std::size_t i=0; i<3; i++) {
-//        CHECK(a.models[label_a].components[i].mean == b.models[label_a].components[i].mean);
-//        CHECK(a.models[label_a].components[i].covariance == b.models[label_a].components[i].covariance);
-//        CHECK(a.models[label_a].components[i].inverseCovariance_ == b.models[label_a].components[i].inverseCovariance_);
-//        CHECK(b.models[label_a].components[i].inverseCovariance_input_.size() == 0);
-//        CHECK(a.models[label_a].components[i].inverseCovariance_input_.size() == 4);
+//        CHECK(a.models[label_a].components[i].mean ==
+//        b.models[label_a].components[i].mean);
+//        CHECK(a.models[label_a].components[i].covariance ==
+//        b.models[label_a].components[i].covariance);
+//        CHECK(a.models[label_a].components[i].inverseCovariance_ ==
+//        b.models[label_a].components[i].inverseCovariance_);
+//        CHECK(b.models[label_a].components[i].inverseCovariance_input_.size()
+//        == 0);
+//        CHECK(a.models[label_a].components[i].inverseCovariance_input_.size()
+//        == 4);
 //    }
 //    std::vector<double> invcov_c0_input(4);
 //    invcov_c0_input[0] = 171.77395895;
 //    invcov_c0_input[1] = -278.16304982;
 //    invcov_c0_input[2] = -278.16304982;
 //    invcov_c0_input[3] = 771.67332427;
-//    CHECK_VECTOR_APPROX(a.models[label_a].components[0].inverseCovariance_input_, invcov_c0_input);
-//    CHECK_VECTOR_APPROX(a.models[label_b].components[0].inverseCovariance_input_, invcov_c0_input);
+//    CHECK_VECTOR_APPROX(a.models[label_a].components[0].inverseCovariance_input_,
+//    invcov_c0_input);
+//    CHECK_VECTOR_APPROX(a.models[label_b].components[0].inverseCovariance_input_,
+//    invcov_c0_input);
 //}
 //
-//TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
+// TEST_CASE( "Convert HMM: unimodal->bimodal", "[HMM]" ) {
 //    xmm::TrainingSet ts(true, false, 3);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -386,7 +407,8 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance,
+//    covariance_state0);
 //    CHECK_FALSE(a.bimodal_);
 //    CHECK(a.states[0].components[0].inverseCovariance_input_.size() == 0);
 //    xmm::HMM b(a);
@@ -395,9 +417,12 @@
 //    CHECK(a.prior == b.prior);
 //    CHECK(a.transition == b.transition);
 //    for (std::size_t i=0; i<a.get_nbStates(); i++) {
-//        CHECK(a.states[i].components[0].mean == b.states[i].components[0].mean);
-//        CHECK(a.states[i].components[0].covariance == b.states[i].components[0].covariance);
-//        CHECK(a.states[i].components[0].inverseCovariance_ == b.states[i].components[0].inverseCovariance_);
+//        CHECK(a.states[i].components[0].mean ==
+//        b.states[i].components[0].mean);
+//        CHECK(a.states[i].components[0].covariance ==
+//        b.states[i].components[0].covariance);
+//        CHECK(a.states[i].components[0].inverseCovariance_ ==
+//        b.states[i].components[0].inverseCovariance_);
 //        CHECK(a.states[i].components[0].inverseCovariance_input_.size() == 0);
 //        CHECK(b.states[i].components[0].inverseCovariance_input_.size() == 4);
 //    }
@@ -406,10 +431,11 @@
 //    invcov_state0_input[1] = -258.98593022;
 //    invcov_state0_input[2] = -258.98593022;
 //    invcov_state0_input[3] = 842.34967393;
-//    CHECK_VECTOR_APPROX(b.states[0].components[0].inverseCovariance_input_, invcov_state0_input);
+//    CHECK_VECTOR_APPROX(b.states[0].components[0].inverseCovariance_input_,
+//    invcov_state0_input);
 //}
 //
-//TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
+// TEST_CASE( "Convert HMM: bimodal->unimodal", "[HMM]" ) {
 //    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -440,13 +466,15 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance,
+//    covariance_state0);
 //    std::vector<double> invcov_state0_input(4);
 //    invcov_state0_input[0] = 170.12232422;
 //    invcov_state0_input[1] = -258.98593022;
 //    invcov_state0_input[2] = -258.98593022;
 //    invcov_state0_input[3] = 842.34967393;
-//    CHECK_VECTOR_APPROX(a.states[0].components[0].inverseCovariance_input_, invcov_state0_input);
+//    CHECK_VECTOR_APPROX(a.states[0].components[0].inverseCovariance_input_,
+//    invcov_state0_input);
 //    CHECK(a.bimodal_);
 //    CHECK(a.states[0].components[0].inverseCovariance_input_.size() == 4);
 //    xmm::HMM b(a);
@@ -456,16 +484,20 @@
 //    CHECK(a.prior == b.prior);
 //    CHECK(a.transition == b.transition);
 //    for (std::size_t i=0; i<a.get_nbStates(); i++) {
-//        CHECK(a.states[i].components[0].mean == b.states[i].components[0].mean);
-//        CHECK(a.states[i].components[0].covariance == b.states[i].components[0].covariance);
-//        CHECK(a.states[i].components[0].inverseCovariance_ == b.states[i].components[0].inverseCovariance_);
+//        CHECK(a.states[i].components[0].mean ==
+//        b.states[i].components[0].mean);
+//        CHECK(a.states[i].components[0].covariance ==
+//        b.states[i].components[0].covariance);
+//        CHECK(a.states[i].components[0].inverseCovariance_ ==
+//        b.states[i].components[0].inverseCovariance_);
 //        CHECK(a.states[i].components[0].inverseCovariance_input_.size() == 4);
 //        CHECK(b.states[i].components[0].inverseCovariance_input_.size() == 0);
 //    }
 //}
 //
 //
-//TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]" ) {
+// TEST_CASE( "Convert HierarchicalHMM: unimodal->bimodal", "[HierarchicalHMM]"
+// ) {
 //    xmm::TrainingSet ts(true, false, 3);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -502,30 +534,39 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance,
+//    covariance_state0);
 //    CHECK_FALSE(a.bimodal_);
-//    CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size() == 0);
+//    CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size()
+//    == 0);
 //    xmm::HierarchicalHMM b(a);
 //    b.makeBimodal(2);
 //    CHECK(b.bimodal_);
 //    CHECK(a.models[label_a].prior == b.models[label_a].prior);
 //    CHECK(a.models[label_a].transition == b.models[label_a].transition);
 //    for (std::size_t i=0; i<a.get_nbStates(); i++) {
-//        CHECK(a.models[label_a].states[i].components[0].mean == b.models[label_a].states[i].components[0].mean);
-//        CHECK(a.models[label_a].states[i].components[0].covariance == b.models[label_a].states[i].components[0].covariance);
-//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_ == b.models[label_a].states[i].components[0].inverseCovariance_);
-//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_input_.size() == 0);
-//        CHECK(b.models[label_a].states[i].components[0].inverseCovariance_input_.size() == 4);
+//        CHECK(a.models[label_a].states[i].components[0].mean ==
+//        b.models[label_a].states[i].components[0].mean);
+//        CHECK(a.models[label_a].states[i].components[0].covariance ==
+//        b.models[label_a].states[i].components[0].covariance);
+//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_ ==
+//        b.models[label_a].states[i].components[0].inverseCovariance_);
+//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_input_.size()
+//        == 0);
+//        CHECK(b.models[label_a].states[i].components[0].inverseCovariance_input_.size()
+//        == 4);
 //    }
 //    std::vector<double> invcov_state0_input(4);
 //    invcov_state0_input[0] = 170.12232422;
 //    invcov_state0_input[1] = -258.98593022;
 //    invcov_state0_input[2] = -258.98593022;
 //    invcov_state0_input[3] = 842.34967393;
-//    CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].inverseCovariance_input_, invcov_state0_input);
+//    CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].inverseCovariance_input_,
+//    invcov_state0_input);
 //}
 //
-//TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]" ) {
+// TEST_CASE( "Convert HierarchicalHMM: bimodal->unimodal", "[HierarchicalHMM]"
+// ) {
 //    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
@@ -562,15 +603,18 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance,
+//    covariance_state0);
 //    std::vector<double> invcov_state0_input(4);
 //    invcov_state0_input[0] = 170.12232422;
 //    invcov_state0_input[1] = -258.98593022;
 //    invcov_state0_input[2] = -258.98593022;
 //    invcov_state0_input[3] = 842.34967393;
-//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].inverseCovariance_input_, invcov_state0_input);
+//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].inverseCovariance_input_,
+//    invcov_state0_input);
 //    CHECK(a.bimodal_);
-//    CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size() == 4);
+//    CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size()
+//    == 4);
 //    xmm::HierarchicalHMM b(a);
 //    CHECK_THROWS(b.makeBimodal(2););
 //    CHECK_NOTHROW(b.makeUnimodal());
@@ -580,11 +624,16 @@
 //    CHECK(a.models[label_b].prior == b.models[label_b].prior);
 //    CHECK(a.models[label_b].transition == b.models[label_b].transition);
 //    for (std::size_t i=0; i<a.get_nbStates(); i++) {
-//        CHECK(a.models[label_a].states[i].components[0].mean == b.models[label_a].states[i].components[0].mean);
-//        CHECK(a.models[label_a].states[i].components[0].covariance == b.models[label_a].states[i].components[0].covariance);
-//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_ == b.models[label_a].states[i].components[0].inverseCovariance_);
-//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_input_.size() == 4);
-//        CHECK(b.models[label_a].states[i].components[0].inverseCovariance_input_.size() == 0);
+//        CHECK(a.models[label_a].states[i].components[0].mean ==
+//        b.models[label_a].states[i].components[0].mean);
+//        CHECK(a.models[label_a].states[i].components[0].covariance ==
+//        b.models[label_a].states[i].components[0].covariance);
+//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_ ==
+//        b.models[label_a].states[i].components[0].inverseCovariance_);
+//        CHECK(a.models[label_a].states[i].components[0].inverseCovariance_input_.size()
+//        == 4);
+//        CHECK(b.models[label_a].states[i].components[0].inverseCovariance_input_.size()
+//        == 0);
 //    }
 //}
 //

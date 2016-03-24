@@ -33,149 +33,147 @@
 #ifndef xmmKMeans_h
 #define xmmKMeans_h
 
-#include "../../core/model/xmmModelSingleClass.hpp"
 #include "../../core/model/xmmModelConfiguration.hpp"
+#include "../../core/model/xmmModelSingleClass.hpp"
 #include "xmmKMeansParameters.hpp"
 #include "xmmKMeansResults.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @ingroup KMeans
+ @brief K-Means Clustering algorithm
+ */
+class KMeans : public Writable {
+  public:
+    static const std::size_t DEFAULT_MAX_ITERATIONS = 50;
+    static const float DEFAULT_RELATIVE_VARIATION_THRESHOLD() { return 1e-20; }
+
     /**
-     @ingroup KMeans
-     @brief K-Means Clustering algorithm
+     @brief Type of initizalization of the K-Means algorithm
      */
-    class KMeans : public Writable {
-    public:
-        static const std::size_t DEFAULT_MAX_ITERATIONS = 50;
-        static const float DEFAULT_RELATIVE_VARIATION_THRESHOLD() { return 1e-20; }
-        
+    enum class InitializationMode {
         /**
-         @brief Type of initizalization of the K-Means algorithm
+         @brief random initialization (scaled using training set variance)
          */
-        enum class InitializationMode {
-            /**
-             @brief random initialization (scaled using training set variance)
-             */
-            Random,
-            
-            /**
-             @brief biased initialization: initialiazed with the first phrase
-             */
-            Biased
-        };
-        
+        Random,
+
         /**
-         @brief Default Constructor
-         @param clusters number of clusters
+         @brief biased initialization: initialiazed with the first phrase
          */
-        KMeans(std::size_t clusters=1);
-        
-        /**
-         @brief Copy Constructor
-         @param src Source Model
-         */
-        KMeans(KMeans const& src);
-        
-        /**
-         @brief Assignment
-         @param src Source Model
-         */
-        KMeans& operator=(KMeans const& src);
-        
-        /**
-         @brief Train the K-Means clutering from the given training set
-         @param trainingSet Training Set
-         */
-        void train(TrainingSet *trainingSet);
-        
-        /**
-         @brief Resets the fitering process (cluster association)
-         */
-        void reset();
-        
-        /**
-         @brief filters a incoming observation (performs cluster association)
-         @details the results of the inference process are stored in the results attribute
-         @param observation observation vector
-         */
-        void filter(std::vector<float> const& observation);
-        
-        /** @name Json I/O */
-        ///@{
-        
-        /**
-         @brief Write the object to a JSON Structure
-         @return Json value containing the object's information
-         */
-        Json::Value toJson() const;
-        
-        /**
-         @brief Read the object from a JSON Structure
-         @param root JSON value containing the object's information
-         @throws JsonException if the JSON value has a wrong format
-         */
-        void fromJson(Json::Value const& root);
-        
-        ///@}
-        
-        /**
-         @brief Set of Parameters shared among classes
-         */
-        std::shared_ptr<SharedParameters> shared_parameters;
-        
-        /**
-         @brief Configuration (default and class-specific parameters)
-         */
-        Configuration<KMeans> configuration;
-        
-        /**
-         @brief Results of the cluster association after update with an observation
-         */
-        Results<KMeans> results;
-        
-        /**
-         @brief Clusters centers
-         */
-        std::vector<float> centers;
-        
-        /**
-         @brief Type of initialization for the K-Means Algorithm
-         */
-        KMeans::InitializationMode initialization_mode;
-        
-    protected:
-        /**
-         @brief randomzie Cluster Centers (normalized width data variance)
-         of the first phrase of the training set
-         */
-        void randomizeClusters(std::vector<float> const& trainingSetVariance);
-        
-        /**
-         @brief Initialize the clusters using a regular segmentation
-         of the first phrase of the training set
-         */
-        void initClustersWithFirstPhrase(Phrase *phrase);
-        
-        /**
-         @brief Update method for training
-         @details computes the cluster associated with each data points, and update
-         Cluster centers
-         */
-        void updateCenters(std::vector<float>& previous_centers, TrainingSet *trainingSet);
+        Biased
     };
-    
+
     /**
-     @brief Simple Euclidian distance measure
-     @param vector1 first data point
-     @param vector2 first data point
-     @param dimension dimension of the data space
-     @return euclidian distance between the 2 points
+     @brief Default Constructor
+     @param clusters number of clusters
      */
-    template <typename T>
-    T euclidean_distance(const T* vector1,
-                         const T* vector2,
-                         std::size_t dimension);
-    
+    KMeans(std::size_t clusters = 1);
+
+    /**
+     @brief Copy Constructor
+     @param src Source Model
+     */
+    KMeans(KMeans const& src);
+
+    /**
+     @brief Assignment
+     @param src Source Model
+     */
+    KMeans& operator=(KMeans const& src);
+
+    /**
+     @brief Train the K-Means clutering from the given training set
+     @param trainingSet Training Set
+     */
+    void train(TrainingSet* trainingSet);
+
+    /**
+     @brief Resets the fitering process (cluster association)
+     */
+    void reset();
+
+    /**
+     @brief filters a incoming observation (performs cluster association)
+     @details the results of the inference process are stored in the results
+     attribute
+     @param observation observation vector
+     */
+    void filter(std::vector<float> const& observation);
+
+    /** @name Json I/O */
+    ///@{
+
+    /**
+     @brief Write the object to a JSON Structure
+     @return Json value containing the object's information
+     */
+    Json::Value toJson() const;
+
+    /**
+     @brief Read the object from a JSON Structure
+     @param root JSON value containing the object's information
+     @throws JsonException if the JSON value has a wrong format
+     */
+    void fromJson(Json::Value const& root);
+
+    ///@}
+
+    /**
+     @brief Set of Parameters shared among classes
+     */
+    std::shared_ptr<SharedParameters> shared_parameters;
+
+    /**
+     @brief Configuration (default and class-specific parameters)
+     */
+    Configuration<KMeans> configuration;
+
+    /**
+     @brief Results of the cluster association after update with an observation
+     */
+    Results<KMeans> results;
+
+    /**
+     @brief Clusters centers
+     */
+    std::vector<float> centers;
+
+    /**
+     @brief Type of initialization for the K-Means Algorithm
+     */
+    KMeans::InitializationMode initialization_mode;
+
+  protected:
+    /**
+     @brief randomzie Cluster Centers (normalized width data variance)
+     of the first phrase of the training set
+     */
+    void randomizeClusters(std::vector<float> const& trainingSetVariance);
+
+    /**
+     @brief Initialize the clusters using a regular segmentation
+     of the first phrase of the training set
+     */
+    void initClustersWithFirstPhrase(Phrase* phrase);
+
+    /**
+     @brief Update method for training
+     @details computes the cluster associated with each data points, and update
+     Cluster centers
+     */
+    void updateCenters(std::vector<float>& previous_centers,
+                       TrainingSet* trainingSet);
+};
+
+/**
+ @brief Simple Euclidian distance measure
+ @param vector1 first data point
+ @param vector2 first data point
+ @param dimension dimension of the data space
+ @return euclidian distance between the 2 points
+ */
+template <typename T>
+T euclidean_distance(const T* vector1, const T* vector2, std::size_t dimension);
 }
 
 #endif

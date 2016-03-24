@@ -33,123 +33,128 @@
 #ifndef xmmModelSharedParameters_h
 #define xmmModelSharedParameters_h
 
-#include "../trainingset/xmmTrainingSet.hpp"
 #include "../common/xmmEvents.hpp"
+#include "../trainingset/xmmTrainingSet.hpp"
 #include <mutex>
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @defgroup Model [Core] Probabilistic Models
+ */
+
+/**
+ @ingroup Model
+ @brief Shared Parameters for models with multiple classes.
+ @details This structure is shared by pointer between the class-specific models
+ to avoid
+ data duplication and ensures that all class-specific models share the same
+ common attributes.
+ */
+class SharedParameters : public Writable {
+  public:
+    template <typename SingleClassModel, typename ModelType>
+    friend class Model;
+    friend class SingleClassProbabilisticModel;
+    friend class SingleClassGMM;
+    friend class SingleClassHMM;
+    friend class HierarchicalHMM;
+    friend class GMM;
+
     /**
-     @defgroup Model [Core] Probabilistic Models
+     @brief Default Constructor
      */
-    
+    SharedParameters();
+
     /**
-     @ingroup Model
-     @brief Shared Parameters for models with multiple classes.
-     @details This structure is shared by pointer between the class-specific models to avoid
-     data duplication and ensures that all class-specific models share the same common attributes.
+     @brief Copy Constructor
+     @param src Source Object
      */
-    class SharedParameters : public Writable
-    {
-    public:
-        template<typename SingleClassModel, typename ModelType> friend class Model;
-        friend class SingleClassProbabilisticModel;
-        friend class SingleClassGMM;
-        friend class SingleClassHMM;
-        friend class HierarchicalHMM;
-        friend class GMM;
-        
-        /**
-         @brief Default Constructor
-         */
-        SharedParameters();
-        
-        /**
-         @brief Copy Constructor
-         @param src Source Object
-         */
-        SharedParameters(SharedParameters const& src);
-        
-        /**
-         @brief Constructor from Json Structure
-         @param root Json Value
-         */
-        explicit SharedParameters(Json::Value const& root);
-        
-        /**
-         @brief Assignment
-         @param src Source Object
-         */
-        SharedParameters& operator=(SharedParameters const& src);
-        
-        /** @name Json I/O */
-        ///@{
-        
-        /**
-         @brief Write the object to a JSON Structure
-         @return Json value containing the object's information
-         */
-        virtual Json::Value toJson() const;
-        
-        /**
-         @brief Read the object from a JSON Structure
-         @param root JSON value containing the object's information
-         @throws JsonException if the JSON value has a wrong format
-         */
-        virtual void fromJson(Json::Value const& root);
-        
-        ///@}
-        
-        /**
-         @brief defines if the phrase is bimodal (true) or unimodal (false)
-         */
-        Attribute<bool> bimodal;
-        
-        /**
-         @brief total dimension of the training data
-         */
-        Attribute<std::size_t> dimension;
-        
-        /**
-         @brief Dimension of the input modality
-         */
-        Attribute<std::size_t> dimension_input;
-        
-        /**
-         @brief labels of the columns of input/output data (e.g. descriptor names)
-         */
-        Attribute<std::vector<std::string>> column_names;
-        
-        /**
-         @brief Minimum number of iterations of the EM algorithm
-         */
-        Attribute<unsigned int> em_algorithm_min_iterations;
-        
-        /**
-         @brief Maximum number of iterations of the EM algorithm.
-         @details If this value is superior to
-         minSteps, this criterion is used. Otherwise, only the em_algorithm_percent_chg criterion applies.
-         */
-        Attribute<unsigned int> em_algorithm_max_iterations;
-        
-        /**
-         @brief log-likelihood difference threshold necessary to stop the EM algorithm.
-         @details When the percent-change in likelihood of the training data given the
-         estimated parameters gets under this threshold, the EM algorithm is stopped.
-         */
-        Attribute<double> em_algorithm_percent_chg;
-        
-        /**
-         @brief Size of the window (in samples) used to compute the likelihoods
-         */
-        Attribute<std::size_t> likelihood_window;
-        
-    protected:
-        /**
-         @brief notification function called when a member attribute is changed
-         */
-        virtual void onAttributeChange(AttributeBase* attr_pointer);
-    };
+    SharedParameters(SharedParameters const& src);
+
+    /**
+     @brief Constructor from Json Structure
+     @param root Json Value
+     */
+    explicit SharedParameters(Json::Value const& root);
+
+    /**
+     @brief Assignment
+     @param src Source Object
+     */
+    SharedParameters& operator=(SharedParameters const& src);
+
+    /** @name Json I/O */
+    ///@{
+
+    /**
+     @brief Write the object to a JSON Structure
+     @return Json value containing the object's information
+     */
+    virtual Json::Value toJson() const;
+
+    /**
+     @brief Read the object from a JSON Structure
+     @param root JSON value containing the object's information
+     @throws JsonException if the JSON value has a wrong format
+     */
+    virtual void fromJson(Json::Value const& root);
+
+    ///@}
+
+    /**
+     @brief defines if the phrase is bimodal (true) or unimodal (false)
+     */
+    Attribute<bool> bimodal;
+
+    /**
+     @brief total dimension of the training data
+     */
+    Attribute<std::size_t> dimension;
+
+    /**
+     @brief Dimension of the input modality
+     */
+    Attribute<std::size_t> dimension_input;
+
+    /**
+     @brief labels of the columns of input/output data (e.g. descriptor names)
+     */
+    Attribute<std::vector<std::string>> column_names;
+
+    /**
+     @brief Minimum number of iterations of the EM algorithm
+     */
+    Attribute<unsigned int> em_algorithm_min_iterations;
+
+    /**
+     @brief Maximum number of iterations of the EM algorithm.
+     @details If this value is superior to
+     minSteps, this criterion is used. Otherwise, only the
+     em_algorithm_percent_chg criterion applies.
+     */
+    Attribute<unsigned int> em_algorithm_max_iterations;
+
+    /**
+     @brief log-likelihood difference threshold necessary to stop the EM
+     algorithm.
+     @details When the percent-change in likelihood of the training data given
+     the
+     estimated parameters gets under this threshold, the EM algorithm is
+     stopped.
+     */
+    Attribute<double> em_algorithm_percent_chg;
+
+    /**
+     @brief Size of the window (in samples) used to compute the likelihoods
+     */
+    Attribute<std::size_t> likelihood_window;
+
+  protected:
+    /**
+     @brief notification function called when a member attribute is changed
+     */
+    virtual void onAttributeChange(AttributeBase* attr_pointer);
+};
 }
 
 #endif

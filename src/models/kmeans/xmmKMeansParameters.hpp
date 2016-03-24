@@ -35,94 +35,93 @@
 
 #include "../../core/model/xmmModelParameters.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @defgroup KMeans [Models] K-Means Algorithm
+ */
+
+/**
+ Dummy structure for template specialization
+ */
+struct KMeans;
+
+/**
+ @ingroup KMeans
+ @brief Parameters specific to each class of a K-Means Algorithm
+ */
+template <>
+class ClassParameters<KMeans> : public Writable {
+  public:
     /**
-     @defgroup KMeans [Models] K-Means Algorithm
+     @brief Default Constructor
      */
-    
+    ClassParameters();
+
     /**
-     Dummy structure for template specialization
+     @brief Copy Constructor
+     @param src Source Object
      */
-    struct KMeans;
-    
+    ClassParameters(ClassParameters<KMeans> const& src);
+
     /**
-     @ingroup KMeans
-     @brief Parameters specific to each class of a K-Means Algorithm
+     @brief Constructor from Json Structure
+     @param root Json Value
      */
-    template<>
-    class ClassParameters<KMeans> : public Writable
-    {
-    public:
-        /**
-         @brief Default Constructor
-         */
-        ClassParameters();
-        
-        /**
-         @brief Copy Constructor
-         @param src Source Object
-         */
-        ClassParameters(ClassParameters<KMeans> const& src);
-        
-        /**
-         @brief Constructor from Json Structure
-         @param root Json Value
-         */
-        explicit ClassParameters(Json::Value const& root);
-        
-        /**
-         @brief Assignment
-         @param src Source Object
-         */
-        ClassParameters& operator=(ClassParameters<KMeans> const& src);
-        
-        virtual ~ClassParameters() {}
-        
-        /** @name Json I/O */
-        ///@{
-        
-        /**
-         @brief Write the object to a JSON Structure
-         @return Json value containing the object's information
-         */
-        Json::Value toJson() const;
-        
-        /**
-         @brief Read the object from a JSON Structure
-         @param root JSON value containing the object's information
-         @throws JsonException if the JSON value has a wrong format
-         */
-        virtual void fromJson(Json::Value const& root);
-        
-        ///@}
-        
-        /**
-         @brief specifies if parameters have changed (model is invalid)
-         */
-        bool changed = false;
-        
-        /**
-         @brief Number of Gaussian Mixture Components
-         */
-        Attribute<std::size_t> clusters;
-        
-        /**
-         @brief Maximum number of iterations of the training update
-         */
-        Attribute<std::size_t> max_iterations;
-        
-        /**
-         @brief threshold (as relative distance between cluster) required to define convergence
-         */
-        Attribute<float> relative_distance_threshold;
-        
-    protected:
-        /**
-         @brief notification function called when a member attribute is changed
-         */
-        virtual void onAttributeChange(AttributeBase* attr_pointer);
-    };
+    explicit ClassParameters(Json::Value const& root);
+
+    /**
+     @brief Assignment
+     @param src Source Object
+     */
+    ClassParameters& operator=(ClassParameters<KMeans> const& src);
+
+    virtual ~ClassParameters() {}
+
+    /** @name Json I/O */
+    ///@{
+
+    /**
+     @brief Write the object to a JSON Structure
+     @return Json value containing the object's information
+     */
+    Json::Value toJson() const;
+
+    /**
+     @brief Read the object from a JSON Structure
+     @param root JSON value containing the object's information
+     @throws JsonException if the JSON value has a wrong format
+     */
+    virtual void fromJson(Json::Value const& root);
+
+    ///@}
+
+    /**
+     @brief specifies if parameters have changed (model is invalid)
+     */
+    bool changed = false;
+
+    /**
+     @brief Number of Gaussian Mixture Components
+     */
+    Attribute<std::size_t> clusters;
+
+    /**
+     @brief Maximum number of iterations of the training update
+     */
+    Attribute<std::size_t> max_iterations;
+
+    /**
+     @brief threshold (as relative distance between cluster) required to define
+     convergence
+     */
+    Attribute<float> relative_distance_threshold;
+
+  protected:
+    /**
+     @brief notification function called when a member attribute is changed
+     */
+    virtual void onAttributeChange(AttributeBase* attr_pointer);
+};
 }
 
 #endif

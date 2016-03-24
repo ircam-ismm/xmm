@@ -35,7 +35,8 @@
 #define XMM_TESTING
 #include "xmm.h"
 
-//TEST_CASE( "Extract Gaussian Distribution: arbitrary dimensions", "[GaussianDistribution]" ) {
+// TEST_CASE( "Extract Gaussian Distribution: arbitrary dimensions",
+// "[GaussianDistribution]" ) {
 //    xmm::GaussianDistribution a(false,
 //                           3,
 //                           0);
@@ -69,7 +70,8 @@
 //}
 //
 //
-//TEST_CASE( "Extract Gaussian Distribution: input & output", "[GaussianDistribution]" ) {
+// TEST_CASE( "Extract Gaussian Distribution: input & output",
+// "[GaussianDistribution]" ) {
 //    xmm::GaussianDistribution a(true,
 //                           3,
 //                           2);
@@ -107,7 +109,8 @@
 ////    CHECK(c.mean.size() == 1);
 //}
 //
-//TEST_CASE( "Extract Gaussian Distribution: inverse model", "[GaussianDistribution]" ) {
+// TEST_CASE( "Extract Gaussian Distribution: inverse model",
+// "[GaussianDistribution]" ) {
 //    xmm::GaussianDistribution a(true,
 //                           3,
 //                           2);
@@ -143,7 +146,7 @@
 ////    CHECK(b.mean[2] == Approx(a.mean[1]));
 //}
 //
-//TEST_CASE( "Extract GMM: arbitrary dimensions", "[GMM]" ) {
+// TEST_CASE( "Extract GMM: arbitrary dimensions", "[GMM]" ) {
 //    xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
 //                        xmm::Multimodality::Unimodal);
 //    ts.dimension.set(3);
@@ -190,18 +193,26 @@
 ////    new_covariance[1] = 1.792829737244e-03;
 ////    new_covariance[2] = 1.792829737244e-03;
 ////    new_covariance[3] = 1.398498568044e-02;
-////    CHECK_VECTOR_APPROX(b.models[label_a].components[0].covariance, new_covariance);
-////    CHECK_VECTOR_APPROX(b.models[label_a].mixtureCoeffs, a.models[label_a].mixtureCoeffs);
-////    CHECK(b.models[label_a].components[0].mean[0] == Approx(a.models[label_a].components[0].mean[2]));
-////    CHECK(b.models[label_a].components[0].mean[1] == Approx(a.models[label_a].components[0].mean[0]));
-////    CHECK_VECTOR_APPROX(b.models[label_b].components[0].covariance, new_covariance);
-////    CHECK_VECTOR_APPROX(b.models[label_b].mixtureCoeffs, a.models[label_b].mixtureCoeffs);
-////    CHECK(b.models[label_b].components[0].mean[0] == Approx(a.models[label_b].components[0].mean[2]));
-////    CHECK(b.models[label_b].components[0].mean[1] == Approx(a.models[label_b].components[0].mean[0]));
+////    CHECK_VECTOR_APPROX(b.models[label_a].components[0].covariance,
+///new_covariance);
+////    CHECK_VECTOR_APPROX(b.models[label_a].mixtureCoeffs,
+///a.models[label_a].mixtureCoeffs);
+////    CHECK(b.models[label_a].components[0].mean[0] ==
+///Approx(a.models[label_a].components[0].mean[2]));
+////    CHECK(b.models[label_a].components[0].mean[1] ==
+///Approx(a.models[label_a].components[0].mean[0]));
+////    CHECK_VECTOR_APPROX(b.models[label_b].components[0].covariance,
+///new_covariance);
+////    CHECK_VECTOR_APPROX(b.models[label_b].mixtureCoeffs,
+///a.models[label_b].mixtureCoeffs);
+////    CHECK(b.models[label_b].components[0].mean[0] ==
+///Approx(a.models[label_b].components[0].mean[2]));
+////    CHECK(b.models[label_b].components[0].mean[1] ==
+///Approx(a.models[label_b].components[0].mean[0]));
 //}
 //
 //
-//TEST_CASE( "Extract GMM: input & output", "[GMM]" ) {
+// TEST_CASE( "Extract GMM: input & output", "[GMM]" ) {
 //    xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
 //                        xmm::Multimodality::Bimodal);
 //    ts.dimension.set(3);
@@ -246,22 +257,28 @@
 ////    new_covariance[1] = 5.041130937517e-03;
 ////    new_covariance[2] = 5.041130937517e-03;
 ////    new_covariance[3] = 3.113048333532e-03;
-////    CHECK_VECTOR_APPROX(b.models[label_a].components[0].covariance, new_covariance);
-////    CHECK_VECTOR_APPROX(b.models[label_b].components[0].covariance, new_covariance);
-////    CHECK(b.models[label_a].components[0].mean[0] == Approx(a.models[label_a].components[0].mean[0]));
-////    CHECK(b.models[label_a].components[0].mean[1] == Approx(a.models[label_a].components[0].mean[1]));
+////    CHECK_VECTOR_APPROX(b.models[label_a].components[0].covariance,
+///new_covariance);
+////    CHECK_VECTOR_APPROX(b.models[label_b].components[0].covariance,
+///new_covariance);
+////    CHECK(b.models[label_a].components[0].mean[0] ==
+///Approx(a.models[label_a].components[0].mean[0]));
+////    CHECK(b.models[label_a].components[0].mean[1] ==
+///Approx(a.models[label_a].components[0].mean[1]));
 ////    xmm::GMM c = a.extractSubmodel_output();
 ////    CHECK_FALSE(c.bimodal_);
 ////    CHECK(c.models[label_a].dimension_ == 1);
 ////    new_covariance.resize(1);
 ////    new_covariance[0] = 1.306463534393e-03;
-////    CHECK_VECTOR_APPROX(c.models[label_a].components[0].covariance, new_covariance);
-////    CHECK(c.models[label_a].components[0].mean[0] == Approx(a.models[label_a].components[0].mean[2]));
+////    CHECK_VECTOR_APPROX(c.models[label_a].components[0].covariance,
+///new_covariance);
+////    CHECK(c.models[label_a].components[0].mean[0] ==
+///Approx(a.models[label_a].components[0].mean[2]));
 ////    CHECK(c.models[label_a].components[0].mean.size() == 1);
 //
 //}
 //
-//TEST_CASE( "Extract GMM: inverse model", "[GMM]" ) {
+// TEST_CASE( "Extract GMM: inverse model", "[GMM]" ) {
 //    xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
 //                        xmm::Multimodality::Bimodal);
 //    ts.dimension.set(3);
@@ -311,14 +328,22 @@
 ////    new_covariance[6] = 7.901977752380e-04;
 ////    new_covariance[7] = 5.041130937517e-03;
 ////    new_covariance[8] = 3.113048333532e-03;
-////    CHECK_VECTOR_APPROX(b.models[label_a].components[0].covariance, new_covariance);
-////    CHECK(b.models[label_a].components[0].mean[0] == Approx(a.models[label_a].components[0].mean[2]));
-////    CHECK(b.models[label_a].components[0].mean[1] == Approx(a.models[label_a].components[0].mean[0]));
-////    CHECK(b.models[label_a].components[0].mean[2] == Approx(a.models[label_a].components[0].mean[1]));
-////    CHECK_VECTOR_APPROX(b.models[label_b].components[0].covariance, new_covariance);
-////    CHECK(b.models[label_b].components[0].mean[0] == Approx(a.models[label_b].components[0].mean[2]));
-////    CHECK(b.models[label_b].components[0].mean[1] == Approx(a.models[label_b].components[0].mean[0]));
-////    CHECK(b.models[label_b].components[0].mean[2] == Approx(a.models[label_b].components[0].mean[1]));
+////    CHECK_VECTOR_APPROX(b.models[label_a].components[0].covariance,
+///new_covariance);
+////    CHECK(b.models[label_a].components[0].mean[0] ==
+///Approx(a.models[label_a].components[0].mean[2]));
+////    CHECK(b.models[label_a].components[0].mean[1] ==
+///Approx(a.models[label_a].components[0].mean[0]));
+////    CHECK(b.models[label_a].components[0].mean[2] ==
+///Approx(a.models[label_a].components[0].mean[1]));
+////    CHECK_VECTOR_APPROX(b.models[label_b].components[0].covariance,
+///new_covariance);
+////    CHECK(b.models[label_b].components[0].mean[0] ==
+///Approx(a.models[label_b].components[0].mean[2]));
+////    CHECK(b.models[label_b].components[0].mean[1] ==
+///Approx(a.models[label_b].components[0].mean[0]));
+////    CHECK(b.models[label_b].components[0].mean[2] ==
+///Approx(a.models[label_b].components[0].mean[1]));
 //}
 //
 ////TEST_CASE( "Extract HMM: arbitrary dimensions", "[HMM]" ) {
@@ -352,7 +377,8 @@
 ////    covariance_state0[6] = 1.045622665096e-03;
 ////    covariance_state0[7] = 3.960464278701e-04;
 ////    covariance_state0[8] = 1.131260901171e-03;
-////    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
+////    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance,
+///covariance_state0);
 //////    CHECK_FALSE(a.bimodal_);
 //////    CHECK(a.states[0].components[0].inverseCovariance_input_.size() == 0);
 //////    std::vector<std::size_t> columns(2);
@@ -366,10 +392,14 @@
 //////    new_covariance[1] = 1.045622665096e-03;
 //////    new_covariance[2] = 1.045622665096e-03;
 //////    new_covariance[3] = 1.105028519640e-02;
-//////    CHECK_VECTOR_APPROX(b.states[0].components[0].covariance, new_covariance);
-//////    CHECK_VECTOR_APPROX(b.states[0].mixtureCoeffs, a.states[0].mixtureCoeffs);
-//////    CHECK(b.states[0].components[0].mean[0] == Approx(a.states[0].components[0].mean[2]));
-//////    CHECK(b.states[0].components[0].mean[1] == Approx(a.states[0].components[0].mean[0]));
+//////    CHECK_VECTOR_APPROX(b.states[0].components[0].covariance,
+///new_covariance);
+//////    CHECK_VECTOR_APPROX(b.states[0].mixtureCoeffs,
+///a.states[0].mixtureCoeffs);
+//////    CHECK(b.states[0].components[0].mean[0] ==
+///Approx(a.states[0].components[0].mean[2]));
+//////    CHECK(b.states[0].components[0].mean[1] ==
+///Approx(a.states[0].components[0].mean[0]));
 ////}
 ////
 ////
@@ -407,7 +437,8 @@
 ////    covariance_state0[6] = 1.045622665096e-03;
 ////    covariance_state0[7] = 3.960464278701e-04;
 ////    covariance_state0[8] = 1.131260901171e-03;
-////    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
+////    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance,
+///covariance_state0);
 //////    CHECK(a.bimodal_);
 //////    xmm::HMM b = a.extractSubmodel_input();
 //////    CHECK_FALSE(b.bimodal_);
@@ -417,18 +448,25 @@
 //////    new_covariance[1] = 3.397482636225e-03;
 //////    new_covariance[2] = 3.397482636225e-03;
 //////    new_covariance[3] = 2.231733755155e-03;
-//////    CHECK_VECTOR_APPROX(b.states[0].components[0].covariance, new_covariance);
-//////    CHECK_VECTOR_APPROX(b.states[0].mixtureCoeffs, a.states[0].mixtureCoeffs);
-//////    CHECK(b.states[0].components[0].mean[0] == Approx(a.states[0].components[0].mean[0]));
-//////    CHECK(b.states[0].components[0].mean[1] == Approx(a.states[0].components[0].mean[1]));
+//////    CHECK_VECTOR_APPROX(b.states[0].components[0].covariance,
+///new_covariance);
+//////    CHECK_VECTOR_APPROX(b.states[0].mixtureCoeffs,
+///a.states[0].mixtureCoeffs);
+//////    CHECK(b.states[0].components[0].mean[0] ==
+///Approx(a.states[0].components[0].mean[0]));
+//////    CHECK(b.states[0].components[0].mean[1] ==
+///Approx(a.states[0].components[0].mean[1]));
 //////    xmm::HMM c = a.extractSubmodel_output();
 //////    CHECK_FALSE(c.bimodal_);
 //////    CHECK(c.states[0].dimension_ == 1);
 //////    std::vector<double> new_covariance_output(1);
 //////    new_covariance_output[0] = 1.131260901171e-03;
-//////    CHECK_VECTOR_APPROX(c.states[0].components[0].covariance, new_covariance_output);
-//////    CHECK_VECTOR_APPROX(c.states[0].mixtureCoeffs, a.states[0].mixtureCoeffs);
-//////    CHECK(c.states[0].components[0].mean[0] == Approx(a.states[0].components[0].mean[2]));
+//////    CHECK_VECTOR_APPROX(c.states[0].components[0].covariance,
+///new_covariance_output);
+//////    CHECK_VECTOR_APPROX(c.states[0].mixtureCoeffs,
+///a.states[0].mixtureCoeffs);
+//////    CHECK(c.states[0].components[0].mean[0] ==
+///Approx(a.states[0].components[0].mean[2]));
 ////}
 ////
 ////TEST_CASE( "Extract HMM: inverse model", "[HMM]" ) {
@@ -462,7 +500,8 @@
 ////    covariance_state0[6] = 1.045622665096e-03;
 ////    covariance_state0[7] = 3.960464278701e-04;
 ////    covariance_state0[8] = 1.131260901171e-03;
-////    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance, covariance_state0);
+////    CHECK_VECTOR_APPROX(a.states[0].components[0].covariance,
+///covariance_state0);
 //////    CHECK(a.bimodal_);
 //////    CHECK(a.dimension_input_ == 2);
 //////    xmm::HMM b = a.extract_inverse_model();
@@ -479,10 +518,14 @@
 //////    new_covariance[6] = 3.960464278701e-04;
 //////    new_covariance[7] = 3.397482636225e-03;
 //////    new_covariance[8] = 2.231733755155e-03;
-//////    CHECK_VECTOR_APPROX(b.states[0].components[0].covariance, new_covariance);
-//////    CHECK(b.states[0].components[0].mean[0] == Approx(a.states[0].components[0].mean[2]));
-//////    CHECK(b.states[0].components[0].mean[1] == Approx(a.states[0].components[0].mean[0]));
-//////    CHECK(b.states[0].components[0].mean[2] == Approx(a.states[0].components[0].mean[1]));
+//////    CHECK_VECTOR_APPROX(b.states[0].components[0].covariance,
+///new_covariance);
+//////    CHECK(b.states[0].components[0].mean[0] ==
+///Approx(a.states[0].components[0].mean[2]));
+//////    CHECK(b.states[0].components[0].mean[1] ==
+///Approx(a.states[0].components[0].mean[0]));
+//////    CHECK(b.states[0].components[0].mean[2] ==
+///Approx(a.states[0].components[0].mean[1]));
 //////    b.reset();
 //////    observation.resize(1);
 //////    for (std::size_t i=0; i<100; i++) {
@@ -491,7 +534,8 @@
 //////    }
 ////}
 //
-//TEST_CASE( "Extract HierarchicalHMM: arbitrary dimensions", "[HierarchicalHMM]" ) {
+// TEST_CASE( "Extract HierarchicalHMM: arbitrary dimensions",
+// "[HierarchicalHMM]" ) {
 //    xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
 //                        xmm::Multimodality::Unimodal);
 //    ts.dimension.set(3);
@@ -530,9 +574,12 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance,
+//    covariance_state0);
 ////    CHECK_FALSE(a.bimodal_);
-////    CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size() == 0);
+////
+///CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size()
+///== 0);
 ////    std::vector<std::size_t> columns(2);
 ////    columns[0] = 2;
 ////    columns[1] = 0;
@@ -544,14 +591,19 @@
 ////    new_covariance[1] = 1.045622665096e-03;
 ////    new_covariance[2] = 1.045622665096e-03;
 ////    new_covariance[3] = 1.105028519640e-02;
-////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].covariance, new_covariance);
-////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].mixtureCoeffs, a.models[label_a].states[0].mixtureCoeffs);
-////    CHECK(b.models[label_a].states[0].components[0].mean[0] == Approx(a.models[label_a].states[0].components[0].mean[2]));
-////    CHECK(b.models[label_a].states[0].components[0].mean[1] == Approx(a.models[label_a].states[0].components[0].mean[0]));
+////
+///CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].covariance,
+///new_covariance);
+////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].mixtureCoeffs,
+///a.models[label_a].states[0].mixtureCoeffs);
+////    CHECK(b.models[label_a].states[0].components[0].mean[0] ==
+///Approx(a.models[label_a].states[0].components[0].mean[2]));
+////    CHECK(b.models[label_a].states[0].components[0].mean[1] ==
+///Approx(a.models[label_a].states[0].components[0].mean[0]));
 //}
 //
 //
-//TEST_CASE( "Extract HierarchicalHMM: input & output", "[HierarchicalHMM]" ) {
+// TEST_CASE( "Extract HierarchicalHMM: input & output", "[HierarchicalHMM]" ) {
 //    xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
 //                        xmm::Multimodality::Bimodal);
 //    ts.dimension.set(3);
@@ -591,7 +643,8 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance,
+//    covariance_state0);
 ////    CHECK(a.bimodal_);
 ////    xmm::HierarchicalHMM b = a.extractSubmodel_input();
 ////    CHECK_FALSE(b.bimodal_);
@@ -601,21 +654,30 @@
 ////    new_covariance[1] = 3.397482636225e-03;
 ////    new_covariance[2] = 3.397482636225e-03;
 ////    new_covariance[3] = 2.231733755155e-03;
-////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].covariance, new_covariance);
-////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].mixtureCoeffs, a.models[label_a].states[0].mixtureCoeffs);
-////    CHECK(b.models[label_a].states[0].components[0].mean[0] == Approx(a.models[label_a].states[0].components[0].mean[0]));
-////    CHECK(b.models[label_a].states[0].components[0].mean[1] == Approx(a.models[label_a].states[0].components[0].mean[1]));
+////
+///CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].covariance,
+///new_covariance);
+////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].mixtureCoeffs,
+///a.models[label_a].states[0].mixtureCoeffs);
+////    CHECK(b.models[label_a].states[0].components[0].mean[0] ==
+///Approx(a.models[label_a].states[0].components[0].mean[0]));
+////    CHECK(b.models[label_a].states[0].components[0].mean[1] ==
+///Approx(a.models[label_a].states[0].components[0].mean[1]));
 ////    xmm::HierarchicalHMM c = a.extractSubmodel_output();
 ////    CHECK_FALSE(c.bimodal_);
 ////    CHECK(c.models[label_a].states[0].dimension_ == 1);
 ////    std::vector<double> new_covariance_output(1);
 ////    new_covariance_output[0] = 1.131260901171e-03;
-////    CHECK_VECTOR_APPROX(c.models[label_a].states[0].components[0].covariance, new_covariance_output);
-////    CHECK_VECTOR_APPROX(c.models[label_a].states[0].mixtureCoeffs, a.models[label_a].states[0].mixtureCoeffs);
-////    CHECK(c.models[label_a].states[0].components[0].mean[0] == Approx(a.models[label_a].states[0].components[0].mean[2]));
+////
+///CHECK_VECTOR_APPROX(c.models[label_a].states[0].components[0].covariance,
+///new_covariance_output);
+////    CHECK_VECTOR_APPROX(c.models[label_a].states[0].mixtureCoeffs,
+///a.models[label_a].states[0].mixtureCoeffs);
+////    CHECK(c.models[label_a].states[0].components[0].mean[0] ==
+///Approx(a.models[label_a].states[0].components[0].mean[2]));
 //}
 //
-//TEST_CASE( "Extract HierarchicalHMM: inverse model", "[HierarchicalHMM]" ) {
+// TEST_CASE( "Extract HierarchicalHMM: inverse model", "[HierarchicalHMM]" ) {
 //    xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
 //                        xmm::Multimodality::Bimodal);
 //    ts.dimension.set(3);
@@ -655,7 +717,8 @@
 //    covariance_state0[6] = 1.045622665096e-03;
 //    covariance_state0[7] = 3.960464278701e-04;
 //    covariance_state0[8] = 1.131260901171e-03;
-//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance, covariance_state0);
+//    CHECK_VECTOR_APPROX(a.models[label_a].states[0].components[0].covariance,
+//    covariance_state0);
 ////    CHECK(a.bimodal_);
 ////    CHECK(a.models[label_a].dimension_input_ == 2);
 ////    xmm::HierarchicalHMM b = a.extract_inverse_model();
@@ -672,10 +735,15 @@
 ////    new_covariance[6] = 3.960464278701e-04;
 ////    new_covariance[7] = 3.397482636225e-03;
 ////    new_covariance[8] = 2.231733755155e-03;
-////    CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].covariance, new_covariance);
-////    CHECK(b.models[label_a].states[0].components[0].mean[0] == Approx(a.models[label_a].states[0].components[0].mean[2]));
-////    CHECK(b.models[label_a].states[0].components[0].mean[1] == Approx(a.models[label_a].states[0].components[0].mean[0]));
-////    CHECK(b.models[label_a].states[0].components[0].mean[2] == Approx(a.models[label_a].states[0].components[0].mean[1]));
+////
+///CHECK_VECTOR_APPROX(b.models[label_a].states[0].components[0].covariance,
+///new_covariance);
+////    CHECK(b.models[label_a].states[0].components[0].mean[0] ==
+///Approx(a.models[label_a].states[0].components[0].mean[2]));
+////    CHECK(b.models[label_a].states[0].components[0].mean[1] ==
+///Approx(a.models[label_a].states[0].components[0].mean[0]));
+////    CHECK(b.models[label_a].states[0].components[0].mean[2] ==
+///Approx(a.models[label_a].states[0].components[0].mean[1]));
 ////    b.reset();
 ////    observation.resize(1);
 ////    for (std::size_t i=0; i<100; i++) {

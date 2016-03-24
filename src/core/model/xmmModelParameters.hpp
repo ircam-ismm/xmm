@@ -33,60 +33,48 @@
 #ifndef xmmModelParameters_h
 #define xmmModelParameters_h
 
-#include "../common/xmmJson.hpp"
 #include "../common/xmmAttribute.hpp"
+#include "../common/xmmJson.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @ingroup Model
+ @brief Class-specific Model Parameters.
+ @details this structure is then encapsulated in a Configuration object that
+ propagates default parameters
+ or class-specific parameters to the SingleClassModel.
+ */
+template <typename ModelType>
+class ClassParameters : public Writable {
+  public:
     /**
-     @ingroup Model
-     @brief Class-specific Model Parameters.
-     @details this structure is then encapsulated in a Configuration object that propagates default parameters
-     or class-specific parameters to the SingleClassModel.
+     @brief Default Constructor
      */
-    template<typename ModelType>
-    class ClassParameters : public Writable {
-    public:
-        /**
-         @brief Default Constructor
-         */
-        ClassParameters() :
-        changed(true)
-        {
-        }
-        
-        /**
-         @brief Copy Constructor
-         @param src Source Object
-         */
-        ClassParameters(ClassParameters const& src) :
-        changed(true)
-        {
-        }
-        
-        /**
-         @brief Constructor from Json Structure
-         @param root Json value
-         */
-        explicit ClassParameters(Json::Value const& root) :
-        changed(true)
-        {
-        }
-        
-        /**
-         @brief Assignment
-         @param src Source Object
-         */
-        ClassParameters& operator=(ClassParameters const& src)
-        {
-            changed = true;
-        }
-        
-        /**
-         @brief specifies if parameters have changed (model is invalid)
-         */
-        bool changed;
-    };
+    ClassParameters() : changed(true) {}
+
+    /**
+     @brief Copy Constructor
+     @param src Source Object
+     */
+    ClassParameters(ClassParameters const& src) : changed(true) {}
+
+    /**
+     @brief Constructor from Json Structure
+     @param root Json value
+     */
+    explicit ClassParameters(Json::Value const& root) : changed(true) {}
+
+    /**
+     @brief Assignment
+     @param src Source Object
+     */
+    ClassParameters& operator=(ClassParameters const& src) { changed = true; }
+
+    /**
+     @brief specifies if parameters have changed (model is invalid)
+     */
+    bool changed;
+};
 }
 
 #endif

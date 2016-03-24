@@ -33,87 +33,80 @@
 #ifndef xmmEvents_h
 #define xmmEvents_h
 
+#include <map>
 #include <set>
 
 namespace xmm {
+/**
+ @ingroup Common
+ @brief Generator class for a specific type of events
+ @tparam EventType Type of Events that can be sent
+ */
+template <typename EventType>
+class EventGenerator {
+  public:
+    typedef std::function<void(EventType&)> EventCallBack;
+
     /**
-     @ingroup Common
-     @brief Generator class for a specific type of events
-     @tparam EventType Type of Events that can be sent
+     @brief Default constructor
      */
-    template<typename EventType>
-    class EventGenerator {
-    public:
-        typedef std::function<void(EventType&)> EventCallBack;
-        
-        /**
-         @brief Default constructor
-         */
-        EventGenerator()
-        {
+    EventGenerator() {}
+
+    /**
+     @brief Destructor
+     @details Also notifies all listeners that this generators is deleted
+     */
+    virtual ~EventGenerator() {}
+
+    /**
+     @brief Adds a listener object to be notified when events are sent
+     @param owner Pointer to the listener object
+     @param listenerMethod Method to be called in the target class
+     @tparam U type of the target object
+     @tparam args callback arguments
+     @tparam ListenerClass Listener Class
+     */
+    template <typename U, typename args, class ListenerClass>
+    void addListener(U* owner, void (ListenerClass::*listenerMethod)(args)) {
+        callbacks_.insert(std::pair<void*, EventCallBack>(
+            static_cast<void*>(owner),
+            std::bind(listenerMethod, owner, std::placeholders::_1)));
+    }
+
+    /**
+     @brief Removes a listener object
+     @param owner Pointer to the listener object
+     @param listenerMethod Method to be called in the target class
+     @tparam U type of the target object
+     @tparam args callback arguments
+     @tparam ListenerClass Listener Class
+     */
+    template <typename U, typename args, class ListenerClass>
+    void removeListener(U* owner, void (ListenerClass::*listenerMethod)(args)) {
+        callbacks_.erase(static_cast<void*>(owner));
+    }
+
+    /**
+     @brief Removes all listeners
+     */
+    void removeListeners() { callbacks_.clear(); }
+
+    /**
+     @brief Propagates the event to all listeners
+     @param e event
+     */
+    void notifyListeners(EventType& e) const {
+        for (auto& callback : callbacks_) {
+            callback.second(e);
         }
-        
-        /**
-         @brief Destructor
-         @details Also notifies all listeners that this generators is deleted
-         */
-        virtual ~EventGenerator()
-        {
-        }
-        
-        /**
-         @brief Adds a listener object to be notified when events are sent
-         @param owner Pointer to the listener object
-         @param listenerMethod Method to be called in the target class
-         @tparam U type of the target object
-         @tparam args callback arguments
-         @tparam ListenerClass Listener Class
-         */
-        template<typename U, typename args, class ListenerClass>
-        void addListener(U* owner, void (ListenerClass::*listenerMethod)(args))
-        {
-            callbacks_.insert(std::pair<void*, EventCallBack>(static_cast<void*>(owner), std::bind(listenerMethod, owner, std::placeholders::_1)));
-        }
-        
-        /**
-         @brief Removes a listener object
-         @param owner Pointer to the listener object
-         @param listenerMethod Method to be called in the target class
-         @tparam U type of the target object
-         @tparam args callback arguments
-         @tparam ListenerClass Listener Class
-         */
-        template<typename U, typename args, class ListenerClass>
-        void removeListener(U* owner, void (ListenerClass::*listenerMethod)(args))
-        {
-            callbacks_.erase(static_cast<void*>(owner));
-        }
-        
-        /**
-         @brief Removes all listeners
-         */
-        void removeListeners()
-        {
-            callbacks_.clear();
-        }
-        
-        /**
-         @brief Propagates the event to all listeners
-         @param e event
-         */
-        void notifyListeners(EventType& e) const
-        {
-            for (auto &callback : callbacks_) {
-                callback.second(e);
-            }
-        }
-        
-    private:
-        /**
-         @brief Set of listener objects
-         */
-        std::map<void*, EventCallBack> callbacks_;
-    };
+    }
+
+  private:
+    /**
+     @brief Set of listener objects
+     */
+    std::map<void*, EventCallBack> callbacks_;
+};
 }
 
 #endif

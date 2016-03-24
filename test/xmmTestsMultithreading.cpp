@@ -38,8 +38,8 @@
 #include <iostream>
 
 class MyTrainingListener {
-public:
-    void onEvent(xmm::TrainingEvent const& e) {
+  public:
+    void onEvent(xmm::TrainingEvent const &e) {
         m.lock();
         std::string status;
         if (e.status == xmm::TrainingEvent::Status::Run)
@@ -53,17 +53,21 @@ public:
         else if (e.status == xmm::TrainingEvent::Status::Alldone)
             status = "Alldone";
         if (e.status != xmm::TrainingEvent::Status::Alldone) {
-//            std::cout << "Class " + e.label + ": " + status + " (iteration: " + std::to_string(e.iterations) + ", progression: " + std::to_string(e.progression) + ", log_likelihood: " + std::to_string(e.log_likelihood) + ")" << std::endl;
+            //            std::cout << "Class " + e.label + ": " + status + "
+            //            (iteration: " + std::to_string(e.iterations) + ",
+            //            progression: " + std::to_string(e.progression) + ",
+            //            log_likelihood: " + std::to_string(e.log_likelihood) +
+            //            ")" << std::endl;
         } else {
-//            std::cout << "All models trained." << std::endl;
+            //            std::cout << "All models trained." << std::endl;
         }
         m.unlock();
     }
-    
+
     std::mutex m;
 };
 
-TEST_CASE( "Training with MultithreadingMode::Sequential", "[GMM]" ) {
+TEST_CASE("Training with MultithreadingMode::Sequential", "[GMM]") {
     xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
                         xmm::Multimodality::Unimodal);
     ts.dimension.set(3);
@@ -72,10 +76,10 @@ TEST_CASE( "Training with MultithreadingMode::Sequential", "[GMM]" ) {
     std::string label_b(static_cast<std::string>("b"));
     ts.addPhrase(0, label_a);
     ts.addPhrase(1, label_b);
-    for (unsigned int i=0; i<100; i++) {
-        observation[0] = float(i)/100.;
-        observation[1] = pow(float(i)/100., 2.);
-        observation[2] = pow(float(i)/100., 3.);
+    for (unsigned int i = 0; i < 100; i++) {
+        observation[0] = float(i) / 100.;
+        observation[1] = pow(float(i) / 100., 2.);
+        observation[2] = pow(float(i) / 100., 3.);
         ts.getPhrase(0)->record(observation);
         ts.getPhrase(1)->record(observation);
     }
@@ -103,17 +107,17 @@ TEST_CASE( "Training with MultithreadingMode::Sequential", "[GMM]" ) {
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
 }
 
-TEST_CASE( "Training with MultithreadingMode::MultithreadingMode", "[GMM]" ) {
+TEST_CASE("Training with MultithreadingMode::MultithreadingMode", "[GMM]") {
     xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
                         xmm::Multimodality::Unimodal);
     ts.dimension.set(3);
     std::vector<float> observation(3);
     ts.addPhrase(0);
     ts.addPhrase(1);
-    for (unsigned int i=0; i<100; i++) {
-        observation[0] = float(i)/100.;
-        observation[1] = pow(float(i)/100., 2.);
-        observation[2] = pow(float(i)/100., 3.);
+    for (unsigned int i = 0; i < 100; i++) {
+        observation[0] = float(i) / 100.;
+        observation[1] = pow(float(i) / 100., 2.);
+        observation[2] = pow(float(i) / 100., 3.);
         ts.getPhrase(0)->record(observation);
         ts.getPhrase(1)->record(observation);
     }
@@ -146,30 +150,28 @@ TEST_CASE( "Training with MultithreadingMode::MultithreadingMode", "[GMM]" ) {
 }
 
 class BackgroundListener {
-public:
-    bool trained() {
-        return trained_;
-    }
-    
-    void onTrainingEvent(xmm::TrainingEvent& e) {
+  public:
+    bool trained() { return trained_; }
+
+    void onTrainingEvent(xmm::TrainingEvent &e) {
         trained_ = (e.status == xmm::TrainingEvent::Status::Alldone);
     }
-    
-protected:
+
+  protected:
     bool trained_ = false;
 };
 
-TEST_CASE( "Training with MultithreadingMode::Background", "[GMM]" ) {
+TEST_CASE("Training with MultithreadingMode::Background", "[GMM]") {
     xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
                         xmm::Multimodality::Unimodal);
     ts.dimension.set(3);
     std::vector<float> observation(3);
     ts.addPhrase(0);
     ts.addPhrase(1);
-    for (unsigned int i=0; i<100; i++) {
-        observation[0] = float(i)/100.;
-        observation[1] = pow(float(i)/100., 2.);
-        observation[2] = pow(float(i)/100., 3.);
+    for (unsigned int i = 0; i < 100; i++) {
+        observation[0] = float(i) / 100.;
+        observation[1] = pow(float(i) / 100., 2.);
+        observation[2] = pow(float(i) / 100., 3.);
         ts.getPhrase(0)->record(observation);
         ts.getPhrase(1)->record(observation);
     }
@@ -181,7 +183,8 @@ TEST_CASE( "Training with MultithreadingMode::Background", "[GMM]" ) {
     a.configuration.multithreading = xmm::MultithreadingMode::Background;
     a.configuration.gaussians.set(3);
     BackgroundListener listener;
-    a.training_events.addListener(&listener, &BackgroundListener::onTrainingEvent);
+    a.training_events.addListener(&listener,
+                                  &BackgroundListener::onTrainingEvent);
     a.train(&ts);
     // std::cout << "training";
     while (!listener.trained()) {
@@ -206,26 +209,26 @@ TEST_CASE( "Training with MultithreadingMode::Background", "[GMM]" ) {
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
     a.reset();
     std::vector<double> log_likelihood(100, 0.0);
-    for (unsigned int i=0; i<100; i++) {
-        observation[0] = float(i)/100.;
-        observation[1] = pow(float(i)/100., 2.);
-        observation[2] = pow(float(i)/100., 3.);
+    for (unsigned int i = 0; i < 100; i++) {
+        observation[0] = float(i) / 100.;
+        observation[1] = pow(float(i) / 100., 2.);
+        observation[2] = pow(float(i) / 100., 3.);
         a.filter(observation);
         log_likelihood[i] = a.results.smoothed_log_likelihoods[0];
     }
 }
 
-TEST_CASE( "Cancel Training", "[GMM]" ) {
+TEST_CASE("Cancel Training", "[GMM]") {
     xmm::TrainingSet ts(xmm::MemoryMode::OwnMemory,
                         xmm::Multimodality::Unimodal);
     ts.dimension.set(3);
     std::vector<float> observation(3);
     ts.addPhrase(0);
     ts.addPhrase(1);
-    for (unsigned int i=0; i<100; i++) {
-        observation[0] = float(i)/100.;
-        observation[1] = pow(float(i)/100., 2.);
-        observation[2] = pow(float(i)/100., 3.);
+    for (unsigned int i = 0; i < 100; i++) {
+        observation[0] = float(i) / 100.;
+        observation[1] = pow(float(i) / 100., 2.);
+        observation[2] = pow(float(i) / 100., 3.);
         ts.getPhrase(0)->record(observation);
         ts.getPhrase(1)->record(observation);
     }
@@ -251,8 +254,9 @@ TEST_CASE( "Cancel Training", "[GMM]" ) {
     CHECK(a.size() == 2);
 }
 
-//TEST_CASE( "Delete Training Set during Training", "[GMM]" ) {
-//    for (auto mode : {xmm::MultithreadingMode::Background, xmm::MultithreadingMode::Parallel, xmm::MultithreadingMode::Sequential}) {
+// TEST_CASE( "Delete Training Set during Training", "[GMM]" ) {
+//    for (auto mode : {xmm::MultithreadingMode::Background,
+//    xmm::MultithreadingMode::Parallel, xmm::MultithreadingMode::Sequential}) {
 //        xmm::TrainingSet *ts = new xmm::TrainingSet(true, false, 3);
 //        std::vector<float> observation(3);
 //        ts->addPhrase(0);

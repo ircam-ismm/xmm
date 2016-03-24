@@ -32,65 +32,80 @@
 
 #include "xmmModelSharedParameters.hpp"
 
-xmm::SharedParameters::SharedParameters() :
-bimodal(false),
-dimension((bimodal.get()) ? 2 : 1, (bimodal.get()) ? 2 : 1),
-dimension_input((bimodal.get()) ? 1 : 0, 0, (bimodal.get()) ? dimension.get() : 0),
-em_algorithm_min_iterations(10, 1),
-em_algorithm_max_iterations(0),
-em_algorithm_percent_chg(0.01, 0.),
-likelihood_window(1, 1)
-{
+xmm::SharedParameters::SharedParameters()
+    : bimodal(false),
+      dimension((bimodal.get()) ? 2 : 1, (bimodal.get()) ? 2 : 1),
+      dimension_input((bimodal.get()) ? 1 : 0, 0,
+                      (bimodal.get()) ? dimension.get() : 0),
+      em_algorithm_min_iterations(10, 1),
+      em_algorithm_max_iterations(0),
+      em_algorithm_percent_chg(0.01, 0.),
+      likelihood_window(1, 1) {
     bimodal.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    dimension.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    dimension_input.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    em_algorithm_min_iterations.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    em_algorithm_max_iterations.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    em_algorithm_percent_chg.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    likelihood_window.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    column_names.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
+    dimension.onAttributeChange(this,
+                                &xmm::SharedParameters::onAttributeChange);
+    dimension_input.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    em_algorithm_min_iterations.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    em_algorithm_max_iterations.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    em_algorithm_percent_chg.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    likelihood_window.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    column_names.onAttributeChange(this,
+                                   &xmm::SharedParameters::onAttributeChange);
 }
 
-xmm::SharedParameters::SharedParameters(SharedParameters const& src) :
-bimodal(src.bimodal),
-dimension(src.dimension),
-dimension_input(src.dimension_input),
-column_names(src.column_names),
-em_algorithm_min_iterations(src.em_algorithm_min_iterations),
-em_algorithm_max_iterations(src.em_algorithm_max_iterations),
-em_algorithm_percent_chg(src.em_algorithm_percent_chg),
-likelihood_window(src.likelihood_window)
-{
+xmm::SharedParameters::SharedParameters(SharedParameters const& src)
+    : bimodal(src.bimodal),
+      dimension(src.dimension),
+      dimension_input(src.dimension_input),
+      column_names(src.column_names),
+      em_algorithm_min_iterations(src.em_algorithm_min_iterations),
+      em_algorithm_max_iterations(src.em_algorithm_max_iterations),
+      em_algorithm_percent_chg(src.em_algorithm_percent_chg),
+      likelihood_window(src.likelihood_window) {
     bimodal.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    dimension.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    dimension_input.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    em_algorithm_min_iterations.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    em_algorithm_max_iterations.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    em_algorithm_percent_chg.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    likelihood_window.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
-    column_names.onAttributeChange(this, &xmm::SharedParameters::onAttributeChange);
+    dimension.onAttributeChange(this,
+                                &xmm::SharedParameters::onAttributeChange);
+    dimension_input.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    em_algorithm_min_iterations.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    em_algorithm_max_iterations.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    em_algorithm_percent_chg.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    likelihood_window.onAttributeChange(
+        this, &xmm::SharedParameters::onAttributeChange);
+    column_names.onAttributeChange(this,
+                                   &xmm::SharedParameters::onAttributeChange);
 }
 
-xmm::SharedParameters::SharedParameters(Json::Value const& root) :
-SharedParameters()
-{
+xmm::SharedParameters::SharedParameters(Json::Value const& root)
+    : SharedParameters() {
     bimodal.set(root.get("bimodal", false).asBool());
     dimension.set(root.get("dimension", bimodal.get() ? 2 : 1).asInt());
-    dimension_input.set(root.get("dimension_input", bimodal.get() ? 1 : 0).asInt());
-    em_algorithm_min_iterations.set(root.get("em_algorithm_min_iterations", 10).asInt());
-    em_algorithm_max_iterations.set(root.get("em_algorithm_max_iterations", 0).asInt());
-    em_algorithm_percent_chg.set(root.get("em_algorithm_percent_chg", 0.01).asFloat());
+    dimension_input.set(
+        root.get("dimension_input", bimodal.get() ? 1 : 0).asInt());
+    em_algorithm_min_iterations.set(
+        root.get("em_algorithm_min_iterations", 10).asInt());
+    em_algorithm_max_iterations.set(
+        root.get("em_algorithm_max_iterations", 0).asInt());
+    em_algorithm_percent_chg.set(
+        root.get("em_algorithm_percent_chg", 0.01).asFloat());
     likelihood_window.set(root.get("likelihood_window", 1).asInt());
     std::vector<std::string> tmpColNames(dimension.get());
-    for (int i=0 ; i<tmpColNames.size() ; i++)
+    for (int i = 0; i < tmpColNames.size(); i++)
         tmpColNames[i] = root["column_names"].get(i, "").asString();
     column_names.set(tmpColNames);
 }
 
-xmm::SharedParameters& xmm::SharedParameters::operator=(SharedParameters const& src)
-{
-    if(this != &src)
-    {
+xmm::SharedParameters& xmm::SharedParameters::operator=(
+    SharedParameters const& src) {
+    if (this != &src) {
         bimodal = src.bimodal;
         dimension = src.dimension;
         dimension_input = src.dimension_input;
@@ -103,13 +118,12 @@ xmm::SharedParameters& xmm::SharedParameters::operator=(SharedParameters const& 
     return *this;
 }
 
-Json::Value xmm::SharedParameters::toJson() const
-{
+Json::Value xmm::SharedParameters::toJson() const {
     Json::Value root;
     root["bimodal"] = bimodal.get();
     root["dimension"] = static_cast<int>(dimension.get());
     root["dimension_input"] = static_cast<int>(dimension_input.get());
-    for (int i=0 ; i<column_names.size() ; i++)
+    for (int i = 0; i < column_names.size(); i++)
         root["column_names"][i] = column_names.at(i);
     root["em_algorithm_min_iterations"] = em_algorithm_min_iterations.get();
     root["em_algorithm_max_iterations"] = em_algorithm_max_iterations.get();
@@ -118,19 +132,16 @@ Json::Value xmm::SharedParameters::toJson() const
     return root;
 }
 
-void xmm::SharedParameters::fromJson(Json::Value const& root)
-{
+void xmm::SharedParameters::fromJson(Json::Value const& root) {
     try {
         SharedParameters tmp(root);
         *this = tmp;
-    } catch (JsonException &e) {
+    } catch (JsonException& e) {
         throw e;
     }
 }
 
-
-void xmm::SharedParameters::onAttributeChange(AttributeBase* attr_pointer)
-{
+void xmm::SharedParameters::onAttributeChange(AttributeBase* attr_pointer) {
     if (attr_pointer == &bimodal) {
         if (bimodal.get()) {
             dimension.setLimitMin(2);

@@ -33,100 +33,100 @@
 #ifndef xmmGMMParameters_hpp
 #define xmmGMMParameters_hpp
 
-#include "../../core/model/xmmModelParameters.hpp"
 #include "../../core/distributions/xmmGaussianDistribution.hpp"
+#include "../../core/model/xmmModelParameters.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @defgroup GMM [Models] Gaussian Mixture Models
+ */
+
+/**
+ Dummy structure for template specialization
+ */
+class GMM;
+
+/**
+ @ingroup GMM
+ @brief Parameters specific to each class of a Gaussian Mixture Model
+ */
+template <>
+class ClassParameters<GMM> : public Writable {
+  public:
     /**
-     @defgroup GMM [Models] Gaussian Mixture Models
+     @brief Default Constructor
      */
-    
+    ClassParameters();
+
     /**
-     Dummy structure for template specialization
+     @brief Copy Constructor
+     @param src Source Object
      */
-    class GMM;
-    
+    ClassParameters(ClassParameters<GMM> const& src);
+
     /**
-     @ingroup GMM
-     @brief Parameters specific to each class of a Gaussian Mixture Model
+     @brief Constructor from Json Structure
+     @param root Json Value
      */
-    template<>
-    class ClassParameters<GMM> : public Writable
-    {
-    public:
-        /**
-         @brief Default Constructor
-         */
-        ClassParameters();
-        
-        /**
-         @brief Copy Constructor
-         @param src Source Object
-         */
-        ClassParameters(ClassParameters<GMM> const& src);
-        
-        /**
-         @brief Constructor from Json Structure
-         @param root Json Value
-         */
-        explicit ClassParameters(Json::Value const& root);
-        
-        /**
-         @brief Assignment
-         @param src Source Object
-         */
-        ClassParameters& operator=(ClassParameters<GMM> const& src);
-        
-        /** @name Json I/O */
-        ///@{
-        
-        /**
-         @brief Write the object to a JSON Structure
-         @return Json value containing the object's information
-         */
-        Json::Value toJson() const;
-        
-        /**
-         @brief Read the object from a JSON Structure
-         @param root JSON value containing the object's information
-         @throws JsonException if the JSON value has a wrong format
-         */
-        virtual void fromJson(Json::Value const& root);
-        
-        ///@}
-        
-        /**
-         @brief specifies if parameters have changed (model is invalid)
-         */
-        bool changed = false;
-        
-        /**
-         @brief Number of Gaussian Mixture Components
-         */
-        Attribute<std::size_t> gaussians;
-        
-        /**
-         @brief Offset Added to the diagonal of covariance matrices for convergence (Relative to Data Variance)
-         */
-        Attribute<double> relative_regularization;
-        
-        /**
-         @brief Offset Added to the diagonal of covariance matrices for convergence (minimum value)
-         */
-        Attribute<double> absolute_regularization;
-        
-        /**
-         @brief Covariance Mode
-         */
-        Attribute<GaussianDistribution::CovarianceMode> covariance_mode;
-        
-    protected:
-        /**
-         @brief notification function called when a member attribute is changed
-         */
-        virtual void onAttributeChange(AttributeBase* attr_pointer);
-    };
+    explicit ClassParameters(Json::Value const& root);
+
+    /**
+     @brief Assignment
+     @param src Source Object
+     */
+    ClassParameters& operator=(ClassParameters<GMM> const& src);
+
+    /** @name Json I/O */
+    ///@{
+
+    /**
+     @brief Write the object to a JSON Structure
+     @return Json value containing the object's information
+     */
+    Json::Value toJson() const;
+
+    /**
+     @brief Read the object from a JSON Structure
+     @param root JSON value containing the object's information
+     @throws JsonException if the JSON value has a wrong format
+     */
+    virtual void fromJson(Json::Value const& root);
+
+    ///@}
+
+    /**
+     @brief specifies if parameters have changed (model is invalid)
+     */
+    bool changed = false;
+
+    /**
+     @brief Number of Gaussian Mixture Components
+     */
+    Attribute<std::size_t> gaussians;
+
+    /**
+     @brief Offset Added to the diagonal of covariance matrices for convergence
+     (Relative to Data Variance)
+     */
+    Attribute<double> relative_regularization;
+
+    /**
+     @brief Offset Added to the diagonal of covariance matrices for convergence
+     (minimum value)
+     */
+    Attribute<double> absolute_regularization;
+
+    /**
+     @brief Covariance Mode
+     */
+    Attribute<GaussianDistribution::CovarianceMode> covariance_mode;
+
+  protected:
+    /**
+     @brief notification function called when a member attribute is changed
+     */
+    virtual void onAttributeChange(AttributeBase* attr_pointer);
+};
 }
 
 #endif

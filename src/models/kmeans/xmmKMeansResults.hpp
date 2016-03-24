@@ -35,25 +35,23 @@
 
 #include "../../core/model/xmmModelResults.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @ingroup KMeans
+ @brief Results of the clustering process
+ */
+template <>
+struct Results<KMeans> {
     /**
-     @ingroup KMeans
-     @brief Results of the clustering process
+     @brief Distance of the observation to each cluster
      */
-    template<>
-    struct Results<KMeans>
-    {
-        /**
-         @brief Distance of the observation to each cluster
-         */
-        std::vector<float> distances;
-        
-        /**
-         @brief Likeliest Cluster
-         */
-        std::size_t likeliest;
-    };
+    std::vector<float> distances;
+
+    /**
+     @brief Likeliest Cluster
+     */
+    std::size_t likeliest;
+};
 }
 
 #endif
