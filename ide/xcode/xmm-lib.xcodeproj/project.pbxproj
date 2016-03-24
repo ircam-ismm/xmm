@@ -130,7 +130,7 @@
 		FA41CABF1C28AA0300905379 /* assertions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = assertions.h; path = ../../dependencies/jsoncpp/include/assertions.h; sourceTree = "<group>"; };
 		FA41CAC01C28AA0300905379 /* autolink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = autolink.h; path = ../../dependencies/jsoncpp/include/autolink.h; sourceTree = "<group>"; };
 		FA41CAC11C28AA0300905379 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../dependencies/jsoncpp/include/config.h; sourceTree = "<group>"; };
-		FA41CAC21C28AA0300905379 /* features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = features.h; path = ../../dependencies/jsoncpp/include/features.h; sourceTree = "<group>"; };
+		FA41CAC21C28AA0300905379 /* json-features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "json-features.h"; path = "../../dependencies/jsoncpp/include/json-features.h"; sourceTree = "<group>"; };
 		FA41CAC31C28AA0300905379 /* forwards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = forwards.h; path = ../../dependencies/jsoncpp/include/forwards.h; sourceTree = "<group>"; };
 		FA41CAC41C28AA0300905379 /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json.h; path = ../../dependencies/jsoncpp/include/json.h; sourceTree = "<group>"; };
 		FA41CAC51C28AA0300905379 /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reader.h; path = ../../dependencies/jsoncpp/include/reader.h; sourceTree = "<group>"; };
@@ -306,7 +306,7 @@
 				FA41CABF1C28AA0300905379 /* assertions.h */,
 				FA41CAC01C28AA0300905379 /* autolink.h */,
 				FA41CAC11C28AA0300905379 /* config.h */,
-				FA41CAC21C28AA0300905379 /* features.h */,
+				FA41CAC21C28AA0300905379 /* json-features.h */,
 				FA41CAC31C28AA0300905379 /* forwards.h */,
 				FA41CAC41C28AA0300905379 /* json.h */,
 				FA41CAC51C28AA0300905379 /* reader.h */,
