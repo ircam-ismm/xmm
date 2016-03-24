@@ -33,6 +33,7 @@
 #ifndef xmmEvents_h
 #define xmmEvents_h
 
+#include <functional>
 #include <map>
 #include <set>
 

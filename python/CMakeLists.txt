@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 
 # Compiler Flags
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DJSON_DEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -fPIC")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DJSON_DEBUG -fPIC")
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")

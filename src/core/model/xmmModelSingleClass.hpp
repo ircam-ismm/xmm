@@ -38,6 +38,7 @@
 #include "../common/xmmEvents.hpp"
 #include "../trainingset/xmmTrainingSet.hpp"
 #include "xmmModelSharedParameters.hpp"
+#include <memory>
 #include <mutex>
 
 namespace xmm {
