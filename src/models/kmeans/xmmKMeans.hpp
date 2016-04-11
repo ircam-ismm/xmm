@@ -154,7 +154,7 @@ class KMeans : public Writable {
      @brief Initialize the clusters using a regular segmentation
      of the first phrase of the training set
      */
-    void initClustersWithFirstPhrase(Phrase* phrase);
+    void initClustersWithFirstPhrase(std::shared_ptr<Phrase> phrase);
 
     /**
      @brief Update method for training

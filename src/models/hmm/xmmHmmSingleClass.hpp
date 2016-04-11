@@ -334,7 +334,8 @@ class SingleClassHMM : public SingleClassProbabilisticModel {
      @param phraseIndex index of the phrase
      @return lieklihood of the phrase given the model's current parameters
      */
-    double baumWelch_forwardBackward(Phrase* currentPhrase, int phraseIndex);
+    double baumWelch_forwardBackward(std::shared_ptr<Phrase> currentPhrase,
+                                     int phraseIndex);
 
     /**
      @brief Update of the forward algorithm for Training (observation

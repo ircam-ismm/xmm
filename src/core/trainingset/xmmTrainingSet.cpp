@@ -34,8 +34,7 @@
 xmm::TrainingSet::TrainingSet(MemoryMode memoryMode,
                               Multimodality multimodality)
     : own_memory_(memoryMode == MemoryMode::OwnMemory),
-      bimodal_(multimodality == Multimodality::Bimodal),
-      locked_(false) {
+      bimodal_(multimodality == Multimodality::Bimodal) {
     dimension.onAttributeChange(this, &xmm::TrainingSet::onAttributeChange);
     dimension_input.onAttributeChange(this,
                                       &xmm::TrainingSet::onAttributeChange);
@@ -54,7 +53,6 @@ xmm::TrainingSet::TrainingSet(TrainingSet const &src)
       dimension(src.dimension),
       dimension_input(src.dimension_input),
       column_names(src.column_names),
-      locked_(src.locked_),
       phrases_(src.phrases_),
       labels_(src.labels_) {
     dimension.onAttributeChange(this, &xmm::TrainingSet::onAttributeChange);
@@ -62,8 +60,8 @@ xmm::TrainingSet::TrainingSet(TrainingSet const &src)
                                       &xmm::TrainingSet::onAttributeChange);
     column_names.onAttributeChange(this, &xmm::TrainingSet::onAttributeChange);
     for (auto phrase : src.phrases_) {
-        phrases_.insert(
-            std::pair<int, Phrase *>(phrase.first, new Phrase(*phrase.second)));
+        phrases_.insert(std::pair<int, std::shared_ptr<xmm::Phrase>>(
+            phrase.first, std::make_shared<Phrase>(*phrase.second)));
         phrases_[phrase.first]->events.addListener(
             this, &xmm::TrainingSet::onPhraseEvent);
     }
@@ -71,7 +69,7 @@ xmm::TrainingSet::TrainingSet(TrainingSet const &src)
 }
 
 xmm::TrainingSet::TrainingSet(Json::Value const &root)
-    : own_memory_(true), bimodal_(false), locked_(false) {
+    : own_memory_(true), bimodal_(false) {
     if (!own_memory_)
         throw std::runtime_error("Cannot read Training Set with Shared memory");
 
@@ -95,8 +93,8 @@ xmm::TrainingSet::TrainingSet(Json::Value const &root)
     // Get Phrases
     phrases_.clear();
     for (auto p : root["phrases"]) {
-        phrases_.insert(
-            std::pair<int, Phrase *>(p["index"].asInt(), new Phrase(p)));
+        phrases_.insert(std::pair<int, std::shared_ptr<xmm::Phrase>>(
+            p["index"].asInt(), std::make_shared<Phrase>(p)));
         phrases_[p["index"].asInt()]->events.addListener(
             this, &xmm::TrainingSet::onPhraseEvent);
     }
@@ -111,7 +109,6 @@ xmm::TrainingSet &xmm::TrainingSet::operator=(TrainingSet const &src) {
         dimension = src.dimension;
         dimension_input = src.dimension_input;
         column_names = src.column_names;
-        locked_ = src.locked_;
         labels_ = src.labels_;
         dimension.onAttributeChange(this, &xmm::TrainingSet::onAttributeChange);
         dimension_input.onAttributeChange(this,
@@ -119,8 +116,8 @@ xmm::TrainingSet &xmm::TrainingSet::operator=(TrainingSet const &src) {
         column_names.onAttributeChange(this,
                                        &xmm::TrainingSet::onAttributeChange);
         for (auto phrase : src.phrases_) {
-            phrases_.insert(std::pair<int, Phrase *>(
-                phrase.first, new Phrase(*phrase.second)));
+            phrases_.insert(std::pair<int, std::shared_ptr<xmm::Phrase>>(
+                phrase.first, std::make_shared<Phrase>(*phrase.second)));
             phrases_[phrase.first]->events.addListener(
                 this, &xmm::TrainingSet::onPhraseEvent);
         }
@@ -129,14 +126,7 @@ xmm::TrainingSet &xmm::TrainingSet::operator=(TrainingSet const &src) {
     return *this;
 }
 
-xmm::TrainingSet::~TrainingSet() {
-    sub_training_sets_.clear();
-    if (!locked_) {
-        for (auto &phrase : phrases_) delete phrase.second;
-    }
-}
-
-void xmm::TrainingSet::lock() { locked_ = true; }
+xmm::TrainingSet::~TrainingSet() { sub_training_sets_.clear(); }
 
 bool xmm::TrainingSet::ownMemory() const { return own_memory_; }
 
@@ -181,49 +171,52 @@ void xmm::TrainingSet::onAttributeChange(xmm::AttributeBase *attr_pointer) {
     attr_pointer->changed = false;
 }
 
-std::map<int, xmm::Phrase *>::iterator xmm::TrainingSet::begin() {
+std::map<int, std::shared_ptr<xmm::Phrase>>::iterator
+xmm::TrainingSet::begin() {
     return phrases_.begin();
 }
 
-std::map<int, xmm::Phrase *>::iterator xmm::TrainingSet::end() {
+std::map<int, std::shared_ptr<xmm::Phrase>>::iterator xmm::TrainingSet::end() {
     return phrases_.end();
 }
 
-std::map<int, xmm::Phrase *>::reverse_iterator xmm::TrainingSet::rbegin() {
+std::map<int, std::shared_ptr<xmm::Phrase>>::reverse_iterator
+xmm::TrainingSet::rbegin() {
     return phrases_.rbegin();
 }
 
-std::map<int, xmm::Phrase *>::reverse_iterator xmm::TrainingSet::rend() {
+std::map<int, std::shared_ptr<xmm::Phrase>>::reverse_iterator
+xmm::TrainingSet::rend() {
     return phrases_.rend();
 }
 
-std::map<int, xmm::Phrase *>::const_iterator xmm::TrainingSet::cbegin() const {
+std::map<int, std::shared_ptr<xmm::Phrase>>::const_iterator
+xmm::TrainingSet::cbegin() const {
     return phrases_.cbegin();
 }
 
-std::map<int, xmm::Phrase *>::const_iterator xmm::TrainingSet::cend() const {
+std::map<int, std::shared_ptr<xmm::Phrase>>::const_iterator
+xmm::TrainingSet::cend() const {
     return phrases_.cend();
 }
 
-std::map<int, xmm::Phrase *>::const_reverse_iterator xmm::TrainingSet::crbegin()
-    const {
+std::map<int, std::shared_ptr<xmm::Phrase>>::const_reverse_iterator
+xmm::TrainingSet::crbegin() const {
     return phrases_.crbegin();
 }
 
-std::map<int, xmm::Phrase *>::const_reverse_iterator xmm::TrainingSet::crend()
-    const {
+std::map<int, std::shared_ptr<xmm::Phrase>>::const_reverse_iterator
+xmm::TrainingSet::crend() const {
     return phrases_.crend();
 }
 
-xmm::Phrase *xmm::TrainingSet::getPhrase(int n) const {
+std::shared_ptr<xmm::Phrase> xmm::TrainingSet::getPhrase(int n) const {
     if (phrases_.count(n) == 0) return nullptr;
     return phrases_.at(n);
 }
 
 void xmm::TrainingSet::addPhrase(int phraseIndex, std::string label) {
-    if (this->phrases_.find(phraseIndex) != this->phrases_.end())
-        delete phrases_[phraseIndex];
-    phrases_[phraseIndex] = new Phrase(
+    phrases_[phraseIndex] = std::make_shared<Phrase>(
         own_memory_ ? MemoryMode::OwnMemory : MemoryMode::SharedMemory,
         bimodal_ ? Multimodality::Bimodal : Multimodality::Unimodal);
     phrases_[phraseIndex]->events.addListener(this,
@@ -236,18 +229,15 @@ void xmm::TrainingSet::addPhrase(int phraseIndex, std::string label) {
 }
 
 void xmm::TrainingSet::addPhrase(int phraseIndex, Phrase const &phrase) {
-    if (this->phrases_.find(phraseIndex) != this->phrases_.end())
-        delete phrases_[phraseIndex];
-    phrases_[phraseIndex] = new Phrase(phrase);
+    phrases_[phraseIndex] = std::make_shared<Phrase>(phrase);
     phrases_[phraseIndex]->events.removeListeners();
     phrases_[phraseIndex]->events.addListener(this,
                                               &xmm::TrainingSet::onPhraseEvent);
     update();
 }
 
-void xmm::TrainingSet::addPhrase(int phraseIndex, Phrase *phrase) {
-    if (this->phrases_.find(phraseIndex) != this->phrases_.end())
-        delete phrases_[phraseIndex];
+void xmm::TrainingSet::addPhrase(int phraseIndex,
+                                 std::shared_ptr<Phrase> phrase) {
     phrases_[phraseIndex] = phrase;
     phrases_[phraseIndex]->events.addListener(this,
                                               &xmm::TrainingSet::onPhraseEvent);
@@ -255,7 +245,6 @@ void xmm::TrainingSet::addPhrase(int phraseIndex, Phrase *phrase) {
 }
 
 void xmm::TrainingSet::removePhrase(int phraseIndex) {
-    if (!locked_) delete phrases_[phraseIndex];
     phrases_.erase(phraseIndex);
     update();
 }
@@ -276,12 +265,6 @@ void xmm::TrainingSet::removePhrasesOfClass(std::string const &label) {
 }
 
 void xmm::TrainingSet::clear() {
-    if (!locked_) {
-        for (auto &phrase : phrases_) {
-            delete phrase.second;
-            phrase.second = NULL;
-        }
-    }
     sub_training_sets_.clear();
     phrases_.clear();
     labels_.clear();
@@ -315,7 +298,6 @@ void xmm::TrainingSet::update() {
         sub_training_sets_[label].dimension.set(dimension.get());
         sub_training_sets_[label].dimension_input.set(dimension_input.get());
         sub_training_sets_[label].column_names = this->column_names;
-        sub_training_sets_[label].lock();
         // int newPhraseIndex(0);
         for (auto &phrase : phrases_) {
             if (phrase.second->label.get() == label) {

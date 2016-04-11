@@ -301,15 +301,14 @@ void xmm::SingleClassGMM::initMeansWithKMeans(TrainingSet* trainingSet) {
     if (!trainingSet || trainingSet->empty()) return;
     int dimension = static_cast<int>(shared_parameters->dimension.get());
 
-    KMeans* kmeans = new KMeans(parameters.gaussians.get());
-    kmeans->initialization_mode = KMeans::InitializationMode::Biased;
-    kmeans->train(trainingSet);
+    KMeans kmeans(parameters.gaussians.get());
+    kmeans.initialization_mode = KMeans::InitializationMode::Biased;
+    kmeans.train(trainingSet);
     for (int c = 0; c < parameters.gaussians.get(); c++) {
         for (std::size_t d = 0; d < dimension; ++d) {
-            components[c].mean[d] = kmeans->centers[c * dimension + d];
+            components[c].mean[d] = kmeans.centers[c * dimension + d];
         }
     }
-    delete kmeans;
 }
 
 void xmm::SingleClassGMM::initCovariances_fullyObserved(

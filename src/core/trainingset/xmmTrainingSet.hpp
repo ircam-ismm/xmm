@@ -115,42 +115,44 @@ class TrainingSet : public Writable {
     /**
      @brief iterator to the beginning of phrases
      */
-    std::map<int, xmm::Phrase*>::iterator begin();
+    std::map<int, std::shared_ptr<xmm::Phrase>>::iterator begin();
 
     /**
      @brief iterator to the end of phrases
      */
-    std::map<int, xmm::Phrase*>::iterator end();
+    std::map<int, std::shared_ptr<xmm::Phrase>>::iterator end();
 
     /**
      @brief reverse iterator to the beginning of phrases
      */
-    std::map<int, xmm::Phrase*>::reverse_iterator rbegin();
+    std::map<int, std::shared_ptr<xmm::Phrase>>::reverse_iterator rbegin();
 
     /**
      @brief reverse iterator to the end of phrases
      */
-    std::map<int, xmm::Phrase*>::reverse_iterator rend();
+    std::map<int, std::shared_ptr<xmm::Phrase>>::reverse_iterator rend();
 
     /**
      @brief constant iterator to the beginning of phrases
      */
-    std::map<int, xmm::Phrase*>::const_iterator cbegin() const;
+    std::map<int, std::shared_ptr<xmm::Phrase>>::const_iterator cbegin() const;
 
     /**
      @brief constant iterator to the end of phrases
      */
-    std::map<int, xmm::Phrase*>::const_iterator cend() const;
+    std::map<int, std::shared_ptr<xmm::Phrase>>::const_iterator cend() const;
 
     /**
      @brief constant reverse iterator to the beginning of phrases
      */
-    std::map<int, xmm::Phrase*>::const_reverse_iterator crbegin() const;
+    std::map<int, std::shared_ptr<xmm::Phrase>>::const_reverse_iterator
+    crbegin() const;
 
     /**
      @brief constant reverse iterator to the end of phrases
      */
-    std::map<int, xmm::Phrase*>::const_reverse_iterator crend() const;
+    std::map<int, std::shared_ptr<xmm::Phrase>>::const_reverse_iterator crend()
+        const;
 
     /**
      @brief add a new phrase, or reset the phrase if existing
@@ -179,7 +181,7 @@ class TrainingSet : public Writable {
      @param phraseIndex index of the data phrase in the trainingSet
      @param phrase pointer to an existing phrase
      */
-    void addPhrase(int phraseIndex, Phrase* phrase);
+    void addPhrase(int phraseIndex, std::shared_ptr<Phrase> phrase);
 
     /**
      @brief delete a phrase
@@ -205,7 +207,7 @@ class TrainingSet : public Writable {
      @return pointer to the phrase of index phraseIndex
      @throws out_of_range if the phrase does not exist.
      */
-    Phrase* getPhrase(int phraseIndex) const;
+    std::shared_ptr<xmm::Phrase> getPhrase(int phraseIndex) const;
 
     /**
      @brief get the pointer to the sub-training set containing all phrases with
@@ -291,12 +293,6 @@ class TrainingSet : public Writable {
     void onPhraseEvent(PhraseEvent const& e);
 
     /**
-     @brief Lock training set to keep the phrases from being deleted at
-     destruction
-     */
-    void lock();
-
-    /**
      @brief notification function called when a member attribute is changed
      */
     virtual void onAttributeChange(AttributeBase* attr_pointer);
@@ -318,12 +314,6 @@ class TrainingSet : public Writable {
     bool bimodal_;
 
     /**
-     @brief if true, the training set is locked, i.e. its memory cannot be
-     released.
-     */
-    bool locked_;
-
-    /**
      @brief Set containing all the labels present in the training set
      */
     std::set<std::string> labels_;
@@ -333,7 +323,7 @@ class TrainingSet : public Writable {
      @details Phrases are stored in a map: allows the easy addition/deletion of
      phrases by index.
      */
-    std::map<int, Phrase*> phrases_;
+    std::map<int, std::shared_ptr<Phrase>> phrases_;
 
     /**
      @brief Sub-ensembles of the training set for specific classes

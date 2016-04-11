@@ -651,8 +651,8 @@ void xmm::SingleClassHMM::baumWelch_backward_update(
     }
 }
 
-double xmm::SingleClassHMM::baumWelch_forwardBackward(Phrase* currentPhrase,
-                                                      int phraseIndex) {
+double xmm::SingleClassHMM::baumWelch_forwardBackward(
+    std::shared_ptr<Phrase> currentPhrase, int phraseIndex) {
     std::size_t T = currentPhrase->size();
     std::size_t numStates = parameters.states.get();
 
