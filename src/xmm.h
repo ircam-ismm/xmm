@@ -11,14 +11,14 @@
  * fast training and continuous, real-time inference.
  *
  * Contact:
- * - Jules Françoise: <jules.francoise@ircam.fr>
+ * - Jules Francoise: <jules.francoise@ircam.fr>
  *
  *
  * Authors:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -48,11 +48,11 @@
  * If you use this code for research purposes, please cite one of the following
  * publications:
  *
- * - J. Françoise, N. Schnell, R. Borghesi, and F. Bevilacqua,
+ * - J. Francoise, N. Schnell, R. Borghesi, and F. Bevilacqua,
  *   Probabilistic Models for Designing Motion and Sound Relationships.
  *   In Proceedings of the 2014 International Conference on New Interfaces
  *   for Musical Expression, NIME’14, London, UK, 2014.
- * - J. Françoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic
+ * - J. Francoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic
  *   Model for Gesture-based Control of Sound Synthesis. In Proceedings of the
  *   21st ACM international conference on Multimedia (MM’13), Barcelona,
  *   Spain, 2013.
@@ -75,11 +75,11 @@
  real-time inference.
 
  @par Contact
- Jules Françoise: <jules.francoise@ircam.fr>
+ Jules Francoise: <jules.francoise@ircam.fr>
 
  @author
  This code has been initially authored by <a
- href="http://julesfrancoise.com">Jules Françoise</a>
+ href="http://julesfrancoise.com">Jules Francoise</a>
  during his PhD thesis, supervised by <a href="frederic-bevilacqua.net">Frederic
  Bevilacqua</a>, in the
  <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the
@@ -107,11 +107,11 @@
  @par Citing this work
  If you use this code for research purposes, please cite one of the following
  publications:
- - J. Françoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic
+ - J. Francoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic
  Models for Designing Motion and Sound Relationships. In Proceedings of the 2014
  International Conference on New Interfaces for Musical Expression, NIME’14,
  London, UK, 2014.
- - J. Françoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model
+ - J. Francoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model
  for Gesture-based Control of Sound Synthesis. In Proceedings of the 21st ACM
  international conference on Multimedia (MM’13), Barcelona, Spain, 2013.
  */
@@ -250,13 +250,13 @@
  @image html xmm_architecture.jpg "Figure 2: Architecture of the XMM library"
 
  @section relatedpubs Related Publications
- * J. Françoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic
+ * J. Francoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic
  Models for Designing Motion and Sound Relationships. In Proceedings of the 2014
  International Conference on New Interfaces for Musical Expression, NIME’14,
  London, UK, 2014. <a
  href="http://julesfrancoise.com/blog/wp-content/uploads/2014/06/Fran%C3%A7oise-et-al.-2014-Probabilistic-Models-for-Designing-Motion-and-Sound-Relationships.pdf?1ce945">Download</a>
 
- * J. Françoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model
+ * J. Francoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model
  for Gesture-based Control of Sound Synthesis. In Proceedings of the 21st ACM
  international conference on Multimedia (MM’13), Barcelona, Spain, 2013. <a
  href="http://architexte.ircam.fr/textes/Francoise13b/index.pdf">Download</a>

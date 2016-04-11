@@ -5,10 +5,10 @@
  * (Multi-class)
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -243,7 +243,7 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
 
     /**
      @brief Initialization of the Forward Algorithm for the hierarchical HMM.
-     see: Jules Françoise. Realtime Segmentation and Recognition of Gestures
+     see: Jules Francoise. Realtime Segmentation and Recognition of Gestures
      using Hierarchical Markov Models. Master’s Thesis, Université Pierre et
      Marie Curie, Ircam, 2011.
      [http://articles.ircam.fr/textes/Francoise11a/index.pdf]
@@ -257,7 +257,7 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
 
     /**
      @brief Update of the Forward Algorithm for the hierarchical HMM.
-     see: Jules Françoise. Realtime Segmentation and Recognition of Gestures
+     see: Jules Francoise. Realtime Segmentation and Recognition of Gestures
      using Hierarchical Markov Models. Master’s Thesis, Université Pierre et
      Marie Curie, Ircam, 2011.
      [http://articles.ircam.fr/textes/Francoise11a/index.pdf]

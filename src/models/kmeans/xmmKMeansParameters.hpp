@@ -4,10 +4,10 @@
  * Parameters of the K-Means clustering Algorithm
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).

@@ -5,11 +5,11 @@ XMM is a portable, cross-platform C++ library that implements Gaussian Mixture M
 
 ### Contact
 
-Jules Françoise: <jules.francoise@ircam.fr>
+Jules Francoise: <jules.francoise@ircam.fr>
 
 ### author
 
-This code has been initially authored by <a href="http://julesfrancoise.com">Jules Françoise</a> during his PhD thesis, supervised by <a href="frederic-bevilacqua.net">Frederic Bevilacqua</a>, in the <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC (2011-2015).
+This code has been initially authored by <a href="http://julesfrancoise.com">Jules Francoise</a> during his PhD thesis, supervised by <a href="frederic-bevilacqua.net">Frederic Bevilacqua</a>, in the <a href="http://ismm.ircam.fr">Sound Music Movement Interaction</a> team of the <a href="http://www.ircam.fr/stms.html?&L=1">STMS Lab</a> - IRCAM - CNRS - UPMC (2011-2015).
 
 ### Copyright
 
@@ -37,8 +37,8 @@ along with XMM.  If not, see <http://www.gnu.org/licenses/>.
 
 If you use this code for research purposes, please cite one of the following publications:
 
-- J. Françoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic Models for Designing Motion and Sound Relationships. In Proceedings of the 2014 International Conference on New Interfaces for Musical Expression, NIME’14, London, UK, 2014.
-- J. Françoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model for Gesture-based Control of Sound Synthesis. In Proceedings of the 21st ACM international conference on Multimedia (MM’13), Barcelona, Spain, 2013.
+- J. Francoise, N. Schnell, R. Borghesi, and F. Bevilacqua, Probabilistic Models for Designing Motion and Sound Relationships. In Proceedings of the 2014 International Conference on New Interfaces for Musical Expression, NIME’14, London, UK, 2014.
+- J. Francoise, N. Schnell, and F. Bevilacqua, A Multimodal Probabilistic Model for Gesture-based Control of Sound Synthesis. In Proceedings of the 21st ACM international conference on Multimedia (MM’13), Barcelona, Spain, 2013.
 
 ### Dependencies
 
