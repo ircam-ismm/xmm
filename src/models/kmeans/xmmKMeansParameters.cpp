@@ -74,6 +74,12 @@ xmm::ClassParameters<xmm::KMeans>& xmm::ClassParameters<xmm::KMeans>::operator=(
         clusters = src.clusters;
         max_iterations = src.max_iterations;
         relative_distance_threshold = src.relative_distance_threshold;
+        clusters.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::KMeans>::onAttributeChange);
+        max_iterations.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::KMeans>::onAttributeChange);
+        relative_distance_threshold.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::KMeans>::onAttributeChange);
     }
     return *this;
 }

@@ -94,6 +94,15 @@ xmm::ClassParameters<xmm::GMM>& xmm::ClassParameters<xmm::GMM>::operator=(
         relative_regularization = src.relative_regularization;
         absolute_regularization = src.absolute_regularization;
         covariance_mode = src.covariance_mode;
+
+        gaussians.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+        relative_regularization.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+        absolute_regularization.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+        covariance_mode.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
     }
     return *this;
 }

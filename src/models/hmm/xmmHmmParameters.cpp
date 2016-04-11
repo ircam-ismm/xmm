@@ -107,6 +107,20 @@ xmm::ClassParameters<xmm::HMM>& xmm::ClassParameters<xmm::HMM>::operator=(
         covariance_mode = src.covariance_mode;
         transition_mode = src.transition_mode;
         regression_estimator = src.regression_estimator;
+        states.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
+        gaussians.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
+        relative_regularization.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
+        absolute_regularization.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
+        covariance_mode.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
+        transition_mode.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
+        regression_estimator.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::HMM>::onAttributeChange);
     }
     return *this;
 }
