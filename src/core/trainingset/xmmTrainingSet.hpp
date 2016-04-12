@@ -269,6 +269,13 @@ class TrainingSet : public Writable {
      */
     std::vector<float> variance() const;
 
+    /**
+     @brief Compute the global min/max of all data phrases along the time axis
+     @return vector of min/max pairs across all phrases (along time axis,
+     full-size)
+     */
+    std::vector<std::pair<float, float>> minmax() const;
+
     ///@}
 
     /**

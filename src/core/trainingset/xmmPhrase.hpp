@@ -381,6 +381,12 @@ class Phrase : public Writable {
      */
     std::vector<float> variance() const;
 
+    /**
+     @brief Compute the global min/max of the data phrase along the time axis
+     @return vector of min/max pairs ofthe phrases (along time axis, full-size)
+     */
+    std::vector<std::pair<float, float>> minmax() const;
+
     ///@}
 
     /**

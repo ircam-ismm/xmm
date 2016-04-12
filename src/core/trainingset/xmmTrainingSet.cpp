@@ -30,6 +30,7 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "xmmTrainingSet.hpp"
+#include <limits>
 
 xmm::TrainingSet::TrainingSet(MemoryMode memoryMode,
                               Multimodality multimodality)
@@ -345,6 +346,23 @@ std::vector<float> xmm::TrainingSet::variance() const {
         variance[d] /= float(total_length);
 
     return variance;
+}
+
+std::vector<std::pair<float, float>> xmm::TrainingSet::minmax() const {
+    std::vector<std::pair<float, float>> minmax(
+        dimension.get(), {std::numeric_limits<float>::max(),
+                          std::numeric_limits<float>::lowest()});
+    for (auto &phrase : phrases_) {
+        for (unsigned int d = 0; d < dimension.get(); d++) {
+            for (unsigned int t = 0; t < phrase.second->size(); t++) {
+                minmax[d].first =
+                    std::min(phrase.second->getValue(t, d), minmax[d].first);
+                minmax[d].second =
+                    std::max(phrase.second->getValue(t, d), minmax[d].second);
+            }
+        }
+    }
+    return minmax;
 }
 
 Json::Value xmm::TrainingSet::toJson() const {

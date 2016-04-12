@@ -31,6 +31,7 @@
  */
 
 #include "xmmPhrase.hpp"
+#include <limits>
 
 xmm::Phrase::Phrase(MemoryMode memoryMode, Multimodality multimodality)
     : own_memory_(memoryMode == MemoryMode::OwnMemory),
@@ -449,6 +450,19 @@ std::vector<float> xmm::Phrase::variance() const {
         variance[d] /= float(length_);
     }
     return variance;
+}
+
+std::vector<std::pair<float, float>> xmm::Phrase::minmax() const {
+    std::vector<std::pair<float, float>> minmax(
+        dimension.get(), {std::numeric_limits<float>::max(),
+                          std::numeric_limits<float>::lowest()});
+    for (unsigned int d = 0; d < dimension.get(); d++) {
+        for (unsigned int t = 0; t < length_; t++) {
+            minmax[d].first = std::min(getValue(t, d), minmax[d].first);
+            minmax[d].second = std::max(getValue(t, d), minmax[d].second);
+        }
+    }
+    return minmax;
 }
 
 void xmm::Phrase::trim() {
