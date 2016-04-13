@@ -496,11 +496,11 @@ class Model : public Writable {
                     }
                 }
             }
-            reset();
             TrainingEvent event(this, "", TrainingEvent::Status::Alldone);
             training_events.notifyListeners(event);
             is_joining_ = false;
             is_training_ = false;
+            reset();
         } else {
             while (is_joining_) {
             }
