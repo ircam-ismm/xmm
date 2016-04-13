@@ -209,6 +209,7 @@ class Model : public Writable {
         if (it == models.end())
             throw std::out_of_range("Class " + label + " does not exist");
         models.erase(it);
+        reset();
     }
 
     /**
@@ -217,6 +218,7 @@ class Model : public Writable {
     virtual void clear() {
         if (is_training_) cancelTraining();
         models.clear();
+        reset();
     }
 
     ///@}
@@ -494,6 +496,7 @@ class Model : public Writable {
                     }
                 }
             }
+            reset();
             TrainingEvent event(this, "", TrainingEvent::Status::Alldone);
             training_events.notifyListeners(event);
             is_joining_ = false;
