@@ -208,19 +208,29 @@ xmm::Phrase::~Phrase() {
 
 std::size_t xmm::Phrase::size() const { return length_; }
 
+std::size_t xmm::Phrase::inputSize() const { return input_length_; }
+
+std::size_t xmm::Phrase::outputSize() const { return output_length_; }
+
 bool xmm::Phrase::empty() const { return empty_; }
 
 float xmm::Phrase::getValue(std::size_t index, std::size_t dim) const {
-    if (index >= length_)
-        throw std::out_of_range("Phrase: index out of bounds");
     if (dim >= dimension.get())
         throw std::out_of_range("Phrase: dimension out of bounds");
     if (bimodal_) {
-        if (dim < dimension_input.get())
+        if (dim < dimension_input.get()) {
+            if (index >= input_length_)
+                throw std::out_of_range("Phrase: index out of bounds");
             return data_[0][index * dimension_input.get() + dim];
-        return data_[1][index * (dimension.get() - dimension_input.get()) +
-                        dim - dimension_input.get()];
+        } else {
+            if (index >= output_length_)
+                throw std::out_of_range("Phrase: index out of bounds");
+            return data_[1][index * (dimension.get() - dimension_input.get()) +
+                            dim - dimension_input.get()];
+        }
     } else {
+        if (index >= length_)
+            throw std::out_of_range("Phrase: index out of bounds");
         return data_[0][index * dimension.get() + dim];
     }
 }
@@ -397,6 +407,20 @@ void xmm::Phrase::clear() {
     empty_ = true;
 }
 
+void xmm::Phrase::clearInput() {
+    if (!own_memory_)
+        throw std::runtime_error("Cannot clear a shared data phrase");
+    input_length_ = 0;
+    trim();
+}
+
+void xmm::Phrase::clearOutput() {
+    if (!own_memory_)
+        throw std::runtime_error("Cannot clear a shared data phrase");
+    output_length_ = 0;
+    trim();
+}
+
 Json::Value xmm::Phrase::toJson() const {
     Json::Value root;
     root["bimodal"] = bimodal_;
@@ -466,9 +490,10 @@ std::vector<std::pair<float, float>> xmm::Phrase::minmax() const {
 }
 
 void xmm::Phrase::trim() {
-    if (bimodal_)
-        length_ =
-            (output_length_ > input_length_) ? input_length_ : output_length_;
+    if (bimodal_) {
+        length_ = std::min(input_length_, output_length_);
+        empty_ = std::max(input_length_, output_length_) == 0;
+    }
 }
 
 void xmm::Phrase::reallocateLength() {

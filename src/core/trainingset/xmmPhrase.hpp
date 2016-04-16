@@ -177,6 +177,18 @@ class Phrase : public Writable {
     std::size_t size() const;
 
     /**
+     @brief get the number of frames in the input array of the phrase
+     @return the number of frames in the input array of the phrase
+     */
+    std::size_t inputSize() const;
+
+    /**
+     @brief get the number of frames in the output array of the phrase
+     @return the number of frames in the output array of the phrase
+     */
+    std::size_t outputSize() const;
+
+    /**
      @brief check if the phrase is empty
      @return true if the phrase is empty (length 0)
      */
@@ -345,6 +357,8 @@ class Phrase : public Writable {
      @warning the memory is not released (only done in destructor).
      */
     void clear();
+    void clearInput();
+    void clearOutput();
 
     ///@}
 
