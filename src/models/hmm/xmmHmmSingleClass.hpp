@@ -413,8 +413,7 @@ class SingleClassHMM : public SingleClassProbabilisticModel {
      @param observation_input observation on the input modality
      @param predicted_output output predicted by non-linear regression.
      */
-    void regression(std::vector<float> const& observation_input,
-                    std::vector<float>& predicted_output);
+    void regression(std::vector<float> const& observation_input);
 
     /**
      @brief update the content of the likelihood buffer and return average

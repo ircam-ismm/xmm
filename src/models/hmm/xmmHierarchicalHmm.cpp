@@ -402,19 +402,15 @@ void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
         std::size_t dimension_output = dimension - dimension_input;
 
         for (auto &model : models) {
-            model.second.regression(observation,
-                                    model.second.results.output_values);
+            model.second.regression(observation);
         }
 
         if (configuration.multiClass_regression_estimator ==
             MultiClassRegressionEstimator::Likeliest) {
-            copy(this->models[results.likeliest].results.output_values.begin(),
-                 this->models[results.likeliest].results.output_values.end(),
-                 results.output_values.begin());
-            copy(
-                this->models[results.likeliest].results.output_variance.begin(),
-                this->models[results.likeliest].results.output_variance.end(),
-                results.output_variance.begin());
+            results.output_values =
+                this->models[results.likeliest].results.output_values;
+            results.output_variance =
+                this->models[results.likeliest].results.output_variance;
         } else {
             results.output_values.assign(dimension_output, 0.0);
             results.output_variance.assign(dimension_output, 0.0);

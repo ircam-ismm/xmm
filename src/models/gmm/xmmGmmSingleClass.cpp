@@ -79,7 +79,7 @@ double xmm::SingleClassGMM::filter(std::vector<float> const& observation) {
     check_training();
     double instantaneous_likelihood = likelihood(observation);
     if (shared_parameters->bimodal.get()) {
-        regression(observation, results.output_values);
+        regression(observation);
     }
     return instantaneous_likelihood;
 }
@@ -572,8 +572,7 @@ void xmm::SingleClassGMM::updateInverseCovariances() {
 }
 
 void xmm::SingleClassGMM::regression(
-    std::vector<float> const& observation_input,
-    std::vector<float>& predicted_output) {
+    std::vector<float> const& observation_input) {
     check_training();
     std::size_t dimension_output = shared_parameters->dimension.get() -
                                    shared_parameters->dimension_input.get();
@@ -584,7 +583,7 @@ void xmm::SingleClassGMM::regression(
     for (int c = 0; c < parameters.gaussians.get(); c++) {
         components[c].regression(observation_input, tmp_output_values);
         for (int d = 0; d < dimension_output; ++d) {
-            predicted_output[d] += beta[c] * tmp_output_values[d];
+            results.output_values[d] += beta[c] * tmp_output_values[d];
             results.output_variance[d] +=
                 beta[c] * beta[c] * components[c].output_variance[d];
         }

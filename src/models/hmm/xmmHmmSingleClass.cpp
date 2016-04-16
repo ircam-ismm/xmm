@@ -263,9 +263,10 @@ void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
             std::size_t step = phrase_it->second->size() / numStates;
             temp_ts.addPhrase(phrase_it->first, label);
             if (shared_parameters->bimodal.get())
-                phrase_it->second->connect(
-                    phrase_it->second->getPointer_input(n * step),
-                    phrase_it->second->getPointer_output(n * step), step);
+                temp_ts.getPhrase(phrase_it->first)
+                    ->connect(phrase_it->second->getPointer_input(n * step),
+                              phrase_it->second->getPointer_output(n * step),
+                              step);
             else
                 temp_ts.getPhrase(phrase_it->first)
                     ->connect(phrase_it->second->getPointer(n * step), step);
@@ -1126,7 +1127,7 @@ double xmm::SingleClassHMM::filter(std::vector<float> const& observation) {
     updateResults();
 
     if (shared_parameters->bimodal.get()) {
-        regression(observation, results.output_values);
+        regression(observation);
     }
 
     return results.instant_likelihood;
@@ -1184,20 +1185,20 @@ void xmm::SingleClassHMM::updateAlphaWindow() {
 }
 
 void xmm::SingleClassHMM::regression(
-    std::vector<float> const& observation_input,
-    std::vector<float>& predicted_output) {
+    std::vector<float> const& observation_input) {
     check_training();
     std::size_t dimension_output = shared_parameters->dimension.get() -
                                    shared_parameters->dimension_input.get();
-    predicted_output.assign(dimension_output, 0.0);
+    results.output_values.assign(dimension_output, 0.0);
     results.output_variance.assign(dimension_output, 0.0);
     std::vector<float> tmp_predicted_output(dimension_output);
 
     if (parameters.regression_estimator.get() ==
         HMM::RegressionEstimator::Likeliest) {
         states[results.likeliest_state].likelihood(observation_input);
-        states[results.likeliest_state].regression(observation_input,
-                                                   predicted_output);
+        states[results.likeliest_state].regression(observation_input);
+        results.output_values =
+            states[results.likeliest_state].results.output_values;
         return;
     }
 
@@ -1219,19 +1220,20 @@ void xmm::SingleClassHMM::regression(
     // Compute Regression
     for (std::size_t i = clip_min_state; i < clip_max_state; ++i) {
         states[i].likelihood(observation_input);
-        states[i].regression(observation_input, tmp_predicted_output);
+        states[i].regression(observation_input);
+        tmp_predicted_output = states[i].results.output_values;
         for (std::size_t d = 0; d < dimension_output; ++d) {
             if (is_hierarchical_) {
-                predicted_output[d] += (alpha_h[0][i] + alpha_h[1][i]) *
-                                       tmp_predicted_output[d] /
-                                       normalization_constant;
+                results.output_values[d] += (alpha_h[0][i] + alpha_h[1][i]) *
+                                            tmp_predicted_output[d] /
+                                            normalization_constant;
                 results.output_variance[d] +=
                     (alpha_h[0][i] + alpha_h[1][i]) *
                     (alpha_h[0][i] + alpha_h[1][i]) *
                     states[i].results.output_variance[d] /
                     normalization_constant;
             } else {
-                predicted_output[d] +=
+                results.output_values[d] +=
                     alpha[i] * tmp_predicted_output[d] / normalization_constant;
                 results.output_variance[d] +=
                     alpha[i] * alpha[i] * states[i].results.output_variance[d] /

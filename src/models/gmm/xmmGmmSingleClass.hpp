@@ -319,12 +319,8 @@ class SingleClassGMM : public SingleClassProbabilisticModel {
      before performing
      the regression.
      @param observation_input observation vector of the input modality
-     @param predicted_output observation vector where the predicted observation
-     for the output
-     modality is stored.
      */
-    void regression(std::vector<float> const& observation_input,
-                    std::vector<float>& predicted_output);
+    void regression(std::vector<float> const& observation_input);
 
     /**
      @brief update the content of the likelihood buffer and return average
