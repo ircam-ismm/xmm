@@ -261,6 +261,7 @@ void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
         for (auto phrase_it = trainingSet->begin();
              phrase_it != trainingSet->end(); phrase_it++) {
             std::size_t step = phrase_it->second->size() / numStates;
+            if (step == 0) continue;
             temp_ts.addPhrase(phrase_it->first, label);
             if (shared_parameters->bimodal.get())
                 temp_ts.getPhrase(phrase_it->first)
@@ -558,7 +559,9 @@ double xmm::SingleClassHMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
     // =================================================
     int phraseIndex(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); ++it) {
-        log_prob += baumWelch_forwardBackward(it->second, phraseIndex++);
+        if (it->second->size() > 0)
+            log_prob += baumWelch_forwardBackward(it->second, phraseIndex);
+        phraseIndex++;
     }
 
     baumWelch_gammaSum(trainingSet);
@@ -1007,39 +1010,44 @@ void xmm::SingleClassHMM::baumWelch_estimateTransitions(
     std::size_t phraseIndex(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); it++) {
         phraseLength = it->second->size();
-        for (int i = 0; i < numStates; i++) {
-            // Experimental: A bit of regularization (sometimes avoids numerical
-            // errors)
-            if (parameters.transition_mode.get() ==
-                HMM::TransitionMode::LeftRight) {
-                transition[i * 2] += TRANSITION_REGULARIZATION();
-                if (i < numStates - 1)
-                    transition[i * 2 + 1] += TRANSITION_REGULARIZATION();
-                else
+        if (phraseLength > 0) {
+            for (int i = 0; i < numStates; i++) {
+                // Experimental: A bit of regularization (sometimes avoids
+                // numerical
+                // errors)
+                if (parameters.transition_mode.get() ==
+                    HMM::TransitionMode::LeftRight) {
                     transition[i * 2] += TRANSITION_REGULARIZATION();
-            }
-            // End Regularization
-            if (parameters.transition_mode.get() ==
-                HMM::TransitionMode::Ergodic) {
-                for (int j = 0; j < numStates; j++) {
-                    for (int t = 0; t < phraseLength - 1; t++) {
-                        transition[i * numStates + j] +=
-                            epsilon_sequence_[phraseIndex][t * numStates *
-                                                               numStates +
-                                                           i * numStates + j];
+                    if (i < numStates - 1)
+                        transition[i * 2 + 1] += TRANSITION_REGULARIZATION();
+                    else
+                        transition[i * 2] += TRANSITION_REGULARIZATION();
+                }
+                // End Regularization
+                if (parameters.transition_mode.get() ==
+                    HMM::TransitionMode::Ergodic) {
+                    for (int j = 0; j < numStates; j++) {
+                        for (int t = 0; t < phraseLength - 1; t++) {
+                            transition[i * numStates + j] +=
+                                epsilon_sequence_[phraseIndex][t * numStates *
+                                                                   numStates +
+                                                               i * numStates +
+                                                               j];
+                        }
                     }
-                }
-            } else {
-                for (int t = 0; t < phraseLength - 1; t++) {
-                    transition[i * 2] +=
-                        epsilon_sequence_[phraseIndex][t * 2 * numStates +
-                                                       i * 2];
-                }
-                if (i < numStates - 1) {
+                } else {
                     for (int t = 0; t < phraseLength - 1; t++) {
-                        transition[i * 2 + 1] +=
+                        transition[i * 2] +=
                             epsilon_sequence_[phraseIndex][t * 2 * numStates +
-                                                           i * 2 + 1];
+                                                           i * 2];
+                    }
+                    if (i < numStates - 1) {
+                        for (int t = 0; t < phraseLength - 1; t++) {
+                            transition[i * 2 + 1] +=
+                                epsilon_sequence_[phraseIndex][t * 2 *
+                                                                   numStates +
+                                                               i * 2 + 1];
+                        }
                     }
                 }
             }
