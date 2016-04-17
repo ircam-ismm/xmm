@@ -204,8 +204,7 @@ class TrainingSet : public Writable {
     /**
      @brief Access Phrase by index
      @param phraseIndex index of the phrase
-     @return pointer to the phrase of index phraseIndex
-     @throws out_of_range if the phrase does not exist.
+     @return pointer to the phrase if it exists, else nullptr
      */
     std::shared_ptr<xmm::Phrase> getPhrase(int phraseIndex) const;
 

@@ -138,7 +138,10 @@ class Attribute : public AttributeBase {
     void onAttributeChange(U* owner,
                            void (ListenerClass::*listenerMethod)(args)) {
         using namespace std::placeholders;
-        callback_ = std::bind(listenerMethod, owner, _1);
+        if (owner)
+            callback_ = std::bind(listenerMethod, owner, _1);
+        else
+            callback_ = nullptr;
     }
 
     /**
@@ -279,7 +282,10 @@ class Attribute<std::vector<T>> : public AttributeBase {
     void onAttributeChange(U* owner,
                            void (ListenerClass::*listenerMethod)(args)) {
         using namespace std::placeholders;
-        callback_ = std::bind(listenerMethod, owner, _1);
+        if (owner)
+            callback_ = std::bind(listenerMethod, owner, _1);
+        else
+            callback_ = nullptr;
     }
 
     /**
@@ -465,7 +471,10 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
     void onAttributeChange(U* owner,
                            void (ListenerClass::*listenerMethod)(args)) {
         using namespace std::placeholders;
-        callback_ = std::bind(listenerMethod, owner, _1);
+        if (owner)
+            callback_ = std::bind(listenerMethod, owner, _1);
+        else
+            callback_ = nullptr;
     }
 
     /**
