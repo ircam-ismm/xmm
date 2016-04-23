@@ -49,22 +49,15 @@ xmm::HierarchicalHMM::HierarchicalHMM(HierarchicalHMM const &src)
 
 xmm::HierarchicalHMM::HierarchicalHMM(Json::Value const &root)
     : Model<SingleClassHMM, HMM>(root), forward_initialized_(false) {
-    prior.clear();
-    for (auto p : root["prior"]) {
-        std::string l = p["label"].asString();
-        prior[l] = p["probability"].asDouble();
+    prior.resize(size());
+    json2vector(root["prior"], prior, size());
+    transition.resize(size());
+    for (int i = 0; i < size(); i++) {
+        transition[i].resize(size());
+        json2vector(root["transition"][i], transition[i], size());
     }
-    transition.clear();
-    for (auto p : root["transition"]) {
-        std::string srcLabel = p["srcLabel"].asString();
-        std::string dstLabel = p["dstLabel"].asString();
-        transition[srcLabel][dstLabel] = p["probability"].asDouble();
-    }
-    exit_transition.clear();
-    for (auto p : root["exit_transition"]) {
-        std::string l = p["label"].asString();
-        exit_transition[l] = p["probability"].asDouble();
-    }
+    exit_transition.resize(size());
+    json2vector(root["exit_transition"], exit_transition, size());
 }
 
 xmm::HierarchicalHMM &xmm::HierarchicalHMM::operator=(
@@ -98,16 +91,15 @@ void xmm::HierarchicalHMM::addExitPoint(int state, float proba) {
 
 void xmm::HierarchicalHMM::normalizeTransitions() {
     double sumPrior(0.0);
-    for (auto &srcModel : models) {
-        sumPrior += prior[srcModel.first];
+    int num_models = static_cast<int>(size());
+    for (int i = 0; i < num_models; i++) {
+        sumPrior += prior[i];
         double sumTrans(0.0);
-        for (auto &dstModel : models)
-            sumTrans += transition[srcModel.first][dstModel.first];
+        for (int j = 0; j < num_models; j++) sumTrans += transition[i][j];
         if (sumTrans > 0.0)
-            for (auto &dstModel : models)
-                transition[srcModel.first][dstModel.first] /= sumTrans;
+            for (int j = 0; j < num_models; j++) transition[i][j] /= sumTrans;
     }
-    for (auto &srcModel : models) prior[srcModel.first] /= sumPrior;
+    for (int i = 0; i < size(); i++) prior[i] /= sumPrior;
 }
 
 void xmm::HierarchicalHMM::updateTransitionParameters() {
@@ -122,21 +114,16 @@ void xmm::HierarchicalHMM::updateTransitionParameters() {
 }
 
 void xmm::HierarchicalHMM::updatePrior() {
-    prior.clear();
-    for (auto &model : models) {
-        prior[model.first] = 1. / static_cast<double>(this->size());
-    }
+    prior.assign(size(), 1. / static_cast<double>(this->size()));
 }
 
 void xmm::HierarchicalHMM::updateTransition() {
-    exit_transition.clear();
-    transition.clear();
-    for (auto &srcModel : models) {
-        exit_transition[srcModel.first] = DEFAULT_EXITTRANSITION();
-        for (auto &dstModel : models) {
-            transition[srcModel.first][dstModel.first] =
-                1. / static_cast<double>(this->size());
-        }
+    int num_classes = static_cast<int>(size());
+    exit_transition.assign(num_classes, DEFAULT_EXITTRANSITION());
+    transition.resize(num_classes);
+    for (int i = 0; i < num_classes; i++) {
+        transition[i].assign(num_classes,
+                             1. / static_cast<double>(num_classes));
     }
 }
 
@@ -155,6 +142,7 @@ void xmm::HierarchicalHMM::forward_init(std::vector<float> const &observation) {
     checkTraining();
     double norm_const(0.0);
 
+    int model_index(0);
     for (auto &model : models) {
         std::size_t N = model.second.parameters.states.get();
 
@@ -162,7 +150,8 @@ void xmm::HierarchicalHMM::forward_init(std::vector<float> const &observation) {
             model.second.alpha_h[i].assign(N, 0.0);
         }
 
-        // Compute Emission probability and initialize on the first state of the
+        // Compute Emission probability and initialize on the first state of
+        // the
         // primitive
         if (model.second.parameters.transition_mode.get() ==
             HMM::TransitionMode::Ergodic) {
@@ -180,7 +169,7 @@ void xmm::HierarchicalHMM::forward_init(std::vector<float> const &observation) {
                     model.second.alpha_h[0][i];
             }
         } else {
-            model.second.alpha_h[0][0] = this->prior[model.first];
+            model.second.alpha_h[0][0] = this->prior[model_index];
             if (shared_parameters->bimodal.get()) {
                 model.second.alpha_h[0][0] *=
                     model.second.states[0].obsProb_input(&observation[0]);
@@ -192,6 +181,7 @@ void xmm::HierarchicalHMM::forward_init(std::vector<float> const &observation) {
                 model.second.alpha_h[0][0];
         }
         norm_const += model.second.results.instant_likelihood;
+        model_index++;
     }
 
     // Normalize Alpha variables
@@ -220,8 +210,11 @@ void xmm::HierarchicalHMM::forward_update(
     likelihoodAlpha(1, frontier_v1_);
     likelihoodAlpha(2, frontier_v2_);
 
+    int num_classes = static_cast<int>(size());
+
     // FORWARD UPDATE
     // --------------------------------------
+    int dst_model_index(0);
     for (auto &dstModel : models) {
         std::size_t N = dstModel.second.parameters.states.get();
 
@@ -238,14 +231,14 @@ void xmm::HierarchicalHMM::forward_update(
                                 dstModel.second.alpha_h[0][j];
                 }
 
-                int i(0);
-                for (auto &srcModel : models) {
-                    front[k] +=
-                        dstModel.second.prior[k] *
-                        (frontier_v1_[i] *
-                             this->transition[srcModel.first][dstModel.first] +
-                         this->prior[dstModel.first] * frontier_v2_[i]);
-                    i++;
+                for (int src_model_index = 0; src_model_index < num_classes;
+                     src_model_index++) {
+                    front[k] += dstModel.second.prior[k] *
+                                (frontier_v1_[src_model_index] *
+                                     this->transition[src_model_index]
+                                                     [dst_model_index] +
+                                 this->prior[dst_model_index] *
+                                     frontier_v2_[src_model_index]);
                 }
             }
         } else {
@@ -253,13 +246,12 @@ void xmm::HierarchicalHMM::forward_update(
             front[0] =
                 dstModel.second.transition[0] * dstModel.second.alpha_h[0][0];
 
-            int i(0);
-            for (auto &srcModel : models) {
-                front[0] +=
-                    frontier_v1_[i] *
-                        this->transition[srcModel.first][dstModel.first] +
-                    this->prior[dstModel.first] * frontier_v2_[i];
-                i++;
+            for (int src_model_index = 0; src_model_index < num_classes;
+                 src_model_index++) {
+                front[0] += frontier_v1_[src_model_index] *
+                                transition[src_model_index][dst_model_index] +
+                            this->prior[dst_model_index] *
+                                frontier_v2_[src_model_index];
             }
 
             // k>0: rest of the primitive
@@ -295,10 +287,10 @@ void xmm::HierarchicalHMM::forward_update(
                       front[k];
 
             dstModel.second.alpha_h[2][k] =
-                this->exit_transition[dstModel.first] *
+                this->exit_transition[dst_model_index] *
                 dstModel.second.exit_probabilities_[k] * tmp;
             dstModel.second.alpha_h[1][k] =
-                (1 - this->exit_transition[dstModel.first]) *
+                (1 - this->exit_transition[dst_model_index]) *
                 dstModel.second.exit_probabilities_[k] * tmp;
             dstModel.second.alpha_h[0][k] =
                 (1 - dstModel.second.exit_probabilities_[k]) * tmp;
@@ -315,6 +307,8 @@ void xmm::HierarchicalHMM::forward_update(
         dstModel.second.results.exit_ratio =
             dstModel.second.results.exit_likelihood /
             dstModel.second.results.instant_likelihood;
+
+        dst_model_index++;
     }
 
     // Normalize Alpha variables
@@ -470,30 +464,19 @@ void xmm::HierarchicalHMM::updateResults() {
 Json::Value xmm::HierarchicalHMM::toJson() const {
     checkTraining();
     Json::Value root = Model<SingleClassHMM, HMM>::toJson();
-    root["prior"].resize(static_cast<Json::ArrayIndex>(size()));
-    int i(0);
-    for (auto it : prior) {
-        root["prior"][i]["label"] = it.first;
-        root["prior"][i]["probability"] = it.second;
-        i++;
+    root["prior"] = vector2json(prior);
+    //    int num_models = static_cast<int>(size());
+    //    std::vector<double> transition_flat(num_models * num_models, 0.0);
+    //    for (int i = 0; i < num_models; i++) {
+    //        for (int j = 0; j < num_models; j++) {
+    //            transition_flat[i * num_models + j] = transition[i][j];
+    //        }
+    //    }
+    root["transition"].resize(static_cast<Json::ArrayIndex>(size()));
+    for (int i = 0; i < size(); i++) {
+        root["transition"][i] = vector2json(transition[i]);
     }
-    root["transition"].resize(static_cast<Json::ArrayIndex>(size() * size()));
-    i = 0;
-    for (auto srcit : transition) {
-        for (auto dstit : srcit.second) {
-            root["transition"][i]["srcLabel"] = srcit.first;
-            root["transition"][i]["dstLabel"] = dstit.first;
-            root["transition"][i]["probability"] = dstit.second;
-            i++;
-        }
-    }
-    root["exit_transition"].resize(static_cast<Json::ArrayIndex>(size()));
-    i = 0;
-    for (auto it : exit_transition) {
-        root["exit_transition"][i]["label"] = it.first;
-        root["exit_transition"][i]["probability"] = it.second;
-        i++;
-    }
+    root["exit_transition"] = vector2json(exit_transition);
 
     return root;
 }

@@ -23,8 +23,6 @@
 		0B20E0C91A9A65E300E89497 /* xmmTrainingSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B61947718400E0D3C4 /* xmmTrainingSet.cpp */; };
 		0B20E0CA1A9A65E300E89497 /* xmmGaussianDistribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909A81947718400E0D3C4 /* xmmGaussianDistribution.cpp */; };
 		0B20E0CC1A9A65E300E89497 /* xmmJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* xmmJson.cpp */; };
-		0B7F43331B02578F0022F998 /* xmmTestsGaussianCovarianceMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */; };
-		0B9FE3171AD162E4007431E3 /* xmmTestsMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */; };
 		0B9FE31F1AD1E9F1007431E3 /* libxmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0D31A9A65E300E89497 /* libxmm.a */; };
 		FA41CAD11C28AA1600905379 /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAC91C28AA0F00905379 /* json_reader.cpp */; };
 		FA41CAD21C28AA1600905379 /* json_value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACB1C28AA0F00905379 /* json_value.cpp */; };
@@ -32,7 +30,6 @@
 		FA41CAD41C28AA1600905379 /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAC91C28AA0F00905379 /* json_reader.cpp */; };
 		FA41CAD51C28AA1600905379 /* json_value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACB1C28AA0F00905379 /* json_value.cpp */; };
 		FA41CAD61C28AA1600905379 /* json_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACD1C28AA0F00905379 /* json_writer.cpp */; };
-		FA41CAD81C28AD9D00905379 /* xmmTestsJsonIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */; };
 		FA41CADE1C2928BD00905379 /* xmmModelSharedParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CADC1C2928BD00905379 /* xmmModelSharedParameters.cpp */; };
 		FA41CADF1C2928BD00905379 /* xmmModelSharedParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CADC1C2928BD00905379 /* xmmModelSharedParameters.cpp */; };
 		FA41CAE01C2928BD00905379 /* xmmModelSharedParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CADD1C2928BD00905379 /* xmmModelSharedParameters.hpp */; };
@@ -63,9 +60,12 @@
 		FA41CB141C2A5AD000905379 /* xmmKMeansParameters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA41CB101C2A5AD000905379 /* xmmKMeansParameters.hpp */; };
 		FA4CD7501C1FA8B000896DB6 /* xmmPhrase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B11947718400E0D3C4 /* xmmPhrase.cpp */; };
 		FA4CD7511C1FA8B100896DB6 /* xmmPhrase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909B11947718400E0D3C4 /* xmmPhrase.cpp */; };
-		FA4CD7581C1FFE6F00896DB6 /* xmmTestsModelExtraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */; };
 		FA4CD75F1C21522200896DB6 /* xmmEvents.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA4CD75D1C21522200896DB6 /* xmmEvents.hpp */; };
-		FA4CD7611C21EC9200896DB6 /* xmmTestsMultithreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */; };
+		FA61EB691CC979E100F37E4E /* xmmTestsComplexity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA61EB661CC9797100F37E4E /* xmmTestsComplexity.cpp */; };
+		FA61EB6A1CC9952E00F37E4E /* xmmTestsMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */; };
+		FA61EB6B1CCBF29500F37E4E /* xmmTestsMultithreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */; };
+		FA61EB6C1CCBF29900F37E4E /* xmmTestsJsonIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */; };
+		FA61EB6D1CCBF29E00F37E4E /* xmmTestsGaussianCovarianceMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +163,7 @@
 		FA4CD74F1C1FA64200896DB6 /* xmmModel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmModel.hpp; sourceTree = "<group>"; };
 		FA4CD75D1C21522200896DB6 /* xmmEvents.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xmmEvents.hpp; sourceTree = "<group>"; };
 		FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsMultithreading.cpp; sourceTree = "<group>"; };
+		FA61EB661CC9797100F37E4E /* xmmTestsComplexity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmmTestsComplexity.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +265,7 @@
 				0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */,
 				0B9FE31B1AD16613007431E3 /* xmmTestsModelConversion.cpp */,
 				0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */,
+				FA61EB661CC9797100F37E4E /* xmmTestsComplexity.cpp */,
 			);
 			name = test;
 			path = ../../test;
@@ -629,11 +631,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA4CD7611C21EC9200896DB6 /* xmmTestsMultithreading.cpp in Sources */,
-				0B9FE3171AD162E4007431E3 /* xmmTestsMain.cpp in Sources */,
-				FA41CAD81C28AD9D00905379 /* xmmTestsJsonIO.cpp in Sources */,
-				FA4CD7581C1FFE6F00896DB6 /* xmmTestsModelExtraction.cpp in Sources */,
-				0B7F43331B02578F0022F998 /* xmmTestsGaussianCovarianceMode.cpp in Sources */,
+				FA61EB6B1CCBF29500F37E4E /* xmmTestsMultithreading.cpp in Sources */,
+				FA61EB691CC979E100F37E4E /* xmmTestsComplexity.cpp in Sources */,
+				FA61EB6C1CCBF29900F37E4E /* xmmTestsJsonIO.cpp in Sources */,
+				FA61EB6D1CCBF29E00F37E4E /* xmmTestsGaussianCovarianceMode.cpp in Sources */,
+				FA61EB6A1CC9952E00F37E4E /* xmmTestsMain.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

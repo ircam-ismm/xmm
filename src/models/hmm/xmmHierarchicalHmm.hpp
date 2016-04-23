@@ -197,18 +197,18 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
     /**
      @brief Prior probabilities of the models
      */
-    std::map<std::string, double> prior;
+    std::vector<double> prior;
 
     /**
      @brief exit probabilities of the model (probability to finish and go back
      to the root)
      */
-    std::map<std::string, double> exit_transition;
+    std::vector<double> exit_transition;
 
     /**
      @brief Transition probabilities between models
      */
-    std::map<std::string, std::map<std::string, double> > transition;
+    std::vector<std::vector<double>> transition;
 
   protected:
     /**
