@@ -117,6 +117,7 @@ namespace std {
 
 %template(Attribute_CovarianceMode) xmm::Attribute<xmm::GaussianDistribution::CovarianceMode>;
 
+%shared_ptr(xmm::Phrase)
 %include "xmmPhrase.hpp"
 %include "xmmTrainingSet.hpp"
 
