@@ -75,11 +75,9 @@ xmm::GaussianDistribution::GaussianDistribution(GaussianDistribution const& src)
         this, &xmm::GaussianDistribution::onAttributeChange);
     covariance_mode.onAttributeChange(
         this, &xmm::GaussianDistribution::onAttributeChange);
-    if (bimodal_) {
-        covariance_determinant_input_ = src.covariance_determinant_input_;
-        inverse_covariance_input_ = src.inverse_covariance_input_;
-        output_variance = src.output_variance;
-    }
+    covariance_determinant_input_ = src.covariance_determinant_input_;
+    inverse_covariance_input_ = src.inverse_covariance_input_;
+    output_variance = src.output_variance;
 }
 
 xmm::GaussianDistribution::GaussianDistribution(Json::Value const& root)
@@ -126,11 +124,9 @@ xmm::GaussianDistribution& xmm::GaussianDistribution::operator=(
         covariance = src.covariance;
         inverse_covariance_ = src.inverse_covariance_;
         covariance_determinant_ = src.covariance_determinant_;
-        if (bimodal_) {
-            covariance_determinant_input_ = src.covariance_determinant_input_;
-            inverse_covariance_input_ = src.inverse_covariance_input_;
-            output_variance = src.output_variance;
-        }
+        covariance_determinant_input_ = src.covariance_determinant_input_;
+        inverse_covariance_input_ = src.inverse_covariance_input_;
+        output_variance = src.output_variance;
     }
     return *this;
 };
