@@ -109,6 +109,7 @@ namespace std {
 %template(Attribute_int) xmm::Attribute<int>;
 %template(Attribute_double) xmm::Attribute<double>;
 %template(Attribute_float) xmm::Attribute<float>;
+%template(Attribute_string) xmm::Attribute<std::string>;
 %template(Attribute_vectorString) xmm::Attribute<std::vector<std::string>>;
 
 %include "xmmEvents.hpp"
