@@ -225,28 +225,6 @@ class HierarchicalHMM : public ModelGroup<HMM> {
     void addExitPoint(int state, float proba);
 
     /**
-     * @brief return learning mode: "incremental" or "ergodic"
-     * @details  if ergodic, each time a model is added at the high level, the
-     * transition
-     * matrix is reset to ergodic. if "incremental", the transitions are updated
-     * using regularization
-     * @return learningMode "incremental" or "ergodic"
-     */
-    std::string get_learningMode() const;
-
-    /**
-     * @brief set learning mode: "incremental" or "ergodic"
-     * @details  if ergodic, each time a model is added at the high level, the
-     * transition
-     * matrix is reset to ergodic. if "incremental", the transitions are updated
-     * using regularization
-     * @param learningMode "incremental" or "ergodic"
-     * @throws invalid_argument if the argument is neither "incremental" nor
-     * "ergodic"
-     */
-    void set_learningMode(std::string learningMode);
-
-    /**
      * @brief get a copy of the high-level Prior probabilities vector
      * @param prior output High-level prior probability vector
      */
