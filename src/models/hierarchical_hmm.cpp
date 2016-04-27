@@ -931,6 +931,7 @@ void xmm::HierarchicalHMM::from_json(JSONNode root) {
                 "Wrong type for node 'prior': was expecting "
                 "'JSON_ARRAY'",
                 root_it->name());
+        prior.resize(numModels);
         json2vector(*root_it, prior, numModels);
 
         // Get High-level Exit Probabilities
@@ -942,6 +943,7 @@ void xmm::HierarchicalHMM::from_json(JSONNode root) {
                 "Wrong type for node 'exit': was expecting "
                 "'JSON_ARRAY'",
                 root_it->name());
+        exitTransition.resize(numModels);
         json2vector(*root_it, exitTransition, numModels);
 
         // Get High-level Transition Matrix
@@ -956,9 +958,11 @@ void xmm::HierarchicalHMM::from_json(JSONNode root) {
         std::vector<double> trans(numModels * numModels);
         json2vector(*root_it, trans, numModels * numModels);
         transition.resize(numModels);
-        for (int i = 0; i < numModels; i++)
+        for (int i = 0; i < numModels; i++) {
+            transition[i].resize(numModels);
             for (int j = 0; j < numModels; j++)
                 transition[i][j] = trans[i * numModels + j];
+        }
 
     } catch (JSONException& e) {
         throw JSONException(e, root.name());
