@@ -115,13 +115,11 @@ void xmm::SingleClassProbabilisticModel::train(TrainingSet* trainingSet) {
     training_mutex_.lock();
     bool trainingError(false);
 
-    if (trainingSet) {
+    if (trainingSet && !trainingSet->empty()) {
         this->allocate();
     } else {
         trainingError = true;
     }
-
-    if (trainingSet->empty()) trainingError = true;
 
     if (cancelTrainingIfRequested()) return;
     if (!trainingError) {

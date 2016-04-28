@@ -63,7 +63,7 @@ struct ClassResults<HMM> {
      vector (only used in regression mode)
      @warning this variable only allocated if the model is bimodal
      */
-    std::vector<double> output_variance;
+    std::vector<float> output_variance;
 
     /**
      @brief Estimated time progression.
