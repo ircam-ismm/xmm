@@ -90,11 +90,15 @@ void xmm::GMM::reset() {
     results.smoothed_normalized_likelihoods.resize(size());
     results.smoothed_log_likelihoods.resize(size());
     if (shared_parameters->bimodal.get()) {
-        results.output_values.resize(shared_parameters->dimension.get() -
-                                     shared_parameters->dimension_input.get());
-        results.output_variance.resize(
-            shared_parameters->dimension.get() -
-            shared_parameters->dimension_input.get());
+        std::size_t dimension_output = shared_parameters->dimension.get() -
+                                       shared_parameters->dimension_input.get();
+        results.output_values.resize(dimension_output);
+        results.output_covariance.assign(
+            (configuration.covariance_mode.get() ==
+             GaussianDistribution::CovarianceMode::Full)
+                ? dimension_output * dimension_output
+                : dimension_output,
+            0.0);
     }
     for (auto& model : models) {
         model.second.reset();
@@ -118,27 +122,41 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
 
         if (configuration.multiClass_regression_estimator ==
             MultiClassRegressionEstimator::Likeliest) {
-            copy(this->models[results.likeliest].results.output_values.begin(),
-                 this->models[results.likeliest].results.output_values.end(),
-                 results.output_values.begin());
-            copy(
-                this->models[results.likeliest].results.output_variance.begin(),
-                this->models[results.likeliest].results.output_variance.end(),
-                results.output_variance.begin());
+            results.output_values =
+                models[results.likeliest].results.output_values;
+            results.output_covariance =
+                models[results.likeliest].results.output_covariance;
+
         } else {
             results.output_values.assign(dimension_output, 0.0);
-            results.output_variance.assign(dimension_output, 0.0);
+            results.output_covariance.assign(
+                (configuration.covariance_mode.get() ==
+                 GaussianDistribution::CovarianceMode::Full)
+                    ? dimension_output * dimension_output
+                    : dimension_output,
+                0.0);
 
             int i(0);
             for (auto& model : models) {
                 for (int d = 0; d < dimension_output; d++) {
                     // TODO: check if rather use smooth here.
                     results.output_values[d] +=
-                        results.instant_likelihoods[i] *
+                        results.instant_normalized_likelihoods[i] *
                         model.second.results.output_values[d];
-                    results.output_variance[d] +=
-                        results.instant_likelihoods[i] *
-                        model.second.results.output_variance[d];
+                    if ((configuration.covariance_mode.get() ==
+                         GaussianDistribution::CovarianceMode::Full)) {
+                        for (int d2 = 0; d2 < dimension_output; d2++)
+                            results
+                                .output_covariance[d * dimension_output + d2] +=
+                                results.instant_normalized_likelihoods[i] *
+                                model.second.results
+                                    .output_covariance[d * dimension_output +
+                                                       d2];
+                    } else {
+                        results.output_covariance[d] +=
+                            results.instant_normalized_likelihoods[i] *
+                            model.second.results.output_covariance[d];
+                    }
                 }
                 i++;
             }

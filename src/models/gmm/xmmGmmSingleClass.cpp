@@ -577,15 +577,29 @@ void xmm::SingleClassGMM::regression(
     std::size_t dimension_output = shared_parameters->dimension.get() -
                                    shared_parameters->dimension_input.get();
     results.output_values.assign(dimension_output, 0.0);
-    results.output_variance.assign(dimension_output, 0.0);
+    results.output_covariance.assign(
+        (parameters.covariance_mode.get() ==
+         GaussianDistribution::CovarianceMode::Full)
+            ? dimension_output * dimension_output
+            : dimension_output,
+        0.0);
     std::vector<float> tmp_output_values(dimension_output, 0.0);
 
     for (int c = 0; c < parameters.gaussians.get(); c++) {
         components[c].regression(observation_input, tmp_output_values);
         for (int d = 0; d < dimension_output; ++d) {
             results.output_values[d] += beta[c] * tmp_output_values[d];
-            results.output_variance[d] +=
-                beta[c] * beta[c] * components[c].output_variance[d];
+            if (parameters.covariance_mode.get() ==
+                GaussianDistribution::CovarianceMode::Full) {
+                for (int d2 = 0; d2 < dimension_output; ++d2)
+                    results.output_covariance[d * dimension_output + d2] +=
+                        beta[c] * beta[c] *
+                        components[c]
+                            .output_covariance[d * dimension_output + d2];
+            } else {
+                results.output_covariance[d] +=
+                    beta[c] * beta[c] * components[c].output_covariance[d];
+            }
         }
     }
 }

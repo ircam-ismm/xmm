@@ -361,11 +361,15 @@ void xmm::HierarchicalHMM::reset() {
     results.smoothed_normalized_likelihoods.resize(size());
     results.smoothed_log_likelihoods.resize(size());
     if (shared_parameters->bimodal.get()) {
-        results.output_values.resize(shared_parameters->dimension.get() -
-                                     shared_parameters->dimension_input.get());
-        results.output_variance.resize(
-            shared_parameters->dimension.get() -
-            shared_parameters->dimension_input.get());
+        std::size_t dimension_output = shared_parameters->dimension.get() -
+                                       shared_parameters->dimension_input.get();
+        results.output_values.resize(dimension_output);
+        results.output_covariance.assign(
+            (configuration.covariance_mode.get() ==
+             GaussianDistribution::CovarianceMode::Full)
+                ? dimension_output * dimension_output
+                : dimension_output,
+            0.0);
     }
     frontier_v1_.resize(this->size());
     frontier_v2_.resize(this->size());
@@ -403,11 +407,16 @@ void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
             MultiClassRegressionEstimator::Likeliest) {
             results.output_values =
                 this->models[results.likeliest].results.output_values;
-            results.output_variance =
-                this->models[results.likeliest].results.output_variance;
+            results.output_covariance =
+                this->models[results.likeliest].results.output_covariance;
         } else {
             results.output_values.assign(dimension_output, 0.0);
-            results.output_variance.assign(dimension_output, 0.0);
+            results.output_covariance.assign(
+                (configuration.covariance_mode.get() ==
+                 GaussianDistribution::CovarianceMode::Full)
+                    ? dimension_output * dimension_output
+                    : dimension_output,
+                0.0);
 
             int i(0);
             for (auto &model : models) {
@@ -416,9 +425,21 @@ void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
                     results.output_values[d] +=
                         results.instant_normalized_likelihoods[i] *
                         model.second.results.output_values[d];
-                    results.output_variance[d] +=
-                        results.instant_normalized_likelihoods[i] *
-                        model.second.results.output_variance[d];
+
+                    if ((configuration.covariance_mode.get() ==
+                         GaussianDistribution::CovarianceMode::Full)) {
+                        for (int d2 = 0; d2 < dimension_output; d2++)
+                            results
+                                .output_covariance[d * dimension_output + d2] +=
+                                results.instant_normalized_likelihoods[i] *
+                                model.second.results
+                                    .output_covariance[d * dimension_output +
+                                                       d2];
+                    } else {
+                        results.output_covariance[d] +=
+                            results.instant_normalized_likelihoods[i] *
+                            model.second.results.output_covariance[d];
+                    }
                 }
                 i++;
             }

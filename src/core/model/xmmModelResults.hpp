@@ -66,7 +66,7 @@ struct ClassResults {
      vector (only used in regression mode)
      @warning this variable is not allocated if the model is not bimodal
      */
-    std::vector<float> output_variance;
+    std::vector<float> output_covariance;
 };
 
 /**
@@ -118,7 +118,7 @@ struct Results {
      @brief Output variance over the values estimated by regression
      @warning this variable is not allocated if the Model is not bimodal
      */
-    std::vector<float> output_variance;
+    std::vector<float> output_covariance;
 };
 }
 

@@ -314,7 +314,7 @@ class GaussianDistribution : public Writable {
      @brief Conditional Output Variance (updated when covariances matrices are
      inverted)
      */
-    std::vector<double> output_variance;
+    std::vector<double> output_covariance;
 
   protected:
     /**
@@ -332,7 +332,7 @@ class GaussianDistribution : public Writable {
      (conditioned over the input).
      @throws runtime_error if the model is not bimodal
      */
-    void updateOutputVariance();
+    void updateOutputCovariance();
 
     /**
      @brief Defines if regression parameters need to be computed
@@ -359,6 +359,8 @@ class GaussianDistribution : public Writable {
      */
     std::vector<double> inverse_covariance_input_;
 };
+
+Ellipse covariance2ellipse(double c_xx, double c_xy, double c_yy);
 
 template <>
 void checkLimits<GaussianDistribution::CovarianceMode>(

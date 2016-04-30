@@ -77,7 +77,7 @@ xmm::GaussianDistribution::GaussianDistribution(GaussianDistribution const& src)
         this, &xmm::GaussianDistribution::onAttributeChange);
     covariance_determinant_input_ = src.covariance_determinant_input_;
     inverse_covariance_input_ = src.inverse_covariance_input_;
-    output_variance = src.output_variance;
+    output_covariance = src.output_covariance;
 }
 
 xmm::GaussianDistribution::GaussianDistribution(Json::Value const& root)
@@ -126,7 +126,7 @@ xmm::GaussianDistribution& xmm::GaussianDistribution::operator=(
         covariance_determinant_ = src.covariance_determinant_;
         covariance_determinant_input_ = src.covariance_determinant_input_;
         inverse_covariance_input_ = src.inverse_covariance_input_;
-        output_variance = src.output_variance;
+        output_covariance = src.output_covariance;
     }
     return *this;
 };
@@ -162,7 +162,7 @@ void xmm::GaussianDistribution::onAttributeChange(AttributeBase* attr_pointer) {
         }
         updateInverseCovariance();
         if (bimodal_) {
-            updateOutputVariance();
+            updateOutputCovariance();
         }
     }
     attr_pointer->changed = false;
@@ -435,11 +435,11 @@ void xmm::GaussianDistribution::updateInverseCovariance() {
         }
     }
     if (bimodal_) {
-        this->updateOutputVariance();
+        this->updateOutputCovariance();
     }
 }
 
-void xmm::GaussianDistribution::updateOutputVariance() {
+void xmm::GaussianDistribution::updateOutputCovariance() {
     if (!bimodal_)
         throw std::runtime_error(
             "'updateOutputVariances' can't be used when 'bimodal_' is off.");
@@ -448,9 +448,9 @@ void xmm::GaussianDistribution::updateOutputVariance() {
 
     // CASE: DIAGONAL COVARIANCE
     if (covariance_mode.get() == CovarianceMode::Diagonal) {
-        output_variance.resize(dimension_output);
+        output_covariance.resize(dimension_output);
         copy(covariance.begin() + dimension_input.get(),
-             covariance.begin() + dimension.get(), output_variance.begin());
+             covariance.begin() + dimension.get(), output_covariance.begin());
         return;
     }
 
@@ -483,12 +483,14 @@ void xmm::GaussianDistribution::updateOutputVariance() {
     }
     Matrix<double>* tmptmptmp = inverseMat->product(&covariance_gs);
     Matrix<double>* covariance_mod = covariance_sg.product(tmptmptmp);
-    output_variance.resize(dimension_output);
-    for (int d = 0; d < dimension_output; d++) {
-        output_variance[d] =
-            covariance[(dimension_input.get() + d) * dimension.get() +
-                       dimension_input.get() + d] -
-            covariance_mod->data[d * dimension_output + d];
+    output_covariance.resize(dimension_output * dimension_output);
+    for (int d1 = 0; d1 < dimension_output; d1++) {
+        for (int d2 = 0; d2 < dimension_output; d2++) {
+            output_covariance[d1 * dimension_output + d2] =
+                covariance[(dimension_input.get() + d1) * dimension.get() +
+                           dimension_input.get() + d2] -
+                covariance_mod->data[d1 * dimension_output + d2];
+        }
     }
     delete inverseMat;
     delete covariance_mod;
@@ -676,6 +678,26 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse_95,
 //    target_distribution.makeBimodal(dimension.get() - dimension_input.get());
 //    return target_distribution;
 //}
+
+xmm::Ellipse xmm::covariance2ellipse(double c_xx, double c_xy, double c_yy) {
+    Ellipse gaussian_ellipse_95;
+    gaussian_ellipse_95.x = 0.;
+    gaussian_ellipse_95.y = 0.;
+
+    // Compute Eigen Values to get width, height and angle
+    double trace = c_xx + c_yy;
+    double determinant = c_xx * c_yy - c_xy * c_xy;
+    double eigenVal1 = 0.5 * (trace + sqrt(trace * trace - 4 * determinant));
+    double eigenVal2 = 0.5 * (trace - sqrt(trace * trace - 4 * determinant));
+    gaussian_ellipse_95.width = 2 * sqrt(5.991 * eigenVal1);
+    gaussian_ellipse_95.height = 2 * sqrt(5.991 * eigenVal2);
+    gaussian_ellipse_95.angle = atan(c_xy / (eigenVal1 - c_yy));
+    if (isnan(gaussian_ellipse_95.angle)) {
+        gaussian_ellipse_95.angle = M_PI_2;
+    }
+
+    return gaussian_ellipse_95;
+}
 
 template <>
 void xmm::checkLimits<xmm::GaussianDistribution::CovarianceMode>(

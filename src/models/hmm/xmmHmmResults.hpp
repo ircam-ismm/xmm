@@ -59,11 +59,11 @@ struct ClassResults<HMM> {
     std::vector<float> output_values;
 
     /**
-     @brief Predicted Output variance associated with the generated parameter
+     @brief Predicted Output covariance associated with the generated parameter
      vector (only used in regression mode)
      @warning this variable only allocated if the model is bimodal
      */
-    std::vector<float> output_variance;
+    std::vector<float> output_covariance;
 
     /**
      @brief Estimated time progression.

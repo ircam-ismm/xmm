@@ -272,6 +272,7 @@ void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
                 temp_ts.getPhrase(phrase_it->first)
                     ->connect(phrase_it->second->getPointer(n * step), step);
         }
+        if (temp_ts.empty()) continue;
         SingleClassGMM tmpGMM(shared_parameters);
         tmpGMM.parameters.gaussians.set(parameters.gaussians.get());
         tmpGMM.parameters.relative_regularization.set(
@@ -1198,7 +1199,12 @@ void xmm::SingleClassHMM::regression(
     std::size_t dimension_output = shared_parameters->dimension.get() -
                                    shared_parameters->dimension_input.get();
     results.output_values.assign(dimension_output, 0.0);
-    results.output_variance.assign(dimension_output, 0.0);
+    results.output_covariance.assign(
+        (parameters.covariance_mode.get() ==
+         GaussianDistribution::CovarianceMode::Full)
+            ? dimension_output * dimension_output
+            : dimension_output,
+        0.0);
     std::vector<float> tmp_predicted_output(dimension_output);
 
     if (parameters.regression_estimator.get() ==
@@ -1235,17 +1241,42 @@ void xmm::SingleClassHMM::regression(
                 results.output_values[d] += (alpha_h[0][i] + alpha_h[1][i]) *
                                             tmp_predicted_output[d] /
                                             normalization_constant;
-                results.output_variance[d] +=
-                    (alpha_h[0][i] + alpha_h[1][i]) *
-                    (alpha_h[0][i] + alpha_h[1][i]) *
-                    states[i].results.output_variance[d] /
-                    normalization_constant;
+                if (parameters.covariance_mode.get() ==
+                    GaussianDistribution::CovarianceMode::Full) {
+                    for (int d2 = 0; d2 < dimension_output; ++d2)
+                        results.output_covariance[d * dimension_output + d2] +=
+                            (alpha_h[0][i] + alpha_h[1][i]) *
+                            (alpha_h[0][i] + alpha_h[1][i]) *
+                            states[i]
+                                .results
+                                .output_covariance[d * dimension_output + d2] /
+                            normalization_constant;
+                } else {
+                    results.output_covariance[d] +=
+                        (alpha_h[0][i] + alpha_h[1][i]) *
+                        (alpha_h[0][i] + alpha_h[1][i]) *
+                        states[i].results.output_covariance[d] /
+                        normalization_constant;
+                }
             } else {
                 results.output_values[d] +=
                     alpha[i] * tmp_predicted_output[d] / normalization_constant;
-                results.output_variance[d] +=
-                    alpha[i] * alpha[i] * states[i].results.output_variance[d] /
-                    normalization_constant;
+                if (parameters.covariance_mode.get() ==
+                    GaussianDistribution::CovarianceMode::Full) {
+                    for (int d2 = 0; d2 < dimension_output; ++d2)
+                        results.output_covariance[d * dimension_output + d2] +=
+                            alpha[i] * alpha[i] *
+                            states[i]
+                                .results
+                                .output_covariance[d * dimension_output + d2] /
+                            normalization_constant;
+
+                } else {
+                    results.output_covariance[d] +=
+                        alpha[i] * alpha[i] *
+                        states[i].results.output_covariance[d] /
+                        normalization_constant;
+                }
             }
         }
     }
