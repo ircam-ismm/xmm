@@ -206,6 +206,10 @@ xmm::Phrase::~Phrase() {
     delete[] data_;
 }
 
+bool xmm::Phrase::ownMemory() const { return own_memory_; }
+
+bool xmm::Phrase::bimodal() const { return bimodal_; }
+
 std::size_t xmm::Phrase::size() const { return length_; }
 
 std::size_t xmm::Phrase::inputSize() const { return input_length_; }
@@ -272,6 +276,7 @@ void xmm::Phrase::connect(float* pointer_to_data, std::size_t length) {
             "'connect_output'");
 
     data_[0] = pointer_to_data;
+    input_length_ = length;
     length_ = length;
     empty_ = false;
 }
@@ -352,6 +357,7 @@ void xmm::Phrase::record(std::vector<float> const& observation) {
     } else {
         copy(observation.begin(), observation.end(),
              data_[0] + length_ * dimension.get());
+        input_length_++;
     }
 
     length_++;
@@ -410,6 +416,7 @@ void xmm::Phrase::clear() {
 void xmm::Phrase::clearInput() {
     if (!own_memory_)
         throw std::runtime_error("Cannot clear a shared data phrase");
+    if (!bimodal_) length_ = 0;
     input_length_ = 0;
     trim();
 }
@@ -417,6 +424,7 @@ void xmm::Phrase::clearInput() {
 void xmm::Phrase::clearOutput() {
     if (!own_memory_)
         throw std::runtime_error("Cannot clear a shared data phrase");
+    if (!bimodal_) length_ = 0;
     output_length_ = 0;
     trim();
 }

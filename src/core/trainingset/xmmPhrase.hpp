@@ -167,6 +167,25 @@ class Phrase : public Writable {
      */
     virtual ~Phrase();
 
+    /** @name Accessors */
+    ///@{
+
+    /**
+     @brief checks if the training set is owns the data
+     @return true if the training set owns data (construction with
+     MemoryMode::OwnMemory)
+     */
+    bool ownMemory() const;
+
+    /**
+     @brief checks if the training set is bimodal
+     @return true if the training set is bimodal (construction with
+     Multimodality::Bimodal)
+     */
+    bool bimodal() const;
+
+    ///@}
+
     /** @name Access Data */
     ///@{
 

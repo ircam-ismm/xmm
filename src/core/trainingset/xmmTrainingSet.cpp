@@ -127,7 +127,7 @@ xmm::TrainingSet &xmm::TrainingSet::operator=(TrainingSet const &src) {
     return *this;
 }
 
-xmm::TrainingSet::~TrainingSet() { sub_training_sets_.clear(); }
+xmm::TrainingSet::~TrainingSet() {}
 
 bool xmm::TrainingSet::ownMemory() const { return own_memory_; }
 
@@ -352,21 +352,35 @@ std::vector<std::pair<float, float>> xmm::TrainingSet::minmax() const {
     std::vector<std::pair<float, float>> minmax(
         dimension.get(), {std::numeric_limits<float>::max(),
                           std::numeric_limits<float>::lowest()});
-    for (auto &phrase : phrases_) {
-        for (unsigned int d = 0; d < dimension_input.get(); d++) {
-            for (unsigned int t = 0; t < phrase.second->inputSize(); t++) {
-                minmax[d].first =
-                    std::min(phrase.second->getValue(t, d), minmax[d].first);
-                minmax[d].second =
-                    std::max(phrase.second->getValue(t, d), minmax[d].second);
+    if (bimodal_) {
+        for (auto &phrase : phrases_) {
+            for (unsigned int d = 0; d < dimension_input.get(); d++) {
+                for (unsigned int t = 0; t < phrase.second->inputSize(); t++) {
+                    minmax[d].first = std::min(phrase.second->getValue(t, d),
+                                               minmax[d].first);
+                    minmax[d].second = std::max(phrase.second->getValue(t, d),
+                                                minmax[d].second);
+                }
+            }
+            for (unsigned int d = dimension_input.get(); d < dimension.get();
+                 d++) {
+                for (unsigned int t = 0; t < phrase.second->outputSize(); t++) {
+                    minmax[d].first = std::min(phrase.second->getValue(t, d),
+                                               minmax[d].first);
+                    minmax[d].second = std::max(phrase.second->getValue(t, d),
+                                                minmax[d].second);
+                }
             }
         }
-        for (unsigned int d = dimension_input.get(); d < dimension.get(); d++) {
-            for (unsigned int t = 0; t < phrase.second->outputSize(); t++) {
-                minmax[d].first =
-                    std::min(phrase.second->getValue(t, d), minmax[d].first);
-                minmax[d].second =
-                    std::max(phrase.second->getValue(t, d), minmax[d].second);
+    } else {
+        for (auto &phrase : phrases_) {
+            for (unsigned int d = 0; d < dimension.get(); d++) {
+                for (unsigned int t = 0; t < phrase.second->size(); t++) {
+                    minmax[d].first = std::min(phrase.second->getValue(t, d),
+                                               minmax[d].first);
+                    minmax[d].second = std::max(phrase.second->getValue(t, d),
+                                                minmax[d].second);
+                }
             }
         }
     }
