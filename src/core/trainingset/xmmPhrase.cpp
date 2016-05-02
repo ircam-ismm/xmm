@@ -122,6 +122,7 @@ xmm::Phrase::Phrase(Json::Value const& root)
     max_length_ = length_;
     input_length_ = length_;
     output_length_ = length_;
+    empty_ = (length_ == 0 && input_length_ == 0 && output_length_ == 0);
 
     if (bimodal_) {
         data_[0] =
