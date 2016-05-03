@@ -84,6 +84,9 @@ xmm::Phrase::Phrase(Phrase const& src)
         data_[0] = src.data_[0];
         if (bimodal_) data_[1] = src.data_[1];
     }
+    dimension.onAttributeChange(this, &xmm::Phrase::onAttributeChange);
+    dimension_input.onAttributeChange(this, &xmm::Phrase::onAttributeChange);
+    label.onAttributeChange(this, &xmm::Phrase::onAttributeChange);
 }
 
 xmm::Phrase::Phrase(Json::Value const& root)
@@ -193,6 +196,10 @@ xmm::Phrase& xmm::Phrase::operator=(Phrase const& src) {
             data_[0] = src.data_[0];
             if (bimodal_) data_[1] = src.data_[1];
         }
+        dimension.onAttributeChange(this, &xmm::Phrase::onAttributeChange);
+        dimension_input.onAttributeChange(this,
+                                          &xmm::Phrase::onAttributeChange);
+        label.onAttributeChange(this, &xmm::Phrase::onAttributeChange);
     }
     return *this;
 }
