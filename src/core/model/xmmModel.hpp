@@ -142,8 +142,9 @@ class Model : public Writable {
             cancel_required_ = false;
             models_still_training_ = 0;
 
+            models.clear();
             models = src.models;
-            for (auto& model : models) {
+            for (auto& model : this->models) {
                 model.second.training_events.removeListeners();
                 model.second.training_events.addListener(
                     this,
