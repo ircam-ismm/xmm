@@ -184,7 +184,7 @@ class GaussianDistribution : public Writable {
     void updateInverseCovariance();
 
     /**
-     @brief Compute the 95% Confidence Interval ellipse of the Gaussian
+     @brief Compute the 68%?? Confidence Interval ellipse of the Gaussian
      @details the ellipse is 2D, and is therefore projected over 2 axes
      @param dimension1 index of the first axis
      @param dimension2 index of the second axis
@@ -195,14 +195,14 @@ class GaussianDistribution : public Writable {
 
     /**
      @brief Sets the parameters of the Gaussian distribution according to the
-     95% Confidence Interval ellipse
+     68%?? Confidence Interval ellipse
      @details the ellipse is 2D, and is therefore projected over 2 axes
      @param gaussian_ellipse_95 95% Confidence Interval ellipse parameters
      @param dimension1 index of the first axis
      @param dimension2 index of the second axis
      @throws out_of_range if the dimensions are out of bounds
      */
-    void fromEllipse(Ellipse const& gaussian_ellipse_95, std::size_t dimension1,
+    void fromEllipse(Ellipse const& gaussian_ellipse, std::size_t dimension1,
                      std::size_t dimension2);
 
     ///@}

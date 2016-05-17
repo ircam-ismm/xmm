@@ -505,9 +505,9 @@ xmm::Ellipse xmm::GaussianDistribution::toEllipse(std::size_t dimension1,
     if (dimension1 >= dimension.get() || dimension2 >= dimension.get())
         throw std::out_of_range("dimensions out of range");
 
-    Ellipse gaussian_ellipse_95;
-    gaussian_ellipse_95.x = mean[dimension1];
-    gaussian_ellipse_95.y = mean[dimension2];
+    Ellipse gaussian_ellipse;
+    gaussian_ellipse.x = mean[dimension1];
+    gaussian_ellipse.y = mean[dimension2];
 
     // Represent 2D covariance with square matrix
     // |a b|
@@ -528,30 +528,29 @@ xmm::Ellipse xmm::GaussianDistribution::toEllipse(std::size_t dimension1,
     double determinant = a * c - b * b;
     double eigenVal1 = 0.5 * (trace + sqrt(trace * trace - 4 * determinant));
     double eigenVal2 = 0.5 * (trace - sqrt(trace * trace - 4 * determinant));
-    gaussian_ellipse_95.width = 2 * sqrt(5.991 * eigenVal1);
-    gaussian_ellipse_95.height = 2 * sqrt(5.991 * eigenVal2);
-    gaussian_ellipse_95.angle = atan(b / (eigenVal1 - c));
-    if (isnan(gaussian_ellipse_95.angle)) {
-        gaussian_ellipse_95.angle = M_PI_2;
+    gaussian_ellipse.width = sqrt(5.991 * eigenVal1);
+    gaussian_ellipse.height = sqrt(5.991 * eigenVal2);
+    gaussian_ellipse.angle = atan(b / (eigenVal1 - c));
+    if (isnan(gaussian_ellipse.angle)) {
+        gaussian_ellipse.angle = M_PI_2;
     }
 
-    return gaussian_ellipse_95;
+    return gaussian_ellipse;
 }
 
-void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse_95,
+void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
                                             std::size_t dimension1,
                                             std::size_t dimension2) {
     if (dimension1 >= dimension.get() || dimension2 >= dimension.get())
         throw std::out_of_range("dimensions out of range");
 
-    mean[dimension1] = gaussian_ellipse_95.x;
-    mean[dimension2] = gaussian_ellipse_95.y;
+    mean[dimension1] = gaussian_ellipse.x;
+    mean[dimension2] = gaussian_ellipse.y;
 
-    double eigenVal1 =
-        gaussian_ellipse_95.width * gaussian_ellipse_95.width / (4. * 5.991);
+    double eigenVal1 = gaussian_ellipse.width * gaussian_ellipse.width / 5.991;
     double eigenVal2 =
-        gaussian_ellipse_95.height * gaussian_ellipse_95.height / (4. * 5.991);
-    double tantheta = std::tan(gaussian_ellipse_95.angle);
+        gaussian_ellipse.height * gaussian_ellipse.height / 5.991;
+    double tantheta = std::tan(gaussian_ellipse.angle);
     double a, b, c;
     b = (eigenVal1 - eigenVal2) * tantheta / (tantheta * tantheta + 1.);
     c = eigenVal1 - b / tantheta;
@@ -680,23 +679,23 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse_95,
 //}
 
 xmm::Ellipse xmm::covariance2ellipse(double c_xx, double c_xy, double c_yy) {
-    Ellipse gaussian_ellipse_95;
-    gaussian_ellipse_95.x = 0.;
-    gaussian_ellipse_95.y = 0.;
+    Ellipse gaussian_ellipse;
+    gaussian_ellipse.x = 0.;
+    gaussian_ellipse.y = 0.;
 
     // Compute Eigen Values to get width, height and angle
     double trace = c_xx + c_yy;
     double determinant = c_xx * c_yy - c_xy * c_xy;
     double eigenVal1 = 0.5 * (trace + sqrt(trace * trace - 4 * determinant));
     double eigenVal2 = 0.5 * (trace - sqrt(trace * trace - 4 * determinant));
-    gaussian_ellipse_95.width = 2 * sqrt(5.991 * eigenVal1);
-    gaussian_ellipse_95.height = 2 * sqrt(5.991 * eigenVal2);
-    gaussian_ellipse_95.angle = atan(c_xy / (eigenVal1 - c_yy));
-    if (isnan(gaussian_ellipse_95.angle)) {
-        gaussian_ellipse_95.angle = M_PI_2;
+    gaussian_ellipse.width = sqrt(5.991 * eigenVal1);
+    gaussian_ellipse.height = sqrt(5.991 * eigenVal2);
+    gaussian_ellipse.angle = atan(c_xy / (eigenVal1 - c_yy));
+    if (isnan(gaussian_ellipse.angle)) {
+        gaussian_ellipse.angle = M_PI_2;
     }
 
-    return gaussian_ellipse_95;
+    return gaussian_ellipse;
 }
 
 template <>
