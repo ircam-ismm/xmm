@@ -139,22 +139,21 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
             int i(0);
             for (auto& model : models) {
                 for (int d = 0; d < dimension_output; d++) {
-                    // TODO: check if rather use smooth here.
                     results.output_values[d] +=
-                        results.instant_normalized_likelihoods[i] *
+                        results.smoothed_normalized_likelihoods[i] *
                         model.second.results.output_values[d];
                     if ((configuration.covariance_mode.get() ==
                          GaussianDistribution::CovarianceMode::Full)) {
                         for (int d2 = 0; d2 < dimension_output; d2++)
                             results
                                 .output_covariance[d * dimension_output + d2] +=
-                                results.instant_normalized_likelihoods[i] *
+                                results.smoothed_normalized_likelihoods[i] *
                                 model.second.results
                                     .output_covariance[d * dimension_output +
                                                        d2];
                     } else {
                         results.output_covariance[d] +=
-                            results.instant_normalized_likelihoods[i] *
+                            results.smoothed_normalized_likelihoods[i] *
                             model.second.results.output_covariance[d];
                     }
                 }

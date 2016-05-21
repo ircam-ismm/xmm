@@ -375,16 +375,25 @@ void xmm::HierarchicalHMM::reset() {
     frontier_v2_.resize(this->size());
     forward_initialized_ = false;
     for (auto &model : models) {
+        model.second.is_hierarchical_ = configuration.hierarchical.get();
         model.second.reset();
     }
 }
 
 void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
     checkTraining();
-    if (forward_initialized_) {
-        this->forward_update(observation);
+    if (configuration.hierarchical.get()) {
+        if (forward_initialized_) {
+            this->forward_update(observation);
+        } else {
+            this->forward_init(observation);
+        }
     } else {
-        this->forward_init(observation);
+        int i(0);
+        for (auto &model : models) {
+            results.instant_likelihoods[i] = model.second.filter(observation);
+            i++;
+        }
     }
 
     // Compute time progression
@@ -421,9 +430,8 @@ void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
             int i(0);
             for (auto &model : models) {
                 for (int d = 0; d < dimension_output; d++) {
-                    // TODO: Same here
                     results.output_values[d] +=
-                        results.instant_normalized_likelihoods[i] *
+                        results.smoothed_normalized_likelihoods[i] *
                         model.second.results.output_values[d];
 
                     if ((configuration.covariance_mode.get() ==
@@ -431,13 +439,13 @@ void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
                         for (int d2 = 0; d2 < dimension_output; d2++)
                             results
                                 .output_covariance[d * dimension_output + d2] +=
-                                results.instant_normalized_likelihoods[i] *
+                                results.smoothed_normalized_likelihoods[i] *
                                 model.second.results
                                     .output_covariance[d * dimension_output +
                                                        d2];
                     } else {
                         results.output_covariance[d] +=
-                            results.instant_normalized_likelihoods[i] *
+                            results.smoothed_normalized_likelihoods[i] *
                             model.second.results.output_covariance[d];
                     }
                 }

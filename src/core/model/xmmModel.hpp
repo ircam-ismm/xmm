@@ -233,6 +233,11 @@ class Model : public Writable {
     bool trained() const { return (!is_training_ && size() > 0); }
 
     /**
+     @brief Checks if the model is still training
+     */
+    bool training() const { return is_training_; }
+
+    /**
      @brief Train all classes from the training set passed in argument
      @param trainingSet Training Set
      */

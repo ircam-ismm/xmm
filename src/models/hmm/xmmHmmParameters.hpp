@@ -174,6 +174,12 @@ class ClassParameters<HMM> {
      */
     Attribute<HMM::RegressionEstimator> regression_estimator;
 
+    /**
+     @brief specifies if the decoding algorithm is hierarchical or
+     class-conditional
+     */
+    Attribute<bool> hierarchical;
+
   protected:
     /**
      @brief notification function called when a member attribute is changed
