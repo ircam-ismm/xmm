@@ -45,12 +45,12 @@ xmm::GaussianDistribution::GaussianDistribution(bool bimodal,
                                                 std::size_t dimension_,
                                                 std::size_t dimension_input_,
                                                 CovarianceMode covariance_mode_)
-    : bimodal_(bimodal),
-      dimension(dimension_, (bimodal) ? 2 : 1),
+    : dimension(dimension_, (bimodal) ? 2 : 1),
       dimension_input(dimension_input_, 0, (bimodal) ? dimension_ - 1 : 0),
+      covariance_mode(covariance_mode_),
+      bimodal_(bimodal),
       covariance_determinant_(0.),
-      covariance_determinant_input_(0.),
-      covariance_mode(covariance_mode_) {
+      covariance_determinant_input_(0.) {
     dimension.onAttributeChange(this,
                                 &xmm::GaussianDistribution::onAttributeChange);
     dimension_input.onAttributeChange(
@@ -63,12 +63,12 @@ xmm::GaussianDistribution::GaussianDistribution(bool bimodal,
 xmm::GaussianDistribution::GaussianDistribution(GaussianDistribution const& src)
     : dimension(src.dimension),
       dimension_input(src.dimension_input),
-      covariance_mode(src.covariance_mode),
-      bimodal_(src.bimodal_),
       mean(src.mean),
+      covariance_mode(src.covariance_mode),
       covariance(src.covariance),
-      inverse_covariance_(src.inverse_covariance_),
-      covariance_determinant_(src.covariance_determinant_) {
+      bimodal_(src.bimodal_),
+      covariance_determinant_(src.covariance_determinant_),
+      inverse_covariance_(src.inverse_covariance_) {
     dimension.onAttributeChange(this,
                                 &xmm::GaussianDistribution::onAttributeChange);
     dimension_input.onAttributeChange(

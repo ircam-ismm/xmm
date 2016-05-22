@@ -39,8 +39,8 @@
 xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
     std::shared_ptr<SharedParameters> p)
     : label(""),
-      training_status(this, label),
       shared_parameters(p),
+      training_status(this, label),
       is_training_(false),
       cancel_training_(false) {
     if (p == NULL) {
@@ -54,8 +54,8 @@ xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
 xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
     SingleClassProbabilisticModel const& src)
     : label(src.label),
-      training_status(this, label),
       shared_parameters(src.shared_parameters),
+      training_status(this, label),
       is_training_(false),
       cancel_training_(false) {
     if (is_training_)
@@ -67,8 +67,8 @@ xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
 xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
     std::shared_ptr<SharedParameters> p, Json::Value const& root)
     : label(""),
-      training_status(this, label),
       shared_parameters(p),
+      training_status(this, label),
       is_training_(false),
       cancel_training_(false) {
     if (p == NULL) {

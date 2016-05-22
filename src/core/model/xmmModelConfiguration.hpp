@@ -105,10 +105,9 @@ class Configuration : public ClassParameters<ModelType> {
      */
     Configuration(Configuration const& src)
         : ClassParameters<ModelType>(src),
-          class_parameters_(src.class_parameters_),
           multithreading(src.multithreading),
-          multiClass_regression_estimator(src.multiClass_regression_estimator) {
-    }
+          multiClass_regression_estimator(src.multiClass_regression_estimator),
+          class_parameters_(src.class_parameters_) {}
 
     /**
      @brief Constructor from Json Structure

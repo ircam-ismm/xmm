@@ -54,17 +54,17 @@ xmm::Phrase::Phrase(MemoryMode memoryMode, Multimodality multimodality)
 }
 
 xmm::Phrase::Phrase(Phrase const& src)
-    : own_memory_(src.own_memory_),
+    : dimension(src.dimension),
+      dimension_input(src.dimension_input),
+      label(src.label),
+      column_names(src.column_names),
+      own_memory_(src.own_memory_),
       bimodal_(src.bimodal_),
       empty_(src.empty_),
-      dimension(src.dimension),
-      dimension_input(src.dimension_input),
-      max_length_(src.max_length_),
       length_(src.length_),
       input_length_(src.input_length_),
       output_length_(src.output_length_),
-      column_names(src.column_names),
-      label(src.label) {
+      max_length_(src.max_length_) {
     if (own_memory_) {
         data_ = new float*[bimodal_ ? 2 : 1];
         if (max_length_ > 0) {

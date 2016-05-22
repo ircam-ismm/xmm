@@ -43,7 +43,7 @@ namespace xmm {
 /**
  Dummy structure for template specialization
  */
-struct KMeans;
+class KMeans;
 
 /**
  @ingroup KMeans

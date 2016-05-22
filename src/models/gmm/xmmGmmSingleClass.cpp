@@ -39,8 +39,8 @@ xmm::SingleClassGMM::SingleClassGMM(std::shared_ptr<SharedParameters> p)
 xmm::SingleClassGMM::SingleClassGMM(SingleClassGMM const& src)
     : SingleClassProbabilisticModel(src),
       parameters(src.parameters),
-      mixture_coeffs(src.mixture_coeffs),
-      components(src.components) {
+      components(src.components),
+      mixture_coeffs(src.mixture_coeffs) {
     beta.resize(parameters.gaussians.get());
 }
 

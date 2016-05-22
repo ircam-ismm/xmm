@@ -56,11 +56,11 @@ class Model : public Writable {
      @param bimodal use true for a use with Regression / Generation.
      */
     Model(bool bimodal = false)
-        : is_joining_(false),
-          is_training_(false),
+        : shared_parameters(std::make_shared<SharedParameters>()),
           cancel_required_(false),
-          models_still_training_(0),
-          shared_parameters(std::make_shared<SharedParameters>()) {
+          is_training_(false),
+          is_joining_(false),
+          models_still_training_(0) {
         shared_parameters->bimodal.set(bimodal);
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension.set(2, true);
@@ -76,14 +76,14 @@ class Model : public Writable {
      @param src Source Model
      */
     Model(Model<SingleClassModel, ModelType> const& src)
-        : is_joining_(false),
-          is_training_(false),
-          cancel_required_(false),
-          models_still_training_(0),
-          shared_parameters(
+        : shared_parameters(
               std::make_shared<SharedParameters>(*src.shared_parameters)),
           configuration(src.configuration),
-          training_events(src.training_events) {
+          training_events(src.training_events),
+          cancel_required_(false),
+          is_training_(false),
+          is_joining_(false),
+          models_still_training_(0) {
         if (src.is_training_)
             throw std::runtime_error(
                 "Cannot copy: source model is still training");
@@ -101,11 +101,11 @@ class Model : public Writable {
      @param root Json Value
      */
     explicit Model(Json::Value const& root)
-        : is_joining_(false),
-          is_training_(false),
+        : shared_parameters(std::make_shared<SharedParameters>()),
           cancel_required_(false),
-          models_still_training_(0),
-          shared_parameters(std::make_shared<SharedParameters>()) {
+          is_training_(false),
+          is_joining_(false),
+          models_still_training_(0) {
         shared_parameters->fromJson(root["shared_parameters"]);
         configuration.fromJson(root["configuration"]);
         models.clear();
@@ -502,11 +502,11 @@ class Model : public Writable {
                     }
                 }
             }
-            TrainingEvent event(this, "", TrainingEvent::Status::Alldone);
-            training_events.notifyListeners(event);
             is_joining_ = false;
             is_training_ = false;
             reset();
+            TrainingEvent event(this, "", TrainingEvent::Status::Alldone);
+            training_events.notifyListeners(event);
         } else {
             while (is_joining_) {
             }

@@ -246,6 +246,11 @@ class Attribute : public AttributeBase {
     static T defaultLimitMax() { return std::numeric_limits<T>::max(); }
 
     /**
+     @brief Current value of the attribute
+     */
+    T value_;
+
+    /**
      @brief Minimum value of the attribute
      */
     T limit_min_;
@@ -254,11 +259,6 @@ class Attribute : public AttributeBase {
      @brief Maximum value of the attribute
      */
     T limit_max_;
-
-    /**
-     @brief Current value of the attribute
-     */
-    T value_;
 
     /**
      @brief Callback function to be called on attribute change
@@ -430,6 +430,11 @@ class Attribute<std::vector<T>> : public AttributeBase {
     static T defaultLimitMax() { return std::numeric_limits<T>::max(); }
 
     /**
+     @brief Current value of the attribute
+     */
+    std::vector<T> value_;
+
+    /**
      @brief Minimum value of the attribute
      */
     T limit_min_;
@@ -438,11 +443,6 @@ class Attribute<std::vector<T>> : public AttributeBase {
      @brief Maximum value of the attribute
      */
     T limit_max_;
-
-    /**
-     @brief Current value of the attribute
-     */
-    std::vector<T> value_;
 
     /**
      @brief Size of the vector of values
@@ -460,7 +460,6 @@ class Attribute<std::vector<T>> : public AttributeBase {
 /**
  @ingroup Common
  @brief Generic Attribute (Vector Specialization)
- @tparam T Vector base type
  */
 template <>
 class Attribute<std::vector<std::string>> : public AttributeBase {
@@ -619,6 +618,11 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
     static std::string defaultLimitMax() { return ""; }
 
     /**
+     @brief Current value of the attribute
+     */
+    std::vector<std::string> value_;
+
+    /**
      @brief Minimum value of the attribute
      */
     std::string limit_min_;
@@ -627,11 +631,6 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
      @brief Maximum value of the attribute
      */
     std::string limit_max_;
-
-    /**
-     @brief Current value of the attribute
-     */
-    std::vector<std::string> value_;
 
     /**
      @brief Size of the vector of values

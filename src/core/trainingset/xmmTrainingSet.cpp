@@ -49,13 +49,13 @@ xmm::TrainingSet::TrainingSet(MemoryMode memoryMode,
 }
 
 xmm::TrainingSet::TrainingSet(TrainingSet const &src)
-    : own_memory_(src.own_memory_),
-      bimodal_(src.bimodal_),
-      dimension(src.dimension),
+    : dimension(src.dimension),
       dimension_input(src.dimension_input),
       column_names(src.column_names),
-      phrases_(src.phrases_),
-      labels_(src.labels_) {
+      own_memory_(src.own_memory_),
+      bimodal_(src.bimodal_),
+      labels_(src.labels_),
+      phrases_(src.phrases_) {
     dimension.onAttributeChange(this, &xmm::TrainingSet::onAttributeChange);
     dimension_input.onAttributeChange(this,
                                       &xmm::TrainingSet::onAttributeChange);

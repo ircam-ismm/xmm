@@ -37,12 +37,12 @@ xmm::SingleClassHMM::SingleClassHMM(std::shared_ptr<SharedParameters> p)
 
 xmm::SingleClassHMM::SingleClassHMM(SingleClassHMM const& src)
     : SingleClassProbabilisticModel(src),
-      is_hierarchical_(src.is_hierarchical_),
       parameters(src.parameters),
-      transition(src.transition),
+      states(src.states),
       prior(src.prior),
-      exit_probabilities_(src.exit_probabilities_),
-      states(src.states) {
+      transition(src.transition),
+      is_hierarchical_(src.is_hierarchical_),
+      exit_probabilities_(src.exit_probabilities_) {
     alpha.resize(parameters.states.get());
     previous_alpha_.resize(parameters.states.get());
     beta_.resize(parameters.states.get());

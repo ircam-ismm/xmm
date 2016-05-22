@@ -42,15 +42,15 @@ static long random() { return rand(); }
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
 xmm::KMeans::KMeans(std::size_t clusters_)
-    : initialization_mode(InitializationMode::Random),
-      shared_parameters(std::make_shared<SharedParameters>()) {
+    : shared_parameters(std::make_shared<SharedParameters>()),
+      initialization_mode(InitializationMode::Random) {
     configuration.clusters.set(clusters_);
 }
 
 xmm::KMeans::KMeans(KMeans const& src)
-    : initialization_mode(src.initialization_mode),
-      configuration(src.configuration),
-      centers(src.centers) {}
+    : configuration(src.configuration),
+      centers(src.centers),
+      initialization_mode(src.initialization_mode) {}
 
 xmm::KMeans& xmm::KMeans::operator=(KMeans const& src) {
     if (this != &src) {
