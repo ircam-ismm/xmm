@@ -32,7 +32,7 @@
  */
 
 #include "xmmGmm.hpp"
-#include "xmmKMeans.hpp"
+#include "../kmeans/xmmKMeans.hpp"
 
 xmm::GMM::GMM(bool bimodal) : Model<SingleClassGMM, GMM>(bimodal) {}
 
