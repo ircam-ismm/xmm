@@ -105,6 +105,7 @@ namespace std {
 %include "xmmJson.hpp"
 %include "xmmAttribute.hpp"
 
+%template(Attribute_bool) xmm::Attribute<bool>;
 %template(Attribute_size_t) xmm::Attribute<std::size_t>;
 %template(Attribute_int) xmm::Attribute<int>;
 %template(Attribute_double) xmm::Attribute<double>;

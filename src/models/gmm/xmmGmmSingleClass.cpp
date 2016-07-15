@@ -524,10 +524,9 @@ void xmm::SingleClassGMM::initParametersToDefault(
             GaussianDistribution::CovarianceMode::Full) {
             components[c].covariance.assign(
                 dimension * dimension,
-                parameters.relative_regularization.get() / 2.);
+                parameters.absolute_regularization.get() / 2.);
         } else {
-            components[c].covariance.assign(
-                dimension, parameters.absolute_regularization.get() / 2.);
+            components[c].covariance.assign(dimension, 0.);
         }
         components[c].regularize(current_regularization);
         mixture_coeffs[c] = 1. / float(parameters.gaussians.get());
