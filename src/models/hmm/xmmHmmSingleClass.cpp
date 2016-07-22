@@ -125,14 +125,14 @@ void xmm::SingleClassHMM::allocate() {
 }
 
 void xmm::SingleClassHMM::initParametersToDefault(
-    std::vector<float> const& dataVariance) {
+    std::vector<float> const& dataStddev) {
     if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
         setErgodic();
     } else {
         setLeftRight();
     }
     for (int i = 0; i < parameters.states.get(); i++) {
-        states[i].initParametersToDefault(dataVariance);
+        states[i].initParametersToDefault(dataStddev);
     }
 }
 
@@ -496,7 +496,7 @@ void xmm::SingleClassHMM::emAlgorithmInit(TrainingSet* trainingSet) {
     std::size_t numStates = parameters.states.get();
     std::size_t numGaussians = parameters.gaussians.get();
 
-    initParametersToDefault(trainingSet->variance());
+    initParametersToDefault(trainingSet->standardDeviation());
 
     if (numGaussians > 0) {  // TODO: weird > 0
         initMeansCovariancesWithGMMEM(trainingSet);

@@ -328,24 +328,26 @@ std::vector<float> xmm::TrainingSet::mean() const {
     return mean;
 }
 
-std::vector<float> xmm::TrainingSet::variance() const {
-    std::vector<float> variance(dimension.get());
+std::vector<float> xmm::TrainingSet::standardDeviation() const {
+    std::vector<float> stddev(dimension.get());
     std::vector<float> _mean = mean();
     unsigned int total_length(0);
     for (auto &phrase : phrases_) {
         for (unsigned int d = 0; d < dimension.get(); d++) {
             for (unsigned int t = 0; t < phrase.second->size(); t++) {
-                variance[d] += (phrase.second->getValue(t, d) - _mean[d]) *
-                               (phrase.second->getValue(t, d) - _mean[d]);
+                stddev[d] += (phrase.second->getValue(t, d) - _mean[d]) *
+                             (phrase.second->getValue(t, d) - _mean[d]);
             }
         }
         total_length += phrase.second->size();
     }
 
-    for (unsigned int d = 0; d < dimension.get(); d++)
-        variance[d] /= float(total_length);
+    for (unsigned int d = 0; d < dimension.get(); d++) {
+        stddev[d] /= float(total_length);
+        stddev[d] = sqrtf(stddev[d]);
+    }
 
-    return variance;
+    return stddev;
 }
 
 std::vector<std::pair<float, float>> xmm::TrainingSet::minmax() const {
@@ -385,6 +387,20 @@ std::vector<std::pair<float, float>> xmm::TrainingSet::minmax() const {
         }
     }
     return minmax;
+}
+
+void xmm::TrainingSet::rescale(std::vector<float> offset,
+                               std::vector<float> gain) {
+    for (auto &phrase : phrases_) {
+        phrase.second->rescale(offset, gain);
+    }
+}
+
+void xmm::TrainingSet::normalize() {
+    std::vector<float> offset = mean();
+    std::vector<float> gain = standardDeviation();
+    for (auto &v : gain) v = 1. / v;
+    rescale(offset, gain);
 }
 
 Json::Value xmm::TrainingSet::toJson() const {

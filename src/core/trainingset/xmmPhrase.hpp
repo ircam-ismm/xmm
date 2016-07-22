@@ -409,16 +409,24 @@ class Phrase : public Writable {
     std::vector<float> mean() const;
 
     /**
-     @brief Compute the variance of the data phrase along the time axis
-     @return variance of the phrase (along time axis, full-size)
+     @brief Compute the standard deviation of the data phrase along the time
+     axis
+     @return standard deviation of the phrase (along time axis, full-size)
      */
-    std::vector<float> variance() const;
+    std::vector<float> standardDeviation() const;
 
     /**
      @brief Compute the global min/max of the data phrase along the time axis
      @return vector of min/max pairs ofthe phrases (along time axis, full-size)
      */
     std::vector<std::pair<float, float>> minmax() const;
+
+    /**
+     @brief rescale a phrase given an offset and gain
+     @param offset constant offset to be subtracted
+     @param gain gain to be applied
+     */
+    void rescale(std::vector<float> offset, std::vector<float> gain);
 
     ///@}
 

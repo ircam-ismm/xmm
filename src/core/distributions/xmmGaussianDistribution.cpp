@@ -31,7 +31,7 @@
  */
 
 #include "xmmGaussianDistribution.hpp"
-#include "xmmMatrix.hpp"
+#include "../common/xmmMatrix.hpp"
 #include <algorithm>
 
 #ifdef WIN32

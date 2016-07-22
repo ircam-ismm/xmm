@@ -85,7 +85,7 @@ double xmm::SingleClassGMM::filter(std::vector<float> const& observation) {
 }
 
 void xmm::SingleClassGMM::emAlgorithmInit(TrainingSet* trainingSet) {
-    initParametersToDefault(trainingSet->variance());
+    initParametersToDefault(trainingSet->standardDeviation());
     initMeansWithKMeans(trainingSet);
     initCovariances_fullyObserved(trainingSet);
     addCovarianceOffset();
@@ -509,25 +509,24 @@ double xmm::SingleClassGMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
 }
 
 void xmm::SingleClassGMM::initParametersToDefault(
-    std::vector<float> const& dataVariance) {
+    std::vector<float> const& dataStddev) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
 
     double norm_coeffs(0.);
-    current_regularization.resize(dataVariance.size());
-    for (int i = 0; i < dataVariance.size(); i++) {
-        current_regularization[i] = std::max(
-            parameters.absolute_regularization.get(),
-            parameters.relative_regularization.get() * dataVariance[i]);
+    current_regularization.resize(dataStddev.size());
+    for (int i = 0; i < dataStddev.size(); i++) {
+        current_regularization[i] =
+            std::max(parameters.absolute_regularization.get(),
+                     parameters.relative_regularization.get() * dataStddev[i]);
     }
     for (int c = 0; c < parameters.gaussians.get(); c++) {
         if (parameters.covariance_mode.get() ==
             GaussianDistribution::CovarianceMode::Full) {
             components[c].covariance.assign(
                 dimension * dimension,
-                parameters.relative_regularization.get() / 2.);
+                parameters.absolute_regularization.get() / 2.);
         } else {
-            components[c].covariance.assign(
-                dimension, parameters.absolute_regularization.get() / 2.);
+            components[c].covariance.assign(dimension, 0.);
         }
         components[c].regularize(current_regularization);
         mixture_coeffs[c] = 1. / float(parameters.gaussians.get());

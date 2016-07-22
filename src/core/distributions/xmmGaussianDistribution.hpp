@@ -197,7 +197,7 @@ class GaussianDistribution : public Writable {
      @brief Sets the parameters of the Gaussian distribution according to the
      68%?? Confidence Interval ellipse
      @details the ellipse is 2D, and is therefore projected over 2 axes
-     @param gaussian_ellipse_95 95% Confidence Interval ellipse parameters
+     @param gaussian_ellipse 68% Confidence Interval ellipse parameters (1x std)
      @param dimension1 index of the first axis
      @param dimension2 index of the second axis
      @throws out_of_range if the dimensions are out of bounds

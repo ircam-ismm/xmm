@@ -69,7 +69,7 @@ void xmm::KMeans::train(TrainingSet* trainingSet) {
     centers.resize(
         configuration.clusters.get() * shared_parameters->dimension.get(), 0.0);
     if (initialization_mode == InitializationMode::Random)
-        randomizeClusters(trainingSet->variance());
+        randomizeClusters(trainingSet->standardDeviation());
     else
         initClustersWithFirstPhrase(trainingSet->begin()->second);
 
