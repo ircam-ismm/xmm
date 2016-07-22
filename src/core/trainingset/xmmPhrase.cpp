@@ -478,18 +478,19 @@ std::vector<float> xmm::Phrase::mean() const {
     return mean;
 }
 
-std::vector<float> xmm::Phrase::variance() const {
-    std::vector<float> variance(dimension.get());
+std::vector<float> xmm::Phrase::standardDeviation() const {
+    std::vector<float> stddev(dimension.get());
     std::vector<float> _mean = mean();
     for (std::size_t d = 0; d < dimension.get(); d++) {
-        variance[d] = 0.;
+        stddev[d] = 0.;
         for (std::size_t t = 0; t < length_; t++) {
-            variance[d] +=
+            stddev[d] +=
                 (getValue(t, d) - _mean[d]) * (getValue(t, d) - _mean[d]);
         }
-        variance[d] /= float(length_);
+        stddev[d] /= float(length_);
+        stddev[d] = sqrtf(stddev[d]);
     }
-    return variance;
+    return stddev;
 }
 
 std::vector<std::pair<float, float>> xmm::Phrase::minmax() const {
@@ -503,6 +504,30 @@ std::vector<std::pair<float, float>> xmm::Phrase::minmax() const {
         }
     }
     return minmax;
+}
+
+void xmm::Phrase::rescale(std::vector<float> offset, std::vector<float> gain) {
+    for (int t = 0; t < size(); t++) {
+        float* p;
+        if (bimodal_) {
+            p = getPointer_input(t);
+            for (int d = 0; d < dimension_input.get(); d++) {
+                p[d] -= offset[d];
+                p[d] *= gain[d];
+            }
+            p = getPointer_output(t);
+            for (int d = dimension_input.get(); d < dimension.get(); d++) {
+                p[d] -= offset[d];
+                p[d] *= gain[d];
+            }
+        } else {
+            p = getPointer(t);
+            for (int d = 0; d < dimension.get(); d++) {
+                p[d] -= offset[d];
+                p[d] *= gain[d];
+            }
+        }
+    }
 }
 
 void xmm::Phrase::trim() {

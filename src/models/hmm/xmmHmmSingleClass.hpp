@@ -230,7 +230,7 @@ class SingleClassHMM : public SingleClassProbabilisticModel {
     /**
      @brief initialize model parameters to their default values
      */
-    void initParametersToDefault(std::vector<float> const& dataVariance);
+    void initParametersToDefault(std::vector<float> const& dataStddev);
 
     /**
      @brief initialize the means of each state with all training phrases (single
@@ -408,10 +408,9 @@ class SingleClassHMM : public SingleClassProbabilisticModel {
 
     /**
      @brief Compute the regression for the case of a bimodal model, given the
-     estimated
-     state probabilities estimated by forward algorithm
+     estimated state probabilities estimated by forward algorithm.
+     @details predicted output parameters are stored in the result structure.
      @param observation_input observation on the input modality
-     @param predicted_output output predicted by non-linear regression.
      */
     void regression(std::vector<float> const& observation_input);
 

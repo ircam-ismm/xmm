@@ -263,10 +263,12 @@ class TrainingSet : public Writable {
     std::vector<float> mean() const;
 
     /**
-     @brief Compute the global variance of all data phrases along the time axis
-     @return global variance of all phrases (along time axis, full-size)
+     @brief Compute the global standard deviation of all data phrases along the
+     time axis
+     @return global standard deviation of all phrases (along time axis,
+     full-size)
      */
-    std::vector<float> variance() const;
+    std::vector<float> standardDeviation() const;
 
     /**
      @brief Compute the global min/max of all data phrases along the time axis
@@ -274,6 +276,19 @@ class TrainingSet : public Writable {
      full-size)
      */
     std::vector<std::pair<float, float>> minmax() const;
+
+    /**
+     @brief rescale a phrase given an offset and gain
+     @param offset constant offset to be subtracted
+     @param gain gain to be applied
+     */
+    void rescale(std::vector<float> offset, std::vector<float> gain);
+
+    /**
+     @brief normalize the training set by rescaling all phrases to the mean/std
+     of the whole training set
+     */
+    void normalize();
 
     ///@}
 

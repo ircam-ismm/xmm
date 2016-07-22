@@ -266,7 +266,7 @@ class SingleClassGMM : public SingleClassProbabilisticModel {
      @brief Initialize model parameters to default values.
      @details Mixture coefficients are then equiprobable
      */
-    void initParametersToDefault(std::vector<float> const& dataVariance);
+    void initParametersToDefault(std::vector<float> const& dataStddev);
 
     /**
      @brief Initialize the means of the Gaussian components with a Biased
