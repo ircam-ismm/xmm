@@ -244,6 +244,7 @@ class Model : public Writable {
     virtual void train(TrainingSet* trainingSet) {
         if (!trainingSet) return;
         cancelTraining();
+        clear();
 
         is_training_ = true;
 
@@ -445,8 +446,10 @@ class Model : public Writable {
      */
     void fromJson(Json::Value const& root) {
         try {
+            EventGenerator<TrainingEvent> _tmp_training_events(training_events);
             Model<SingleClassModel, ModelType> tmp(root);
             *this = tmp;
+            training_events = _tmp_training_events;
         } catch (JsonException& e) {
             throw e;
         }
