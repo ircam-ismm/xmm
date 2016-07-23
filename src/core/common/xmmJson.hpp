@@ -234,7 +234,7 @@ class JsonException : public std::exception {
  @return Json Value containing the array in Json Format
  */
 template <typename T>
-Json::Value array2json(T const* a, std::size_t n) {
+Json::Value array2json(T const* a, unsigned int n) {
     Json::Value root;
     root.resize(static_cast<Json::ArrayIndex>(n));
     for (int i = 0; i < n; i++) {
@@ -251,7 +251,7 @@ Json::Value array2json(T const* a, std::size_t n) {
  @param n array size
  */
 template <typename T>
-void json2array(Json::Value const& root, T* a, std::size_t n) {
+void json2array(Json::Value const& root, T* a, unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -263,13 +263,13 @@ void json2array(Json::Value const& root, T* a, std::size_t n) {
 }
 
 template <>
-void json2array(Json::Value const& root, float* a, std::size_t n);
+void json2array(Json::Value const& root, float* a, unsigned int n);
 template <>
-void json2array(Json::Value const& root, double* a, std::size_t n);
+void json2array(Json::Value const& root, double* a, unsigned int n);
 template <>
-void json2array(Json::Value const& root, bool* a, std::size_t n);
+void json2array(Json::Value const& root, bool* a, unsigned int n);
 template <>
-void json2array(Json::Value const& root, std::string* a, std::size_t n);
+void json2array(Json::Value const& root, std::string* a, unsigned int n);
 
 /**
  @ingroup Common
@@ -296,7 +296,7 @@ Json::Value vector2json(std::vector<T> const& a) {
  @warning the target vector must already have the appropriate size
  */
 template <typename T>
-void json2vector(Json::Value const& root, std::vector<T>& a, std::size_t n) {
+void json2vector(Json::Value const& root, std::vector<T>& a, unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -308,15 +308,15 @@ void json2vector(Json::Value const& root, std::vector<T>& a, std::size_t n) {
 }
 
 template <>
-void json2vector(Json::Value const& root, std::vector<float>& a, std::size_t n);
+void json2vector(Json::Value const& root, std::vector<float>& a, unsigned int n);
 template <>
 void json2vector(Json::Value const& root, std::vector<double>& a,
-                 std::size_t n);
+                 unsigned int n);
 template <>
-void json2vector(Json::Value const& root, std::vector<bool>& a, std::size_t n);
+void json2vector(Json::Value const& root, std::vector<bool>& a, unsigned int n);
 template <>
 void json2vector(Json::Value const& root, std::vector<std::string>& a,
-                 std::size_t n);
+                 unsigned int n);
 }
 
 #endif

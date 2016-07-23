@@ -169,7 +169,9 @@ class Model : public Writable {
      @brief Get the number of classes in the model
      @return the number of classes in the model
      */
-    std::size_t size() const { return models.size(); }
+    unsigned int size() const {
+        return static_cast<unsigned int>(models.size());
+    }
 
     /**
      @brief Checks if a class exists

@@ -144,7 +144,7 @@ void xmm::HierarchicalHMM::forward_init(std::vector<float> const &observation) {
 
     int model_index(0);
     for (auto &model : models) {
-        std::size_t N = model.second.parameters.states.get();
+        unsigned int N = model.second.parameters.states.get();
 
         for (int i = 0; i < 3; i++) {
             model.second.alpha_h[i].assign(N, 0.0);
@@ -186,9 +186,9 @@ void xmm::HierarchicalHMM::forward_init(std::vector<float> const &observation) {
 
     // Normalize Alpha variables
     for (auto &model : models) {
-        std::size_t N = model.second.parameters.states.get();
-        for (std::size_t e = 0; e < 3; e++)
-            for (std::size_t k = 0; k < N; k++)
+        unsigned int N = model.second.parameters.states.get();
+        for (unsigned int e = 0; e < 3; e++)
+            for (unsigned int k = 0; k < N; k++)
                 model.second.alpha_h[e][k] /= norm_const;
     }
 
@@ -216,7 +216,7 @@ void xmm::HierarchicalHMM::forward_update(
     // --------------------------------------
     int dst_model_index(0);
     for (auto &dstModel : models) {
-        std::size_t N = dstModel.second.parameters.states.get();
+        unsigned int N = dstModel.second.parameters.states.get();
 
         // 1) COMPUTE FRONTIER VARIABLE
         //    --------------------------------------
@@ -313,9 +313,9 @@ void xmm::HierarchicalHMM::forward_update(
 
     // Normalize Alpha variables
     for (auto &model : models) {
-        std::size_t N = model.second.parameters.states.get();
-        for (std::size_t e = 0; e < 3; e++)
-            for (std::size_t k = 0; k < N; k++)
+        unsigned int N = model.second.parameters.states.get();
+        for (unsigned int e = 0; e < 3; e++)
+            for (unsigned int k = 0; k < N; k++)
                 model.second.alpha_h[e][k] /= norm_const;
     }
 }
@@ -323,11 +323,11 @@ void xmm::HierarchicalHMM::forward_update(
 void xmm::HierarchicalHMM::likelihoodAlpha(
     int exitNum, std::vector<double> &likelihoodVector) const {
     if (exitNum < 0) {  // Likelihood over all exit states
-        std::size_t l(0);
+        unsigned int l(0);
         for (auto &model : models) {
             likelihoodVector[l] = 0.0;
-            for (std::size_t exit = 0; exit < 3; ++exit) {
-                for (std::size_t k = 0;
+            for (unsigned int exit = 0; exit < 3; ++exit) {
+                for (unsigned int k = 0;
                      k < model.second.parameters.states.get(); k++) {
                     likelihoodVector[l] += model.second.alpha_h[exit][k];
                 }
@@ -336,10 +336,10 @@ void xmm::HierarchicalHMM::likelihoodAlpha(
         }
 
     } else {  // Likelihood for exit state "exitNum"
-        std::size_t l(0);
+        unsigned int l(0);
         for (auto &model : models) {
             likelihoodVector[l] = 0.0;
-            for (std::size_t k = 0; k < model.second.parameters.states.get();
+            for (unsigned int k = 0; k < model.second.parameters.states.get();
                  k++) {
                 likelihoodVector[l] += model.second.alpha_h[exitNum][k];
             }
@@ -361,7 +361,7 @@ void xmm::HierarchicalHMM::reset() {
     results.smoothed_normalized_likelihoods.resize(size());
     results.smoothed_log_likelihoods.resize(size());
     if (shared_parameters->bimodal.get()) {
-        std::size_t dimension_output = shared_parameters->dimension.get() -
+        unsigned int dimension_output = shared_parameters->dimension.get() -
                                        shared_parameters->dimension_input.get();
         results.output_values.resize(dimension_output);
         results.output_covariance.assign(
@@ -404,9 +404,9 @@ void xmm::HierarchicalHMM::filter(std::vector<float> const &observation) {
     updateResults();
 
     if (shared_parameters->bimodal.get()) {
-        std::size_t dimension = shared_parameters->dimension.get();
-        std::size_t dimension_input = shared_parameters->dimension_input.get();
-        std::size_t dimension_output = dimension - dimension_input;
+        unsigned int dimension = shared_parameters->dimension.get();
+        unsigned int dimension_input = shared_parameters->dimension_input.get();
+        unsigned int dimension_output = dimension - dimension_input;
 
         for (auto &model : models) {
             model.second.regression(observation);
@@ -520,7 +520,7 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
     }
 }
 
-// void xmm::HierarchicalHMM::makeBimodal(std::size_t dimension_input)
+// void xmm::HierarchicalHMM::makeBimodal(unsigned int dimension_input)
 //{
 //    checkTraining();
 //    if (bimodal_)
@@ -560,14 +560,14 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
 //}
 //
 // xmm::HierarchicalHMM
-// xmm::HierarchicalHMM::extractSubmodel(std::vector<std::size_t>& columns)
+// xmm::HierarchicalHMM::extractSubmodel(std::vector<unsigned int>& columns)
 // const
 //{
 //    checkTraining();
 //    if (columns.size() > this->dimension())
 //        throw std::out_of_range("requested number of columns exceeds the
 //        dimension of the current model");
-//    for (std::size_t column=0; column<columns.size(); ++column) {
+//    for (unsigned int column=0; column<columns.size(); ++column) {
 //        if (columns[column] >= this->dimension())
 //            throw std::out_of_range("Some column indices exceeds the dimension
 //            of the current model");
@@ -589,8 +589,8 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
 //    checkTraining();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_input(dimension_input());
-//    for (std::size_t i=0; i<dimension_input(); ++i) {
+//    std::vector<unsigned int> columns_input(dimension_input());
+//    for (unsigned int i=0; i<dimension_input(); ++i) {
 //        columns_input[i] = i;
 //    }
 //    return extractSubmodel(columns_input);
@@ -601,8 +601,8 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
 //    checkTraining();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_output(dimension() - dimension_input());
-//    for (std::size_t i=dimension_input(); i<dimension(); ++i) {
+//    std::vector<unsigned int> columns_output(dimension() - dimension_input());
+//    for (unsigned int i=dimension_input(); i<dimension(); ++i) {
 //        columns_output[i-dimension_input()] = i;
 //    }
 //    return extractSubmodel(columns_output);
@@ -613,11 +613,11 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
 //    checkTraining();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns(dimension());
-//    for (std::size_t i=0; i<dimension()-dimension_input(); ++i) {
+//    std::vector<unsigned int> columns(dimension());
+//    for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
 //        columns[i] = i+dimension_input();
 //    }
-//    for (std::size_t i=dimension()-dimension_input(), j=0; i<dimension(); ++i,
+//    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension(); ++i,
 //    ++j) {
 //        columns[i] = j;
 //    }

@@ -135,7 +135,9 @@ bool xmm::TrainingSet::bimodal() const { return bimodal_; }
 
 bool xmm::TrainingSet::empty() const { return phrases_.empty(); }
 
-std::size_t xmm::TrainingSet::size() const { return phrases_.size(); }
+unsigned int xmm::TrainingSet::size() const {
+    return static_cast<unsigned int>(phrases_.size());
+}
 
 void xmm::TrainingSet::onAttributeChange(xmm::AttributeBase *attr_pointer) {
     if (attr_pointer == &dimension) {

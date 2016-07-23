@@ -141,7 +141,7 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
     //         @throws out_of_range if the requested input dimension is too
     //         large
     //         */
-    //        void makeBimodal(std::size_t dimension_input);
+    //        void makeBimodal(unsigned int dimension_input);
     //
     //        /**
     //         @brief Convert to unimodal HierarchicalHMM in place
@@ -158,7 +158,7 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
     //         @return a HierarchicalHMM from the current model considering only
     //         the target columns
     //         */
-    //        HierarchicalHMM extractSubmodel(std::vector<std::size_t>& columns)
+    //        HierarchicalHMM extractSubmodel(std::vector<unsigned int>& columns)
     //        const;
     //
     //        /**

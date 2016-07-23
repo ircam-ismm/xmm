@@ -53,7 +53,7 @@
 //    a.covariance[7] = 0.7;
 //    a.covariance[8] = 1.5;
 //    a.updateInverseCovariance();
-//    std::vector<std::size_t> columns(2);
+//    std::vector<unsigned int> columns(2);
 //    columns[0] = 2;
 //    columns[1] = 0;
 ////    xmm::GaussianDistribution b = a.extractSubmodel(columns);
@@ -153,7 +153,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -182,7 +182,7 @@
 //    cov_c0[6] = 1.792829737244e-03;
 //    cov_c0[7] = 7.901977752380e-04;
 //    cov_c0[8] = 1.306463534393e-03;
-//    std::vector<std::size_t> columns(2);
+//    std::vector<unsigned int> columns(2);
 //    columns[0] = 2;
 //    columns[1] = 0;
 ////    xmm::GMM b = a.extractSubmodel(columns);
@@ -220,7 +220,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -286,7 +286,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -350,7 +350,7 @@
 ////    xmm::TrainingSet ts(true, false, 3);
 ////    std::vector<float> observation(3);
 ////    ts.addPhrase(0);
-////    for (std::size_t i=0; i<100; i++) {
+////    for (unsigned int i=0; i<100; i++) {
 ////        observation[0] = float(i)/100.;
 ////        observation[1] = pow(float(i)/100., 2.);
 ////        observation[2] = pow(float(i)/100., 3.);
@@ -381,7 +381,7 @@
 ///covariance_state0);
 //////    CHECK_FALSE(a.bimodal_);
 //////    CHECK(a.states[0].components[0].inverseCovariance_input_.size() == 0);
-//////    std::vector<std::size_t> columns(2);
+//////    std::vector<unsigned int> columns(2);
 //////    columns[0] = 2;
 //////    columns[1] = 0;
 //////    xmm::HMM b = a.extractSubmodel(columns);
@@ -410,7 +410,7 @@
 ////ts.dimension_input.set(2);
 ////    std::vector<float> observation(3);
 ////    ts.addPhrase(0);
-////    for (std::size_t i=0; i<100; i++) {
+////    for (unsigned int i=0; i<100; i++) {
 ////        observation[0] = float(i)/100.;
 ////        observation[1] = pow(float(i)/100., 2.);
 ////        observation[2] = pow(float(i)/100., 3.);
@@ -473,7 +473,7 @@
 ////    xmm::TrainingSet ts(true, true, 3, 2);
 ////    std::vector<float> observation(3);
 ////    ts.addPhrase(0);
-////    for (std::size_t i=0; i<100; i++) {
+////    for (unsigned int i=0; i<100; i++) {
 ////        observation[0] = float(i)/100.;
 ////        observation[1] = pow(float(i)/100., 2.);
 ////        observation[2] = pow(float(i)/100., 3.);
@@ -528,7 +528,7 @@
 ///Approx(a.states[0].components[0].mean[1]));
 //////    b.reset();
 //////    observation.resize(1);
-//////    for (std::size_t i=0; i<100; i++) {
+//////    for (unsigned int i=0; i<100; i++) {
 //////        observation[0] = pow(float(i)/100., 3.);
 //////        b.filter(observation);
 //////    }
@@ -542,7 +542,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -580,7 +580,7 @@
 ////
 ///CHECK(a.models[label_a].states[0].components[0].inverseCovariance_input_.size()
 ///== 0);
-////    std::vector<std::size_t> columns(2);
+////    std::vector<unsigned int> columns(2);
 ////    columns[0] = 2;
 ////    columns[1] = 0;
 ////    xmm::HierarchicalHMM b = a.extractSubmodel(columns);
@@ -611,7 +611,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -685,7 +685,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -746,7 +746,7 @@
 ///Approx(a.models[label_a].states[0].components[0].mean[1]));
 ////    b.reset();
 ////    observation.resize(1);
-////    for (std::size_t i=0; i<100; i++) {
+////    for (unsigned int i=0; i<100; i++) {
 ////        observation[0] = pow(float(i)/100., 3.);
 ////        b.filter(observation);
 ////    }

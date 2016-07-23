@@ -41,7 +41,7 @@ static long random() { return rand(); }
 #pragma mark -
 #pragma mark === Public Interface ===
 #pragma mark > Constructors
-xmm::KMeans::KMeans(std::size_t clusters_)
+xmm::KMeans::KMeans(unsigned int clusters_)
     : shared_parameters(std::make_shared<SharedParameters>()),
       initialization_mode(InitializationMode::Random) {
     configuration.clusters.set(clusters_);
@@ -85,8 +85,8 @@ void xmm::KMeans::train(TrainingSet* trainingSet) {
 
         float meanClusterDistance(0.0);
         float maxRelativeCenterVariation(0.0);
-        for (std::size_t k = 0; k < clusters; ++k) {
-            for (std::size_t l = 0; l < clusters; ++l) {
+        for (unsigned int k = 0; k < clusters; ++k) {
+            for (unsigned int l = 0; l < clusters; ++l) {
                 if (k != l) {
                     meanClusterDistance +=
                         euclidean_distance(&centers[k * dimension],
@@ -109,15 +109,15 @@ void xmm::KMeans::train(TrainingSet* trainingSet) {
 
 void xmm::KMeans::initClustersWithFirstPhrase(std::shared_ptr<Phrase> phrase) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    std::size_t step = phrase->size() / configuration.clusters.get();
+    unsigned int step = phrase->size() / configuration.clusters.get();
 
-    std::size_t offset(0);
-    for (std::size_t c = 0; c < configuration.clusters.get(); c++) {
-        for (std::size_t d = 0; d < dimension; d++) {
+    unsigned int offset(0);
+    for (unsigned int c = 0; c < configuration.clusters.get(); c++) {
+        for (unsigned int d = 0; d < dimension; d++) {
             centers[c * dimension + d] = 0.0;
         }
-        for (std::size_t t = 0; t < step; t++) {
-            for (std::size_t d = 0; d < dimension; d++) {
+        for (unsigned int t = 0; t < step; t++) {
+            for (unsigned int d = 0; d < dimension; d++) {
                 centers[c * dimension + d] +=
                     phrase->getValue(offset + t, d) / float(step);
             }
@@ -129,8 +129,8 @@ void xmm::KMeans::initClustersWithFirstPhrase(std::shared_ptr<Phrase> phrase) {
 void xmm::KMeans::randomizeClusters(
     std::vector<float> const& trainingSetVariance) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    for (std::size_t k = 0; k < configuration.clusters.get(); ++k) {
-        for (std::size_t d = 0; d < dimension; ++d) {
+    for (unsigned int k = 0; k < configuration.clusters.get(); ++k) {
+        for (unsigned int d = 0; d < dimension; ++d) {
             centers[k * dimension + d] =
                 trainingSetVariance[d] * (2. * random() / float(RAND_MAX) - 1.);
         }
@@ -142,16 +142,16 @@ void xmm::KMeans::updateCenters(std::vector<float>& previous_centers,
     int dimension = static_cast<int>(shared_parameters->dimension.get());
     int clusters = static_cast<int>(configuration.clusters.get());
 
-    std::size_t phraseIndex(0);
+    unsigned int phraseIndex(0);
     centers.assign(clusters * dimension, 0.0);
-    std::vector<std::size_t> numFramesPerCluster(clusters, 0);
+    std::vector<unsigned int> numFramesPerCluster(clusters, 0);
     for (auto it = trainingSet->begin(); it != trainingSet->end();
          ++it, ++phraseIndex) {
-        for (std::size_t t = 0; t < it->second->size(); ++t) {
+        for (unsigned int t = 0; t < it->second->size(); ++t) {
             float min_distance;
             if (trainingSet->bimodal()) {
                 std::vector<float> frame(dimension);
-                for (std::size_t d = 0; d < dimension; ++d) {
+                for (unsigned int d = 0; d < dimension; ++d) {
                     frame[d] = it->second->getValue(t, d);
                 }
                 min_distance = euclidean_distance(
@@ -160,12 +160,12 @@ void xmm::KMeans::updateCenters(std::vector<float>& previous_centers,
                 min_distance = euclidean_distance(
                     it->second->getPointer(t), &previous_centers[0], dimension);
             }
-            std::size_t cluster_membership(0);
-            for (std::size_t k = 1; k < clusters; ++k) {
+            unsigned int cluster_membership(0);
+            for (unsigned int k = 1; k < clusters; ++k) {
                 float distance;
                 if (trainingSet->bimodal()) {
                     std::vector<float> frame(dimension);
-                    for (std::size_t d = 0; d < dimension; ++d) {
+                    for (unsigned int d = 0; d < dimension; ++d) {
                         frame[d] = it->second->getValue(t, d);
                     }
                     distance = euclidean_distance(
@@ -181,15 +181,15 @@ void xmm::KMeans::updateCenters(std::vector<float>& previous_centers,
                 }
             }
             numFramesPerCluster[cluster_membership]++;
-            for (std::size_t d = 0; d < dimension; ++d) {
+            for (unsigned int d = 0; d < dimension; ++d) {
                 centers[cluster_membership * dimension + d] +=
                     it->second->getValue(t, d);
             }
         }
     }
-    for (std::size_t k = 0; k < clusters; ++k) {
+    for (unsigned int k = 0; k < clusters; ++k) {
         if (numFramesPerCluster[k] > 0)
-            for (std::size_t d = 0; d < dimension; ++d) {
+            for (unsigned int d = 0; d < dimension; ++d) {
                 centers[k * dimension + d] /= float(numFramesPerCluster[k]);
             }
     }
@@ -206,7 +206,7 @@ void xmm::KMeans::filter(std::vector<float> const& observation) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
     results.likeliest = 0;
     float minDistance(std::numeric_limits<float>::max());
-    for (std::size_t k = 0; k < configuration.clusters.get(); ++k) {
+    for (unsigned int k = 0; k < configuration.clusters.get(); ++k) {
         results.distances[k] = euclidean_distance(
             &observation[0], &centers[k * dimension], dimension);
         if (results.distances[k] < minDistance) {
@@ -244,7 +244,7 @@ void xmm::KMeans::fromJson(Json::Value const& root) {
     //        if (root_it->type() != JSON_NUMBER)
     //            throw JSONException("Wrong type for node 'dimension': was
     //            expecting 'JSON_NUMBER'", root_it->name());
-    //        dimension_ = static_cast<std::size_t>(root_it->as_int());
+    //        dimension_ = static_cast<unsigned int>(root_it->as_int());
     //
     //        // Get Number of Clusters
     //        root_it = root.find("nbclusters");
@@ -254,7 +254,7 @@ void xmm::KMeans::fromJson(Json::Value const& root) {
     //        if (root_it->type() != JSON_NUMBER)
     //            throw JSONException("Wrong type for node 'nbclusters': was
     //            expecting 'JSON_NUMBER'", root_it->name());
-    //        nbClusters_ = static_cast<std::size_t>(root_it->as_int());
+    //        nbClusters_ = static_cast<unsigned int>(root_it->as_int());
     //
     //        // Get Cluster Centers
     //        root_it = root.find("centers");
@@ -275,9 +275,9 @@ void xmm::KMeans::fromJson(Json::Value const& root) {
 #pragma mark > Utility
 template <typename T>
 T xmm::euclidean_distance(const T* vector1, const T* vector2,
-                          std::size_t dimension) {
+                          unsigned int dimension) {
     T distance(0.0);
-    for (std::size_t d = 0; d < dimension; d++) {
+    for (unsigned int d = 0; d < dimension; d++) {
         distance += (vector1[d] - vector2[d]) * (vector1[d] - vector2[d]);
     }
     return sqrt(distance);

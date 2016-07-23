@@ -86,7 +86,7 @@ struct ClassResults<HMM> {
     /**
      @brief Index of the likeliest state
      */
-    std::size_t likeliest_state;
+    unsigned int likeliest_state;
 };
 }
 

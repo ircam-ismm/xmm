@@ -109,12 +109,12 @@ class SharedParameters : public Writable {
     /**
      @brief total dimension of the training data
      */
-    Attribute<std::size_t> dimension;
+    Attribute<unsigned int> dimension;
 
     /**
      @brief Dimension of the input modality
      */
-    Attribute<std::size_t> dimension_input;
+    Attribute<unsigned int> dimension_input;
 
     /**
      @brief labels of the columns of input/output data (e.g. descriptor names)
@@ -147,7 +147,7 @@ class SharedParameters : public Writable {
     /**
      @brief Size of the window (in samples) used to compute the likelihoods
      */
-    Attribute<std::size_t> likelihood_window;
+    Attribute<unsigned int> likelihood_window;
 
   protected:
     /**

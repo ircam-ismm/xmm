@@ -101,8 +101,8 @@ class GaussianDistribution : public Writable {
      @param dimension_input dimension of the input modality in bimodal mode.
      @param covariance_mode covariance mode (full vs diagonal)
      */
-    GaussianDistribution(bool bimodal = false, std::size_t dimension = 1,
-                         std::size_t dimension_input = 0,
+    GaussianDistribution(bool bimodal = false, unsigned int dimension = 1,
+                         unsigned int dimension_input = 0,
                          CovarianceMode covariance_mode = CovarianceMode::Full);
 
     /**
@@ -191,7 +191,7 @@ class GaussianDistribution : public Writable {
      @throws out_of_range if the dimensions are out of bounds
      @return ellipse parameters
      */
-    Ellipse toEllipse(std::size_t dimension1, std::size_t dimension2);
+    Ellipse toEllipse(unsigned int dimension1, unsigned int dimension2);
 
     /**
      @brief Sets the parameters of the Gaussian distribution according to the
@@ -202,8 +202,8 @@ class GaussianDistribution : public Writable {
      @param dimension2 index of the second axis
      @throws out_of_range if the dimensions are out of bounds
      */
-    void fromEllipse(Ellipse const& gaussian_ellipse, std::size_t dimension1,
-                     std::size_t dimension2);
+    void fromEllipse(Ellipse const& gaussian_ellipse, unsigned int dimension1,
+                     unsigned int dimension2);
 
     ///@}
 
@@ -235,7 +235,7 @@ class GaussianDistribution : public Writable {
     //         @throws out_of_range if the requested input dimension is too
     //         large
     //         */
-    //        void makeBimodal(std::size_t dimension_input);
+    //        void makeBimodal(unsigned int dimension_input);
     //
     //        /**
     //         @brief Convert to unimodal distribution in place
@@ -252,7 +252,7 @@ class GaussianDistribution : public Writable {
     //         @return a Gaussian Distribution from the current model
     //         considering only the target columns
     //         */
-    //        GaussianDistribution extractSubmodel(std::vector<std::size_t>&
+    //        GaussianDistribution extractSubmodel(std::vector<unsigned int>&
     //        columns) const;
     //
     //        /**
@@ -288,12 +288,12 @@ class GaussianDistribution : public Writable {
     /**
      @brief Total Dimension of the multivariate normal
      */
-    Attribute<std::size_t> dimension;
+    Attribute<unsigned int> dimension;
 
     /**
      @brief Input Dimension of the multivariate normal
      */
-    Attribute<std::size_t> dimension_input;
+    Attribute<unsigned int> dimension_input;
 
     /**
      @brief Mean of the Gaussian Distribution

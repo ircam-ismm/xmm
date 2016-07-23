@@ -33,7 +33,7 @@
 #include "xmmJson.hpp"
 
 template <>
-void xmm::json2array(Json::Value const& root, float* a, std::size_t n) {
+void xmm::json2array(Json::Value const& root, float* a, unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -45,7 +45,7 @@ void xmm::json2array(Json::Value const& root, float* a, std::size_t n) {
 }
 
 template <>
-void xmm::json2array(Json::Value const& root, double* a, std::size_t n) {
+void xmm::json2array(Json::Value const& root, double* a, unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -57,7 +57,7 @@ void xmm::json2array(Json::Value const& root, double* a, std::size_t n) {
 }
 
 template <>
-void xmm::json2array(Json::Value const& root, bool* a, std::size_t n) {
+void xmm::json2array(Json::Value const& root, bool* a, unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -69,7 +69,7 @@ void xmm::json2array(Json::Value const& root, bool* a, std::size_t n) {
 }
 
 template <>
-void xmm::json2array(Json::Value const& root, std::string* a, std::size_t n) {
+void xmm::json2array(Json::Value const& root, std::string* a, unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -82,7 +82,7 @@ void xmm::json2array(Json::Value const& root, std::string* a, std::size_t n) {
 
 template <>
 void xmm::json2vector(Json::Value const& root, std::vector<float>& a,
-                      std::size_t n) {
+                      unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -95,7 +95,7 @@ void xmm::json2vector(Json::Value const& root, std::vector<float>& a,
 
 template <>
 void xmm::json2vector(Json::Value const& root, std::vector<double>& a,
-                      std::size_t n) {
+                      unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -108,7 +108,7 @@ void xmm::json2vector(Json::Value const& root, std::vector<double>& a,
 
 template <>
 void xmm::json2vector(Json::Value const& root, std::vector<bool>& a,
-                      std::size_t n) {
+                      unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)
@@ -121,7 +121,7 @@ void xmm::json2vector(Json::Value const& root, std::vector<bool>& a,
 
 template <>
 void xmm::json2vector(Json::Value const& root, std::vector<std::string>& a,
-                      std::size_t n) {
+                      unsigned int n) {
     if (!root.isArray())
         throw JsonException(JsonException::JsonErrorType::JsonTypeError);
     if (root.size() != n)

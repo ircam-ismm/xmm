@@ -45,7 +45,7 @@ namespace xmm {
  */
 class KMeans : public Writable {
   public:
-    static const std::size_t DEFAULT_MAX_ITERATIONS = 50;
+    static const unsigned int DEFAULT_MAX_ITERATIONS = 50;
     static const float DEFAULT_RELATIVE_VARIATION_THRESHOLD() { return 1e-20; }
 
     /**
@@ -67,7 +67,7 @@ class KMeans : public Writable {
      @brief Default Constructor
      @param clusters number of clusters
      */
-    KMeans(std::size_t clusters = 1);
+    KMeans(unsigned int clusters = 1);
 
     /**
      @brief Copy Constructor
@@ -173,7 +173,7 @@ class KMeans : public Writable {
  @return euclidian distance between the 2 points
  */
 template <typename T>
-T euclidean_distance(const T* vector1, const T* vector2, std::size_t dimension);
+T euclidean_distance(const T* vector1, const T* vector2, unsigned int dimension);
 }
 
 #endif

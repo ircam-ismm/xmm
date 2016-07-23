@@ -127,7 +127,7 @@ class SingleClassGMM : public SingleClassProbabilisticModel {
     //         @throws out_of_range if the requested input dimension is too
     //         large
     //         */
-    //        void makeBimodal(std::size_t dimension_input);
+    //        void makeBimodal(unsigned int dimension_input);
     //
     //        /**
     //         @brief Convert to unimodal GMM in place
@@ -144,7 +144,7 @@ class SingleClassGMM : public SingleClassProbabilisticModel {
     //         @return a GMM from the current model considering only the target
     //         columns
     //         */
-    //        GMM extractSubmodel(std::vector<std::size_t>& columns) const;
+    //        GMM extractSubmodel(std::vector<unsigned int>& columns) const;
     //
     //        /**
     //         @brief extract the submodel of the input modality

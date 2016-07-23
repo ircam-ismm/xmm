@@ -144,7 +144,7 @@
 //    xmm::TrainingSet ts(true, false, 3);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -175,7 +175,7 @@
 //    b.makeBimodal(2);
 //    CHECK(b.bimodal_);
 //    CHECK(a.mixtureCoeffs == b.mixtureCoeffs);
-//    for (std::size_t i=0; i<3; i++) {
+//    for (unsigned int i=0; i<3; i++) {
 //        CHECK(a.components[i].mean == b.components[i].mean);
 //        CHECK(a.components[i].covariance == b.components[i].covariance);
 //        CHECK(a.components[i].inverseCovariance_ ==
@@ -196,7 +196,7 @@
 //    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -227,7 +227,7 @@
 //    CHECK_NOTHROW(b.makeUnimodal());
 //    CHECK_FALSE(b.bimodal_);
 //    CHECK(a.mixtureCoeffs == b.mixtureCoeffs);
-//    for (std::size_t i=0; i<3; i++) {
+//    for (unsigned int i=0; i<3; i++) {
 //        CHECK(a.components[i].mean == b.components[i].mean);
 //        CHECK(a.components[i].covariance == b.components[i].covariance);
 //        CHECK(a.components[i].inverseCovariance_ ==
@@ -249,7 +249,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -288,7 +288,7 @@
 //    CHECK_NOTHROW(b.makeBimodal(2));
 //    CHECK(b.bimodal_);
 //    CHECK(a.models[label_a].mixtureCoeffs == b.models[label_a].mixtureCoeffs);
-//    for (std::size_t i=0; i<3; i++) {
+//    for (unsigned int i=0; i<3; i++) {
 //        CHECK(a.models[label_a].components[i].mean ==
 //        b.models[label_a].components[i].mean);
 //        CHECK(a.models[label_a].components[i].covariance ==
@@ -316,7 +316,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -353,7 +353,7 @@
 //    CHECK_NOTHROW(b.makeUnimodal());
 //    CHECK_FALSE(b.bimodal_);
 //    CHECK(a.models[label_a].mixtureCoeffs == b.models[label_a].mixtureCoeffs);
-//    for (std::size_t i=0; i<3; i++) {
+//    for (unsigned int i=0; i<3; i++) {
 //        CHECK(a.models[label_a].components[i].mean ==
 //        b.models[label_a].components[i].mean);
 //        CHECK(a.models[label_a].components[i].covariance ==
@@ -380,7 +380,7 @@
 //    xmm::TrainingSet ts(true, false, 3);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -416,7 +416,7 @@
 //    CHECK(b.bimodal_);
 //    CHECK(a.prior == b.prior);
 //    CHECK(a.transition == b.transition);
-//    for (std::size_t i=0; i<a.get_nbStates(); i++) {
+//    for (unsigned int i=0; i<a.get_nbStates(); i++) {
 //        CHECK(a.states[i].components[0].mean ==
 //        b.states[i].components[0].mean);
 //        CHECK(a.states[i].components[0].covariance ==
@@ -439,7 +439,7 @@
 //    xmm::TrainingSet ts(xmm::BIMODAL, 3, 2);
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -483,7 +483,7 @@
 //    CHECK_FALSE(b.bimodal_);
 //    CHECK(a.prior == b.prior);
 //    CHECK(a.transition == b.transition);
-//    for (std::size_t i=0; i<a.get_nbStates(); i++) {
+//    for (unsigned int i=0; i<a.get_nbStates(); i++) {
 //        CHECK(a.states[i].components[0].mean ==
 //        b.states[i].components[0].mean);
 //        CHECK(a.states[i].components[0].covariance ==
@@ -502,7 +502,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -544,7 +544,7 @@
 //    CHECK(b.bimodal_);
 //    CHECK(a.models[label_a].prior == b.models[label_a].prior);
 //    CHECK(a.models[label_a].transition == b.models[label_a].transition);
-//    for (std::size_t i=0; i<a.get_nbStates(); i++) {
+//    for (unsigned int i=0; i<a.get_nbStates(); i++) {
 //        CHECK(a.models[label_a].states[i].components[0].mean ==
 //        b.models[label_a].states[i].components[0].mean);
 //        CHECK(a.models[label_a].states[i].components[0].covariance ==
@@ -571,7 +571,7 @@
 //    std::vector<float> observation(3);
 //    ts.addPhrase(0);
 //    ts.addPhrase(1);
-//    for (std::size_t i=0; i<100; i++) {
+//    for (unsigned int i=0; i<100; i++) {
 //        observation[0] = float(i)/100.;
 //        observation[1] = pow(float(i)/100., 2.);
 //        observation[2] = pow(float(i)/100., 3.);
@@ -623,7 +623,7 @@
 //    CHECK(a.models[label_a].transition == b.models[label_a].transition);
 //    CHECK(a.models[label_b].prior == b.models[label_b].prior);
 //    CHECK(a.models[label_b].transition == b.models[label_b].transition);
-//    for (std::size_t i=0; i<a.get_nbStates(); i++) {
+//    for (unsigned int i=0; i<a.get_nbStates(); i++) {
 //        CHECK(a.models[label_a].states[i].components[0].mean ==
 //        b.models[label_a].states[i].components[0].mean);
 //        CHECK(a.models[label_a].states[i].components[0].covariance ==

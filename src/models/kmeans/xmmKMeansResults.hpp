@@ -50,7 +50,7 @@ struct Results<KMeans> {
     /**
      @brief Likeliest Cluster
      */
-    std::size_t likeliest;
+    unsigned int likeliest;
 };
 }
 

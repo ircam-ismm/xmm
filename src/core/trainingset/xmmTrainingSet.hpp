@@ -110,7 +110,7 @@ class TrainingSet : public Writable {
      @brief Size of the training set
      @return size of the training set (number of phrases)
      */
-    std::size_t size() const;
+    unsigned int size() const;
 
     /**
      @brief iterator to the beginning of phrases
@@ -295,12 +295,12 @@ class TrainingSet : public Writable {
     /**
      @brief total dimension of the training data
      */
-    Attribute<std::size_t> dimension;
+    Attribute<unsigned int> dimension;
 
     /**
      @brief dimension of the input modality in bimodal mode
      */
-    Attribute<std::size_t> dimension_input;
+    Attribute<unsigned int> dimension_input;
 
     /**
      @brief labels of the columns of the training set (e.g. descriptor names)

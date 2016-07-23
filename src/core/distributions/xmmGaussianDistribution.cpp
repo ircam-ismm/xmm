@@ -42,8 +42,8 @@
 
 #pragma mark Constructors
 xmm::GaussianDistribution::GaussianDistribution(bool bimodal,
-                                                std::size_t dimension_,
-                                                std::size_t dimension_input_,
+                                                unsigned int dimension_,
+                                                unsigned int dimension_input_,
                                                 CovarianceMode covariance_mode_)
     : dimension(dimension_, (bimodal) ? 2 : 1),
       dimension_input(dimension_input_, 0, (bimodal) ? dimension_ - 1 : 0),
@@ -141,7 +141,7 @@ void xmm::GaussianDistribution::onAttributeChange(AttributeBase* attr_pointer) {
     if (attr_pointer == &covariance_mode) {
         if (covariance_mode.get() == CovarianceMode::Diagonal) {
             std::vector<double> new_covariance(dimension.get());
-            for (std::size_t d = 0; d < dimension.get(); ++d) {
+            for (unsigned int d = 0; d < dimension.get(); ++d) {
                 new_covariance[d] = covariance[d * dimension.get() + d];
             }
             covariance = new_covariance;
@@ -151,7 +151,7 @@ void xmm::GaussianDistribution::onAttributeChange(AttributeBase* attr_pointer) {
         } else if (covariance_mode.get() == CovarianceMode::Full) {
             std::vector<double> new_covariance(
                 dimension.get() * dimension.get(), 0.0);
-            for (std::size_t d = 0; d < dimension.get(); ++d) {
+            for (unsigned int d = 0; d < dimension.get(); ++d) {
                 new_covariance[d * dimension.get() + d] = covariance[d];
             }
             covariance = new_covariance;
@@ -247,7 +247,7 @@ double xmm::GaussianDistribution::likelihood_bimodal(
     if (covariance_determinant_ == 0.0)
         throw std::runtime_error("Covariance Matrix is not invertible");
 
-    std::size_t dimension_output = dimension.get() - dimension_input.get();
+    unsigned int dimension_output = dimension.get() - dimension_input.get();
     double euclidianDistance(0.0);
     if (covariance_mode.get() == CovarianceMode::Full) {
         for (int l = 0; l < dimension.get(); l++) {
@@ -275,7 +275,7 @@ double xmm::GaussianDistribution::likelihood_bimodal(
                                  (observation_input[l] - mean[l]) *
                                  (observation_input[l] - mean[l]);
         }
-        for (std::size_t l = dimension_input.get(); l < dimension.get(); l++) {
+        for (unsigned int l = dimension_input.get(); l < dimension.get(); l++) {
             euclidianDistance +=
                 inverse_covariance_[l] *
                 (observation_output[l - dimension_input.get()] - mean[l]) *
@@ -299,7 +299,7 @@ void xmm::GaussianDistribution::regression(
         throw std::runtime_error(
             "'regression' can't be used when 'bimodal_' is off.");
 
-    std::size_t dimension_output = dimension.get() - dimension_input.get();
+    unsigned int dimension_output = dimension.get() - dimension_input.get();
     predicted_output.resize(dimension_output);
 
     if (covariance_mode.get() == CovarianceMode::Full) {
@@ -423,7 +423,7 @@ void xmm::GaussianDistribution::updateInverseCovariance() {
     {
         covariance_determinant_ = 1.;
         covariance_determinant_input_ = 1.;
-        for (std::size_t d = 0; d < dimension.get(); ++d) {
+        for (unsigned int d = 0; d < dimension.get(); ++d) {
             if (covariance[d] <= 0.0)
                 throw std::runtime_error("Non-invertible matrix");
             inverse_covariance_[d] = 1. / covariance[d];
@@ -444,7 +444,7 @@ void xmm::GaussianDistribution::updateOutputCovariance() {
         throw std::runtime_error(
             "'updateOutputVariances' can't be used when 'bimodal_' is off.");
 
-    std::size_t dimension_output = dimension.get() - dimension_input.get();
+    unsigned int dimension_output = dimension.get() - dimension_input.get();
 
     // CASE: DIAGONAL COVARIANCE
     if (covariance_mode.get() == CovarianceMode::Diagonal) {
@@ -500,8 +500,8 @@ void xmm::GaussianDistribution::updateOutputCovariance() {
     tmptmptmp = NULL;
 }
 
-xmm::Ellipse xmm::GaussianDistribution::toEllipse(std::size_t dimension1,
-                                                  std::size_t dimension2) {
+xmm::Ellipse xmm::GaussianDistribution::toEllipse(unsigned int dimension1,
+                                                  unsigned int dimension2) {
     if (dimension1 >= dimension.get() || dimension2 >= dimension.get())
         throw std::out_of_range("dimensions out of range");
 
@@ -539,8 +539,8 @@ xmm::Ellipse xmm::GaussianDistribution::toEllipse(std::size_t dimension1,
 }
 
 void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
-                                            std::size_t dimension1,
-                                            std::size_t dimension2) {
+                                            unsigned int dimension1,
+                                            unsigned int dimension2) {
     if (dimension1 >= dimension.get() || dimension2 >= dimension.get())
         throw std::out_of_range("dimensions out of range");
 
@@ -568,7 +568,7 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
     updateInverseCovariance();
 }
 
-// void xmm::GaussianDistribution::makeBimodal(std::size_t dimension_input_)
+// void xmm::GaussianDistribution::makeBimodal(unsigned int dimension_input_)
 //{
 //    if (bimodal_)
 //        throw std::runtime_error("The model is already bimodal");
@@ -597,29 +597,29 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
 //}
 //
 // xmm::GaussianDistribution
-// xmm::GaussianDistribution::extractSubmodel(std::vector<std::size_t>& columns)
+// xmm::GaussianDistribution::extractSubmodel(std::vector<unsigned int>& columns)
 // const
 //{
 //    if (columns.size() > dimension.get())
 //        throw std::out_of_range("requested number of columns exceeds the
 //        dimension of the current model");
-//    for (std::size_t column=0; column<columns.size(); ++column) {
+//    for (unsigned int column=0; column<columns.size(); ++column) {
 //        if (columns[column] >= dimension.get())
 //            throw std::out_of_range("Some column indices exceeds the dimension
 //            of the current model");
 //    }
 //    size_t new_dim =columns.size();
 //    GaussianDistribution target_distribution(NONE,
-//    static_cast<std::size_t>(new_dim), 0, relative_regularization,
+//    static_cast<unsigned int>(new_dim), 0, relative_regularization,
 //    absolute_regularization);
 //    target_distribution.allocate();
-//    for (std::size_t new_index1=0; new_index1<new_dim; ++new_index1) {
-//        std::size_t col_index1 = columns[new_index1];
+//    for (unsigned int new_index1=0; new_index1<new_dim; ++new_index1) {
+//        unsigned int col_index1 = columns[new_index1];
 //        target_distribution.mean[new_index1] = mean[col_index1];
 //        target_distribution.scale[new_index1] = scale[col_index1];
 //        if (covariance_mode.get() == CovarianceMode::Full) {
-//            for (std::size_t new_index2=0; new_index2<new_dim; ++new_index2) {
-//                std::size_t col_index2 = columns[new_index2];
+//            for (unsigned int new_index2=0; new_index2<new_dim; ++new_index2) {
+//                unsigned int col_index2 = columns[new_index2];
 //                target_distribution.covariance[new_index1*new_dim+new_index2]
 //                = covariance[col_index1*dimension.get()+col_index2];
 //            }
@@ -640,8 +640,8 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
 //{
 //    if (!bimodal_)
 //        throw std::runtime_error("The distribution needs to be bimodal");
-//    std::vector<std::size_t> columns_input(dimension_input.get());
-//    for (std::size_t i=0; i<dimension_input.get(); ++i) {
+//    std::vector<unsigned int> columns_input(dimension_input.get());
+//    for (unsigned int i=0; i<dimension_input.get(); ++i) {
 //        columns_input[i] = i;
 //    }
 //    return extractSubmodel(columns_input);
@@ -652,9 +652,9 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
 //{
 //    if (!bimodal_)
 //        throw std::runtime_error("The distribution needs to be bimodal");
-//    std::vector<std::size_t> columns_output(dimension.get() -
+//    std::vector<unsigned int> columns_output(dimension.get() -
 //    dimension_input.get());
-//    for (std::size_t i=dimension_input.get(); i<dimension.get(); ++i) {
+//    for (unsigned int i=dimension_input.get(); i<dimension.get(); ++i) {
 //        columns_output[i-dimension_input.get()] = i;
 //    }
 //    return extractSubmodel(columns_output);
@@ -665,11 +665,11 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
 //{
 //    if (!bimodal_)
 //        throw std::runtime_error("The distribution needs to be bimodal");
-//    std::vector<std::size_t> columns(dimension.get());
-//    for (std::size_t i=0; i<dimension.get()-dimension_input.get(); ++i) {
+//    std::vector<unsigned int> columns(dimension.get());
+//    for (unsigned int i=0; i<dimension.get()-dimension_input.get(); ++i) {
 //        columns[i] = i + dimension_input.get();
 //    }
-//    for (std::size_t i=dimension.get()-dimension_input.get(), j=0;
+//    for (unsigned int i=dimension.get()-dimension_input.get(), j=0;
 //    i<dimension.get(); ++i, ++j) {
 //        columns[i] = j;
 //    }

@@ -68,7 +68,7 @@ xmm::Phrase::Phrase(Phrase const& src)
     if (own_memory_) {
         data_ = new float*[bimodal_ ? 2 : 1];
         if (max_length_ > 0) {
-            std::size_t modality_dim =
+            unsigned int modality_dim =
                 bimodal_ ? dimension_input.get() : dimension.get();
             data_[0] = new float[max_length_ * modality_dim];
             std::copy(src.data_[0], src.data_[0] + max_length_ * modality_dim,
@@ -121,7 +121,7 @@ xmm::Phrase::Phrase(Json::Value const& root)
 
     label.set(root["label"].asString());
 
-    length_ = static_cast<std::size_t>(root.get("length", 0).asInt());
+    length_ = static_cast<unsigned int>(root.get("length", 0).asInt());
     max_length_ = length_;
     input_length_ = length_;
     output_length_ = length_;
@@ -179,7 +179,7 @@ xmm::Phrase& xmm::Phrase::operator=(Phrase const& src) {
         if (own_memory_) {
             data_ = new float*[bimodal_ ? 2 : 1];
             if (max_length_ > 0) {
-                std::size_t modality_dim =
+                unsigned int modality_dim =
                     bimodal_ ? dimension_input.get() : dimension.get();
                 data_[0] = new float[max_length_ * modality_dim];
                 std::copy(src.data_[0],
@@ -218,15 +218,15 @@ bool xmm::Phrase::ownMemory() const { return own_memory_; }
 
 bool xmm::Phrase::bimodal() const { return bimodal_; }
 
-std::size_t xmm::Phrase::size() const { return length_; }
+unsigned int xmm::Phrase::size() const { return length_; }
 
-std::size_t xmm::Phrase::inputSize() const { return input_length_; }
+unsigned int xmm::Phrase::inputSize() const { return input_length_; }
 
-std::size_t xmm::Phrase::outputSize() const { return output_length_; }
+unsigned int xmm::Phrase::outputSize() const { return output_length_; }
 
 bool xmm::Phrase::empty() const { return empty_; }
 
-float xmm::Phrase::getValue(std::size_t index, std::size_t dim) const {
+float xmm::Phrase::getValue(unsigned int index, unsigned int dim) const {
     if (dim >= dimension.get())
         throw std::out_of_range("Phrase: dimension out of bounds");
     if (bimodal_) {
@@ -247,7 +247,7 @@ float xmm::Phrase::getValue(std::size_t index, std::size_t dim) const {
     }
 }
 
-float* xmm::Phrase::getPointer(std::size_t index) const {
+float* xmm::Phrase::getPointer(unsigned int index) const {
     if (index >= length_)
         throw std::out_of_range("Phrase: index out of bounds");
     if (bimodal_)
@@ -257,7 +257,7 @@ float* xmm::Phrase::getPointer(std::size_t index) const {
     return data_[0] + index * dimension.get();
 }
 
-float* xmm::Phrase::getPointer_input(std::size_t index) const {
+float* xmm::Phrase::getPointer_input(unsigned int index) const {
     if (index >= length_)
         throw std::out_of_range("Phrase: index out of bounds");
     if (!bimodal_)
@@ -266,7 +266,7 @@ float* xmm::Phrase::getPointer_input(std::size_t index) const {
     return data_[0] + index * dimension_input.get();
 }
 
-float* xmm::Phrase::getPointer_output(std::size_t index) const {
+float* xmm::Phrase::getPointer_output(unsigned int index) const {
     if (index >= length_)
         throw std::out_of_range("Phrase: index out of bounds");
     if (!bimodal_)
@@ -275,7 +275,7 @@ float* xmm::Phrase::getPointer_output(std::size_t index) const {
     return data_[1] + index * (dimension.get() - dimension_input.get());
 }
 
-void xmm::Phrase::connect(float* pointer_to_data, std::size_t length) {
+void xmm::Phrase::connect(float* pointer_to_data, unsigned int length) {
     if (own_memory_)
         throw std::runtime_error("Cannot connect a phrase with own data");
     if (bimodal_)
@@ -290,7 +290,7 @@ void xmm::Phrase::connect(float* pointer_to_data, std::size_t length) {
 }
 
 void xmm::Phrase::connect(float* pointer_to_data_input,
-                          float* pointer_to_data_output, std::size_t length) {
+                          float* pointer_to_data_output, unsigned int length) {
     if (own_memory_)
         throw std::runtime_error("Cannot connect a phrase with own data");
     if (!bimodal_)
@@ -304,7 +304,7 @@ void xmm::Phrase::connect(float* pointer_to_data_input,
     empty_ = false;
 }
 
-void xmm::Phrase::connect_input(float* pointer_to_data, std::size_t length) {
+void xmm::Phrase::connect_input(float* pointer_to_data, unsigned int length) {
     if (own_memory_)
         throw std::runtime_error("Cannot connect a phrase with own data");
     if (!bimodal_)
@@ -316,7 +316,7 @@ void xmm::Phrase::connect_input(float* pointer_to_data, std::size_t length) {
     empty_ = false;
 }
 
-void xmm::Phrase::connect_output(float* pointer_to_data, std::size_t length) {
+void xmm::Phrase::connect_output(float* pointer_to_data, unsigned int length) {
     if (own_memory_)
         throw std::runtime_error("Cannot connect a phrase with own data");
     if (!bimodal_)
@@ -468,9 +468,9 @@ void xmm::Phrase::fromJson(Json::Value const& root) {
 
 std::vector<float> xmm::Phrase::mean() const {
     std::vector<float> mean(dimension.get());
-    for (std::size_t d = 0; d < dimension.get(); d++) {
+    for (unsigned int d = 0; d < dimension.get(); d++) {
         mean[d] = 0.;
-        for (std::size_t t = 0; t < length_; t++) {
+        for (unsigned int t = 0; t < length_; t++) {
             mean[d] += getValue(t, d);
         }
         mean[d] /= float(length_);
@@ -481,9 +481,9 @@ std::vector<float> xmm::Phrase::mean() const {
 std::vector<float> xmm::Phrase::standardDeviation() const {
     std::vector<float> stddev(dimension.get());
     std::vector<float> _mean = mean();
-    for (std::size_t d = 0; d < dimension.get(); d++) {
+    for (unsigned int d = 0; d < dimension.get(); d++) {
         stddev[d] = 0.;
-        for (std::size_t t = 0; t < length_; t++) {
+        for (unsigned int t = 0; t < length_; t++) {
             stddev[d] +=
                 (getValue(t, d) - _mean[d]) * (getValue(t, d) - _mean[d]);
         }
@@ -538,7 +538,7 @@ void xmm::Phrase::trim() {
 }
 
 void xmm::Phrase::reallocateLength() {
-    std::size_t modality_dim =
+    unsigned int modality_dim =
         bimodal_ ? dimension_input.get() : dimension.get();
     data_[0] =
         reallocate<float>(data_[0], max_length_ * modality_dim,

@@ -62,11 +62,6 @@ void checkLimits<bool>(bool const& value, bool const& limit_min,
                        bool const& limit_max);
 
 template <>
-void checkLimits<std::size_t>(std::size_t const& value,
-                              std::size_t const& limit_min,
-                              std::size_t const& limit_max);
-
-template <>
 void checkLimits<unsigned char>(unsigned char const& value,
                                 unsigned char const& limit_min,
                                 unsigned char const& limit_max);
@@ -297,7 +292,7 @@ class Attribute<std::vector<T>> : public AttributeBase {
      */
     Attribute(std::vector<T> const& value = std::vector<T>(),
               T const& limit_min = defaultLimitMin(),
-              T const& limit_max = defaultLimitMax(), std::size_t size = 0)
+              T const& limit_max = defaultLimitMax(), unsigned int size = 0)
         : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
         set(value, true);
         changed = false;
@@ -367,7 +362,7 @@ class Attribute<std::vector<T>> : public AttributeBase {
      @param index index in the value vector
      @return the attribute's current value at a given index
      */
-    T at(std::size_t index) const {
+    T at(unsigned int index) const {
         if (index < size_) {
             return value_[index];
         } else {
@@ -407,7 +402,7 @@ class Attribute<std::vector<T>> : public AttributeBase {
      size-checking on set.
      @param size vector size
      */
-    void resize(std::size_t size) {
+    void resize(unsigned int size) {
         value_.resize(size, T());
         size_ = size;
     }
@@ -416,7 +411,7 @@ class Attribute<std::vector<T>> : public AttributeBase {
      @brief get the attribute's current size (vector Attribute)
      @return value vector size
      */
-    std::size_t size() const { return value_.size(); }
+    unsigned int size() const { return value_.size(); }
 
   protected:
     /**
@@ -447,7 +442,7 @@ class Attribute<std::vector<T>> : public AttributeBase {
     /**
      @brief Size of the vector of values
      */
-    std::size_t size_;
+    unsigned int size_;
 
     /**
      @brief Callback function to be called on attribute change
@@ -485,7 +480,7 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
      */
     Attribute(std::vector<std::string> const& value = {},
               std::string const& limit_min = "",
-              std::string const& limit_max = "", std::size_t size = 0)
+              std::string const& limit_max = "", unsigned int size = 0)
         : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
         set(value, true);
         changed = false;
@@ -555,7 +550,7 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
      @param index index in the value vector
      @return the attribute's current value at a given index
      */
-    std::string at(std::size_t index) const {
+    std::string at(unsigned int index) const {
         if (index < size_) {
             return value_[index];
         } else {
@@ -595,7 +590,7 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
      size-checking on set.
      @param size vector size
      */
-    void resize(std::size_t size) {
+    void resize(unsigned int size) {
         value_.resize(size, "");
         size_ = size;
     }
@@ -604,7 +599,9 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
      @brief get the attribute's current size (vector Attribute)
      @return value vector size
      */
-    std::size_t size() const { return value_.size(); }
+    unsigned int size() const {
+        return static_cast<unsigned int>(value_.size());
+    }
 
   protected:
     /**
@@ -635,7 +632,7 @@ class Attribute<std::vector<std::string>> : public AttributeBase {
     /**
      @brief Size of the vector of values
      */
-    std::size_t size_;
+    unsigned int size_;
 
     /**
      @brief Callback function to be called on attribute change

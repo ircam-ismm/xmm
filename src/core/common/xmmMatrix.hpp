@@ -63,12 +63,12 @@ class Matrix {
     /**
      @brief number of rows of the matrix
      */
-    std::size_t nrows;
+    unsigned int nrows;
 
     /**
      @brief number of columns of the matrix
      */
-    std::size_t ncols;
+    unsigned int ncols;
 
     /**
      @brief Matrix Data if not shared
@@ -100,7 +100,7 @@ class Matrix {
      @param ownData_ defines if the matrix stores the data itself (true by
      default)
      */
-    Matrix(std::size_t nrows_, bool ownData_ = true) {
+    Matrix(unsigned int nrows_, bool ownData_ = true) {
         nrows = nrows_;
         ncols = nrows_;
         ownData = ownData_;
@@ -117,7 +117,7 @@ class Matrix {
      @param ownData_ defines if the matrix stores the data itself (true by
      default)
      */
-    Matrix(std::size_t nrows_, std::size_t ncols_, bool ownData_ = true) {
+    Matrix(unsigned int nrows_, unsigned int ncols_, bool ownData_ = true) {
         nrows = nrows_;
         ncols = ncols_;
         ownData = ownData_;
@@ -133,7 +133,7 @@ class Matrix {
      @param ncols_ Number of columns
      @param data_it iterator to the vector data
      */
-    Matrix(std::size_t nrows_, std::size_t ncols_,
+    Matrix(unsigned int nrows_, unsigned int ncols_,
            typename std::vector<T>::iterator data_it) {
         nrows = nrows_;
         ncols = ncols_;
@@ -147,7 +147,7 @@ class Matrix {
      @param ncols_ Number of columns
      @throws runtime_error if the matrix is not square
      */
-    void resize(std::size_t nrows_, std::size_t ncols_) {
+    void resize(unsigned int nrows_, unsigned int ncols_) {
         nrows = nrows_;
         ncols = ncols_;
         _data.resize(nrows * ncols);
@@ -157,7 +157,7 @@ class Matrix {
      @brief Resize a Square Matrix
      @param nrows_ Number of rows
      */
-    void resize(std::size_t nrows_) {
+    void resize(unsigned int nrows_) {
         if (nrows != ncols) throw std::runtime_error("Matrix is not square");
 
         nrows = nrows_;
@@ -171,7 +171,7 @@ class Matrix {
      */
     float sum() const {
         float sum_(0.);
-        for (std::size_t i = 0; i < nrows * ncols; i++) sum_ += data[i];
+        for (unsigned int i = 0; i < nrows * ncols; i++) sum_ += data[i];
         return sum_;
     }
 
@@ -179,8 +179,8 @@ class Matrix {
      @brief Print the matrix
      */
     void print() const {
-        for (std::size_t i = 0; i < nrows; i++) {
-            for (std::size_t j = 0; j < ncols; j++) {
+        for (unsigned int i = 0; i < nrows; i++) {
+            for (unsigned int j = 0; j < ncols; j++) {
                 std::cout << data[i * ncols + j] << " ";
             }
             std::cout << std::endl;
@@ -194,8 +194,8 @@ class Matrix {
      */
     Matrix<T> *transpose() const {
         Matrix<T> *out = new Matrix<T>(ncols, nrows);
-        for (std::size_t i = 0; i < ncols; i++) {
-            for (std::size_t j = 0; j < nrows; j++) {
+        for (unsigned int i = 0; i < ncols; i++) {
+            for (unsigned int j = 0; j < nrows; j++) {
                 out->data[i * nrows + j] = data[j * ncols + i];
             }
         }
@@ -213,10 +213,10 @@ class Matrix {
             throw std::runtime_error("Wrong dimensions for matrix product");
 
         Matrix<T> *out = new Matrix<T>(nrows, mat->ncols);
-        for (std::size_t i = 0; i < nrows; i++) {
-            for (std::size_t j = 0; j < mat->ncols; j++) {
+        for (unsigned int i = 0; i < nrows; i++) {
+            for (unsigned int j = 0; j < mat->ncols; j++) {
                 out->data[i * mat->ncols + j] = 0.;
-                for (std::size_t k = 0; k < ncols; k++) {
+                for (unsigned int k = 0; k < ncols; k++) {
                     out->data[i * mat->ncols + j] +=
                         data[i * ncols + k] * mat->data[k * mat->ncols + j];
                 }
@@ -276,18 +276,18 @@ class Matrix {
         Matrix<T> mat(nrows, ncols * 2);
         Matrix<T> new_mat(nrows, ncols * 2);
 
-        std::size_t n = nrows;
+        unsigned int n = nrows;
 
         // Create matrix
-        for (std::size_t i = 0; i < n; i++) {
-            for (std::size_t j = 0; j < n; j++) {
+        for (unsigned int i = 0; i < n; i++) {
+            for (unsigned int j = 0; j < n; j++) {
                 mat._data[i * 2 * n + j] = data[i * n + j];
             }
             mat._data[i * 2 * n + n + i] = 1;
         }
 
-        for (std::size_t k = 0; k < n; k++) {
-            std::size_t i(k);
+        for (unsigned int k = 0; k < n; k++) {
+            unsigned int i(k);
             while (std::fabs(mat._data[i * 2 * n + k]) <
                    kEpsilonPseudoInverse()) {
                 i++;
@@ -304,12 +304,12 @@ class Matrix {
 
             new_mat._data = mat._data;
 
-            for (std::size_t j = 0; j < 2 * n; j++) {
+            for (unsigned int j = 0; j < 2 * n; j++) {
                 new_mat._data[k * 2 * n + j] /= mat._data[k * 2 * n + k];
             }
             for (i = 0; i < n; i++) {
                 if (i != k) {
-                    for (std::size_t j = 0; j < 2 * n; j++) {
+                    for (unsigned int j = 0; j < 2 * n; j++) {
                         new_mat._data[i * 2 * n + j] -=
                             mat._data[i * 2 * n + k] *
                             new_mat._data[k * 2 * n + j];
@@ -320,8 +320,8 @@ class Matrix {
         }
 
         Matrix<T> *dst = new Matrix<T>(nrows, ncols);
-        for (std::size_t i = 0; i < n; i++)
-            for (std::size_t j = 0; j < n; j++)
+        for (unsigned int i = 0; i < n; i++)
+            for (unsigned int j = 0; j < n; j++)
                 dst->_data[i * n + j] = mat._data[i * 2 * n + n + j];
         return dst;
     }
@@ -331,9 +331,9 @@ class Matrix {
      @param i index of the first line
      @param j index of the second line
      */
-    void swap_lines(std::size_t i, std::size_t j) {
+    void swap_lines(unsigned int i, unsigned int j) {
         T tmp;
-        for (std::size_t k = 0; k < ncols; k++) {
+        for (unsigned int k = 0; k < ncols; k++) {
             tmp = data[i * ncols + k];
             data[i * ncols + k] = data[j * ncols + k];
             data[j * ncols + k] = tmp;
@@ -345,9 +345,9 @@ class Matrix {
      @param i index of the first column
      @param j index of the second column
      */
-    void swap_columns(std::size_t i, std::size_t j) {
+    void swap_columns(unsigned int i, unsigned int j) {
         T tmp;
-        for (std::size_t k = 0; k < nrows; k++) {
+        for (unsigned int k = 0; k < nrows; k++) {
             tmp = data[k * ncols + i];
             data[k * ncols + i] = data[k * ncols + j];
             data[k * ncols + j] = tmp;

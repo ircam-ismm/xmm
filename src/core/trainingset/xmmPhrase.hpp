@@ -193,19 +193,19 @@ class Phrase : public Writable {
      @brief get the number of frames in the phrase
      @return the number of frames in the phrase
      */
-    std::size_t size() const;
+    unsigned int size() const;
 
     /**
      @brief get the number of frames in the input array of the phrase
      @return the number of frames in the input array of the phrase
      */
-    std::size_t inputSize() const;
+    unsigned int inputSize() const;
 
     /**
      @brief get the number of frames in the output array of the phrase
      @return the number of frames in the output array of the phrase
      */
-    std::size_t outputSize() const;
+    unsigned int outputSize() const;
 
     /**
      @brief check if the phrase is empty
@@ -220,7 +220,7 @@ class Phrase : public Writable {
      the data across modalities
      @throws out_of_range if time index or dimension are out of bounds
      */
-    float getValue(std::size_t index, std::size_t dim) const;
+    float getValue(unsigned int index, unsigned int dim) const;
 
     /**
      @brief Get pointer to the data at a given time index
@@ -232,7 +232,7 @@ class Phrase : public Writable {
      Multimodality::Bimodal)
      @return pointer to the data array of the modality, for the given time index
      */
-    float* getPointer(std::size_t index) const;
+    float* getPointer(unsigned int index) const;
 
     /**
      @brief Get pointer to the data at a given time index for the input modality
@@ -244,7 +244,7 @@ class Phrase : public Writable {
      Multimodality::Unimodal)
      @return pointer to the data array of the modality, for the given time index
      */
-    float* getPointer_input(std::size_t index) const;
+    float* getPointer_input(unsigned int index) const;
 
     /**
      @brief Get pointer to the data at a given time index for the output
@@ -257,7 +257,7 @@ class Phrase : public Writable {
      Multimodality::Unimodal)
      @return pointer to the data array of the modality, for the given time index
      */
-    float* getPointer_output(std::size_t index) const;
+    float* getPointer_output(unsigned int index) const;
 
     ///@}
 
@@ -273,7 +273,7 @@ class Phrase : public Writable {
      @throws runtime_error if data is owned (construction with
      MemoryMode::OwnMemory flag)
      */
-    void connect(float* pointer_to_data, std::size_t length);
+    void connect(float* pointer_to_data, unsigned int length);
 
     /**
      @brief Connect a Bimodal phrase to a shared container
@@ -288,7 +288,7 @@ class Phrase : public Writable {
      MemoryMode::OwnMemory flag)
      */
     void connect(float* pointer_to_data_input, float* pointer_to_data_output,
-                 std::size_t length);
+                 unsigned int length);
 
     /**
      @brief Connect a Bimodal phrase to a shared container for the input
@@ -300,7 +300,7 @@ class Phrase : public Writable {
      @throws runtime_error if data is owned (construction with
      MemoryMode::OwnMemory flag)
      */
-    void connect_input(float* pointer_to_data, std::size_t length);
+    void connect_input(float* pointer_to_data, unsigned int length);
 
     /**
      @brief Connect a Bimodal phrase to a shared container for the output
@@ -312,7 +312,7 @@ class Phrase : public Writable {
      @throws runtime_error if data is owned (construction with
      MemoryMode::OwnMemory flag)
      */
-    void connect_output(float* pointer_to_data, std::size_t length);
+    void connect_output(float* pointer_to_data, unsigned int length);
 
     /**
      @brief Disconnect a phrase from a shared container
@@ -433,12 +433,12 @@ class Phrase : public Writable {
     /**
      @brief Total dimension of the phrase
      */
-    Attribute<std::size_t> dimension;
+    Attribute<unsigned int> dimension;
 
     /**
      @brief Used in bimodal mode: dimension of the input modality.
      */
-    Attribute<std::size_t> dimension_input;
+    Attribute<unsigned int> dimension_input;
 
     /**
      @brief Main label of the phrase
@@ -469,7 +469,7 @@ class Phrase : public Writable {
      */
     virtual void onAttributeChange(AttributeBase* attr_pointer);
 
-    static const std::size_t AllocationBlockSize = 256;
+    static const unsigned int AllocationBlockSize = 256;
 
     /**
      @brief Defines if the phrase stores the data itself.
@@ -490,22 +490,22 @@ class Phrase : public Writable {
      @brief Length of the phrase. If bimodal, it is the minimal length between
      modalities
      */
-    std::size_t length_;
+    unsigned int length_;
 
     /**
      @brief Length of the array of the input modality
      */
-    std::size_t input_length_;
+    unsigned int input_length_;
 
     /**
      @brief Length of the array of the output modality
      */
-    std::size_t output_length_;
+    unsigned int output_length_;
 
     /**
      @brief Allocated length (only used in own memory mode)
      */
-    std::size_t max_length_;
+    unsigned int max_length_;
 
     /**
      @brief Pointer to the Data arrays
@@ -524,7 +524,7 @@ class Phrase : public Writable {
  @return resized array (content is conserved)
  */
 template <typename T>
-T* reallocate(T* src, std::size_t dim_src, std::size_t dim_dst) {
+T* reallocate(T* src, unsigned int dim_src, unsigned int dim_dst) {
     T* dst = new T[dim_dst];
 
     if (!src) return dst;

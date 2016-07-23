@@ -102,7 +102,7 @@ class ClassParameters<GMM> : public Writable {
     /**
      @brief Number of Gaussian Mixture Components
      */
-    Attribute<std::size_t> gaussians;
+    Attribute<unsigned int> gaussians;
 
     /**
      @brief Offset Added to the diagonal of covariance matrices for convergence

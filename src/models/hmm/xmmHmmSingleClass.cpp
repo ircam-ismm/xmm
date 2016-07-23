@@ -97,7 +97,7 @@ xmm::SingleClassHMM& xmm::SingleClassHMM::operator=(SingleClassHMM const& src) {
 #pragma mark -
 #pragma mark Parameters initialization
 void xmm::SingleClassHMM::allocate() {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
         prior.resize(numStates);
@@ -139,7 +139,7 @@ void xmm::SingleClassHMM::initParametersToDefault(
 void xmm::SingleClassHMM::initMeansWithAllPhrases(TrainingSet* trainingSet) {
     if (!trainingSet || trainingSet->empty()) return;
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     for (int n = 0; n < numStates; n++)
         for (int d = 0; d < dimension; d++)
@@ -148,11 +148,11 @@ void xmm::SingleClassHMM::initMeansWithAllPhrases(TrainingSet* trainingSet) {
     std::vector<int> factor(numStates, 0);
     for (auto phrase_it = trainingSet->begin(); phrase_it != trainingSet->end();
          phrase_it++) {
-        std::size_t step = phrase_it->second->size() / numStates;
-        std::size_t offset(0);
-        for (std::size_t n = 0; n < numStates; n++) {
-            for (std::size_t t = 0; t < step; t++) {
-                for (std::size_t d = 0; d < dimension; d++) {
+        unsigned int step = phrase_it->second->size() / numStates;
+        unsigned int offset(0);
+        for (unsigned int n = 0; n < numStates; n++) {
+            for (unsigned int t = 0; t < step; t++) {
+                for (unsigned int d = 0; d < dimension; d++) {
                     states[n].components[0].mean[d] +=
                         phrase_it->second->getValue(offset + t, d);
                 }
@@ -172,7 +172,7 @@ void xmm::SingleClassHMM::initCovariances_fullyObserved(
     // TODO: simplify with covariance symmetricity.
     if (!trainingSet || trainingSet->empty()) return;
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     if (parameters.covariance_mode.get() ==
         GaussianDistribution::CovarianceMode::Full) {
@@ -188,11 +188,11 @@ void xmm::SingleClassHMM::initCovariances_fullyObserved(
     std::vector<double> othermeans(numStates * dimension, 0.0);
     for (auto phrase_it = trainingSet->begin(); phrase_it != trainingSet->end();
          phrase_it++) {
-        std::size_t step = phrase_it->second->size() / numStates;
-        std::size_t offset(0);
-        for (std::size_t n = 0; n < numStates; n++) {
-            for (std::size_t t = 0; t < step; t++) {
-                for (std::size_t d1 = 0; d1 < dimension; d1++) {
+        unsigned int step = phrase_it->second->size() / numStates;
+        unsigned int offset(0);
+        for (unsigned int n = 0; n < numStates; n++) {
+            for (unsigned int t = 0; t < step; t++) {
+                for (unsigned int d1 = 0; d1 < dimension; d1++) {
                     othermeans[n * dimension + d1] +=
                         phrase_it->second->getValue(offset + t, d1);
                     if (parameters.covariance_mode.get() ==
@@ -215,8 +215,8 @@ void xmm::SingleClassHMM::initCovariances_fullyObserved(
         }
     }
 
-    for (std::size_t n = 0; n < numStates; n++)
-        for (std::size_t d1 = 0; d1 < dimension; d1++) {
+    for (unsigned int n = 0; n < numStates; n++)
+        for (unsigned int d1 = 0; d1 < dimension; d1++) {
             othermeans[n * dimension + d1] /= factor[n];
             if (parameters.covariance_mode.get() ==
                 GaussianDistribution::CovarianceMode::Full) {
@@ -249,9 +249,9 @@ void xmm::SingleClassHMM::initCovariances_fullyObserved(
 
 void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
     TrainingSet* trainingSet) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
-    for (std::size_t n = 0; n < numStates; n++) {
+    for (unsigned int n = 0; n < numStates; n++) {
         TrainingSet temp_ts(MemoryMode::SharedMemory,
                             shared_parameters->bimodal.get()
                                 ? Multimodality::Bimodal
@@ -260,7 +260,7 @@ void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
         temp_ts.dimension_input.set(shared_parameters->dimension_input.get());
         for (auto phrase_it = trainingSet->begin();
              phrase_it != trainingSet->end(); phrase_it++) {
-            std::size_t step = phrase_it->second->size() / numStates;
+            unsigned int step = phrase_it->second->size() / numStates;
             if (step == 0) continue;
             temp_ts.addPhrase(phrase_it->first, label);
             if (shared_parameters->bimodal.get())
@@ -281,7 +281,7 @@ void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
             parameters.absolute_regularization.get());
         tmpGMM.parameters.covariance_mode.set(parameters.covariance_mode.get());
         tmpGMM.train(&temp_ts);
-        for (std::size_t c = 0; c < parameters.gaussians.get(); c++) {
+        for (unsigned int c = 0; c < parameters.gaussians.get(); c++) {
             states[n].components[c].mean = tmpGMM.components[c].mean;
             states[n].components[c].covariance =
                 tmpGMM.components[c].covariance;
@@ -291,7 +291,7 @@ void xmm::SingleClassHMM::initMeansCovariancesWithGMMEM(
 }
 
 void xmm::SingleClassHMM::setErgodic() {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     for (int i = 0; i < numStates; i++) {
         prior[i] = 1 / (float)numStates;
@@ -302,7 +302,7 @@ void xmm::SingleClassHMM::setErgodic() {
 }
 
 void xmm::SingleClassHMM::setLeftRight() {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     transition.assign(numStates * 2, 0.5);
     transition[(numStates - 1) * 2] = 1.;
@@ -310,7 +310,7 @@ void xmm::SingleClassHMM::setLeftRight() {
 }
 
 void xmm::SingleClassHMM::normalizeTransitions() {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     double norm_transition;
     if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
@@ -337,7 +337,7 @@ void xmm::SingleClassHMM::normalizeTransitions() {
 #pragma mark Forward-Backward algorithm
 double xmm::SingleClassHMM::forward_init(const float* observation,
                                          const float* observation_output) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     double norm_const(0.);
     if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
@@ -382,7 +382,7 @@ double xmm::SingleClassHMM::forward_init(const float* observation,
 
 double xmm::SingleClassHMM::forward_update(const float* observation,
                                            const float* observation_output) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     double norm_const(0.);
     previous_alpha_ = alpha;
@@ -429,7 +429,7 @@ void xmm::SingleClassHMM::backward_init(double ct) {
 
 void xmm::SingleClassHMM::backward_update(double ct, const float* observation,
                                           const float* observation_output) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     previous_beta_ = beta_;
     for (int i = 0; i < numStates; i++) {
@@ -493,8 +493,8 @@ void xmm::SingleClassHMM::backward_update(double ct, const float* observation,
 #pragma mark Training algorithm
 void xmm::SingleClassHMM::emAlgorithmInit(TrainingSet* trainingSet) {
     if (!trainingSet || trainingSet->empty()) return;
-    std::size_t numStates = parameters.states.get();
-    std::size_t numGaussians = parameters.gaussians.get();
+    unsigned int numStates = parameters.states.get();
+    unsigned int numGaussians = parameters.gaussians.get();
 
     initParametersToDefault(trainingSet->standardDeviation());
 
@@ -505,17 +505,17 @@ void xmm::SingleClassHMM::emAlgorithmInit(TrainingSet* trainingSet) {
         initCovariances_fullyObserved(trainingSet);
     }
 
-    std::size_t nbPhrases = trainingSet->size();
+    unsigned int nbPhrases = trainingSet->size();
 
     // Initialize Algorithm variables
     // ---------------------------------------
     gamma_sequence_.resize(nbPhrases);
     epsilon_sequence_.resize(nbPhrases);
     gamma_sequence_per_mixture_.resize(nbPhrases);
-    std::size_t maxT(0);
-    std::size_t i(0);
+    unsigned int maxT(0);
+    unsigned int i(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); ++it) {
-        std::size_t T = it->second->size();
+        unsigned int T = it->second->size();
         gamma_sequence_[i].resize(T * numStates);
         if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
             epsilon_sequence_[i].resize(T * numStates * numStates);
@@ -552,7 +552,7 @@ void xmm::SingleClassHMM::emAlgorithmTerminate() {
 
 double xmm::SingleClassHMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     double log_prob(0.);
 
@@ -596,7 +596,7 @@ double xmm::SingleClassHMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
 
 double xmm::SingleClassHMM::baumWelch_forward_update(
     std::vector<double>::iterator observation_likelihoods) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     double norm_const(0.);
     previous_alpha_ = alpha;
@@ -631,7 +631,7 @@ double xmm::SingleClassHMM::baumWelch_forward_update(
 
 void xmm::SingleClassHMM::baumWelch_backward_update(
     double ct, std::vector<double>::iterator observation_likelihoods) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     previous_beta_ = beta_;
     for (int i = 0; i < numStates; i++) {
@@ -658,8 +658,8 @@ void xmm::SingleClassHMM::baumWelch_backward_update(
 
 double xmm::SingleClassHMM::baumWelch_forwardBackward(
     std::shared_ptr<Phrase> currentPhrase, int phraseIndex) {
-    std::size_t T = currentPhrase->size();
-    std::size_t numStates = parameters.states.get();
+    unsigned int T = currentPhrase->size();
+    unsigned int numStates = parameters.states.get();
 
     std::vector<double> ct(T);
     std::vector<double>::iterator alpha_seq_it = alpha_seq_.begin();
@@ -667,8 +667,8 @@ double xmm::SingleClassHMM::baumWelch_forwardBackward(
     double log_prob;
 
     std::vector<double> observation_probabilities(numStates * T);
-    for (std::size_t t = 0; t < T; ++t) {
-        for (std::size_t i = 0; i < numStates; i++) {
+    for (unsigned int t = 0; t < T; ++t) {
+        for (unsigned int i = 0; i < numStates; i++) {
             if (shared_parameters->bimodal.get()) {
                 observation_probabilities[t * numStates + i] =
                     states[i].obsProb_bimodal(
@@ -795,8 +795,8 @@ double xmm::SingleClassHMM::baumWelch_forwardBackward(
 }
 
 void xmm::SingleClassHMM::baumWelch_gammaSum(TrainingSet* trainingSet) {
-    std::size_t numStates = parameters.states.get();
-    std::size_t numGaussians = parameters.gaussians.get();
+    unsigned int numStates = parameters.states.get();
+    unsigned int numGaussians = parameters.gaussians.get();
 
     for (int i = 0; i < numStates; i++) {
         gamma_sum_[i] = 0.;
@@ -805,8 +805,8 @@ void xmm::SingleClassHMM::baumWelch_gammaSum(TrainingSet* trainingSet) {
         }
     }
 
-    std::size_t phraseLength;
-    std::size_t phraseIndex(0);
+    unsigned int phraseLength;
+    unsigned int phraseIndex(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); ++it) {
         phraseLength = it->second->size();
         for (int i = 0; i < numStates; i++) {
@@ -826,10 +826,10 @@ void xmm::SingleClassHMM::baumWelch_gammaSum(TrainingSet* trainingSet) {
 
 void xmm::SingleClassHMM::baumWelch_estimateMixtureCoefficients(
     TrainingSet* trainingSet) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
-    std::size_t phraseLength;
-    std::size_t phraseIndex(0);
+    unsigned int phraseLength;
+    unsigned int phraseIndex(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); ++it) {
         phraseLength = it->second->size();
         for (int i = 0; i < numStates; i++) {
@@ -851,10 +851,10 @@ void xmm::SingleClassHMM::baumWelch_estimateMixtureCoefficients(
 
 void xmm::SingleClassHMM::baumWelch_estimateMeans(TrainingSet* trainingSet) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    std::size_t numStates = parameters.states.get();
-    std::size_t numGaussians = parameters.gaussians.get();
+    unsigned int numStates = parameters.states.get();
+    unsigned int numGaussians = parameters.gaussians.get();
 
-    std::size_t phraseLength;
+    unsigned int phraseLength;
 
     for (int i = 0; i < numStates; i++) {
         for (int c = 0; c < numGaussians; c++) {
@@ -899,10 +899,10 @@ void xmm::SingleClassHMM::baumWelch_estimateMeans(TrainingSet* trainingSet) {
 void xmm::SingleClassHMM::baumWelch_estimateCovariances(
     TrainingSet* trainingSet) {
     int dimension = static_cast<int>(shared_parameters->dimension.get());
-    std::size_t numStates = parameters.states.get();
-    std::size_t numGaussians = parameters.gaussians.get();
+    unsigned int numStates = parameters.states.get();
+    unsigned int numGaussians = parameters.gaussians.get();
 
-    std::size_t phraseLength;
+    unsigned int phraseLength;
 
     int phraseIndex(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); it++) {
@@ -971,7 +971,7 @@ void xmm::SingleClassHMM::baumWelch_estimateCovariances(
 }
 
 void xmm::SingleClassHMM::baumWelch_estimatePrior(TrainingSet* trainingSet) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     // Set prior vector to 0
     for (int i = 0; i < numStates; i++) prior[i] = 0.;
@@ -997,7 +997,7 @@ void xmm::SingleClassHMM::baumWelch_estimatePrior(TrainingSet* trainingSet) {
 
 void xmm::SingleClassHMM::baumWelch_estimateTransitions(
     TrainingSet* trainingSet) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     // Set prior vector and transition matrix to 0
     if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
@@ -1006,9 +1006,9 @@ void xmm::SingleClassHMM::baumWelch_estimateTransitions(
         transition.assign(numStates * 2, 0.0);
     }
 
-    std::size_t phraseLength;
+    unsigned int phraseLength;
     // Re-estimate Prior and Transition probabilities
-    std::size_t phraseIndex(0);
+    unsigned int phraseIndex(0);
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); it++) {
         phraseLength = it->second->size();
         if (phraseLength > 0) {
@@ -1108,7 +1108,7 @@ void xmm::SingleClassHMM::reset() {
 }
 
 void xmm::SingleClassHMM::addCyclicTransition(double proba) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     check_training();
     if (parameters.transition_mode.get() == HMM::TransitionMode::Ergodic) {
@@ -1156,14 +1156,14 @@ unsigned int argmax(std::vector<double> const& v) {
 }
 
 void xmm::SingleClassHMM::updateAlphaWindow() {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     check_training();
     results.likeliest_state = 0;
     // Get likeliest State
     double best_alpha(is_hierarchical_ ? (alpha_h[0][0] + alpha_h[1][0])
                                        : alpha[0]);
-    for (std::size_t i = 1; i < numStates; ++i) {
+    for (unsigned int i = 1; i < numStates; ++i) {
         if (is_hierarchical_) {
             if ((alpha_h[0][i] + alpha_h[1][i]) > best_alpha) {
                 best_alpha = alpha_h[0][i] + alpha_h[1][i];
@@ -1196,7 +1196,7 @@ void xmm::SingleClassHMM::updateAlphaWindow() {
 void xmm::SingleClassHMM::regression(
     std::vector<float> const& observation_input) {
     check_training();
-    std::size_t dimension_output = shared_parameters->dimension.get() -
+    unsigned int dimension_output = shared_parameters->dimension.get() -
                                    shared_parameters->dimension_input.get();
     results.output_values.assign(dimension_output, 0.0);
     results.output_covariance.assign(
@@ -1216,11 +1216,11 @@ void xmm::SingleClassHMM::regression(
         return;
     }
 
-    std::size_t clip_min_state = (parameters.regression_estimator.get() ==
+    unsigned int clip_min_state = (parameters.regression_estimator.get() ==
                                   HMM::RegressionEstimator::Full)
                                      ? 0
                                      : window_minindex_;
-    std::size_t clip_max_state = (parameters.regression_estimator.get() ==
+    unsigned int clip_max_state = (parameters.regression_estimator.get() ==
                                   HMM::RegressionEstimator::Full)
                                      ? parameters.states.get()
                                      : window_maxindex_;
@@ -1232,11 +1232,11 @@ void xmm::SingleClassHMM::regression(
     if (normalization_constant <= 0.0) normalization_constant = 1.;
 
     // Compute Regression
-    for (std::size_t i = clip_min_state; i < clip_max_state; ++i) {
+    for (unsigned int i = clip_min_state; i < clip_max_state; ++i) {
         states[i].likelihood(observation_input);
         states[i].regression(observation_input);
         tmp_predicted_output = states[i].results.output_values;
-        for (std::size_t d = 0; d < dimension_output; ++d) {
+        for (unsigned int d = 0; d < dimension_output; ++d) {
             if (is_hierarchical_) {
                 results.output_values[d] += (alpha_h[0][i] + alpha_h[1][i]) *
                                             tmp_predicted_output[d] /
@@ -1285,8 +1285,8 @@ void xmm::SingleClassHMM::regression(
 void xmm::SingleClassHMM::updateResults() {
     likelihood_buffer_.push(log(results.instant_likelihood));
     results.log_likelihood = 0.0;
-    std::size_t bufSize = likelihood_buffer_.size_t();
-    for (std::size_t i = 0; i < bufSize; i++) {
+    unsigned int bufSize = likelihood_buffer_.size_t();
+    for (unsigned int i = 0; i < bufSize; i++) {
         results.log_likelihood += likelihood_buffer_(0, i);
     }
     results.log_likelihood /= double(bufSize);
@@ -1348,7 +1348,7 @@ void xmm::SingleClassHMM::fromJson(Json::Value const& root) {
 #pragma mark Exit Probabilities
 
 void xmm::SingleClassHMM::updateExitProbabilities(float* exitProbabilities) {
-    std::size_t numStates = parameters.states.get();
+    unsigned int numStates = parameters.states.get();
 
     if (!is_hierarchical_)
         throw std::runtime_error(
@@ -1378,7 +1378,7 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 }
 
 //#pragma mark > Conversion & Extraction
-// void xmm::SingleClassHMM::makeBimodal(std::size_t dimension_input)
+// void xmm::SingleClassHMM::makeBimodal(unsigned int dimension_input)
 //{
 //    check_training();
 //    if (bimodal_)
@@ -1389,7 +1389,7 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 //    flags_ = flags_ | BIMODAL;
 //    bimodal_ = true;
 //    dimension_input_ = dimension_input;
-//    for (std::size_t i=0; i<numStates; i++) {
+//    for (unsigned int i=0; i<numStates; i++) {
 //        states[i].makeBimodal(dimension_input);
 //    }
 //    results_predicted_output.resize(dimension_ - dimension_input_);
@@ -1404,21 +1404,21 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 //    flags_ = NONE;
 //    bimodal_ = false;
 //    dimension_input_ = 0;
-//    for (std::size_t i=0; i<numStates; i++) {
+//    for (unsigned int i=0; i<numStates; i++) {
 //        states[i].makeUnimodal();
 //    }
 //    results_predicted_output.clear();
 //    results_output_variance.clear();
 //}
 //
-// xmm::HMM xmm::SingleClassHMM::extractSubmodel(std::vector<std::size_t>&
+// xmm::HMM xmm::SingleClassHMM::extractSubmodel(std::vector<unsigned int>&
 // columns) const
 //{
 //    check_training();
 //    if (columns.size() > dimension_)
 //        throw std::out_of_range("requested number of columns exceeds the
 //        dimension of the current model");
-//    for (std::size_t column=0; column<columns.size(); ++column) {
+//    for (unsigned int column=0; column<columns.size(); ++column) {
 //        if (columns[column] >= dimension_)
 //            throw std::out_of_range("Some column indices exceeds the dimension
 //            of the current model");
@@ -1427,11 +1427,11 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 //    size_t new_dim = columns.size();
 //    target_model.setTrainingCallback(NULL, NULL);
 //    target_model.bimodal_ = false;
-//    target_model.dimension_ = static_cast<std::size_t>(new_dim);
+//    target_model.dimension_ = static_cast<unsigned int>(new_dim);
 //    target_model.dimension_input_ = 0;
 //    target_model.flags_ = (this->flags_ & HIERARCHICAL);
 //    target_model.allocate();
-//    for (std::size_t i=0; i<numStates; ++i) {
+//    for (unsigned int i=0; i<numStates; ++i) {
 //        target_model.states[i] = states[i].extractSubmodel(columns);
 //    }
 //    return target_model;
@@ -1442,8 +1442,8 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_input(dimension_input_);
-//    for (std::size_t i=0; i<dimension_input_; ++i) {
+//    std::vector<unsigned int> columns_input(dimension_input_);
+//    for (unsigned int i=0; i<dimension_input_; ++i) {
 //        columns_input[i] = i;
 //    }
 //    return extractSubmodel(columns_input);
@@ -1454,8 +1454,8 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_output(dimension_ - dimension_input_);
-//    for (std::size_t i=dimension_input_; i<dimension_; ++i) {
+//    std::vector<unsigned int> columns_output(dimension_ - dimension_input_);
+//    for (unsigned int i=dimension_input_; i<dimension_; ++i) {
 //        columns_output[i-dimension_input_] = i;
 //    }
 //    return extractSubmodel(columns_output);
@@ -1466,11 +1466,11 @@ void xmm::SingleClassHMM::addExitPoint(int stateIndex, float proba) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns(dimension_);
-//    for (std::size_t i=0; i<dimension_-dimension_input_; ++i) {
+//    std::vector<unsigned int> columns(dimension_);
+//    for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
 //        columns[i] = i+dimension_input_;
 //    }
-//    for (std::size_t i=dimension_-dimension_input_, j=0; i<dimension_; ++i,
+//    for (unsigned int i=dimension_-dimension_input_, j=0; i<dimension_; ++i,
 //    ++j) {
 //        columns[i] = j;
 //    }

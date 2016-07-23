@@ -115,7 +115,7 @@ void xmm::SingleClassGMM::fromJson(Json::Value const& root) {
     }
 }
 
-// void xmm::SingleClassGMM::makeBimodal(std::size_t dimension_input)
+// void xmm::SingleClassGMM::makeBimodal(unsigned int dimension_input)
 //{
 //    check_training();
 //    if (bimodal_)
@@ -151,26 +151,26 @@ void xmm::SingleClassGMM::fromJson(Json::Value const& root) {
 //}
 //
 // xmm::SingleClassGMM
-// xmm::SingleClassGMM::extractSubmodel(std::vector<std::size_t>& columns) const
+// xmm::SingleClassGMM::extractSubmodel(std::vector<unsigned int>& columns) const
 //{
 //    check_training();
 //    if (columns.size() > dimension_)
 //        throw std::out_of_range("requested number of columns exceeds the
 //        dimension of the current model");
-//    for (std::size_t column=0; column<columns.size(); ++column) {
+//    for (unsigned int column=0; column<columns.size(); ++column) {
 //        if (columns[column] >= dimension_)
 //            throw std::out_of_range("Some column indices exceeds the dimension
 //            of the current model");
 //    }
-//    std::size_t new_dim =columns.size();
+//    unsigned int new_dim =columns.size();
 //    GMM target_model(*this);
 //    target_model.setTrainingCallback(NULL, NULL);
 //    target_model.bimodal_ = false;
-//    target_model.dimension_ = static_cast<std::size_t>(new_dim);
+//    target_model.dimension_ = static_cast<unsigned int>(new_dim);
 //    target_model.dimension_input_ = 0;
 //    target_model.flags_ = NONE;
 //    target_model.allocate();
-//    for (std::size_t c=0; c<nbMixtureComponents_; ++c) {
+//    for (unsigned int c=0; c<nbMixtureComponents_; ++c) {
 //        target_model.components[c] = components[c].extractSubmodel(columns);
 //    }
 //    target_model.baseResults_predicted_output.clear();
@@ -183,8 +183,8 @@ void xmm::SingleClassGMM::fromJson(Json::Value const& root) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_input(dimension_input_);
-//    for (std::size_t i=0; i<dimension_input_; ++i) {
+//    std::vector<unsigned int> columns_input(dimension_input_);
+//    for (unsigned int i=0; i<dimension_input_; ++i) {
 //        columns_input[i] = i;
 //    }
 //    return extractSubmodel(columns_input);
@@ -195,8 +195,8 @@ void xmm::SingleClassGMM::fromJson(Json::Value const& root) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_output(dimension_ - dimension_input_);
-//    for (std::size_t i=dimension_input_; i<dimension_; ++i) {
+//    std::vector<unsigned int> columns_output(dimension_ - dimension_input_);
+//    for (unsigned int i=dimension_input_; i<dimension_; ++i) {
 //        columns_output[i-dimension_input_] = i;
 //    }
 //    return extractSubmodel(columns_output);
@@ -207,11 +207,11 @@ void xmm::SingleClassGMM::fromJson(Json::Value const& root) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns(dimension_);
-//    for (std::size_t i=0; i<dimension_-dimension_input_; ++i) {
+//    std::vector<unsigned int> columns(dimension_);
+//    for (unsigned int i=0; i<dimension_-dimension_input_; ++i) {
 //        columns[i] = i+dimension_input_;
 //    }
-//    for (std::size_t i=dimension_-dimension_input_, j=0; i<dimension_; ++i,
+//    for (unsigned int i=dimension_-dimension_input_, j=0; i<dimension_; ++i,
 //    ++j) {
 //        columns[i] = j;
 //    }
@@ -305,7 +305,7 @@ void xmm::SingleClassGMM::initMeansWithKMeans(TrainingSet* trainingSet) {
     kmeans.initialization_mode = KMeans::InitializationMode::Biased;
     kmeans.train(trainingSet);
     for (int c = 0; c < parameters.gaussians.get(); c++) {
-        for (std::size_t d = 0; d < dimension; ++d) {
+        for (unsigned int d = 0; d < dimension; ++d) {
             components[c].mean[d] = kmeans.centers[c * dimension + d];
         }
     }
@@ -331,9 +331,9 @@ void xmm::SingleClassGMM::initCovariances_fullyObserved(
     std::vector<int> factor(parameters.gaussians.get(), 0);
     for (auto phrase_it = trainingSet->begin(); phrase_it != trainingSet->end();
          phrase_it++) {
-        std::size_t step =
+        unsigned int step =
             phrase_it->second->size() / parameters.gaussians.get();
-        std::size_t offset(0);
+        unsigned int offset(0);
         for (int n = 0; n < parameters.gaussians.get(); n++) {
             for (int t = 0; t < step; t++) {
                 for (int d1 = 0; d1 < dimension; d1++) {
@@ -404,7 +404,7 @@ double xmm::SingleClassGMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
     int tbase(0);
 
     for (auto it = trainingSet->cbegin(); it != trainingSet->cend(); ++it) {
-        std::size_t T = it->second->size();
+        unsigned int T = it->second->size();
         for (int t = 0; t < T; t++) {
             double norm_const(0.);
             for (int c = 0; c < parameters.gaussians.get(); c++) {
@@ -443,7 +443,7 @@ double xmm::SingleClassGMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
             tbase = 0;
             for (auto it = trainingSet->cbegin(); it != trainingSet->cend();
                  ++it) {
-                std::size_t T = it->second->size();
+                unsigned int T = it->second->size();
                 for (int t = 0; t < T; t++) {
                     components[c].mean[d] +=
                         p[c][tbase + t] * it->second->getValue(t, d);
@@ -464,7 +464,7 @@ double xmm::SingleClassGMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
                     tbase = 0;
                     for (auto it = trainingSet->cbegin();
                          it != trainingSet->cend(); ++it) {
-                        std::size_t T = it->second->size();
+                        unsigned int T = it->second->size();
                         for (int t = 0; t < T; t++) {
                             components[c].covariance[d1 * dimension + d2] +=
                                 p[c][tbase + t] * (it->second->getValue(t, d1) -
@@ -488,7 +488,7 @@ double xmm::SingleClassGMM::emAlgorithmUpdate(TrainingSet* trainingSet) {
                 tbase = 0;
                 for (auto it = trainingSet->cbegin(); it != trainingSet->cend();
                      ++it) {
-                    std::size_t T = it->second->size();
+                    unsigned int T = it->second->size();
                     for (int t = 0; t < T; t++) {
                         float value = (it->second->getValue(t, d1) -
                                        components[c].mean[d1]);
@@ -573,7 +573,7 @@ void xmm::SingleClassGMM::updateInverseCovariances() {
 void xmm::SingleClassGMM::regression(
     std::vector<float> const& observation_input) {
     check_training();
-    std::size_t dimension_output = shared_parameters->dimension.get() -
+    unsigned int dimension_output = shared_parameters->dimension.get() -
                                    shared_parameters->dimension_input.get();
     results.output_values.assign(dimension_output, 0.0);
     results.output_covariance.assign(
@@ -632,8 +632,8 @@ double xmm::SingleClassGMM::likelihood(
 void xmm::SingleClassGMM::updateResults() {
     likelihood_buffer_.push(log(results.instant_likelihood));
     results.log_likelihood = 0.0;
-    std::size_t bufSize = likelihood_buffer_.size_t();
-    for (std::size_t i = 0; i < bufSize; i++) {
+    unsigned int bufSize = likelihood_buffer_.size_t();
+    for (unsigned int i = 0; i < bufSize; i++) {
         results.log_likelihood += likelihood_buffer_(0, i);
     }
     results.log_likelihood /= double(bufSize);

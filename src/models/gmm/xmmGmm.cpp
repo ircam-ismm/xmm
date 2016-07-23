@@ -90,7 +90,7 @@ void xmm::GMM::reset() {
     results.smoothed_normalized_likelihoods.resize(size());
     results.smoothed_log_likelihoods.resize(size());
     if (shared_parameters->bimodal.get()) {
-        std::size_t dimension_output = shared_parameters->dimension.get() -
+        unsigned int dimension_output = shared_parameters->dimension.get() -
                                        shared_parameters->dimension_input.get();
         results.output_values.resize(dimension_output);
         results.output_covariance.assign(
@@ -116,9 +116,9 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
     updateResults();
 
     if (shared_parameters->bimodal.get()) {
-        std::size_t dimension = shared_parameters->dimension.get();
-        std::size_t dimension_input = shared_parameters->dimension_input.get();
-        std::size_t dimension_output = dimension - dimension_input;
+        unsigned int dimension = shared_parameters->dimension.get();
+        unsigned int dimension_input = shared_parameters->dimension_input.get();
+        unsigned int dimension_output = dimension - dimension_input;
 
         if (configuration.multiClass_regression_estimator ==
             MultiClassRegressionEstimator::Likeliest) {
@@ -164,7 +164,7 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
 }
 
 //#pragma mark > Conversion & Extraction
-// void xmm::GMM::makeBimodal(std::size_t dimension_input)
+// void xmm::GMM::makeBimodal(unsigned int dimension_input)
 //{
 //    check_training();
 //    if (bimodal_)
@@ -203,13 +203,13 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
 //    bimodal_ = false;
 //}
 //
-// xmm::GMM xmm::GMM::extractSubmodel(std::vector<std::size_t>& columns) const
+// xmm::GMM xmm::GMM::extractSubmodel(std::vector<unsigned int>& columns) const
 //{
 //    check_training();
 //    if (columns.size() > this->dimension())
 //        throw std::out_of_range("requested number of columns exceeds the
 //        dimension of the current model");
-//    for (std::size_t column=0; column<columns.size(); ++column) {
+//    for (unsigned int column=0; column<columns.size(); ++column) {
 //        if (columns[column] >= this->dimension())
 //            throw std::out_of_range("Some column indices exceeds the dimension
 //            of the current model");
@@ -233,8 +233,8 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_input(dimension_input());
-//    for (std::size_t i=0; i<dimension_input(); ++i) {
+//    std::vector<unsigned int> columns_input(dimension_input());
+//    for (unsigned int i=0; i<dimension_input(); ++i) {
 //        columns_input[i] = i;
 //    }
 //    return extractSubmodel(columns_input);
@@ -245,8 +245,8 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns_output(dimension() - dimension_input());
-//    for (std::size_t i=dimension_input(); i<dimension(); ++i) {
+//    std::vector<unsigned int> columns_output(dimension() - dimension_input());
+//    for (unsigned int i=dimension_input(); i<dimension(); ++i) {
 //        columns_output[i-dimension_input()] = i;
 //    }
 //    return extractSubmodel(columns_output);
@@ -257,11 +257,11 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
 //    check_training();
 //    if (!bimodal_)
 //        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<std::size_t> columns(dimension());
-//    for (std::size_t i=0; i<dimension()-dimension_input(); ++i) {
+//    std::vector<unsigned int> columns(dimension());
+//    for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
 //        columns[i] = i+dimension_input();
 //    }
-//    for (std::size_t i=dimension()-dimension_input(), j=0; i<dimension(); ++i,
+//    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension(); ++i,
 //    ++j) {
 //        columns[i] = j;
 //    }

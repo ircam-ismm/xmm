@@ -45,14 +45,14 @@ namespace xmm {
  @tparam T Data type
  @tparam channels number of channels
  */
-template <typename T, std::size_t channels = 1>
+template <typename T, unsigned int channels = 1>
 class CircularBuffer {
   public:
     /**
      @brief Constructor
      @param length length of the CircularBuffer
      */
-    CircularBuffer(std::size_t length = 1) {
+    CircularBuffer(unsigned int length = 1) {
         length_ = length;
         for (int c = 0; c < channels; c++) {
             data_[c].resize(length_);
@@ -65,10 +65,10 @@ class CircularBuffer {
      @brief Access data by index & channel
      @return value at the given index and channel
      */
-    T operator()(std::size_t channel, std::size_t index) const {
+    T operator()(unsigned int channel, unsigned int index) const {
         if (channel >= channels)
             throw std::out_of_range("CircularBuffer: channel out of bounds");
-        std::size_t m = full_ ? length_ : current_index_;
+        unsigned int m = full_ ? length_ : current_index_;
         if (index >= m)
             throw std::out_of_range("CircularBuffer: index out of bounds");
         return data_[channel][index];
@@ -126,20 +126,20 @@ class CircularBuffer {
      @brief Get the size of the CircularBuffer
      @return size of the CircularBuffer (length)
      */
-    std::size_t size() const { return length_; }
+    unsigned int size() const { return length_; }
 
     /**
      @brief Get the actual size of the CircularBuffer (< size() if the buffer is
      not full)
      @return actual size of the CircularBuffer (length)
      */
-    std::size_t size_t() const { return (full_ ? length_ : current_index_); }
+    unsigned int size_t() const { return (full_ ? length_ : current_index_); }
 
     /**
      @brief Resize the buffer to a specific length
      @param length target length of the CircularBuffer
      */
-    void resize(std::size_t length) {
+    void resize(unsigned int length) {
         if (length == length_) return;
         if (length > length_) {
             full_ = false;
@@ -178,12 +178,12 @@ class CircularBuffer {
     /**
      @brief length of the buffer
      */
-    std::size_t length_;
+    unsigned int length_;
 
     /**
      @brief current index in the buffer
      */
-    std::size_t current_index_;
+    unsigned int current_index_;
 
     /**
      @brief Defines if the CircularBuffer is already full

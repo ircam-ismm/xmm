@@ -103,12 +103,12 @@ class ClassParameters<KMeans> : public Writable {
     /**
      @brief Number of Gaussian Mixture Components
      */
-    Attribute<std::size_t> clusters;
+    Attribute<unsigned int> clusters;
 
     /**
      @brief Maximum number of iterations of the training update
      */
-    Attribute<std::size_t> max_iterations;
+    Attribute<unsigned int> max_iterations;
 
     /**
      @brief threshold (as relative distance between cluster) required to define

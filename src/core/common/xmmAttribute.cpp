@@ -38,16 +38,6 @@ void xmm::checkLimits<bool>(bool const& value, bool const& limit_min,
                             bool const& limit_max) {}
 
 template <>
-void xmm::checkLimits<std::size_t>(std::size_t const& value,
-                                   std::size_t const& limit_min,
-                                   std::size_t const& limit_max) {
-    if (value < limit_min || value > limit_max)
-        throw std::domain_error("Attribute value out of range. Range: [" +
-                                std::to_string(limit_min) + " ; " +
-                                std::to_string(limit_max) + "]");
-}
-
-template <>
 void xmm::checkLimits<unsigned char>(unsigned char const& value,
                                      unsigned char const& limit_min,
                                      unsigned char const& limit_max) {
