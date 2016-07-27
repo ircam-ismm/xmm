@@ -30,8 +30,8 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "xmmGaussianDistribution.hpp"
 #include "../common/xmmMatrix.hpp"
+#include "xmmGaussianDistribution.hpp"
 #include <algorithm>
 
 #ifdef WIN32
@@ -321,9 +321,6 @@ void xmm::GaussianDistribution::regression(
     } else {
         for (int d = 0; d < dimension_output; d++) {
             predicted_output[d] = mean[dimension_input.get() + d];
-            predicted_output[d] += covariance[d + dimension_input.get()] *
-                                   inverse_covariance_input_[d] *
-                                   (observation_input[d] - mean[d]);
         }
     }
 }
@@ -597,7 +594,8 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
 //}
 //
 // xmm::GaussianDistribution
-// xmm::GaussianDistribution::extractSubmodel(std::vector<unsigned int>& columns)
+// xmm::GaussianDistribution::extractSubmodel(std::vector<unsigned int>&
+// columns)
 // const
 //{
 //    if (columns.size() > dimension.get())
@@ -618,7 +616,8 @@ void xmm::GaussianDistribution::fromEllipse(Ellipse const& gaussian_ellipse,
 //        target_distribution.mean[new_index1] = mean[col_index1];
 //        target_distribution.scale[new_index1] = scale[col_index1];
 //        if (covariance_mode.get() == CovarianceMode::Full) {
-//            for (unsigned int new_index2=0; new_index2<new_dim; ++new_index2) {
+//            for (unsigned int new_index2=0; new_index2<new_dim; ++new_index2)
+//            {
 //                unsigned int col_index2 = columns[new_index2];
 //                target_distribution.covariance[new_index1*new_dim+new_index2]
 //                = covariance[col_index1*dimension.get()+col_index2];
