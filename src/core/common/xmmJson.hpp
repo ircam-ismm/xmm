@@ -104,10 +104,10 @@ class Writable {
         Json::Reader reader;
         if (reader.parse(inStream, root)) {
             this->fromJson(root);
-            inStream.close();
         } else {
             throw std::runtime_error("Cannot Parse Json File");
         }
+        inStream.close();
     }
 
     /**
@@ -308,7 +308,8 @@ void json2vector(Json::Value const& root, std::vector<T>& a, unsigned int n) {
 }
 
 template <>
-void json2vector(Json::Value const& root, std::vector<float>& a, unsigned int n);
+void json2vector(Json::Value const& root, std::vector<float>& a,
+                 unsigned int n);
 template <>
 void json2vector(Json::Value const& root, std::vector<double>& a,
                  unsigned int n);

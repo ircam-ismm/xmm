@@ -158,7 +158,8 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
     //         @return a HierarchicalHMM from the current model considering only
     //         the target columns
     //         */
-    //        HierarchicalHMM extractSubmodel(std::vector<unsigned int>& columns)
+    //        HierarchicalHMM extractSubmodel(std::vector<unsigned int>&
+    //        columns)
     //        const;
     //
     //        /**
@@ -211,6 +212,13 @@ class HierarchicalHMM : public Model<SingleClassHMM, HMM> {
     std::vector<std::vector<double>> transition;
 
   protected:
+    /**
+     @brief Finishes the background training process by joining threads and
+     deleting the models which training failed
+     @details: updates transition parameters after joining
+     */
+    virtual void joinTraining();
+
     /**
      @brief update high-level parameters when a new primitive is learned
      @details  updated parameters: prior probabilities + transition matrix
