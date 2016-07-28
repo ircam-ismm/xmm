@@ -102,6 +102,11 @@ void xmm::HierarchicalHMM::normalizeTransitions() {
     for (int i = 0; i < size(); i++) prior[i] /= sumPrior;
 }
 
+void xmm::HierarchicalHMM::joinTraining() {
+    Model<SingleClassHMM, HMM>::joinTraining();
+    updateTransitionParameters();
+}
+
 void xmm::HierarchicalHMM::updateTransitionParameters() {
     if (this->size() == prior.size())  // number of primitives has not changed
         return;
@@ -361,8 +366,9 @@ void xmm::HierarchicalHMM::reset() {
     results.smoothed_normalized_likelihoods.resize(size());
     results.smoothed_log_likelihoods.resize(size());
     if (shared_parameters->bimodal.get()) {
-        unsigned int dimension_output = shared_parameters->dimension.get() -
-                                       shared_parameters->dimension_input.get();
+        unsigned int dimension_output =
+            shared_parameters->dimension.get() -
+            shared_parameters->dimension_input.get();
         results.output_values.resize(dimension_output);
         results.output_covariance.assign(
             (configuration.covariance_mode.get() ==
@@ -617,7 +623,8 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
 //    for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
 //        columns[i] = i+dimension_input();
 //    }
-//    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension(); ++i,
+//    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension();
+//    ++i,
 //    ++j) {
 //        columns[i] = j;
 //    }
