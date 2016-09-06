@@ -90,20 +90,20 @@ TEST_CASE("Training with MultithreadingMode::Sequential", "[GMM]") {
     a.configuration.gaussians.set(3);
     CHECK_NOTHROW(a.train(&ts));
     std::vector<float> mixtureCoeffs(3);
-    mixtureCoeffs[0] = 3.819443583488e-01;
-    mixtureCoeffs[1] = 3.171715140343e-01;
-    mixtureCoeffs[2] = 3.008841276169e-01;
+    mixtureCoeffs[0] = 0.410568;
+    mixtureCoeffs[1] = 0.309933;
+    mixtureCoeffs[2] = 0.2795;
     CHECK_VECTOR_APPROX(a.models[label_a].mixture_coeffs, mixtureCoeffs);
     std::vector<double> cov_c0(9);
-    cov_c0[0] = 1.398498568044e-02;
-    cov_c0[1] = 5.041130937517e-03;
-    cov_c0[2] = 1.792829737244e-03;
-    cov_c0[3] = 5.041130937517e-03;
-    cov_c0[4] = 3.113048333532e-03;
-    cov_c0[5] = 7.901977752380e-04;
-    cov_c0[6] = 1.792829737244e-03;
-    cov_c0[7] = 7.901977752380e-04;
-    cov_c0[8] = 1.306463534393e-03;
+    cov_c0[0] = 0.018729;
+    cov_c0[1] = 0.00683308;
+    cov_c0[2] = 0.00271096;
+    cov_c0[3] = 0.00683308;
+    cov_c0[4] = 0.00614827;
+    cov_c0[5] = 0.00133768;
+    cov_c0[6] = 0.00271096;
+    cov_c0[7] = 0.00133768;
+    cov_c0[8] = 0.00337321;
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
 }
 
@@ -132,20 +132,20 @@ TEST_CASE("Training with MultithreadingMode::MultithreadingMode", "[GMM]") {
     a.configuration.gaussians.set(3);
     a.train(&ts);
     std::vector<float> mixtureCoeffs(3);
-    mixtureCoeffs[0] = 3.819443583488e-01;
-    mixtureCoeffs[1] = 3.171715140343e-01;
-    mixtureCoeffs[2] = 3.008841276169e-01;
+    mixtureCoeffs[0] = 0.410568;
+    mixtureCoeffs[1] = 0.309933;
+    mixtureCoeffs[2] = 0.2795;
     CHECK_VECTOR_APPROX(a.models[label_a].mixture_coeffs, mixtureCoeffs);
     std::vector<double> cov_c0(9);
-    cov_c0[0] = 1.398498568044e-02;
-    cov_c0[1] = 5.041130937517e-03;
-    cov_c0[2] = 1.792829737244e-03;
-    cov_c0[3] = 5.041130937517e-03;
-    cov_c0[4] = 3.113048333532e-03;
-    cov_c0[5] = 7.901977752380e-04;
-    cov_c0[6] = 1.792829737244e-03;
-    cov_c0[7] = 7.901977752380e-04;
-    cov_c0[8] = 1.306463534393e-03;
+    cov_c0[0] = 0.018729;
+    cov_c0[1] = 0.00683308;
+    cov_c0[2] = 0.00271096;
+    cov_c0[3] = 0.00683308;
+    cov_c0[4] = 0.00614827;
+    cov_c0[5] = 0.00133768;
+    cov_c0[6] = 0.00271096;
+    cov_c0[7] = 0.00133768;
+    cov_c0[8] = 0.00337321;
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
 }
 
@@ -192,20 +192,20 @@ TEST_CASE("Training with MultithreadingMode::Background", "[GMM]") {
     }
     // std::cout << std::endl;
     std::vector<float> mixtureCoeffs(3);
-    mixtureCoeffs[0] = 3.819443583488e-01;
-    mixtureCoeffs[1] = 3.171715140343e-01;
-    mixtureCoeffs[2] = 3.008841276169e-01;
+    mixtureCoeffs[0] = 0.410568;
+    mixtureCoeffs[1] = 0.309933;
+    mixtureCoeffs[2] = 0.2795;
     CHECK_VECTOR_APPROX(a.models[label_a].mixture_coeffs, mixtureCoeffs);
     std::vector<double> cov_c0(9);
-    cov_c0[0] = 1.398498568044e-02;
-    cov_c0[1] = 5.041130937517e-03;
-    cov_c0[2] = 1.792829737244e-03;
-    cov_c0[3] = 5.041130937517e-03;
-    cov_c0[4] = 3.113048333532e-03;
-    cov_c0[5] = 7.901977752380e-04;
-    cov_c0[6] = 1.792829737244e-03;
-    cov_c0[7] = 7.901977752380e-04;
-    cov_c0[8] = 1.306463534393e-03;
+    cov_c0[0] = 0.018729;
+    cov_c0[1] = 0.00683308;
+    cov_c0[2] = 0.00271096;
+    cov_c0[3] = 0.00683308;
+    cov_c0[4] = 0.00614827;
+    cov_c0[5] = 0.00133768;
+    cov_c0[6] = 0.00271096;
+    cov_c0[7] = 0.00133768;
+    cov_c0[8] = 0.00337321;
     CHECK_VECTOR_APPROX(a.models[label_a].components[0].covariance, cov_c0);
     a.reset();
     std::vector<double> log_likelihood(100, 0.0);
@@ -253,32 +253,3 @@ TEST_CASE("Cancel Training", "[GMM]") {
     a.cancelTraining();
     CHECK(a.size() == 2);
 }
-
-// TEST_CASE( "Delete Training Set during Training", "[GMM]" ) {
-//    for (auto mode : {xmm::MultithreadingMode::Background,
-//    xmm::MultithreadingMode::Parallel, xmm::MultithreadingMode::Sequential}) {
-//        xmm::TrainingSet *ts = new xmm::TrainingSet(true, false, 3);
-//        std::vector<float> observation(3);
-//        ts->addPhrase(0);
-//        ts->addPhrase(1);
-//        for (unsigned int i=0; i<10000; i++) {
-//            observation[0] = float(i)/10000.;
-//            observation[1] = pow(float(i)/10000., 2.);
-//            observation[2] = pow(float(i)/10000., 3.);
-//            ts->getPhrase(0)->record(observation);
-//            ts->getPhrase(1)->record(observation);
-//        }
-//        std::string label_a(static_cast<std::string>("a"));
-//        std::string label_b(static_cast<std::string>("b"));
-//        ts->getPhrase(0)->label.set(label_a);
-//        ts->getPhrase(1)->label.set(label_b);
-//        xmm::GMM a;
-//        MyTrainingListener *listener = new MyTrainingListener();
-//        a.training_events.addListener(listener);
-//        a.configuration.gaussians.set(30);
-//        a.configuration.multithreading = mode;
-//        a.train(ts);
-//        delete ts;
-//        a.joinTraining();
-//    }
-//}

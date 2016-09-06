@@ -254,7 +254,7 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		0B9FE3091AD16269007431E3 /* test */ = {
+		0B9FE3091AD16269007431E3 /* tests */ = {
 			isa = PBXGroup;
 			children = (
 				0B9FE30A1AD1627E007431E3 /* catch.hpp */,
@@ -267,19 +267,19 @@
 				0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */,
 				FA61EB661CC9797100F37E4E /* xmmTestsComplexity.cpp */,
 			);
-			name = test;
+			name = tests;
 			path = ../../test;
 			sourceTree = "<group>";
 		};
 		0BD1C5BF17D9E3BA0061535A = {
 			isa = PBXGroup;
 			children = (
-				FA41CABC1C28A9D800905379 /* jsoncpp */,
 				0B931DBD1AB1B17B00B15F3E /* readme.md */,
+				0B4909A61947718400E0D3C4 /* src */,
+				0B9FE3091AD16269007431E3 /* tests */,
+				FA41CABC1C28A9D800905379 /* jsoncpp */,
 				0BD1C5E417D9E3D20061535A /* doc */,
 				0B9FE2C21ACF6893007431E3 /* python */,
-				0B4909A61947718400E0D3C4 /* src */,
-				0B9FE3091AD16269007431E3 /* test */,
 				0B20E08F1A9A633600E89497 /* Products */,
 			);
 			sourceTree = "<group>";
