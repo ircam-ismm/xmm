@@ -4,10 +4,10 @@
  * Parameters of Gaussian Mixture Models
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -32,65 +32,82 @@
 
 #include "xmmGmmParameters.hpp"
 
-xmm::ClassParameters<xmm::GMM>::ClassParameters() :
-changed(true),
-gaussians(10, 1),
-relative_regularization(1.0e-2, 1e-20),
-absolute_regularization(1.0e-3, 1e-20),
-covariance_mode(GaussianDistribution::CovarianceMode::Full)
-{
-    gaussians.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    relative_regularization.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    absolute_regularization.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    covariance_mode.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+xmm::ClassParameters<xmm::GMM>::ClassParameters()
+    : changed(true),
+      gaussians(10, 1),
+      relative_regularization(1.0e-2, 1e-20),
+      absolute_regularization(1.0e-3, 1e-20),
+      covariance_mode(GaussianDistribution::CovarianceMode::Full) {
+    gaussians.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    relative_regularization.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    absolute_regularization.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    covariance_mode.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
 }
 
-xmm::ClassParameters<xmm::GMM>::ClassParameters(ClassParameters<GMM> const& src) :
-changed(true),
-gaussians(src.gaussians),
-relative_regularization(src.relative_regularization),
-absolute_regularization(src.absolute_regularization),
-covariance_mode(src.covariance_mode)
-{
-    gaussians.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    relative_regularization.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    absolute_regularization.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    covariance_mode.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+xmm::ClassParameters<xmm::GMM>::ClassParameters(ClassParameters<GMM> const& src)
+    : changed(true),
+      gaussians(src.gaussians),
+      relative_regularization(src.relative_regularization),
+      absolute_regularization(src.absolute_regularization),
+      covariance_mode(src.covariance_mode) {
+    gaussians.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    relative_regularization.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    absolute_regularization.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    covariance_mode.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
 }
 
-xmm::ClassParameters<xmm::GMM>::ClassParameters(Json::Value const& root) :
-changed(true),
-gaussians(10, 1),
-relative_regularization(1.0e-2, 1e-20),
-absolute_regularization(1.0e-3, 1e-20),
-covariance_mode(GaussianDistribution::CovarianceMode::Full)
-{
-    gaussians.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    relative_regularization.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    absolute_regularization.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    covariance_mode.onAttributeChange(this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
-    
+xmm::ClassParameters<xmm::GMM>::ClassParameters(Json::Value const& root)
+    : changed(true),
+      gaussians(10, 1),
+      relative_regularization(1.0e-2, 1e-20),
+      absolute_regularization(1.0e-3, 1e-20),
+      covariance_mode(GaussianDistribution::CovarianceMode::Full) {
+    gaussians.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    relative_regularization.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    absolute_regularization.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+    covariance_mode.onAttributeChange(
+        this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+
     gaussians.set(root["gaussians"].asInt());
     relative_regularization.set(root["relative_regularization"].asFloat());
     absolute_regularization.set(root["absolute_regularization"].asFloat());
-    covariance_mode.set(static_cast<GaussianDistribution::CovarianceMode>(root["covariance_mode"].asInt()));
+    covariance_mode.set(static_cast<GaussianDistribution::CovarianceMode>(
+        root["covariance_mode"].asInt()));
 }
 
-xmm::ClassParameters<xmm::GMM>& xmm::ClassParameters<xmm::GMM>::operator=(ClassParameters<GMM> const& src)
-{
-    if(this != &src)
-    {
+xmm::ClassParameters<xmm::GMM>& xmm::ClassParameters<xmm::GMM>::operator=(
+    ClassParameters<GMM> const& src) {
+    if (this != &src) {
         changed = true;
         gaussians = src.gaussians;
         relative_regularization = src.relative_regularization;
         absolute_regularization = src.absolute_regularization;
         covariance_mode = src.covariance_mode;
+
+        gaussians.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+        relative_regularization.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+        absolute_regularization.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
+        covariance_mode.onAttributeChange(
+            this, &xmm::ClassParameters<xmm::GMM>::onAttributeChange);
     }
     return *this;
 }
 
-Json::Value xmm::ClassParameters<xmm::GMM>::toJson() const
-{
+Json::Value xmm::ClassParameters<xmm::GMM>::toJson() const {
     Json::Value root;
     root["gaussians"] = static_cast<int>(gaussians.get());
     root["relative_regularization"] = relative_regularization.get();
@@ -99,18 +116,17 @@ Json::Value xmm::ClassParameters<xmm::GMM>::toJson() const
     return root;
 }
 
-void xmm::ClassParameters<xmm::GMM>::fromJson(Json::Value const& root)
-{
+void xmm::ClassParameters<xmm::GMM>::fromJson(Json::Value const& root) {
     try {
         ClassParameters<GMM> tmp(root);
         *this = tmp;
-    } catch (JsonException &e) {
+    } catch (JsonException& e) {
         throw e;
     }
 }
 
-void xmm::ClassParameters<xmm::GMM>::onAttributeChange(AttributeBase* attr_pointer)
-{
+void xmm::ClassParameters<xmm::GMM>::onAttributeChange(
+    AttributeBase* attr_pointer) {
     changed = true;
     attr_pointer->changed = false;
 }

@@ -2,10 +2,10 @@
  * xmm.i
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -105,10 +105,12 @@ namespace std {
 %include "xmmJson.hpp"
 %include "xmmAttribute.hpp"
 
-%template(Attribute_size_t) xmm::Attribute<std::size_t>;
+%template(Attribute_bool) xmm::Attribute<bool>;
+%template(Attribute_size_t) xmm::Attribute<unsigned int>;
 %template(Attribute_int) xmm::Attribute<int>;
 %template(Attribute_double) xmm::Attribute<double>;
 %template(Attribute_float) xmm::Attribute<float>;
+%template(Attribute_string) xmm::Attribute<std::string>;
 %template(Attribute_vectorString) xmm::Attribute<std::vector<std::string>>;
 
 %include "xmmEvents.hpp"
@@ -117,6 +119,7 @@ namespace std {
 
 %template(Attribute_CovarianceMode) xmm::Attribute<xmm::GaussianDistribution::CovarianceMode>;
 
+%shared_ptr(xmm::Phrase)
 %include "xmmPhrase.hpp"
 %include "xmmTrainingSet.hpp"
 

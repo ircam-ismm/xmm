@@ -4,10 +4,10 @@
  * Results of the K-Means clustering Algorithm
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -35,25 +35,23 @@
 
 #include "../../core/model/xmmModelResults.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @ingroup KMeans
+ @brief Results of the clustering process
+ */
+template <>
+struct Results<KMeans> {
     /**
-     @ingroup KMeans
-     @brief Results of the clustering process
+     @brief Distance of the observation to each cluster
      */
-    template<>
-    struct Results<KMeans>
-    {
-        /**
-         @brief Distance of the observation to each cluster
-         */
-        std::vector<float> distances;
-        
-        /**
-         @brief Likeliest Cluster
-         */
-        std::size_t likeliest;
-    };
+    std::vector<float> distances;
+
+    /**
+     @brief Likeliest Cluster
+     */
+    unsigned int likeliest;
+};
 }
 
 #endif

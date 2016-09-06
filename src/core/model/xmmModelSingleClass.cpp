@@ -1,13 +1,14 @@
 /*
  * xmmModelSingleClass.hpp
  *
- * Abstract class for Single-class Probabilistic Machine learning models based on the EM algorithm
+ * Abstract class for Single-class Probabilistic Machine learning models based
+ * on the EM algorithm
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -35,57 +36,61 @@
 
 #pragma mark -
 #pragma mark Constructors
-xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(std::shared_ptr<SharedParameters> p) :
-label(""),
-training_status_(this, label),
-shared_parameters(p),
-is_training_(false),
-cancel_training_(false)
-{
+xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
+    std::shared_ptr<SharedParameters> p)
+    : label(""),
+      shared_parameters(p),
+      training_status(this, label),
+      is_training_(false),
+      cancel_training_(false) {
     if (p == NULL) {
-        throw std::runtime_error("Cannot instantiate a probabilistic model without Shared parameters.");
+        throw std::runtime_error(
+            "Cannot instantiate a probabilistic model without Shared "
+            "parameters.");
     }
     likelihood_buffer_.resize(shared_parameters->likelihood_window.get());
 }
 
-xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(SingleClassProbabilisticModel const& src) :
-label(src.label),
-training_status_(this, label),
-shared_parameters(src.shared_parameters),
-is_training_(false),
-cancel_training_(false)
-{
+xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
+    SingleClassProbabilisticModel const& src)
+    : label(src.label),
+      shared_parameters(src.shared_parameters),
+      training_status(this, label),
+      is_training_(false),
+      cancel_training_(false) {
     if (is_training_)
         throw std::runtime_error("Cannot copy: target model is still training");
     if (src.is_training_)
         throw std::runtime_error("Cannot copy: source model is still training");
 }
 
-xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(std::shared_ptr<SharedParameters> p,
-                                                                  Json::Value const& root) :
-label(""),
-training_status_(this, label),
-shared_parameters(p),
-is_training_(false),
-cancel_training_(false)
-{
+xmm::SingleClassProbabilisticModel::SingleClassProbabilisticModel(
+    std::shared_ptr<SharedParameters> p, Json::Value const& root)
+    : label(""),
+      shared_parameters(p),
+      training_status(this, label),
+      is_training_(false),
+      cancel_training_(false) {
     if (p == NULL) {
-        throw std::runtime_error("Cannot instantiate a probabilistic model without Shared parameters.");
+        throw std::runtime_error(
+            "Cannot instantiate a probabilistic model without Shared "
+            "parameters.");
     }
     label = root["label"].asString();
-    training_status_.label = label;
+    training_status.label = label;
 }
 
-xmm::SingleClassProbabilisticModel& xmm::SingleClassProbabilisticModel::operator=(SingleClassProbabilisticModel const& src)
-{
-    if(this != &src)
-    {
+xmm::SingleClassProbabilisticModel& xmm::SingleClassProbabilisticModel::
+operator=(SingleClassProbabilisticModel const& src) {
+    if (this != &src) {
         if (is_training_)
-            throw std::runtime_error("Cannot copy: target model is still training");
+            throw std::runtime_error(
+                "Cannot copy: target model is still training");
         if (src.is_training_)
-            throw std::runtime_error("Cannot copy: source model is still training");
+            throw std::runtime_error(
+                "Cannot copy: source model is still training");
         label = src.label;
-        training_status_ = TrainingEvent(this, label),
+        training_status = TrainingEvent(this, label),
         shared_parameters = src.shared_parameters;
         is_training_ = false;
         cancel_training_ = false;
@@ -93,130 +98,131 @@ xmm::SingleClassProbabilisticModel& xmm::SingleClassProbabilisticModel::operator
     return *this;
 };
 
-xmm::SingleClassProbabilisticModel::~SingleClassProbabilisticModel()
-{
-    while (this->isTraining()) {}
+xmm::SingleClassProbabilisticModel::~SingleClassProbabilisticModel() {
+    while (this->isTraining()) {
+    }
 }
 
 #pragma mark -
 #pragma mark Accessors
-bool xmm::SingleClassProbabilisticModel::isTraining() const
-{
+bool xmm::SingleClassProbabilisticModel::isTraining() const {
     return is_training_;
 }
 
 #pragma mark -
 #pragma mark Training
-void xmm::SingleClassProbabilisticModel::train(TrainingSet *trainingSet)
-{
+void xmm::SingleClassProbabilisticModel::train(TrainingSet* trainingSet) {
     training_mutex_.lock();
     bool trainingError(false);
-    
-    if (trainingSet) {
+
+    training_status.status = TrainingEvent::Status::Run;
+
+    if (trainingSet && !trainingSet->empty()) {
         this->allocate();
     } else {
         trainingError = true;
     }
-    
-    if (trainingSet->empty())
-        trainingError = true;
-    
-    if (cancelTrainingIfRequested())
-        return;
+
+    if (cancelTrainingIfRequested()) return;
     if (!trainingError) {
         try {
             this->emAlgorithmInit(trainingSet);
-        } catch (std::exception &e) {
+        } catch (std::exception& e) {
             trainingError = true;
         }
     }
-    
-    training_status_.label = label;
-    training_status_.log_likelihood = -std::numeric_limits<double>::max();
-    training_status_.iterations = 0;
-    double old_log_prob = training_status_.log_likelihood;
-    
-    while (!emAlgorithmHasConverged(training_status_.iterations, training_status_.log_likelihood, old_log_prob))
-    {
-        if (cancelTrainingIfRequested())
-            return;
-        old_log_prob = training_status_.log_likelihood;
+
+    training_status.label = label;
+    training_status.log_likelihood = -std::numeric_limits<double>::max();
+    training_status.iterations = 0;
+    double old_log_prob = training_status.log_likelihood;
+
+    while (!emAlgorithmHasConverged(training_status.iterations,
+                                    training_status.log_likelihood,
+                                    old_log_prob)) {
+        if (cancelTrainingIfRequested()) return;
+        old_log_prob = training_status.log_likelihood;
         if (!trainingError) {
             try {
-                training_status_.log_likelihood = this->emAlgorithmUpdate(trainingSet);
-            } catch (std::exception &e) {
+                training_status.log_likelihood =
+                    this->emAlgorithmUpdate(trainingSet);
+            } catch (std::exception& e) {
                 trainingError = true;
             }
         }
-        
-        if (std::isnan(100.*fabs((training_status_.log_likelihood-old_log_prob)/old_log_prob)) && (training_status_.iterations > 1))
+
+        if (std::isnan(100. *
+                       fabs((training_status.log_likelihood - old_log_prob) /
+                            old_log_prob)) &&
+            (training_status.iterations > 1))
             trainingError = true;
-        
+
         if (trainingError) {
             is_training_ = false;
             training_mutex_.unlock();
-            training_status_.status = TrainingEvent::Status::Error;
-            training_events.notifyListeners(training_status_);
+            training_status.status = TrainingEvent::Status::Error;
+            training_events.notifyListeners(training_status);
             return;
         }
-        
-        ++training_status_.iterations;
-        
-        if (shared_parameters->em_algorithm_max_iterations.get() > shared_parameters->em_algorithm_min_iterations.get())
-            training_status_.progression = float(training_status_.iterations) / float(shared_parameters->em_algorithm_max_iterations.get());
+
+        ++training_status.iterations;
+
+        if (shared_parameters->em_algorithm_max_iterations.get() >
+            shared_parameters->em_algorithm_min_iterations.get())
+            training_status.progression =
+                float(training_status.iterations) /
+                float(shared_parameters->em_algorithm_max_iterations.get());
         else
-            training_status_.progression = float(training_status_.iterations) / float(shared_parameters->em_algorithm_min_iterations.get());
-        
-        training_events.notifyListeners(training_status_);
+            training_status.progression =
+                float(training_status.iterations) /
+                float(shared_parameters->em_algorithm_min_iterations.get());
+
+        training_events.notifyListeners(training_status);
     }
-    
-    if (cancelTrainingIfRequested())
-        return;
+
+    if (cancelTrainingIfRequested()) return;
     this->emAlgorithmTerminate();
-    
+
     training_mutex_.unlock();
 }
 
-bool xmm::SingleClassProbabilisticModel::emAlgorithmHasConverged(int step, double log_prob, double old_log_prob) const
-{
-    if (step >= 1000)
-        return true;
-    if (shared_parameters->em_algorithm_max_iterations.get() >= shared_parameters->em_algorithm_min_iterations.get())
+bool xmm::SingleClassProbabilisticModel::emAlgorithmHasConverged(
+    int step, double log_prob, double old_log_prob) const {
+    if (step >= 1000) return true;
+    if (shared_parameters->em_algorithm_max_iterations.get() >=
+        shared_parameters->em_algorithm_min_iterations.get())
         return (step >= shared_parameters->em_algorithm_max_iterations.get());
     else
-        return (step >= shared_parameters->em_algorithm_min_iterations.get()) && (100.*fabs((log_prob - old_log_prob) / log_prob) <= shared_parameters->em_algorithm_percent_chg.get());
+        return (step >= shared_parameters->em_algorithm_min_iterations.get()) &&
+               (100. * fabs((log_prob - old_log_prob) / log_prob) <=
+                shared_parameters->em_algorithm_percent_chg.get());
 }
 
-void xmm::SingleClassProbabilisticModel::emAlgorithmTerminate()
-{
-    training_status_.status = TrainingEvent::Status::Done;
-    training_events.notifyListeners(training_status_);
+void xmm::SingleClassProbabilisticModel::emAlgorithmTerminate() {
+    training_status.status = TrainingEvent::Status::Done;
+    training_events.notifyListeners(training_status);
     this->is_training_ = false;
 }
 
-void xmm::SingleClassProbabilisticModel::cancelTraining()
-{
+void xmm::SingleClassProbabilisticModel::cancelTraining() {
     if (isTraining()) {
         cancel_training_ = true;
     }
 }
 
-bool xmm::SingleClassProbabilisticModel::cancelTrainingIfRequested()
-{
-    if (!cancel_training_)
-        return false;
+bool xmm::SingleClassProbabilisticModel::cancelTrainingIfRequested() {
+    if (!cancel_training_) return false;
     training_mutex_.unlock();
-    training_status_.label = label;
-    training_status_.status = TrainingEvent::Status::Cancel;
-    training_events.notifyListeners(training_status_);
+    training_status.label = label;
+    training_status.status = TrainingEvent::Status::Cancel;
+    training_events.notifyListeners(training_status);
     is_training_ = false;
     return true;
 }
 
 #pragma mark -
 #pragma mark Performance
-void xmm::SingleClassProbabilisticModel::reset()
-{
+void xmm::SingleClassProbabilisticModel::reset() {
     check_training();
     likelihood_buffer_.resize(shared_parameters->likelihood_window.get());
     likelihood_buffer_.clear();
@@ -224,8 +230,7 @@ void xmm::SingleClassProbabilisticModel::reset()
 
 #pragma mark -
 #pragma mark File IO
-Json::Value xmm::SingleClassProbabilisticModel::toJson() const
-{
+Json::Value xmm::SingleClassProbabilisticModel::toJson() const {
     check_training();
     Json::Value root;
     root["label"] = label;

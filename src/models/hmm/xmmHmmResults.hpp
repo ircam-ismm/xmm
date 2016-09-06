@@ -4,10 +4,10 @@
  * Results of Hidden Markov Models for a single class
  *
  * Contact:
- * - Jules Françoise <jules.francoise@ircam.fr>
+ * - Jules Francoise <jules.francoise@ircam.fr>
  *
- * This code has been initially authored by Jules Françoise
- * <http://julesfrancoise.com> during his PhD thesis, supervised by Frédéric
+ * This code has been initially authored by Jules Francoise
+ * <http://julesfrancoise.com> during his PhD thesis, supervised by Frederic
  * Bevilacqua <href="http://frederic-bevilacqua.net>, in the Sound Music
  * Movement Interaction team <http://ismm.ircam.fr> of the
  * STMS Lab - IRCAM, CNRS, UPMC (2011-2015).
@@ -35,59 +35,59 @@
 
 #include "../../core/model/xmmModelResults.hpp"
 
-namespace xmm
-{
+namespace xmm {
+/**
+ @ingroup HMM
+ @brief Results of Hidden Markov Models for a single class
+ */
+template <>
+struct ClassResults<HMM> {
     /**
-     @ingroup HMM
-     @brief Results of Hidden Markov Models for a single class
+     @brief Instantaneous likelihood
      */
-    template<>
-    struct ClassResults<HMM>
-    {
-        /**
-         @brief Instantaneous likelihood
-         */
-        double instant_likelihood;
-        
-        /**
-         @brief Cumulative log-likelihood computed on a sliding window
-         */
-        double log_likelihood;
-        
-        /**
-         @brief Predicted Output parameter vector (only used in regression mode)
-         @warning this variable only allocated if the model is bimodal
-         */
-        std::vector<float> output_values;
-        
-        /**
-         @brief Predicted Output variance associated with the generated parameter vector (only used in regression mode)
-         @warning this variable only allocated if the model is bimodal
-         */
-        std::vector<double> output_variance;
-        
-        /**
-         @brief Estimated time progression.
-         @details The time progression is computed as the centroid of the state
-         probability distribution estimated by the forward algorithm
-         */
-        double progress;
-        
-        /**
-         @brief Likelihood to exit the gesture on the next time step
-         */
-        double exit_likelihood;
-        
-        /**
-         @brief Likelihood to exit the gesture on the next time step (normalized -/- total likelihood)
-         */
-        double exit_ratio;
-        
-        /**
-         @brief Index of the likeliest state
-         */
-        std::size_t likeliest_state;
-    };
+    double instant_likelihood;
+
+    /**
+     @brief Cumulative log-likelihood computed on a sliding window
+     */
+    double log_likelihood;
+
+    /**
+     @brief Predicted Output parameter vector (only used in regression mode)
+     @warning this variable only allocated if the model is bimodal
+     */
+    std::vector<float> output_values;
+
+    /**
+     @brief Predicted Output covariance associated with the generated parameter
+     vector (only used in regression mode)
+     @warning this variable only allocated if the model is bimodal
+     */
+    std::vector<float> output_covariance;
+
+    /**
+     @brief Estimated time progression.
+     @details The time progression is computed as the centroid of the state
+     probability distribution estimated by the forward algorithm
+     */
+    double progress;
+
+    /**
+     @brief Likelihood to exit the gesture on the next time step
+     */
+    double exit_likelihood;
+
+    /**
+     @brief Likelihood to exit the gesture on the next time step (normalized -/-
+     total likelihood)
+     */
+    double exit_ratio;
+
+    /**
+     @brief Index of the likeliest state
+     */
+    unsigned int likeliest_state;
+};
 }
 
 #endif

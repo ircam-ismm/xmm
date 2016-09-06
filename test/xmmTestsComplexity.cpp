@@ -1,7 +1,7 @@
 /*
- * xmmTestsUtilities.hpp
+ * xmmTestsComplexity.cpp
  *
- * Utilities for Unit-Testing
+ * Test suite for the algorithm complexity (Hierarchical HMM)
  *
  * Contact:
  * - Jules Francoise <jules.francoise@ircam.fr>
@@ -30,36 +30,30 @@
  * along with XMM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef xmm_lib_catch_utilities_h
-#define xmm_lib_catch_utilities_h
-
 #include "catch.hpp"
+#include "xmmTestsUtilities.hpp"
+#define XMM_TESTING
+#include "xmm.h"
+#include <iostream>
+#include <random>
 
-/**
- * @brief Check for vector approximate equality
- */
-template <typename T>
-void CHECK_VECTOR_APPROX(std::vector<T> const& a, std::vector<T> const& b,
-                         double epsilon = -1.) {
-    REQUIRE(a.size() == b.size());
-    std::string errormsg = "CHECK_VECTOR_APPROX:\n{";
-    std::string errormsg2 = "}\n==\n{";
-    std::ostringstream convert;
-    std::ostringstream convert2;
-    for (size_t i = 0; i < a.size(); ++i) {
-        convert << a[i] << " ";
-        convert2 << b[i] << " ";
-    }
-    INFO(errormsg + convert.str() + errormsg2 + convert2.str());
-    if (epsilon > 0.0) {
-        for (size_t i = 0; i < a.size(); ++i) {
-            REQUIRE(a[i] == Approx(b[i]).epsilon(epsilon));
-        }
-    } else {
-        for (size_t i = 0; i < a.size(); ++i) {
-            REQUIRE(a[i] == Approx(b[i]));
-        }
-    }
-};
+using namespace std;
 
-#endif
+// TEST_CASE("Profiling: Large number of classes", "[HierarhicalHMM]") {
+//    xmm::TrainingSet ts;
+//    int num_classes = 1200;
+//    std::default_random_engine generator;
+//    std::normal_distribution<float> dist;
+//    for (int i = 0; i < num_classes; i++) {
+//        ts.addPhrase(i, to_string(i + 1));
+//        for (int frame_idx = 0; frame_idx < 200; frame_idx++) {
+//            ts.getPhrase(i)->record({dist(generator)});
+//        }
+//    }
+//    xmm::HierarchicalHMM model;
+//    model.train(&ts);
+//    model.reset();
+//    for (int frame_idx = 0; frame_idx < 10000; frame_idx++) {
+//        model.filter({dist(generator)});
+//    }
+//}
