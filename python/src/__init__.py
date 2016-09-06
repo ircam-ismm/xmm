@@ -1,3 +1,2 @@
-__all__ = ["xmm", "util"]
+__all__ = ["xmm"]
 from xmm import *
-import util
