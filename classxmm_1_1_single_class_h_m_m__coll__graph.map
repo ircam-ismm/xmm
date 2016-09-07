@@ -1,0 +1,9 @@
+<map id="xmm::SingleClassHMM" name="xmm::SingleClassHMM">
+<area shape="rect" id="node2" href="$classxmm_1_1_single_class_probabilistic_model.html" title="Generic Template for Machine Learning Probabilistic models based on the EM algorithm. " alt="" coords="324,69,524,108"/>
+<area shape="rect" id="node3" href="$classxmm_1_1_writable.html" title="Abstract class for handling JSON + File I/O. " alt="" coords="33,15,140,40"/>
+<area shape="rect" id="node7" href="$classxmm_1_1_class_parameters.html" title="xmm::ClassParameters\l\&lt; xmm::HMM \&gt;" alt="" coords="344,5,504,44"/>
+<area shape="rect" id="node4" href="$classxmm_1_1_circular_buffer.html" title="xmm::CircularBuffer\l\&lt; double \&gt;" alt="" coords="17,67,156,105"/>
+<area shape="rect" id="node5" href="$classxmm_1_1_training_event.html" title="Event for monitoring the training process. " alt="" coords="17,129,156,155"/>
+<area shape="rect" id="node6" href="$classxmm_1_1_event_generator.html" title="xmm::EventGenerator\l\&lt; xmm::TrainingEvent \&gt;" alt="" coords="5,179,168,217"/>
+<area shape="rect" id="node8" href="$structxmm_1_1_class_results.html" title="xmm::ClassResults\&lt;\l xmm::HMM \&gt;" alt="" coords="352,132,495,171"/>
+</map>

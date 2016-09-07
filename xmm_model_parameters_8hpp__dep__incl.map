@@ -1,0 +1,21 @@
+<map id="xmmModelParameters.hpp" name="xmmModelParameters.hpp">
+<area shape="rect" id="node2" href="$xmm_model_configuration_8hpp.html" title="xmmModelConfiguration.hpp" alt="" coords="393,79,584,104"/>
+<area shape="rect" id="node12" href="$xmm_gmm_parameters_8hpp.html" title="xmmGmmParameters.hpp" alt="" coords="190,79,368,104"/>
+<area shape="rect" id="node17" href="$xmm_hmm_parameters_8hpp.html" title="xmmHmmParameters.hpp" alt="" coords="608,79,785,104"/>
+<area shape="rect" id="node19" href="$xmm_k_means_parameters_8hpp.html" title="xmmKMeansParameters.hpp" alt="" coords="809,79,1003,104"/>
+<area shape="rect" id="node3" href="$xmm_model_8hpp.html" title="xmmModel.hpp" alt="" coords="207,152,319,177"/>
+<area shape="rect" id="node9" href="$xmm_k_means_8hpp.html" title="xmmKMeans.hpp" alt="" coords="597,152,722,177"/>
+<area shape="rect" id="node4" href="$xmm_gmm_8hpp.html" title="xmmGmm.hpp" alt="" coords="210,225,319,251"/>
+<area shape="rect" id="node6" href="$xmm_hierarchical_hmm_8hpp.html" title="xmmHierarchicalHmm.hpp" alt="" coords="175,299,354,324"/>
+<area shape="rect" id="node5" href="$xmm_8h.html" title="xmm.h" alt="" coords="107,372,168,397"/>
+<area shape="rect" id="node8" href="$xmm_gmm_8cpp.html" title="xmmGmm.cpp" alt="" coords="644,299,752,324"/>
+<area shape="rect" id="node7" href="$xmm_hierarchical_hmm_8cpp.html" title="xmmHierarchicalHmm.cpp" alt="" coords="193,372,371,397"/>
+<area shape="rect" id="node10" href="$xmm_k_means_8cpp.html" title="xmmKMeans.cpp" alt="" coords="800,225,924,251"/>
+<area shape="rect" id="node11" href="$xmm_gmm_single_class_8cpp.html" title="xmmGmmSingleClass.cpp" alt="" coords="546,225,724,251"/>
+<area shape="rect" id="node13" href="$xmm_gmm_single_class_8hpp.html" title="xmmGmmSingleClass.hpp" alt="" coords="343,152,522,177"/>
+<area shape="rect" id="node16" href="$xmm_gmm_parameters_8cpp.html" title="xmmGmmParameters.cpp" alt="" coords="5,152,182,177"/>
+<area shape="rect" id="node14" href="$xmm_hmm_single_class_8hpp.html" title="xmmHmmSingleClass.hpp" alt="" coords="343,225,522,251"/>
+<area shape="rect" id="node15" href="$xmm_hmm_single_class_8cpp.html" title="xmmHmmSingleClass.cpp" alt="" coords="378,299,556,324"/>
+<area shape="rect" id="node18" href="$xmm_hmm_parameters_8cpp.html" title="xmmHmmParameters.cpp" alt="" coords="746,152,922,177"/>
+<area shape="rect" id="node20" href="$xmm_k_means_parameters_8cpp.html" title="xmmKMeansParameters.cpp" alt="" coords="947,152,1140,177"/>
+</map>

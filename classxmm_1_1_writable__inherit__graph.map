@@ -1,0 +1,24 @@
+<map id="xmm::Writable" name="xmm::Writable">
+<area shape="rect" id="node2" href="$classxmm_1_1_class_parameters.html" title="xmm::ClassParameters\l\&lt; xmm::GMM \&gt;" alt="" coords="188,5,347,44"/>
+<area shape="rect" id="node3" href="$classxmm_1_1_class_parameters.html" title="xmm::ClassParameters\l\&lt; xmm::HMM \&gt;" alt="" coords="188,68,347,107"/>
+<area shape="rect" id="node4" href="$classxmm_1_1_class_parameters.html" title="xmm::ClassParameters\l\&lt; xmm::KMeans \&gt;" alt="" coords="188,131,347,169"/>
+<area shape="rect" id="node6" href="$classxmm_1_1_model.html" title="xmm::Model\&lt; SingleClassGMM,\l GMM \&gt;" alt="" coords="161,193,374,232"/>
+<area shape="rect" id="node8" href="$classxmm_1_1_model.html" title="xmm::Model\&lt; SingleClassHMM,\l HMM \&gt;" alt="" coords="162,256,373,295"/>
+<area shape="rect" id="node10" href="$classxmm_1_1_class_parameters.html" title="Class&#45;specific Model Parameters. " alt="" coords="188,319,347,357"/>
+<area shape="rect" id="node12" href="$classxmm_1_1_class_parameters_3_01_g_m_m_01_4.html" title="Parameters specific to each class of a Gaussian Mixture Model. " alt="" coords="188,381,347,420"/>
+<area shape="rect" id="node14" href="$classxmm_1_1_class_parameters_3_01_k_means_01_4.html" title="Parameters specific to each class of a K&#45;Means Algorithm. " alt="" coords="188,444,347,483"/>
+<area shape="rect" id="node15" href="$classxmm_1_1_gaussian_distribution.html" title="Multivariate Gaussian Distribution. " alt="" coords="177,507,358,532"/>
+<area shape="rect" id="node16" href="$classxmm_1_1_k_means.html" title="K&#45;Means Clustering algorithm. " alt="" coords="214,556,321,581"/>
+<area shape="rect" id="node17" href="$classxmm_1_1_model.html" title="Probabilistic machine learning model for multiclass recognition and regression. " alt="" coords="160,605,375,644"/>
+<area shape="rect" id="node18" href="$classxmm_1_1_phrase.html" title="Data phrase. " alt="" coords="218,668,317,693"/>
+<area shape="rect" id="node19" href="$classxmm_1_1_shared_parameters.html" title="Shared Parameters for models with multiple classes. " alt="" coords="183,717,352,743"/>
+<area shape="rect" id="node20" href="$classxmm_1_1_single_class_probabilistic_model.html" title="Generic Template for Machine Learning Probabilistic models based on the EM algorithm. " alt="" coords="168,767,368,805"/>
+<area shape="rect" id="node23" href="$classxmm_1_1_training_set.html" title="Base class for the definition of training sets. " alt="" coords="205,829,330,855"/>
+<area shape="rect" id="node5" href="$classxmm_1_1_configuration.html" title="xmm::Configuration\l\&lt; xmm::KMeans \&gt;" alt="" coords="435,131,572,169"/>
+<area shape="rect" id="node7" href="$classxmm_1_1_g_m_m.html" title="Gaussian Mixture Model for Continuous Recognition and Regression (Multi&#45;class) " alt="" coords="459,200,549,225"/>
+<area shape="rect" id="node9" href="$classxmm_1_1_hierarchical_h_m_m.html" title="Hierarchical Hidden Markov Model for Continuous Recognition and Regression (Multi&#45;class) ..." alt="" coords="424,263,584,288"/>
+<area shape="rect" id="node11" href="$classxmm_1_1_configuration.html" title="Model configuration. " alt="" coords="435,319,572,357"/>
+<area shape="rect" id="node13" href="$classxmm_1_1_configuration.html" title="xmm::Configuration\l\&lt; GMM \&gt;" alt="" coords="435,381,572,420"/>
+<area shape="rect" id="node21" href="$classxmm_1_1_single_class_g_m_m.html" title="Single&#45;Class Gaussian Mixture Model. " alt="" coords="423,749,584,775"/>
+<area shape="rect" id="node22" href="$classxmm_1_1_single_class_h_m_m.html" title="Single&#45;Class Hidden Markov Model. " alt="" coords="424,799,584,824"/>
+</map>

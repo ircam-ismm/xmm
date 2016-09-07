@@ -1,0 +1,8 @@
+<map id="xmm::PhraseEvent" name="xmm::PhraseEvent">
+<area shape="rect" id="node2" href="$classxmm_1_1_phrase.html" title="Data phrase. " alt="" coords="514,96,614,121"/>
+<area shape="rect" id="node3" href="$classxmm_1_1_writable.html" title="Abstract class for handling JSON + File I/O. " alt="" coords="226,5,332,31"/>
+<area shape="rect" id="node4" href="$classxmm_1_1_attribute.html" title="xmm::Attribute\&lt; unsigned\l int \&gt;" alt="" coords="192,55,365,93"/>
+<area shape="rect" id="node5" href="$classxmm_1_1_attribute_base.html" title="Base Class for Generic Attributes. " alt="" coords="5,89,143,115"/>
+<area shape="rect" id="node7" href="$classxmm_1_1_attribute.html" title="xmm::Attribute\&lt; std\l::string \&gt;" alt="" coords="211,117,347,156"/>
+<area shape="rect" id="node6" href="$classxmm_1_1_event_generator.html" title="xmm::EventGenerator\l\&lt; xmm::PhraseEvent \&gt;" alt="" coords="200,180,357,219"/>
+</map>
