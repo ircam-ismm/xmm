@@ -3,6 +3,12 @@ XMM — Probabilistic Models for Continuous Motion Recognition and Mapping
 
 XMM is a portable, cross-platform C++ library that implements Gaussian Mixture Models and Hidden Markov Models for recognition and regression. The XMM library was developed for movement interaction in creative applications and implements an interactive machine learning workflow with fast training and continuous, real-time inference.
 
+### Major Update! [Sept. 2016]
+
+We just updated XMM to the newest API version!
+
+This version is not compatible with the initial API, which is still available on a separate branch: https://github.com/Ircam-RnD/xmm/tree/v0-historic-api.
+
 ### Contact
 
 Jules Francoise: <jules.francoise@ircam.fr>
