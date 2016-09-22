@@ -36,6 +36,7 @@
 #include "xmmPhrase.hpp"
 #include <map>
 #include <set>
+#include <memory>
 
 namespace xmm {
 /**

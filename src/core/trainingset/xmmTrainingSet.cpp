@@ -31,6 +31,7 @@
  */
 #include "xmmTrainingSet.hpp"
 #include <limits>
+#include <algorithm>
 
 xmm::TrainingSet::TrainingSet(MemoryMode memoryMode,
                               Multimodality multimodality)

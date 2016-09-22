@@ -32,6 +32,7 @@
 
 #include "xmmPhrase.hpp"
 #include <limits>
+#include <algorithm>
 
 xmm::Phrase::Phrase(MemoryMode memoryMode, Multimodality multimodality)
     : own_memory_(memoryMode == MemoryMode::OwnMemory),

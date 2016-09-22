@@ -32,6 +32,7 @@
 
 #include "../kmeans/xmmKMeans.hpp"
 #include "xmmGmmSingleClass.hpp"
+#include <algorithm>
 
 xmm::SingleClassGMM::SingleClassGMM(std::shared_ptr<SharedParameters> p)
     : SingleClassProbabilisticModel(p) {}
