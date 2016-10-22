@@ -90,6 +90,7 @@ namespace std {
     %template(vectord) vector<double>;
     %template(vectorf) vector<float>;
     %template(vectors) vector<string>;
+    %template(vectorb) vector<bool>;
     %template(sets) set<string>;
     %template(vectorgauss) vector<xmm::GaussianDistribution>;
     %template(vectorgmm) vector<xmm::SingleClassGMM>;
@@ -112,6 +113,7 @@ namespace std {
 %template(Attribute_float) xmm::Attribute<float>;
 %template(Attribute_string) xmm::Attribute<std::string>;
 %template(Attribute_vectorString) xmm::Attribute<std::vector<std::string>>;
+%template(Attribute_vectorBool) xmm::Attribute<std::vector<bool>>;
 
 %include "xmmEvents.hpp"
 

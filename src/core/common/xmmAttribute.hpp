@@ -53,8 +53,8 @@ namespace xmm {
  */
 template <typename T>
 void checkLimits(T const& value, T const& limit_min, T const& limit_max) {
-    throw std::runtime_error(
-        "Attribute limits are not implemented for the current type.");
+  throw std::runtime_error(
+      "Attribute limits are not implemented for the current type.");
 }
 
 template <>
@@ -103,18 +103,18 @@ void checkLimits<std::string>(std::string const& value,
  @brief Base Class for Generic Attributes
  */
 class AttributeBase {
-  public:
-    virtual ~AttributeBase() {}
+ public:
+  virtual ~AttributeBase() {}
 
-    /**
-     @brief Default Constructor
-     */
-    AttributeBase() : changed(false) {}
+  /**
+   @brief Default Constructor
+   */
+  AttributeBase() : changed(false) {}
 
-    /**
-     @brief Defines if the value has been changed
-     */
-    bool changed;
+  /**
+   @brief Defines if the value has been changed
+   */
+  bool changed;
 };
 
 #pragma mark -
@@ -126,139 +126,139 @@ class AttributeBase {
  */
 template <typename T>
 class Attribute : public AttributeBase {
-  public:
-    typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
+ public:
+  typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
 
-    template <typename U, typename args, class ListenerClass>
-    void onAttributeChange(U* owner,
-                           void (ListenerClass::*listenerMethod)(args)) {
-        using namespace std::placeholders;
-        if (owner)
-            callback_ = std::bind(listenerMethod, owner, _1);
-        else
-            callback_ = nullptr;
+  template <typename U, typename args, class ListenerClass>
+  void onAttributeChange(U* owner,
+                         void (ListenerClass::*listenerMethod)(args)) {
+    using namespace std::placeholders;
+    if (owner)
+      callback_ = std::bind(listenerMethod, owner, _1);
+    else
+      callback_ = nullptr;
+  }
+
+  /**
+   @brief Default Constructor
+   @param value attribute value
+   @param limit_min minimum limit
+   @param limit_max maximum limit
+   */
+  Attribute(T const& value = T(), T const& limit_min = defaultLimitMin(),
+            T const& limit_max = defaultLimitMax())
+      : limit_min_(limit_min), limit_max_(limit_max) {
+    set(value, true);
+    changed = false;
+  }
+
+  /**
+   @brief Copy Constructor
+   @param src source attribute
+   @warning the listener object is not copied from the source attribute
+   */
+  Attribute(Attribute const& src)
+      : value_(src.value_),
+        limit_min_(src.limit_min_),
+        limit_max_(src.limit_max_) {
+    changed = false;
+  }
+
+  /**
+   @brief Assignment operator
+   @param src source attribute
+   @return copy of the source Attribute object
+   @warning the listener object is not copied from the source attribute
+   */
+  template <typename U>
+  Attribute& operator=(Attribute<U> const& src) {
+    if (this != &src) {
+      value_ = src.value_;
+      limit_min_ = src.limit_min_;
+      limit_max_ = src.limit_max_;
+      changed = false;
     }
+    return *this;
+  }
 
-    /**
-     @brief Default Constructor
-     @param value attribute value
-     @param limit_min minimum limit
-     @param limit_max maximum limit
-     */
-    Attribute(T const& value = T(), T const& limit_min = defaultLimitMin(),
-              T const& limit_max = defaultLimitMax())
-        : limit_min_(limit_min), limit_max_(limit_max) {
-        set(value, true);
-        changed = false;
-    }
+  /**
+   @brief Set the attribute value
+   @param value requested value
+   @param silently if true, don't notify the listener object
+   @throws domain_error exception if the value exceeds the limits
+   @throws runtime_error exception if the limit checking are not implemented
+   for the current type
+   */
+  void set(T const& value, bool silently = false) {
+    checkLimits(value, limit_min_, limit_max_);
+    value_ = value;
+    changed = true;
+    if (!silently && callback_) callback_(this);
+  }
 
-    /**
-     @brief Copy Constructor
-     @param src source attribute
-     @warning the listener object is not copied from the source attribute
-     */
-    Attribute(Attribute const& src)
-        : value_(src.value_),
-          limit_min_(src.limit_min_),
-          limit_max_(src.limit_max_) {
-        changed = false;
-    }
+  /**
+   @brief get the attribute's current value
+   @return the attribute's current value
+   */
+  T get() const { return value_; }
 
-    /**
-     @brief Assignment operator
-     @param src source attribute
-     @return copy of the source Attribute object
-     @warning the listener object is not copied from the source attribute
-     */
-    template <typename U>
-    Attribute& operator=(Attribute<U> const& src) {
-        if (this != &src) {
-            value_ = src.value_;
-            limit_min_ = src.limit_min_;
-            limit_max_ = src.limit_max_;
-            changed = false;
-        }
-        return *this;
-    }
+  /**
+   @brief set the attribute's minimum value
+   @param limit_min minimum value
+   */
+  void setLimitMin(T const& limit_min = defaultLimitMin()) {
+    limit_min_ = limit_min;
+  }
 
-    /**
-     @brief Set the attribute value
-     @param value requested value
-     @param silently if true, don't notify the listener object
-     @throws domain_error exception if the value exceeds the limits
-     @throws runtime_error exception if the limit checking are not implemented
-     for the current type
-     */
-    void set(T const& value, bool silently = false) {
-        checkLimits(value, limit_min_, limit_max_);
-        value_ = value;
-        changed = true;
-        if (!silently && callback_) callback_(this);
-    }
+  /**
+   @brief set the attribute's maximum value
+   @param limit_max maximum value
+   */
+  void setLimitMax(T const& limit_max = defaultLimitMax()) {
+    limit_max_ = limit_max;
+  }
 
-    /**
-     @brief get the attribute's current value
-     @return the attribute's current value
-     */
-    T get() const { return value_; }
+  /**
+   @brief set the attribute's limit values
+   @param limit_min minimum value
+   @param limit_max maximum value
+   */
+  void setLimits(T const& limit_min = defaultLimitMin(),
+                 T const& limit_max = defaultLimitMax()) {
+    setLimitMin(limit_min);
+    setLimitMax(limit_max);
+  }
 
-    /**
-     @brief set the attribute's minimum value
-     @param limit_min minimum value
-     */
-    void setLimitMin(T const& limit_min = defaultLimitMin()) {
-        limit_min_ = limit_min;
-    }
+ protected:
+  /**
+   @brief Attribute default minimum value
+   */
+  static T defaultLimitMin() { return std::numeric_limits<T>::lowest(); }
 
-    /**
-     @brief set the attribute's maximum value
-     @param limit_max maximum value
-     */
-    void setLimitMax(T const& limit_max = defaultLimitMax()) {
-        limit_max_ = limit_max;
-    }
+  /**
+   @brief Attribute default maximum value
+   */
+  static T defaultLimitMax() { return std::numeric_limits<T>::max(); }
 
-    /**
-     @brief set the attribute's limit values
-     @param limit_min minimum value
-     @param limit_max maximum value
-     */
-    void setLimits(T const& limit_min = defaultLimitMin(),
-                   T const& limit_max = defaultLimitMax()) {
-        setLimitMin(limit_min);
-        setLimitMax(limit_max);
-    }
+  /**
+   @brief Current value of the attribute
+   */
+  T value_;
 
-  protected:
-    /**
-     @brief Attribute default minimum value
-     */
-    static T defaultLimitMin() { return std::numeric_limits<T>::lowest(); }
+  /**
+   @brief Minimum value of the attribute
+   */
+  T limit_min_;
 
-    /**
-     @brief Attribute default maximum value
-     */
-    static T defaultLimitMax() { return std::numeric_limits<T>::max(); }
+  /**
+   @brief Maximum value of the attribute
+   */
+  T limit_max_;
 
-    /**
-     @brief Current value of the attribute
-     */
-    T value_;
-
-    /**
-     @brief Minimum value of the attribute
-     */
-    T limit_min_;
-
-    /**
-     @brief Maximum value of the attribute
-     */
-    T limit_max_;
-
-    /**
-     @brief Callback function to be called on attribute change
-     */
-    AttributeChangeCallback callback_;
+  /**
+   @brief Callback function to be called on attribute change
+   */
+  AttributeChangeCallback callback_;
 };
 
 #pragma mark -
@@ -270,184 +270,185 @@ class Attribute : public AttributeBase {
  */
 template <typename T>
 class Attribute<std::vector<T>> : public AttributeBase {
-  public:
-    typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
+ public:
+  typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
 
-    template <typename U, typename args, class ListenerClass>
-    void onAttributeChange(U* owner,
-                           void (ListenerClass::*listenerMethod)(args)) {
-        using namespace std::placeholders;
-        if (owner)
-            callback_ = std::bind(listenerMethod, owner, _1);
-        else
-            callback_ = nullptr;
+  template <typename U, typename args, class ListenerClass>
+  void onAttributeChange(U* owner,
+                         void (ListenerClass::*listenerMethod)(args)) {
+    using namespace std::placeholders;
+    if (owner)
+      callback_ = std::bind(listenerMethod, owner, _1);
+    else
+      callback_ = nullptr;
+  }
+
+  /**
+   @brief Default Constructor
+   @param value attribute value
+   @param limit_min minimum limit
+   @param limit_max maximum limit
+   @param size size of the vector attribute (if 0, no size checking on set)
+   */
+  Attribute(std::vector<T> const& value = std::vector<T>(),
+            T const& limit_min = defaultLimitMin(),
+            T const& limit_max = defaultLimitMax(), unsigned int size = 0)
+      : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
+    set(value, true);
+    changed = false;
+  }
+
+  /**
+   @brief Copy Constructor
+   @param src source attribute
+   @warning the listener object is not copied from the source attribute
+   */
+  Attribute(Attribute const& src)
+      : value_(src.value_),
+        limit_min_(src.limit_min_),
+        limit_max_(src.limit_max_),
+        size_(src.size_) {
+    changed = false;
+  }
+
+  /**
+   @brief Assignment operator
+   @param src source attribute
+   @return copy of the source Attribute object
+   @warning the listener object is not copied from the source attribute
+   */
+  template <typename U>
+  Attribute& operator=(Attribute<U> const& src) {
+    if (this != &src) {
+      value_ = src.value_;
+      limit_min_ = src.limit_min_;
+      limit_max_ = src.limit_max_;
+      size_ = src.size_;
+      changed = false;
     }
+    return *this;
+  }
 
-    /**
-     @brief Default Constructor
-     @param value attribute value
-     @param limit_min minimum limit
-     @param limit_max maximum limit
-     @param size size of the vector attribute (if 0, no size checking on set)
-     */
-    Attribute(std::vector<T> const& value = std::vector<T>(),
-              T const& limit_min = defaultLimitMin(),
-              T const& limit_max = defaultLimitMax(), unsigned int size = 0)
-        : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
-        set(value, true);
-        changed = false;
+  /**
+   @brief Set the attribute value
+   @param value requested value
+   @param silently if true, don't notify the listener object
+   @throws domain_error exception if the value exceeds the limits, or if the
+   value does not
+   match the attribute's size (if the attribute's size is > 0)
+   @throws runtime_error exception if the limit checking are not implemented
+   for the current type
+   */
+  void set(std::vector<T> const& value, bool silently = false) {
+    if (size_ > 0 && value.size() != size_) {
+      throw std::domain_error("Attribute value has the wrong size");
     }
-
-    /**
-     @brief Copy Constructor
-     @param src source attribute
-     @warning the listener object is not copied from the source attribute
-     */
-    Attribute(Attribute const& src)
-        : value_(src.value_),
-          limit_min_(src.limit_min_),
-          limit_max_(src.limit_max_),
-          size_(src.size_) {
-        changed = false;
+    for (int i = 0; i < value.size(); i++) {
+      T val = value[i];
+      checkLimits(val, limit_min_, limit_max_);
     }
+    value_ = value;
+    changed = true;
+    if (!silently && callback_) callback_(this);
+  }
 
-    /**
-     @brief Assignment operator
-     @param src source attribute
-     @return copy of the source Attribute object
-     @warning the listener object is not copied from the source attribute
-     */
-    template <typename U>
-    Attribute& operator=(Attribute<U> const& src) {
-        if (this != &src) {
-            value_ = src.value_;
-            limit_min_ = src.limit_min_;
-            limit_max_ = src.limit_max_;
-            size_ = src.size_;
-            changed = false;
-        }
-        return *this;
+  /**
+   @brief get the attribute's current value
+   @return the attribute's current value
+   */
+  std::vector<T> get() const { return value_; }
+
+  /**
+   @brief get the attribute's current value at a given index
+   @param index index in the value vector
+   @return the attribute's current value at a given index
+   */
+  T at(unsigned int index) const {
+    if (index < size_) {
+      return value_[index];
+    } else {
+      throw std::out_of_range("Index out of range");
     }
+  }
 
-    /**
-     @brief Set the attribute value
-     @param value requested value
-     @param silently if true, don't notify the listener object
-     @throws domain_error exception if the value exceeds the limits, or if the
-     value does not
-     match the attribute's size (if the attribute's size is > 0)
-     @throws runtime_error exception if the limit checking are not implemented
-     for the current type
-     */
-    void set(std::vector<T> const& value, bool silently = false) {
-        if (size_ > 0 && value.size() != size_) {
-            throw std::domain_error("Attribute value has the wrong size");
-        }
-        for (auto& val : value) {
-            checkLimits(val, limit_min_, limit_max_);
-        }
-        value_ = value;
-        changed = true;
-        if (!silently && callback_) callback_(this);
-    }
+  /**
+   @brief set the attribute's minimum value
+   @param limit_min minimum value
+   */
+  void setLimitMin(T const& limit_min = defaultLimitMin()) {
+    limit_min_ = limit_min;
+  }
 
-    /**
-     @brief get the attribute's current value
-     @return the attribute's current value
-     */
-    std::vector<T> get() const { return value_; }
+  /**
+   @brief set the attribute's maximum value
+   @param limit_max maximum value
+   */
+  void setLimitMax(T const& limit_max = defaultLimitMax()) {
+    limit_max_ = limit_max;
+  }
 
-    /**
-     @brief get the attribute's current value at a given index
-     @param index index in the value vector
-     @return the attribute's current value at a given index
-     */
-    T at(unsigned int index) const {
-        if (index < size_) {
-            return value_[index];
-        } else {
-            throw std::out_of_range("Index out of range");
-        }
-    }
+  /**
+   @brief set the attribute's limit values
+   @param limit_min minimum value
+   @param limit_max maximum value
+   */
+  void setLimits(T const& limit_min = defaultLimitMin(),
+                 T const& limit_max = defaultLimitMax()) {
+    setLimitMin(limit_min);
+    setLimitMax(limit_max);
+  }
 
-    /**
-     @brief set the attribute's minimum value
-     @param limit_min minimum value
-     */
-    void setLimitMin(T const& limit_min = defaultLimitMin()) {
-        limit_min_ = limit_min;
-    }
+  /**
+   @brief set the attribute's size (vector Attribute). if 0, there is not
+   size-checking on set.
+   @param size vector size
+   */
+  void resize(unsigned int size) {
+    value_.resize(size, T());
+    size_ = size;
+  }
 
-    /**
-     @brief set the attribute's maximum value
-     @param limit_max maximum value
-     */
-    void setLimitMax(T const& limit_max = defaultLimitMax()) {
-        limit_max_ = limit_max;
-    }
+  /**
+   @brief get the attribute's current size (vector Attribute)
+   @return value vector size
+   */
+  unsigned int size() const { return value_.size(); }
 
-    /**
-     @brief set the attribute's limit values
-     @param limit_min minimum value
-     @param limit_max maximum value
-     */
-    void setLimits(T const& limit_min = defaultLimitMin(),
-                   T const& limit_max = defaultLimitMax()) {
-        setLimitMin(limit_min);
-        setLimitMax(limit_max);
-    }
+ protected:
+  /**
+   @brief Attribute default minimum value
+   */
+  static T defaultLimitMin() { return std::numeric_limits<T>::lowest(); }
 
-    /**
-     @brief set the attribute's size (vector Attribute). if 0, there is not
-     size-checking on set.
-     @param size vector size
-     */
-    void resize(unsigned int size) {
-        value_.resize(size, T());
-        size_ = size;
-    }
+  /**
+   @brief Attribute default maximum value
+   */
+  static T defaultLimitMax() { return std::numeric_limits<T>::max(); }
 
-    /**
-     @brief get the attribute's current size (vector Attribute)
-     @return value vector size
-     */
-    unsigned int size() const { return value_.size(); }
+  /**
+   @brief Current value of the attribute
+   */
+  std::vector<T> value_;
 
-  protected:
-    /**
-     @brief Attribute default minimum value
-     */
-    static T defaultLimitMin() { return std::numeric_limits<T>::lowest(); }
+  /**
+   @brief Minimum value of the attribute
+   */
+  T limit_min_;
 
-    /**
-     @brief Attribute default maximum value
-     */
-    static T defaultLimitMax() { return std::numeric_limits<T>::max(); }
+  /**
+   @brief Maximum value of the attribute
+   */
+  T limit_max_;
 
-    /**
-     @brief Current value of the attribute
-     */
-    std::vector<T> value_;
+  /**
+   @brief Size of the vector of values
+   */
+  unsigned int size_;
 
-    /**
-     @brief Minimum value of the attribute
-     */
-    T limit_min_;
-
-    /**
-     @brief Maximum value of the attribute
-     */
-    T limit_max_;
-
-    /**
-     @brief Size of the vector of values
-     */
-    unsigned int size_;
-
-    /**
-     @brief Callback function to be called on attribute change
-     */
-    AttributeChangeCallback callback_;
+  /**
+   @brief Callback function to be called on attribute change
+   */
+  AttributeChangeCallback callback_;
 };
 
 #pragma mark -
@@ -458,186 +459,372 @@ class Attribute<std::vector<T>> : public AttributeBase {
  */
 template <>
 class Attribute<std::vector<std::string>> : public AttributeBase {
-  public:
-    typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
+ public:
+  typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
 
-    template <typename U, typename args, class ListenerClass>
-    void onAttributeChange(U* owner,
-                           void (ListenerClass::*listenerMethod)(args)) {
-        using namespace std::placeholders;
-        if (owner)
-            callback_ = std::bind(listenerMethod, owner, _1);
-        else
-            callback_ = nullptr;
+  template <typename U, typename args, class ListenerClass>
+  void onAttributeChange(U* owner,
+                         void (ListenerClass::*listenerMethod)(args)) {
+    using namespace std::placeholders;
+    if (owner)
+      callback_ = std::bind(listenerMethod, owner, _1);
+    else
+      callback_ = nullptr;
+  }
+
+  /**
+   @brief Default Constructor
+   @param value attribute value
+   @param limit_min minimum limit
+   @param limit_max maximum limit
+   @param size size of the vector attribute (if 0, no size checking on set)
+   */
+  Attribute(std::vector<std::string> const& value = {},
+            std::string const& limit_min = "",
+            std::string const& limit_max = "", unsigned int size = 0)
+      : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
+    set(value, true);
+    changed = false;
+  }
+
+  /**
+   @brief Copy Constructor
+   @param src source attribute
+   @warning the listener object is not copied from the source attribute
+   */
+  Attribute(Attribute const& src)
+      : value_(src.value_),
+        limit_min_(src.limit_min_),
+        limit_max_(src.limit_max_),
+        size_(src.size_) {
+    changed = false;
+  }
+
+  /**
+   @brief Assignment operator
+   @param src source attribute
+   @return copy of the source Attribute object
+   @warning the listener object is not copied from the source attribute
+   */
+  template <typename U>
+  Attribute& operator=(Attribute<U> const& src) {
+    if (this != &src) {
+      value_ = src.value_;
+      limit_min_ = src.limit_min_;
+      limit_max_ = src.limit_max_;
+      size_ = src.size_;
+      changed = false;
     }
+    return *this;
+  }
 
-    /**
-     @brief Default Constructor
-     @param value attribute value
-     @param limit_min minimum limit
-     @param limit_max maximum limit
-     @param size size of the vector attribute (if 0, no size checking on set)
-     */
-    Attribute(std::vector<std::string> const& value = {},
-              std::string const& limit_min = "",
-              std::string const& limit_max = "", unsigned int size = 0)
-        : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
-        set(value, true);
-        changed = false;
+  /**
+   @brief Set the attribute value
+   @param value requested value
+   @param silently if true, don't notify the listener object
+   @throws domain_error exception if the value exceeds the limits, or if the
+   value does not
+   match the attribute's size (if the attribute's size is > 0)
+   @throws runtime_error exception if the limit checking are not implemented
+   for the current type
+   */
+  void set(std::vector<std::string> const& value, bool silently = false) {
+    if (size_ > 0 && value.size() != size_) {
+      throw std::domain_error("Attribute value has the wrong size");
     }
-
-    /**
-     @brief Copy Constructor
-     @param src source attribute
-     @warning the listener object is not copied from the source attribute
-     */
-    Attribute(Attribute const& src)
-        : value_(src.value_),
-          limit_min_(src.limit_min_),
-          limit_max_(src.limit_max_),
-          size_(src.size_) {
-        changed = false;
+    for (auto& val : value) {
+      checkLimits(val, limit_min_, limit_max_);
     }
+    value_ = value;
+    changed = true;
+    if (!silently && callback_) callback_(this);
+  }
 
-    /**
-     @brief Assignment operator
-     @param src source attribute
-     @return copy of the source Attribute object
-     @warning the listener object is not copied from the source attribute
-     */
-    template <typename U>
-    Attribute& operator=(Attribute<U> const& src) {
-        if (this != &src) {
-            value_ = src.value_;
-            limit_min_ = src.limit_min_;
-            limit_max_ = src.limit_max_;
-            size_ = src.size_;
-            changed = false;
-        }
-        return *this;
+  /**
+   @brief get the attribute's current value
+   @return the attribute's current value
+   */
+  std::vector<std::string> get() const { return value_; }
+
+  /**
+   @brief get the attribute's current value at a given index
+   @param index index in the value vector
+   @return the attribute's current value at a given index
+   */
+  std::string at(unsigned int index) const {
+    if (index < size_) {
+      return value_[index];
+    } else {
+      throw std::out_of_range("Index out of range");
     }
+  }
 
-    /**
-     @brief Set the attribute value
-     @param value requested value
-     @param silently if true, don't notify the listener object
-     @throws domain_error exception if the value exceeds the limits, or if the
-     value does not
-     match the attribute's size (if the attribute's size is > 0)
-     @throws runtime_error exception if the limit checking are not implemented
-     for the current type
-     */
-    void set(std::vector<std::string> const& value, bool silently = false) {
-        if (size_ > 0 && value.size() != size_) {
-            throw std::domain_error("Attribute value has the wrong size");
-        }
-        for (auto& val : value) {
-            checkLimits(val, limit_min_, limit_max_);
-        }
-        value_ = value;
-        changed = true;
-        if (!silently && callback_) callback_(this);
+  /**
+   @brief set the attribute's minimum value
+   @param limit_min minimum value
+   */
+  void setLimitMin(std::string const& limit_min = defaultLimitMin()) {
+    limit_min_ = limit_min;
+  }
+
+  /**
+   @brief set the attribute's maximum value
+   @param limit_max maximum value
+   */
+  void setLimitMax(std::string const& limit_max = defaultLimitMax()) {
+    limit_max_ = limit_max;
+  }
+
+  /**
+   @brief set the attribute's limit values
+   @param limit_min minimum value
+   @param limit_max maximum value
+   */
+  void setLimits(std::string const& limit_min = defaultLimitMin(),
+                 std::string const& limit_max = defaultLimitMax()) {
+    setLimitMin(limit_min);
+    setLimitMax(limit_max);
+  }
+
+  /**
+   @brief set the attribute's size (vector Attribute). if 0, there is not
+   size-checking on set.
+   @param size vector size
+   */
+  void resize(unsigned int size) {
+    value_.resize(size, "");
+    size_ = size;
+  }
+
+  /**
+   @brief get the attribute's current size (vector Attribute)
+   @return value vector size
+   */
+  unsigned int size() const { return static_cast<unsigned int>(value_.size()); }
+
+ protected:
+  /**
+   @brief Attribute default minimum value
+   */
+  static std::string defaultLimitMin() { return ""; }
+
+  /**
+   @brief Attribute default maximum value
+   */
+  static std::string defaultLimitMax() { return ""; }
+
+  /**
+   @brief Current value of the attribute
+   */
+  std::vector<std::string> value_;
+
+  /**
+   @brief Minimum value of the attribute
+   */
+  std::string limit_min_;
+
+  /**
+   @brief Maximum value of the attribute
+   */
+  std::string limit_max_;
+
+  /**
+   @brief Size of the vector of values
+   */
+  unsigned int size_;
+
+  /**
+   @brief Callback function to be called on attribute change
+   */
+  AttributeChangeCallback callback_;
+};
+
+#pragma mark -
+#pragma mark === Class Attribute: vector<bool> specialization ===
+/**
+ @ingroup Common
+ @brief Generic Attribute (Vector Specialization)
+ */
+template <>
+class Attribute<std::vector<bool>> : public AttributeBase {
+ public:
+  typedef std::function<void(AttributeBase*)> AttributeChangeCallback;
+
+  template <typename U, typename args, class ListenerClass>
+  void onAttributeChange(U* owner,
+                         void (ListenerClass::*listenerMethod)(args)) {
+    using namespace std::placeholders;
+    if (owner)
+      callback_ = std::bind(listenerMethod, owner, _1);
+    else
+      callback_ = nullptr;
+  }
+
+  /**
+   @brief Default Constructor
+   @param value attribute value
+   @param limit_min minimum limit
+   @param limit_max maximum limit
+   @param size size of the vector attribute (if 0, no size checking on set)
+   */
+  Attribute(std::vector<bool> const& value = {}, bool const& limit_min = false,
+            bool const& limit_max = true, unsigned int size = 0)
+      : limit_min_(limit_min), limit_max_(limit_max), size_(size) {
+    set(value, true);
+    changed = false;
+  }
+
+  /**
+   @brief Copy Constructor
+   @param src source attribute
+   @warning the listener object is not copied from the source attribute
+   */
+  Attribute(Attribute const& src)
+      : value_(src.value_),
+        limit_min_(src.limit_min_),
+        limit_max_(src.limit_max_),
+        size_(src.size_) {
+    changed = false;
+  }
+
+  /**
+   @brief Assignment operator
+   @param src source attribute
+   @return copy of the source Attribute object
+   @warning the listener object is not copied from the source attribute
+   */
+  template <typename U>
+  Attribute& operator=(Attribute<U> const& src) {
+    if (this != &src) {
+      value_ = src.value_;
+      limit_min_ = src.limit_min_;
+      limit_max_ = src.limit_max_;
+      size_ = src.size_;
+      changed = false;
     }
+    return *this;
+  }
 
-    /**
-     @brief get the attribute's current value
-     @return the attribute's current value
-     */
-    std::vector<std::string> get() const { return value_; }
-
-    /**
-     @brief get the attribute's current value at a given index
-     @param index index in the value vector
-     @return the attribute's current value at a given index
-     */
-    std::string at(unsigned int index) const {
-        if (index < size_) {
-            return value_[index];
-        } else {
-            throw std::out_of_range("Index out of range");
-        }
+  /**
+   @brief Set the attribute value
+   @param value requested value
+   @param silently if true, don't notify the listener object
+   @throws domain_error exception if the value exceeds the limits, or if the
+   value does not
+   match the attribute's size (if the attribute's size is > 0)
+   @throws runtime_error exception if the limit checking are not implemented
+   for the current type
+   */
+  void set(std::vector<bool> const& value, bool silently = false) {
+    if (size_ > 0 && value.size() != size_) {
+      throw std::domain_error("Attribute value has the wrong size");
     }
-
-    /**
-     @brief set the attribute's minimum value
-     @param limit_min minimum value
-     */
-    void setLimitMin(std::string const& limit_min = defaultLimitMin()) {
-        limit_min_ = limit_min;
+    for (int i = 0; i < value.size(); i++) {
+      bool val = value[i];
+      checkLimits(val, limit_min_, limit_max_);
     }
+    value_ = value;
+    changed = true;
+    if (!silently && callback_) callback_(this);
+  }
 
-    /**
-     @brief set the attribute's maximum value
-     @param limit_max maximum value
-     */
-    void setLimitMax(std::string const& limit_max = defaultLimitMax()) {
-        limit_max_ = limit_max;
+  /**
+   @brief get the attribute's current value
+   @return the attribute's current value
+   */
+  std::vector<bool> get() const { return value_; }
+
+  /**
+   @brief get the attribute's current value at a given index
+   @param index index in the value vector
+   @return the attribute's current value at a given index
+   */
+  bool at(unsigned int index) const {
+    if (index < size_) {
+      return value_[index];
+    } else {
+      throw std::out_of_range("Index out of range");
     }
+  }
 
-    /**
-     @brief set the attribute's limit values
-     @param limit_min minimum value
-     @param limit_max maximum value
-     */
-    void setLimits(std::string const& limit_min = defaultLimitMin(),
-                   std::string const& limit_max = defaultLimitMax()) {
-        setLimitMin(limit_min);
-        setLimitMax(limit_max);
-    }
+  /**
+   @brief set the attribute's minimum value
+   @param limit_min minimum value
+   */
+  void setLimitMin(bool const& limit_min = defaultLimitMin()) {
+    limit_min_ = limit_min;
+  }
 
-    /**
-     @brief set the attribute's size (vector Attribute). if 0, there is not
-     size-checking on set.
-     @param size vector size
-     */
-    void resize(unsigned int size) {
-        value_.resize(size, "");
-        size_ = size;
-    }
+  /**
+   @brief set the attribute's maximum value
+   @param limit_max maximum value
+   */
+  void setLimitMax(bool const& limit_max = defaultLimitMax()) {
+    limit_max_ = limit_max;
+  }
 
-    /**
-     @brief get the attribute's current size (vector Attribute)
-     @return value vector size
-     */
-    unsigned int size() const {
-        return static_cast<unsigned int>(value_.size());
-    }
+  /**
+   @brief set the attribute's limit values
+   @param limit_min minimum value
+   @param limit_max maximum value
+   */
+  void setLimits(bool const& limit_min = defaultLimitMin(),
+                 bool const& limit_max = defaultLimitMax()) {
+    setLimitMin(limit_min);
+    setLimitMax(limit_max);
+  }
 
-  protected:
-    /**
-     @brief Attribute default minimum value
-     */
-    static std::string defaultLimitMin() { return ""; }
+  /**
+   @brief set the attribute's size (vector Attribute). if 0, there is not
+   size-checking on set.
+   @param size vector size
+   */
+  void resize(unsigned int size) {
+    value_.resize(size, "");
+    size_ = size;
+  }
 
-    /**
-     @brief Attribute default maximum value
-     */
-    static std::string defaultLimitMax() { return ""; }
+  /**
+   @brief get the attribute's current size (vector Attribute)
+   @return value vector size
+   */
+  unsigned int size() const { return static_cast<unsigned int>(value_.size()); }
 
-    /**
-     @brief Current value of the attribute
-     */
-    std::vector<std::string> value_;
+ protected:
+  /**
+   @brief Attribute default minimum value
+   */
+  static bool defaultLimitMin() { return false; }
 
-    /**
-     @brief Minimum value of the attribute
-     */
-    std::string limit_min_;
+  /**
+   @brief Attribute default maximum value
+   */
+  static bool defaultLimitMax() { return true; }
 
-    /**
-     @brief Maximum value of the attribute
-     */
-    std::string limit_max_;
+  /**
+   @brief Current value of the attribute
+   */
+  std::vector<bool> value_;
 
-    /**
-     @brief Size of the vector of values
-     */
-    unsigned int size_;
+  /**
+   @brief Minimum value of the attribute
+   */
+  bool limit_min_;
 
-    /**
-     @brief Callback function to be called on attribute change
-     */
-    AttributeChangeCallback callback_;
+  /**
+   @brief Maximum value of the attribute
+   */
+  bool limit_max_;
+
+  /**
+   @brief Size of the vector of values
+   */
+  unsigned int size_;
+
+  /**
+   @brief Callback function to be called on attribute change
+   */
+  AttributeChangeCallback callback_;
 };
 }
 
