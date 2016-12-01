@@ -475,7 +475,7 @@ void xmm::GaussianDistribution::updateOutputCovariance() {
     Matrix<double> covariance_sg(dimension_output, dimension_input.get(), true);
     for (int d1 = 0; d1 < dimension_output; d1++) {
         for (int d2 = 0; d2 < dimension_input.get(); d2++) {
-            covariance_gs._data[d1 * dimension_input.get() + d2] =
+            covariance_sg._data[d1 * dimension_input.get() + d2] =
                 covariance[(dimension_input.get() + d1) * dimension.get() + d2];
         }
     }
