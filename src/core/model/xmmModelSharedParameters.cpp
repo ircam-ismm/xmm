@@ -147,10 +147,12 @@ void xmm::SharedParameters::onAttributeChange(AttributeBase* attr_pointer) {
             dimension.setLimitMin(2);
             if (dimension.get() < 2) dimension.set(2);
             dimension_input.setLimitMin(1);
+            dimension_input.setLimitMax(dimension.get() - 1);
             if (dimension_input.get() < 1) dimension_input.set(1);
         } else {
             dimension.setLimitMin(1);
             if (dimension.get() < 1) dimension.set(1);
+            dimension_input.setLimitMin(0);
             dimension_input.setLimitMax(0);
             dimension_input.set(0);
         }

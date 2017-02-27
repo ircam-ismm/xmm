@@ -105,6 +105,7 @@ class Writable {
         if (reader.parse(inStream, root)) {
             this->fromJson(root);
         } else {
+            std::cout << reader.getFormattedErrorMessages() << std::endl;
             throw std::runtime_error("Cannot Parse Json File");
         }
         inStream.close();

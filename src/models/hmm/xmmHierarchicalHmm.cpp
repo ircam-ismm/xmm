@@ -526,109 +526,108 @@ void xmm::HierarchicalHMM::fromJson(Json::Value const &root) {
     }
 }
 
-// void xmm::HierarchicalHMM::makeBimodal(unsigned int dimension_input)
-//{
-//    checkTraining();
-//    if (bimodal_)
-//        throw std::runtime_error("The model is already bimodal");
-//    if (dimension_input >= dimension())
-//        throw std::out_of_range("Request input dimension exceeds the current
-//        dimension");
-//
-//    try {
-//        this->referenceModel_.makeBimodal(dimension_input);
-//    } catch (std::exception const& e) {
-//    }
-//    bimodal_ = true;
-//    for (model_iterator it=this->models.begin(); it != this->models.end();
-//    ++it) {
-//        model.second.makeBimodal(dimension_input);
-//    }
-//    set_trainingSet(NULL);
-//    results.output_values.resize(dimension() - this->dimension_input());
-//    results.output_variance.resize(dimension() - this->dimension_input());
-//}
-//
-// void xmm::HierarchicalHMM::makeUnimodal()
-//{
-//    checkTraining();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model is already unimodal");
-//    this->referenceModel_.makeUnimodal();
-//    for (model_iterator it=this->models.begin(); it != this->models.end();
-//    ++it) {
-//        model.second.makeUnimodal();
-//    }
-//    set_trainingSet(NULL);
-//    results.output_values.clear();
-//    results.output_variance.clear();
-//    bimodal_ = false;
-//}
-//
-// xmm::HierarchicalHMM
-// xmm::HierarchicalHMM::extractSubmodel(std::vector<unsigned int>& columns)
-// const
-//{
-//    checkTraining();
-//    if (columns.size() > this->dimension())
-//        throw std::out_of_range("requested number of columns exceeds the
-//        dimension of the current model");
-//    for (unsigned int column=0; column<columns.size(); ++column) {
-//        if (columns[column] >= this->dimension())
-//            throw std::out_of_range("Some column indices exceeds the dimension
-//            of the current model");
-//    }
-//    HierarchicalHMM target_model(*this);
-//    target_model.set_trainingSet(NULL);
-//    target_model.bimodal_ = false;
-//    target_model.referenceModel_ =
-//    this->referenceModel_.extractSubmodel(columns);
-//    for (model_iterator it=target_model.models.begin(); it !=
-//    target_model.models.end(); ++it) {
-//        model.second = this->models.at(model.first).extractSubmodel(columns);
-//    }
-//    return target_model;
-//}
-//
-// xmm::HierarchicalHMM xmm::HierarchicalHMM::extractSubmodel_input() const
-//{
-//    checkTraining();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<unsigned int> columns_input(dimension_input());
-//    for (unsigned int i=0; i<dimension_input(); ++i) {
-//        columns_input[i] = i;
-//    }
-//    return extractSubmodel(columns_input);
-//}
-//
-// xmm::HierarchicalHMM xmm::HierarchicalHMM::extractSubmodel_output() const
-//{
-//    checkTraining();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<unsigned int> columns_output(dimension() - dimension_input());
-//    for (unsigned int i=dimension_input(); i<dimension(); ++i) {
-//        columns_output[i-dimension_input()] = i;
-//    }
-//    return extractSubmodel(columns_output);
-//}
-//
-// xmm::HierarchicalHMM xmm::HierarchicalHMM::extract_inverse_model() const
-//{
-//    checkTraining();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<unsigned int> columns(dimension());
-//    for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
-//        columns[i] = i+dimension_input();
-//    }
-//    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension();
-//    ++i,
-//    ++j) {
-//        columns[i] = j;
-//    }
-//    HierarchicalHMM target_model = extractSubmodel(columns);
-//    target_model.makeBimodal(dimension()-dimension_input());
-//    return target_model;
-//}
+xmm::HierarchicalHMM xmm::HierarchicalHMM::getBimodal(unsigned int dimension_input)
+{
+    checkTraining();
+    if (shared_parameters->bimodal.get())
+        throw std::runtime_error("The model is already bimodal");
+    if (dimension_input >= shared_parameters->dimension.get())
+        throw std::out_of_range("Request input dimension exceeds the current dimension");
+
+    HierarchicalHMM target_model(*this);
+    target_model.shared_parameters->bimodal.set(true);
+    target_model.shared_parameters->dimension_input.set(dimension_input);
+    for (auto it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        for (int s = 0; s < it->second.states.size(); s++) {
+            for (int c = 0; c < it->second.states[s].components.size(); c++) {
+                it->second.states[s].components[c] = it->second.states[s].components[c].getBimodal(dimension_input);
+            }
+        }
+    }
+    target_model.reset();
+    return target_model;
+}
+
+xmm::HierarchicalHMM xmm::HierarchicalHMM::getUnimodal()
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model is already unimodal");
+    
+    HierarchicalHMM target_model(*this);
+    target_model.shared_parameters->bimodal.set(false);
+    for (auto it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        for (int s = 0; s < it->second.states.size(); s++) {
+            for (int c = 0; c < it->second.states[s].components.size(); c++) {
+                it->second.states[s].components[c] = it->second.states[s].components[c].getUnimodal();
+            }
+        }
+    }
+    target_model.reset();
+    return target_model;
+}
+
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extractSubmodel(std::vector<unsigned int>& columns) const
+{
+    checkTraining();
+    if (columns.size() > shared_parameters->dimension.get())
+        throw std::out_of_range("requested number of columns exceeds the dimension of the current model");
+    for (unsigned int column=0; column<columns.size(); ++column) {
+        if (columns[column] >= shared_parameters->dimension.get())
+            throw std::out_of_range("Some column indices exceeds the dimension of the current model");
+    }
+    HierarchicalHMM target_model(*this);
+    target_model.shared_parameters->bimodal.set(false);
+    target_model.shared_parameters->dimension.set(static_cast<unsigned int>(columns.size()));
+    for (auto it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        for (int s = 0; s < it->second.states.size(); s++) {
+            for (int c = 0; c < it->second.states[s].components.size(); c++) {
+                it->second.states[s].components[c] = it->second.states[s].components[c].extractSubmodel(columns);
+            }
+        }
+    }
+    target_model.reset();
+    return target_model;
+}
+
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extractSubmodel_input() const
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_input(shared_parameters->dimension_input.get());
+    for (unsigned int i=0; i<shared_parameters->dimension_input.get(); ++i) {
+        columns_input[i] = i;
+    }
+    return extractSubmodel(columns_input);
+}
+
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extractSubmodel_output() const
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_output(shared_parameters->dimension.get() - shared_parameters->dimension_input.get());
+    for (unsigned int i=shared_parameters->dimension_input.get(); i<shared_parameters->dimension.get(); ++i) {
+        columns_output[i-shared_parameters->dimension_input.get()] = i;
+    }
+    return extractSubmodel(columns_output);
+}
+
+xmm::HierarchicalHMM xmm::HierarchicalHMM::extract_inverse_model() const
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns(shared_parameters->dimension.get());
+    for (unsigned int i=0; i<shared_parameters->dimension.get()-shared_parameters->dimension_input.get(); ++i) {
+        columns[i] = i+shared_parameters->dimension_input.get();
+    }
+    for (unsigned int i=shared_parameters->dimension.get()-shared_parameters->dimension_input.get(), j=0;
+         i<shared_parameters->dimension.get();
+         ++i, ++j) {
+        columns[i] = j;
+    }
+    HierarchicalHMM target_model = extractSubmodel(columns).getBimodal(shared_parameters->dimension.get()-shared_parameters->dimension_input.get());
+    return target_model;
+}

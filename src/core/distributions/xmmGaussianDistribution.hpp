@@ -225,65 +225,66 @@ class GaussianDistribution : public Writable {
 
     ///@}
 
-    //        /** @name Conversion & Extraction */
-    //        ///@{
-    //
-    //        /**
-    //         @brief Convert to bimodal distribution in place
-    //         @param dimension_input dimension of the input modality
-    //         @throws runtime_error if the model is already bimodal
-    //         @throws out_of_range if the requested input dimension is too
-    //         large
-    //         */
-    //        void makeBimodal(unsigned int dimension_input);
-    //
-    //        /**
-    //         @brief Convert to unimodal distribution in place
-    //         @throws runtime_error if the model is already unimodal
-    //         */
-    //        void makeUnimodal();
-    //
-    //        /**
-    //         @brief extract a sub-distribution with the given columns
-    //         @param columns columns indices in the target order
-    //         @throws runtime_error if the model is training
-    //         @throws out_of_range if the number or indices of the requested
-    //         columns exceeds the current dimension
-    //         @return a Gaussian Distribution from the current model
-    //         considering only the target columns
-    //         */
-    //        GaussianDistribution extractSubmodel(std::vector<unsigned int>&
-    //        columns) const;
-    //
-    //        /**
-    //         @brief extract the sub-distribution of the input modality
-    //         @throws runtime_error if the model is training or if it is not
-    //         bimodal
-    //         @return a unimodal Gaussian Distribution of the input modality
-    //         from the current bimodal model
-    //         */
-    //        GaussianDistribution extractSubmodel_input() const;
-    //
-    //        /**
-    //         @brief extract the sub-distribution of the output modality
-    //         @throws runtime_error if the model is training or if it is not
-    //         bimodal
-    //         @return a unimodal Gaussian Distribution of the output modality
-    //         from the current bimodal model
-    //         */
-    //        GaussianDistribution extractSubmodel_output() const;
-    //
-    //        /**
-    //         @brief extract the model with reversed input and output
-    //         modalities
-    //         @throws runtime_error if the model is training or if it is not
-    //         bimodal
-    //         @return a bimodal Gaussian Distribution  that swaps the input and
-    //         output modalities
-    //         */
-    //        GaussianDistribution extract_inverse_model() const;
-    //
-    //        ///@}
+    /** @name Conversion & Extraction */
+    ///@{
+
+    /**
+     @brief get the associated bimodal distribution
+     @param dimension_input dimension of the input modality
+     @return a bimodal Gaussian Distribution from the current model
+     @throws runtime_error if the model is already bimodal
+     @throws out_of_range if the requested input dimension is too
+     large
+     */
+    GaussianDistribution getBimodal(unsigned int dimension_input);
+
+    /**
+     @brief Convert to unimodal distribution in place
+     @throws runtime_error if the model is already unimodal
+     */
+    GaussianDistribution getUnimodal();
+
+    /**
+     @brief extract a sub-distribution with the given columns
+     @param columns columns indices in the target order
+     @throws runtime_error if the model is training
+     @throws out_of_range if the number or indices of the requested
+     columns exceeds the current dimension
+     @return a Gaussian Distribution from the current model
+     considering only the target columns
+     */
+    GaussianDistribution extractSubmodel(std::vector<unsigned int>&
+    columns) const;
+
+    /**
+     @brief extract the sub-distribution of the input modality
+     @throws runtime_error if the model is training or if it is not
+     bimodal
+     @return a unimodal Gaussian Distribution of the input modality
+     from the current bimodal model
+     */
+    GaussianDistribution extractSubmodel_input() const;
+
+    /**
+     @brief extract the sub-distribution of the output modality
+     @throws runtime_error if the model is training or if it is not
+     bimodal
+     @return a unimodal Gaussian Distribution of the output modality
+     from the current bimodal model
+     */
+    GaussianDistribution extractSubmodel_output() const;
+
+    /**
+     @brief extract the model with reversed input and output
+     modalities
+     @throws runtime_error if the model is training or if it is not
+     bimodal
+     @return a bimodal Gaussian Distribution  that swaps the input and
+     output modalities
+     */
+    GaussianDistribution extract_inverse_model() const;
+
+    ///@}
 
     /**
      @brief Total Dimension of the multivariate normal
@@ -316,7 +317,9 @@ class GaussianDistribution : public Writable {
      */
     std::vector<double> output_covariance;
 
+#ifndef XMM_TESTING
   protected:
+#endif
     /**
      @brief Resize Mean and Covariance Vectors to appropriate dimension.
      */

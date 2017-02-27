@@ -24,6 +24,8 @@
 		0B20E0CA1A9A65E300E89497 /* xmmGaussianDistribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909A81947718400E0D3C4 /* xmmGaussianDistribution.cpp */; };
 		0B20E0CC1A9A65E300E89497 /* xmmJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4909AA1947718400E0D3C4 /* xmmJson.cpp */; };
 		0B9FE31F1AD1E9F1007431E3 /* libxmm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B20E0D31A9A65E300E89497 /* libxmm.a */; };
+		FA28F02A1E6153A20011767F /* xmmTestsModelConversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE31B1AD16613007431E3 /* xmmTestsModelConversion.cpp */; };
+		FA28F02B1E6154CD0011767F /* xmmTestsModelExtraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF36B561AE82DEA00D81858 /* xmmTestsModelExtraction.cpp */; };
 		FA41CAD11C28AA1600905379 /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAC91C28AA0F00905379 /* json_reader.cpp */; };
 		FA41CAD21C28AA1600905379 /* json_value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACB1C28AA0F00905379 /* json_value.cpp */; };
 		FA41CAD31C28AA1600905379 /* json_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CACD1C28AA0F00905379 /* json_writer.cpp */; };
@@ -63,7 +65,6 @@
 		FA4CD75F1C21522200896DB6 /* xmmEvents.hpp in Headers */ = {isa = PBXBuildFile; fileRef = FA4CD75D1C21522200896DB6 /* xmmEvents.hpp */; };
 		FA61EB691CC979E100F37E4E /* xmmTestsComplexity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA61EB661CC9797100F37E4E /* xmmTestsComplexity.cpp */; };
 		FA61EB6A1CC9952E00F37E4E /* xmmTestsMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B9FE3161AD162E4007431E3 /* xmmTestsMain.cpp */; };
-		FA61EB6B1CCBF29500F37E4E /* xmmTestsMultithreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA4CD7601C21EC9200896DB6 /* xmmTestsMultithreading.cpp */; };
 		FA61EB6C1CCBF29900F37E4E /* xmmTestsJsonIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA41CAD71C28AD9D00905379 /* xmmTestsJsonIO.cpp */; };
 		FA61EB6D1CCBF29E00F37E4E /* xmmTestsGaussianCovarianceMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA12F71AED0F86006DA006 /* xmmTestsGaussianCovarianceMode.cpp */; };
 /* End PBXBuildFile section */
@@ -631,9 +632,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA61EB6B1CCBF29500F37E4E /* xmmTestsMultithreading.cpp in Sources */,
+				FA28F02A1E6153A20011767F /* xmmTestsModelConversion.cpp in Sources */,
 				FA61EB691CC979E100F37E4E /* xmmTestsComplexity.cpp in Sources */,
 				FA61EB6C1CCBF29900F37E4E /* xmmTestsJsonIO.cpp in Sources */,
+				FA28F02B1E6154CD0011767F /* xmmTestsModelExtraction.cpp in Sources */,
 				FA61EB6D1CCBF29E00F37E4E /* xmmTestsGaussianCovarianceMode.cpp in Sources */,
 				FA61EB6A1CC9952E00F37E4E /* xmmTestsMain.cpp in Sources */,
 			);

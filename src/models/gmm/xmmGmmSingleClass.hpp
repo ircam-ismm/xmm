@@ -119,60 +119,6 @@ class SingleClassGMM : public SingleClassProbabilisticModel {
 
     ///@}
 
-    //
-    //        /**
-    //         @brief Convert to bimodal GMM in place
-    //         @param dimension_input dimension of the input modality
-    //         @throws runtime_error if the model is already bimodal
-    //         @throws out_of_range if the requested input dimension is too
-    //         large
-    //         */
-    //        void makeBimodal(unsigned int dimension_input);
-    //
-    //        /**
-    //         @brief Convert to unimodal GMM in place
-    //         @throws runtime_error if the model is already unimodal
-    //         */
-    //        void makeUnimodal();
-    //
-    //        /**
-    //         @brief extract a submodel with the given columns
-    //         @param columns columns indices in the target order
-    //         @throws runtime_error if the model is training
-    //         @throws out_of_range if the number or indices of the requested
-    //         columns exceeds the current dimension
-    //         @return a GMM from the current model considering only the target
-    //         columns
-    //         */
-    //        GMM extractSubmodel(std::vector<unsigned int>& columns) const;
-    //
-    //        /**
-    //         @brief extract the submodel of the input modality
-    //         @throws runtime_error if the model is training or if it is not
-    //         bimodal
-    //         @return a unimodal GMM of the input modality from the current
-    //         bimodal model
-    //         */
-    //        GMM extractSubmodel_input() const;
-    //
-    //        /**
-    //         @brief extract the submodel of the output modality
-    //         @throws runtime_error if the model is training or if it is not
-    //         bimodal
-    //         @return a unimodal GMM of the output modality from the current
-    //         bimodal model
-    //         */
-    //        GMM extractSubmodel_output() const;
-    //
-    //        /**
-    //         @brief extract the model with reversed input and output
-    //         modalities
-    //         @throws runtime_error if the model is training or if it is not
-    //         bimodal
-    //         @return a bimodal GMM  that swaps the input and output modalities
-    //         */
-    //        GMM extract_inverse_model() const;
-
     /**
      @brief Model Parameters
      */

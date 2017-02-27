@@ -163,109 +163,103 @@ void xmm::GMM::filter(std::vector<float> const& observation) {
     }
 }
 
-//#pragma mark > Conversion & Extraction
-// void xmm::GMM::makeBimodal(unsigned int dimension_input)
-//{
-//    check_training();
-//    if (bimodal_)
-//        throw std::runtime_error("The model is already bimodal");
-//    if (dimension_input >= dimension())
-//        throw std::out_of_range("Request input dimension exceeds the current
-//        dimension");
-//
-//    try {
-//        this->referenceModel_.makeBimodal(dimension_input);
-//    } catch (std::exception const& e) {
-//    }
-//    bimodal_ = true;
-//    for (model_iterator it=this->models.begin(); it != this->models.end();
-//    ++it) {
-//        it->second.makeBimodal(dimension_input);
-//    }
-//    set_trainingSet(NULL);
-//    results_predicted_output.resize(dimension() - this->dimension_input());
-//    results_output_variance.resize(dimension() - this->dimension_input());
-//}
-//
-// void xmm::GMM::makeUnimodal()
-//{
-//    check_training();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model is already unimodal");
-//    this->referenceModel_.makeUnimodal();
-//    for (model_iterator it=this->models.begin(); it != this->models.end();
-//    ++it) {
-//        it->second.makeUnimodal();
-//    }
-//    set_trainingSet(NULL);
-//    results_predicted_output.clear();
-//    results_output_variance.clear();
-//    bimodal_ = false;
-//}
-//
-// xmm::GMM xmm::GMM::extractSubmodel(std::vector<unsigned int>& columns) const
-//{
-//    check_training();
-//    if (columns.size() > this->dimension())
-//        throw std::out_of_range("requested number of columns exceeds the
-//        dimension of the current model");
-//    for (unsigned int column=0; column<columns.size(); ++column) {
-//        if (columns[column] >= this->dimension())
-//            throw std::out_of_range("Some column indices exceeds the dimension
-//            of the current model");
-//    }
-//    GMM target_model(*this);
-//    target_model.set_trainingSet(NULL);
-//    target_model.bimodal_ = false;
-//    target_model.referenceModel_ =
-//    this->referenceModel_.extractSubmodel(columns);
-//    for (model_iterator it=target_model.models.begin(); it !=
-//    target_model.models.end(); ++it) {
-//        it->second = this->models.at(it->first).extractSubmodel(columns);
-//    }
-//    target_model.results_predicted_output.clear();
-//    target_model.results_output_variance.clear();
-//    return target_model;
-//}
-//
-// xmm::GMM xmm::GMM::extractSubmodel_input() const
-//{
-//    check_training();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<unsigned int> columns_input(dimension_input());
-//    for (unsigned int i=0; i<dimension_input(); ++i) {
-//        columns_input[i] = i;
-//    }
-//    return extractSubmodel(columns_input);
-//}
-//
-// xmm::GMM xmm::GMM::extractSubmodel_output() const
-//{
-//    check_training();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<unsigned int> columns_output(dimension() - dimension_input());
-//    for (unsigned int i=dimension_input(); i<dimension(); ++i) {
-//        columns_output[i-dimension_input()] = i;
-//    }
-//    return extractSubmodel(columns_output);
-//}
-//
-// xmm::GMM xmm::GMM::extract_inverse_model() const
-//{
-//    check_training();
-//    if (!bimodal_)
-//        throw std::runtime_error("The model needs to be bimodal");
-//    std::vector<unsigned int> columns(dimension());
-//    for (unsigned int i=0; i<dimension()-dimension_input(); ++i) {
-//        columns[i] = i+dimension_input();
-//    }
-//    for (unsigned int i=dimension()-dimension_input(), j=0; i<dimension(); ++i,
-//    ++j) {
-//        columns[i] = j;
-//    }
-//    GMM target_model = extractSubmodel(columns);
-//    target_model.makeBimodal(dimension()-dimension_input());
-//    return target_model;
-//}
+#pragma mark > Conversion & Extraction
+xmm::GMM xmm::GMM::getBimodal(unsigned int dimension_input)
+{
+    checkTraining();
+    if (shared_parameters->bimodal.get())
+        throw std::runtime_error("The model is already bimodal");
+    if (shared_parameters->dimension_input.get() >= shared_parameters->dimension.get())
+        throw std::out_of_range("Request input dimension exceeds the current dimension");
+
+    xmm::GMM target_model(*this);
+    target_model.shared_parameters->bimodal.set(true);
+    target_model.shared_parameters->dimension_input.set(dimension_input);
+    for (auto it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        for (int c = 0; c < it->second.components.size(); c++) {
+            it->second.components[c] = it->second.components[c].getBimodal(dimension_input);
+        }
+    }
+    target_model.reset();
+    return target_model;
+}
+
+xmm::GMM xmm::GMM::getUnimodal()
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model is already unimodal");
+    
+    xmm::GMM target_model(*this);
+    target_model.shared_parameters->bimodal.set(false);
+    for (auto it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        for (int c = 0; c < it->second.components.size(); c++) {
+            it->second.components[c] = it->second.components[c].getUnimodal();
+        }
+    }
+    target_model.reset();
+    return target_model;
+}
+
+xmm::GMM xmm::GMM::extractSubmodel(std::vector<unsigned int>& columns) const
+{
+    checkTraining();
+    if (columns.size() > shared_parameters->dimension.get())
+        throw std::out_of_range("requested number of columns exceeds the dimension of the current model");
+    for (unsigned int column=0; column<columns.size(); ++column) {
+        if (columns[column] >= shared_parameters->dimension.get())
+            throw std::out_of_range("Some column indices exceeds the dimension of the current model");
+    }
+    xmm::GMM target_model(*this);
+    target_model.shared_parameters->bimodal.set(false);
+    target_model.shared_parameters->dimension.set(static_cast<unsigned int>(columns.size()));
+    for (auto it=target_model.models.begin(); it != target_model.models.end(); ++it) {
+        for (int c = 0; c < it->second.components.size(); c++) {
+            it->second.components[c] = it->second.components[c].extractSubmodel(columns);
+        }
+    }
+    target_model.reset();
+    return target_model;
+}
+
+xmm::GMM xmm::GMM::extractSubmodel_input() const
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_input(shared_parameters->dimension_input.get());
+    for (unsigned int i=0; i<shared_parameters->dimension_input.get(); ++i) {
+        columns_input[i] = i;
+    }
+    return extractSubmodel(columns_input);
+}
+
+xmm::GMM xmm::GMM::extractSubmodel_output() const
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns_output(shared_parameters->dimension.get() - shared_parameters->dimension_input.get());
+    for (unsigned int i=shared_parameters->dimension_input.get(); i<shared_parameters->dimension.get(); ++i) {
+        columns_output[i-shared_parameters->dimension_input.get()] = i;
+    }
+    return extractSubmodel(columns_output);
+}
+
+xmm::GMM xmm::GMM::extract_inverse_model() const
+{
+    checkTraining();
+    if (!shared_parameters->bimodal.get())
+        throw std::runtime_error("The model needs to be bimodal");
+    std::vector<unsigned int> columns(shared_parameters->dimension.get());
+    for (unsigned int i=0; i<shared_parameters->dimension.get()-shared_parameters->dimension_input.get(); ++i) {
+        columns[i] = i+shared_parameters->dimension_input.get();
+    }
+    for (unsigned int i=shared_parameters->dimension.get()-shared_parameters->dimension_input.get(), j=0;
+         i<shared_parameters->dimension.get();
+         ++i, ++j) {
+        columns[i] = j;
+    }
+    GMM target_model = extractSubmodel(columns).getBimodal(shared_parameters->dimension.get()-shared_parameters->dimension_input.get());
+    return target_model;
+}

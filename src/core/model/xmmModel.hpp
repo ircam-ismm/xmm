@@ -89,6 +89,7 @@ class Model : public Writable {
                 "Cannot copy: source model is still training");
         models = src.models;
         for (auto& model : models) {
+            model.second.shared_parameters = shared_parameters;
             model.second.training_events.removeListeners();
             model.second.training_events.addListener(
                 this,
@@ -270,9 +271,7 @@ class Model : public Writable {
                 }
             }
         }
-        for (typename std::set<std::string>::iterator it =
-                 trainingSet->labels().begin();
-             it != trainingSet->labels().end(); ++it) {
+        for (typename std::set<std::string>::iterator it = trainingSet->labels().begin(); it != trainingSet->labels().end(); ++it) {
             addModelForClass(*it);
         }
 
@@ -581,8 +580,7 @@ class Model : public Writable {
             throw std::runtime_error("The Model is already training");
 
         if (models.find(label) == models.end()) {
-            models.insert(std::pair<std::string, SingleClassModel>(
-                label, shared_parameters));
+            models.insert(std::pair<std::string, SingleClassModel>(label, shared_parameters));
             models[label].training_events.addListener(
                 this,
                 &xmm::Model<SingleClassModel, ModelType>::onTrainingEvent);

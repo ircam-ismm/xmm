@@ -88,6 +88,7 @@
 
 namespace std {
     %template(vectord) vector<double>;
+    %template(vectorvd) vector<vector<double>>;
     %template(vectorf) vector<float>;
     %template(vectors) vector<string>;
     %template(sets) set<string>;
