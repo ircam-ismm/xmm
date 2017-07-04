@@ -35,6 +35,7 @@
 
 #include "xmmModelParameters.hpp"
 #include <map>
+#include <iostream>
 
 namespace xmm {
 /**
@@ -96,8 +97,7 @@ class Configuration : public ClassParameters<ModelType> {
      */
     Configuration()
         : multithreading(MultithreadingMode::Parallel),
-          multiClass_regression_estimator(
-              MultiClassRegressionEstimator::Likeliest) {}
+          multiClass_regression_estimator(MultiClassRegressionEstimator::Likeliest) {}
 
     /**
      @brief Copy Constructor
@@ -121,8 +121,9 @@ class Configuration : public ClassParameters<ModelType> {
             static_cast<MultiClassRegressionEstimator>(
                 root.get("multiClass_regression_estimator", 0).asInt());
         class_parameters_.clear();
-        for (auto p : root["class_parameters"]) {
-            class_parameters_[p["label"].asString()].fromJson(p);
+        std::vector<std::string> members = root["class_parameters"].getMemberNames();
+        for (auto label : members) {
+            class_parameters_[label].fromJson(root["class_parameters"][label]);
         }
     }
 
@@ -144,8 +145,7 @@ class Configuration : public ClassParameters<ModelType> {
     /**
      @brief access the parameters of a given class by label
      @details If the parameters have not been edited for this class yet, they
-     are set to the
-     default parameters.
+     are set to the default parameters.
      @param label class label
      @return a reference to the parameters of the given class
      */
@@ -154,6 +154,16 @@ class Configuration : public ClassParameters<ModelType> {
             class_parameters_[label] = *this;
         }
         return class_parameters_[label];
+    }
+    
+    /**
+     @brief check if there exist an overloaded configuration for a given label
+     default parameters.
+     @param label class label
+     @return true if there exist an overloaded configuration for the given label
+     */
+    bool includes(std::string label) {
+        return class_parameters_.count(label) > 0;
     }
 
     /**
@@ -181,11 +191,8 @@ class Configuration : public ClassParameters<ModelType> {
         root["multiClass_regression_estimator"] =
             static_cast<int>(multiClass_regression_estimator);
         root["default_parameters"] = ClassParameters<ModelType>::toJson();
-        int i = 0;
         for (auto p : class_parameters_) {
-            root["class_parameters"][i] = p.second.toJson();
-            root["class_parameters"][i]["label"] = p.first;
-            i++;
+            root["class_parameters"][p.first] = p.second.toJson();
         }
         return root;
     }
