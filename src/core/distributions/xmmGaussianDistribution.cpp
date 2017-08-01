@@ -33,13 +33,15 @@
 #include "../common/xmmMatrix.hpp"
 #include "xmmGaussianDistribution.hpp"
 #include <algorithm>
-#include <math.h>
 
 #ifdef WIN32
-
-#define M_PI 3.14159265358979323846264338328 /**< pi */
+#define _USE_MATH_DEFINES // this replaces constant definitions below
+//#define M_PI 3.14159265358979323846264338328 /**< pi */
+//#define M_PI_2 M_PI * 0.5
 //#define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
+
+#include <math.h>
 
 #pragma mark Constructors
 xmm::GaussianDistribution::GaussianDistribution(bool bimodal,
