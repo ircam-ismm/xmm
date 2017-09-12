@@ -244,7 +244,7 @@ class Model : public Writable {
      @param trainingSet Training Set
      */
     virtual void train(TrainingSet* trainingSet) {
-        if (!trainingSet) return;
+        if (!trainingSet || trainingSet->size() < 1) return;
         cancelTraining();
         clear();
 
