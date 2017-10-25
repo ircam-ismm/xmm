@@ -107,10 +107,13 @@ xmm::Phrase::Phrase(Json::Value const& root)
 
     bimodal_ = root.get("bimodal", false).asBool();
     dimension.setLimitMin((bimodal_) ? 2 : 1);
-    dimension_input.setLimits((bimodal_) ? 1 : 0, (bimodal_) ? 2 : 0);
     dimension.set(root.get("dimension", bimodal_ ? 2 : 1).asInt(), true);
-    dimension_input.set(root.get("dimension_input", bimodal_ ? 1 : 0).asInt(),
-                        true);
+    if (bimodal_) {
+        dimension_input.setLimits(1, dimension.get() - 1);
+    } else {
+        dimension_input.setLimits(0, 0);
+    }
+    dimension_input.set(root.get("dimension_input", bimodal_ ? 1 : 0).asInt(), true);
     data_ = new float*[bimodal_ ? 2 : 1];
     data_[0] = NULL;
     if (bimodal_) data_[1] = NULL;
