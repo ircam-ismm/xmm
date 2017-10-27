@@ -25,3 +25,5 @@ python/_build_tmp
 *.dylib
 *.ipynb_checkpoints
 cmake_clean.sh
+**/.DS_Store
+**/Thumbs.db

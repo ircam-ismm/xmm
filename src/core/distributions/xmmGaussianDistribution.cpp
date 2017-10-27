@@ -342,6 +342,8 @@ Json::Value xmm::GaussianDistribution::toJson() const {
     root["covariance_determinant"] = covariance_determinant_;
     root["inverse_covariance_input"] = vector2json(inverse_covariance_input_);
     root["covariance_determinant_input"] = covariance_determinant_input_;
+    
+    root["output_covariance"] = vector2json(output_covariance);
 
     return root;
 }
