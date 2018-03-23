@@ -224,12 +224,10 @@ void xmm::SingleClassGMM::fromJson(Json::Value const& root) {
 void xmm::SingleClassGMM::allocate() {
     mixture_coeffs.resize(parameters.gaussians.get());
     beta.resize(parameters.gaussians.get());
-    components.assign(
-        parameters.gaussians.get(),
-        GaussianDistribution(shared_parameters->bimodal.get(),
-                             shared_parameters->dimension.get(),
-                             shared_parameters->dimension_input.get(),
-                             parameters.covariance_mode.get()));
+
+    GaussianDistribution mgaus(shared_parameters->bimodal.get(),
+                         shared_parameters->dimension.get());
+    components.assign(parameters.gaussians.get(),mgaus);
 }
 
 double xmm::SingleClassGMM::obsProb(const float* observation,

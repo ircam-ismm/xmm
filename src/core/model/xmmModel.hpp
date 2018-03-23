@@ -39,6 +39,7 @@
 #include "xmmModelSingleClass.hpp"
 #include <atomic>
 #include <thread>
+#include <map>
 
 namespace xmm {
 /**
@@ -251,13 +252,18 @@ class Model : public Writable {
         is_training_ = true;
 
         // Fetch training set parameters
-        shared_parameters->dimension.set(trainingSet->dimension.get());
+        
+        shared_parameters->dimension = trainingSet->dimension.get(); // Paul Modif
+        
+        shared_parameters->bimodal =false;
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
+        shared_parameters->column_names.resize(9);
         shared_parameters->column_names.set(trainingSet->column_names.get());
-
+        
+        
         // Update models
         bool contLoop(true);
         while (contLoop) {
@@ -275,7 +281,7 @@ class Model : public Writable {
              it != trainingSet->labels().end(); ++it) {
             addModelForClass(*it);
         }
-
+        //configuration.multithreading = MultithreadingMode::Sequential; //Paul Modif
         // Start class training
         for (auto it = this->models.begin(); it != this->models.end(); ++it) {
             it->second.is_training_ = true;
@@ -285,9 +291,10 @@ class Model : public Writable {
                  MultithreadingMode::Parallel) ||
                 (configuration.multithreading ==
                  MultithreadingMode::Background)) {
-                training_threads_[it->first] =
+                    training_threads_.insert(std::pair<std::string, std::thread>(
+                    it->first,
                     std::thread(&SingleClassModel::train, &it->second,
-                                trainingSet->getPhrasesOfClass(it->first));
+                                trainingSet->getPhrasesOfClass(it->first))));// Paul Modif
             } else {
                 it->second.train(trainingSet->getPhrasesOfClass(it->first));
             }
@@ -310,6 +317,7 @@ class Model : public Writable {
      of the current model
      */
     virtual void train(TrainingSet* trainingSet, std::string const& label) {
+        std::cout<<" XMMModel train"<<std::endl;
         if (!trainingSet) return;
         if (trainingSet->labels().count(label) == 0)
             throw std::out_of_range("Class " + label + " does not exist");
@@ -332,21 +340,25 @@ class Model : public Writable {
         is_training_ = true;
 
         // Fetch training set parameters
-        shared_parameters->dimension.set(trainingSet->dimension.get());
+        shared_parameters->bimodal = false;
+        shared_parameters->dimension = trainingSet->dimension.get();
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
+        shared_parameters->column_names.resize(9);
         shared_parameters->column_names.set(trainingSet->column_names.get());
-
+        
         addModelForClass(label);
+        configuration.multithreading = MultithreadingMode::Sequential;
+        //training_threads_.insert(std::pair<std::string, std::thread>(label,std::thread(&SingleClassModel::train, &(this->models[label]),trainingSet->getPhrasesOfClass(label))));
 
         // Start class training
         models[label].is_training_ = true;
         models[label].cancel_training_ = false;
         models_still_training_++;
         if (configuration.multithreading == MultithreadingMode::Sequential) {
-            models[label].train(trainingSet->getPhrasesOfClass(label));
+            models[label].xmm::SingleClassProbabilisticModel::train(trainingSet->getPhrasesOfClass(label));
         } else {
             training_threads_[label] =
                 std::thread(&SingleClassModel::train, &(this->models[label]),

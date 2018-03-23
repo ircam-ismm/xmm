@@ -90,7 +90,7 @@ operator=(SingleClassProbabilisticModel const& src) {
             throw std::runtime_error(
                 "Cannot copy: source model is still training");
         label = src.label;
-        training_status = TrainingEvent(this, label),
+        training_status = TrainingEvent(this, label);
         shared_parameters = src.shared_parameters;
         is_training_ = false;
         cancel_training_ = false;
