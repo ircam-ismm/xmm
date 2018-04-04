@@ -260,7 +260,7 @@ class Model : public Writable {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
-        shared_parameters->column_names.resize(9);
+        shared_parameters->column_names.resize(trainingSet->dimension.get());
         shared_parameters->column_names.set(trainingSet->column_names.get());
         
         
@@ -281,7 +281,6 @@ class Model : public Writable {
              it != trainingSet->labels().end(); ++it) {
             addModelForClass(*it);
         }
-        //configuration.multithreading = MultithreadingMode::Sequential; //Paul Modif
         // Start class training
         for (auto it = this->models.begin(); it != this->models.end(); ++it) {
             it->second.is_training_ = true;
