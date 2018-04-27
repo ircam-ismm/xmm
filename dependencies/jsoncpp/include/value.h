@@ -483,11 +483,11 @@ Json::Value obj_value(Json::objectValue); // {}
   /// \pre type() is objectValue or nullValue
   /// \post type() is unchanged
   /// \deprecated
-  Value removeMember(const char* key);
+    Value removeMember(const char* key) __deprecated;
   /// Same as removeMember(const char*)
   /// \param key may contain embedded nulls.
   /// \deprecated
-  Value removeMember(const std::string& key);
+    Value removeMember(const std::string& key) __deprecated;
   /// Same as removeMember(const char* begin, const char* end, Value* removed),
   /// but 'key' is null-terminated.
   bool removeMember(const char* key, Value* removed);
@@ -535,7 +535,7 @@ Json::Value obj_value(Json::objectValue); // {}
 
   /// \deprecated Always pass len.
   JSONCPP_DEPRECATED("Use setComment(std::string const&) instead.")
-  void setComment(const char* comment, CommentPlacement placement);
+    void setComment(const char* comment, CommentPlacement placement) __deprecated;
   /// Comments must be //... or /* ... */
   void setComment(const char* comment, size_t len, CommentPlacement placement);
   /// Comments must be //... or /* ... */

@@ -28,7 +28,7 @@ namespace Json {
 /** \brief Unserialize a <a HREF="http://www.json.org">JSON</a> document into a
  *Value.
  *
- * \deprecated Use CharReader and CharReaderBuilder.
+ *  Use CharReader and CharReaderBuilder.
  */
 class JSON_API Reader {
   public:
@@ -111,7 +111,7 @@ class JSON_API Reader {
      * \deprecated Use getFormattedErrorMessages() instead (typo fix).
      */
     JSONCPP_DEPRECATED("Use getFormattedErrorMessages() instead.")
-    std::string getFormatedErrorMessages() const;
+    std::string getFormatedErrorMessages() __deprecated; //const;
 
     /** \brief Returns a user friendly string that list errors in the parsed
      * document.
@@ -120,7 +120,7 @@ class JSON_API Reader {
      * in
      *         the parsed document. An empty string is returned if no error
      * occurred
-     *         during parsing.
+     *         during parsing. 
      */
     std::string getFormattedErrorMessages() const;
 

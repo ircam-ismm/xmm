@@ -479,7 +479,7 @@ void xmm::HierarchicalHMM::updateResults() {
             model.second.results.log_likelihood;
         results.smoothed_likelihoods[i] =
             exp(results.smoothed_log_likelihoods[i]);
-        
+    
         results.instant_normalized_likelihoods[i] =
             results.instant_likelihoods[i];
         results.smoothed_normalized_likelihoods[i] =

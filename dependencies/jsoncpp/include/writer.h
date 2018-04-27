@@ -136,7 +136,7 @@ public:
 };
 
 /** \brief Abstract class for writers.
- * \deprecated Use StreamWriter. (And really, this is an implementation detail.)
+ *  Use StreamWriter. (And really, this is an implementation detail.)
  */
 class JSON_API Writer {
 public:
@@ -152,7 +152,7 @@ public:
  *consumption,
  * but may be usefull to support feature such as RPC where bandwith is limited.
  * \sa Reader, Value
- * \deprecated Use StreamWriterBuilder.
+ *  Use StreamWriterBuilder.
  */
 class JSON_API FastWriter : public Writer {
 
@@ -205,7 +205,7 @@ private:
  *#CommentPlacement.
  *
  * \sa Reader, Value, Value::setComment()
- * \deprecated Use StreamWriterBuilder.
+ *  Use StreamWriterBuilder.
  */
 class JSON_API StyledWriter : public Writer {
 public:
@@ -265,9 +265,9 @@ private:
  * If the Value have comments then they are outputed according to their
  #CommentPlacement.
  *
- * \param indentation Each level will be indented by this amount extra.
+ *  indentation Each level will be indented by this amount extra.
  * \sa Reader, Value, Value::setComment()
- * \deprecated Use StreamWriterBuilder.
+ *  Use StreamWriterBuilder.
  */
 class JSON_API StyledStreamWriter {
 public:

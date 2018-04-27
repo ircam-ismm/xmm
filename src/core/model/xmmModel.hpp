@@ -39,7 +39,6 @@
 #include "xmmModelSingleClass.hpp"
 #include <atomic>
 #include <thread>
-#include <map>
 
 namespace xmm {
 /**
@@ -252,17 +251,13 @@ class Model : public Writable {
         is_training_ = true;
 
         // Fetch training set parameters
-        
-        shared_parameters->dimension = trainingSet->dimension.get(); // Paul Modif
-        
-        shared_parameters->bimodal =false;
+        shared_parameters->dimension = trainingSet->dimension.get();
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
         shared_parameters->column_names.resize(trainingSet->dimension.get());
         shared_parameters->column_names.set(trainingSet->column_names.get());
-        
         
         // Update models
         bool contLoop(true);
@@ -293,7 +288,7 @@ class Model : public Writable {
                     training_threads_.insert(std::pair<std::string, std::thread>(
                     it->first,
                     std::thread(&SingleClassModel::train, &it->second,
-                                trainingSet->getPhrasesOfClass(it->first))));// Paul Modif
+                                trainingSet->getPhrasesOfClass(it->first))));
             } else {
                 it->second.train(trainingSet->getPhrasesOfClass(it->first));
             }
@@ -316,7 +311,6 @@ class Model : public Writable {
      of the current model
      */
     virtual void train(TrainingSet* trainingSet, std::string const& label) {
-        std::cout<<" XMMModel train"<<std::endl;
         if (!trainingSet) return;
         if (trainingSet->labels().count(label) == 0)
             throw std::out_of_range("Class " + label + " does not exist");
@@ -339,18 +333,15 @@ class Model : public Writable {
         is_training_ = true;
 
         // Fetch training set parameters
-        shared_parameters->bimodal = false;
         shared_parameters->dimension = trainingSet->dimension.get();
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
-        shared_parameters->column_names.resize(9);
+        shared_parameters->column_names.resize(trainingSet->dimension.get());
         shared_parameters->column_names.set(trainingSet->column_names.get());
         
         addModelForClass(label);
-        configuration.multithreading = MultithreadingMode::Sequential;
-        //training_threads_.insert(std::pair<std::string, std::thread>(label,std::thread(&SingleClassModel::train, &(this->models[label]),trainingSet->getPhrasesOfClass(label))));
 
         // Start class training
         models[label].is_training_ = true;
