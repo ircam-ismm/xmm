@@ -1300,7 +1300,9 @@ void xmm::SingleClassHMM::updateResults() {
         else
             results.progress += alpha[i] * i / window_normalization_constant_;
     }
-    results.progress /= double(parameters.states.get() - 1);
+    double div = double(parameters.states.get() - 1);
+    if(div == 0) div = 1;
+    results.progress /= div;
 
     //    /////////////////////////
     //    results_progress = 0.0;
