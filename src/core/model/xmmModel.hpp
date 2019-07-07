@@ -251,13 +251,14 @@ class Model : public Writable {
         is_training_ = true;
 
         // Fetch training set parameters
-        shared_parameters->dimension.set(trainingSet->dimension.get());
+        shared_parameters->dimension = trainingSet->dimension.get();
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
+        shared_parameters->column_names.resize(trainingSet->dimension.get());
         shared_parameters->column_names.set(trainingSet->column_names.get());
-
+        
         // Update models
         bool contLoop(true);
         while (contLoop) {
@@ -275,7 +276,6 @@ class Model : public Writable {
              it != trainingSet->labels().end(); ++it) {
             addModelForClass(*it);
         }
-
         // Start class training
         for (auto it = this->models.begin(); it != this->models.end(); ++it) {
             it->second.is_training_ = true;
@@ -285,9 +285,10 @@ class Model : public Writable {
                  MultithreadingMode::Parallel) ||
                 (configuration.multithreading ==
                  MultithreadingMode::Background)) {
-                training_threads_[it->first] =
+                    training_threads_.insert(std::pair<std::string, std::thread>(
+                    it->first,
                     std::thread(&SingleClassModel::train, &it->second,
-                                trainingSet->getPhrasesOfClass(it->first));
+                                trainingSet->getPhrasesOfClass(it->first))));
             } else {
                 it->second.train(trainingSet->getPhrasesOfClass(it->first));
             }
@@ -332,13 +333,14 @@ class Model : public Writable {
         is_training_ = true;
 
         // Fetch training set parameters
-        shared_parameters->dimension.set(trainingSet->dimension.get());
+        shared_parameters->dimension = trainingSet->dimension.get();
         if (shared_parameters->bimodal.get()) {
             shared_parameters->dimension_input.set(
                 trainingSet->dimension_input.get());
         }
+        shared_parameters->column_names.resize(trainingSet->dimension.get());
         shared_parameters->column_names.set(trainingSet->column_names.get());
-
+        
         addModelForClass(label);
 
         // Start class training
@@ -346,7 +348,7 @@ class Model : public Writable {
         models[label].cancel_training_ = false;
         models_still_training_++;
         if (configuration.multithreading == MultithreadingMode::Sequential) {
-            models[label].train(trainingSet->getPhrasesOfClass(label));
+            models[label].xmm::SingleClassProbabilisticModel::train(trainingSet->getPhrasesOfClass(label));
         } else {
             training_threads_[label] =
                 std::thread(&SingleClassModel::train, &(this->models[label]),
