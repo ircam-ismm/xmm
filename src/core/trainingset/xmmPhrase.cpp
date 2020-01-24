@@ -195,6 +195,11 @@ xmm::Phrase& xmm::Phrase::operator=(Phrase const& src) {
                               src.data_[1] + max_length_ * modality_dim,
                               data_[1]);
                 }
+            } else {
+                data_[0] = NULL;
+                if (bimodal_) {
+                    data_[1] = NULL;
+                }
             }
         } else {
             data_[0] = src.data_[0];
@@ -569,9 +574,9 @@ void xmm::Phrase::onAttributeChange(xmm::AttributeBase* attr_pointer) {
         data_[0] = nullptr;
         if (bimodal_) {
             if (own_memory_) {
-                data_[1] = nullptr;
+                delete data_[1];
             }
-            delete data_[1];
+            data_[1] = nullptr;
         }
         column_names.resize(dimension.get());
     }
