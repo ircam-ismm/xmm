@@ -1,2 +1,2 @@
 __all__ = ["xmm"]
-from xmm import *
+from .xmm import *

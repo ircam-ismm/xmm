@@ -17,7 +17,9 @@ python/xmm_doc.i
 python/xmmPYTHON_wrap.cxx
 python/bin
 python/_build_tmp
-*CMakeCache.txt
+**/CMakeCache.txt
+**/CMakeDoxyfile.in
+**/CMakeDoxygenDefaults.cmake
 *cmake_install.cmake
 *pyc
 *.a
