@@ -550,7 +550,11 @@ class Model : public Writable {
      @throws runtime_error if the Model is training.
      */
     inline void checkTraining() const {
-        if (is_training_) throw std::runtime_error("The Model is training");
+        if (is_training_)
+        {
+          printf("xmmmodel: the Model is training\n");
+          throw std::runtime_error("The Model is training");
+        }
         while (is_joining_) {
         }
     }

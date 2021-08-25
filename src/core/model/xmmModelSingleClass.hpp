@@ -344,8 +344,19 @@ class SingleClassProbabilisticModel : public Writable {
      */
     inline void check_training() const {
         if (this->isTraining())
-            throw std::runtime_error("The model is training");
-    }
+        {
+          printf("singleclass: The Model is training\n");
+          throw std::runtime_error("The model is training");
+        }
+    };
+
+    inline void wait_for_training() const {
+      while (this->isTraining())
+      {
+        printf("singleclass: wait for end of training\n");
+      }
+    };
+
 
     /**
      @brief Likelihood buffer used for smoothing

@@ -94,7 +94,8 @@ void xmm::SingleClassGMM::emAlgorithmInit(TrainingSet* trainingSet) {
 }
 
 Json::Value xmm::SingleClassGMM::toJson() const {
-    check_training();
+  //check_training();
+    wait_for_training();
     Json::Value root = SingleClassProbabilisticModel::toJson();
     root["mixture_coeffs"] = vector2json(mixture_coeffs);
     root["parameters"] = parameters.toJson();
