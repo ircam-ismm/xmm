@@ -52,4 +52,4 @@ If you use this code for research purposes, please cite one of the following pub
 
 ## Documentation
 
-The full documentation is available on Github Pages: http://ircam-rnd.github.io/xmm/
+The full documentation is available on Github Pages: http://ircam-ismm.github.io/xmm/
