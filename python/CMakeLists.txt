@@ -27,24 +27,34 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR}/_bui
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
-execute_process(COMMAND python -c "import sysconfig, os; print(os.path.join(sysconfig.get_config_var('LIBPL'), sysconfig.get_config_var('LIBRARY')))" OUTPUT_VARIABLE PYTHON_LIBRARY OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND python -c "import sysconfig; print(sysconfig.get_config_var('INCLUDEPY'))" OUTPUT_VARIABLE PYTHON_INCLUDE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
-find_package(PythonLibs REQUIRED)
-message(STATUS "PYTHON_LIBRARY: ${PYTHON_LIBRARY}")
-message(STATUS "PYTHON_LIBRARIES: ${PYTHON_LIBRARIES}")
-message(STATUS "PYTHON_INCLUDE_PATH: ${PYTHON_INCLUDE_PATH}")
-message(STATUS "PYTHON_INCLUDE_DIRS: ${PYTHON_INCLUDE_DIRS}")
+# Allow user override
+if(NOT Python_EXECUTABLE)
+    execute_process(
+        COMMAND python -c "import sys; print(sys.executable)"
+        OUTPUT_VARIABLE Python_EXECUTABLE
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+endif()
+
+find_package(Python COMPONENTS Interpreter Development)
+message(STATUS "Python_LIBRARY: ${Python_LIBRARY}")
+message(STATUS "Python_FOUND: ${Python_FOUND}")
+message(STATUS "Python_STDLIB: ${Python_STDLIB}")
+message(STATUS "Python_RUNTIME_LIBRARY_DIRS: ${Python_RUNTIME_LIBRARY_DIRS}")
+message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 message(STATUS "PYTHONLIBS_VERSION_STRING: ${PYTHONLIBS_VERSION_STRING}")
+include_directories( ${Python_INCLUDE_DIRS} )
 
 ## Try to determine the directory of numpy headers
-execute_process( COMMAND python -c "from numpy import distutils; path=distutils.misc_util.get_numpy_include_dirs(); print(path[0])" OUTPUT_VARIABLE NUMPY_INCLUDEDIR OUTPUT_STRIP_TRAILING_WHITESPACE )
-if (NOT NUMPY_INCLUDE)
-    SET(NUMPY_INCLUDE ${NUMPY_INCLUDEDIR} CACHE PATH "Directory for the numpy headers. If it is not set automatically it is determined by python distutils." )
-endif( NOT NUMPY_INCLUDE)
-include_directories( ${NUMPY_INCLUDE} )
-if( NOT EXISTS ${NUMPY_INCLUDE}/numpy/arrayobject.h )
-    message( FATAL_ERROR "${NUMPY_INCLUDE}/numpy/arrayobject.h header is not found. If it is installed, than check the python flags and numpy header directories") 
-endif( NOT EXISTS ${NUMPY_INCLUDE}/numpy/arrayobject.h )
+execute_process(
+    COMMAND python -c "import numpy; print(numpy.get_include())"
+    OUTPUT_VARIABLE NumPy_INCLUDE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+include_directories( ${NumPy_INCLUDE_DIR} )
+if( NOT EXISTS ${NumPy_INCLUDE_DIR}/numpy/arrayobject.h )
+    message( FATAL_ERROR "${NumPy_INCLUDE_DIR}/numpy/arrayobject.h header is not found. If it is installed, than check the python flags and numpy header directories")
+endif( NOT EXISTS ${NumPy_INCLUDE_DIR}/numpy/arrayobject.h )
 
 # Include python and XMM header directories
 include_directories(${PYTHON_INCLUDE_PATH})
@@ -61,7 +71,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/models/kmeans)
 
 # Doxygen XML documentation
 find_package(Doxygen)
-
+message(STATUS "DOXYGEN_FOUND: ${DOXYGEN_FOUND}")
 if(DOXYGEN_FOUND)
     set(XML_DOC_INDEX ${CMAKE_CURRENT_SOURCE_DIR}/_build_tmp/xml/index.xml)
     add_custom_command(OUTPUT ${XML_DOC_INDEX}
@@ -88,7 +98,7 @@ set(CMAKE_SWIG_FLAGS "")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/numpy.i PROPERTIES CPLUSPLUS ON)
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/xmm.i PROPERTIES CPLUSPLUS ON)
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/xmm.i PROPERTIES SWIG_FLAGS "-DUSE_PTHREAD")
-SET(SWIG_MODULE_xmm_EXTRA_DEPS 
+SET(SWIG_MODULE_xmm_EXTRA_DEPS
     xmm_doc.i
 )
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/xmm)
